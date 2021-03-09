@@ -223,7 +223,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             }
         case .character("-"): return ["-", "–", "—", "•"]
         case .character("/"): return ["/", "\\"]
-        case .character("$"): return ["$", "€", "£", "¥", "₩", "₽", "¢"]
+        case .character("$"): return ["$", "€", "£", "¥", "₩", "¢"]
         case .character("&"): return ["&", "§"]
         case .character("\""): return ["\"", "”", "“", "„", "»", "«"]
         case .character("."): return [".", "…"]
