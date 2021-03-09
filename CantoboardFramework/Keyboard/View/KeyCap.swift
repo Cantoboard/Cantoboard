@@ -164,6 +164,15 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.tone5): return "5"
         case .rime(.tone6): return "6"
         case .chineseScript(let cs): return Settings.shared.chineseScript == cs ? "*" : nil
+        case .character(let c):
+            guard c.count == 1 else { return nil }
+            let ch = c.first!
+            if ch.isASCII && !ch.isLetter {
+                return "半"
+            } else if !ch.isASCII && !ch.isLetter {
+                return "全"
+            }
+            return nil
         default: return nil
         }
     }
@@ -212,6 +221,15 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             } else {
                 return [.chineseScript(.simplified), .chineseScript(.traditionalHK) ]
             }
+        case .character("-"): return ["-", "–", "—", "•"]
+        case .character("/"): return ["/", "\\"]
+        case .character("$"): return ["$", "€", "£", "¥", "₩", "₽", "¢"]
+        case .character("&"): return ["&", "§"]
+        case .character("\""): return ["\"", "”", "“", "„", "»", "«"]
+        case .character("."): return [".", "…"]
+        case .character("?"): return ["?", "¿"]
+        case .character("!"): return ["!", "¡"]
+        case .character("'"): return ["'", "’", "‘", "`"]
         default: return [self]
         }
     }
