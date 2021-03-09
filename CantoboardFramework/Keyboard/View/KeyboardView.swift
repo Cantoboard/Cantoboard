@@ -40,14 +40,14 @@ class KeyboardView: UIView {
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""]],
         [[.keyboardType(.symbolic)], [".", ",", "?", "!", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [".", .newLine]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine]]
     ]
     
     private let symbolsKeyCapRows: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
         [["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "•"]],
         [[.keyboardType(.numeric)], [".", ",", "?", "!", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [".", .newLine]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine]]
     ]
     
     var keyboardType: KeyboardType {

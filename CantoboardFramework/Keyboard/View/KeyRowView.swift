@@ -80,12 +80,11 @@ class KeyRowView: UIView {
         
         // Remove extra keys to free memory.
         while keyCaps.count < keys.count {
-            guard let lastKey = keys.last else { break }
-            lastKey.removeFromSuperview()
+            guard keys.count > 0 else { break }
             if reuseKeyFromLeft {
-                keys.removeLast()
+                keys.removeLast().removeFromSuperview()
             } else {
-                keys.removeFirst()
+                keys.removeFirst().removeFromSuperview()
             }
         }
         
