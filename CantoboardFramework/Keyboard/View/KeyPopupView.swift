@@ -179,7 +179,7 @@ class KeyPopupView: UIView {
             neckRight = CGPoint(x: fullSize.width, y: bodySize.height - 5)
         }
         
-        if let leftClearance = leftClearance, anchorLeft.x > leftClearance {
+        if let leftClearance = leftClearance, anchorLeft.x > leftClearance && direction == .middleExtendLeft {
             let offset = anchorLeft.x - leftClearance
             anchorLeft.x -= offset
             anchorRight.x -= offset
