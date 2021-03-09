@@ -1,0 +1,78 @@
+//
+//  KeyboardAction.swift
+//  KeyboardKit
+//
+//  Created by Alex Man on 2/11/21.
+//
+
+import Foundation
+import UIKit
+
+public enum KeyboardShiftState {
+    case lowercased, uppercased, capsLocked
+}
+
+public enum KeyboardType: Equatable {
+    case
+    none,
+    alphabetic(_ state: KeyboardShiftState),
+    numeric,
+    symbolic,
+    email,
+    emojis,
+    images,
+    custom(_ name: String)
+}
+
+public enum RimeChar: Character {
+    case tone1 = "1"
+    case tone2 = "2"
+    case tone3 = "3"
+    case tone4 = "4"
+    case tone5 = "5"
+    case tone6 = "6"
+    case delimiter = "'"
+}
+
+/**
+ This action enum specifies all currently supported keyboard
+ actions and their standard behavior.
+ 
+ Most actions have a standard behavior for a certain gesture
+ when their used in system keyboards. This standard behavior
+ is provided through `standardInputViewControllerAction` and
+ `standardTextDocumentProxyAction`. Keyboard action handlers
+ can choose to use these standard actions or ignore them.
+ 
+ Many actions require manual handling since they do not have
+ universal, app-agnostic behaviors. For instance, the `image`
+ action depends on what you want to do with the tapped image.
+ Actions like these are a way for you to express your intent,
+ but require manual handling in a custom action handler.
+*/
+enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
+    case
+    none,
+    backspace,
+    deleteWord,
+    capsLock,
+    character(String),
+    emoji(String),
+    keyboardType(KeyboardType),
+    moveCursorBackward,
+    moveCursorForward,
+    moveCursorEnded,
+    newLine,
+    nextKeyboard,
+    space,
+    shift(_ state: KeyboardShiftState),
+    shiftDown, // TODO remove
+    shiftUp, // TODO remove
+    shiftRelax,
+    rime(RimeChar),
+    setChineseScript(ChineseScript)
+    
+    public init(stringLiteral value: String) {
+        self = .character(value)
+    }
+}
