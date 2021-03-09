@@ -230,6 +230,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character("?"): return ["?", "¿"]
         case .character("!"): return ["!", "¡"]
         case .character("'"): return ["'", "’", "‘", "`"]
+        case .character("="): return ["=", "≠", "≈"]
         default: return [self]
         }
     }
