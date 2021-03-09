@@ -66,7 +66,7 @@ class TouchHandler {
             callKeyHandler(.backspace)
         case .keyboardType(.emojis), .character, .rime:
             AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
-            key.keyTouchBegan()
+            key.keyTouchBegan(touch)
         case .keyboardType:
             AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
             callKeyHandler(key.selectedAction)
@@ -139,7 +139,7 @@ class TouchHandler {
                 cancelKeyRepeatTimer()
                 setupKeyRepeatTimer()
                 currentTouch.1.keyTouchEnded()
-                key.keyTouchBegan()
+                key.keyTouchBegan(touch)
                 return
             }
             
@@ -252,7 +252,7 @@ class TouchHandler {
             AudioFeedbackProvider.Play(keyboardAction: action)
         } else if self.inputMode == .typing && keyRepeatCounter > TouchHandler.LongPressDelay,
             let currentTouch = currentTouch {
-            currentTouch.1.keyLongPressed()
+            currentTouch.1.keyLongPressed(currentTouch.0)
             cancelKeyRepeatTimer()
         }
     }

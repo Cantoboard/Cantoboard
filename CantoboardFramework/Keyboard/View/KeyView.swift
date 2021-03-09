@@ -12,6 +12,7 @@ class KeyView: UIButton {
     private var keyHintLayer: KeyHintLayer?
     private var popupView: KeyPopupView?
     private var isPopupInLongPressMode: Bool?
+    private var beganTouch: UITouch?
     
     private var _keyCap: KeyCap = .none
     var keyCap: KeyCap {
@@ -169,14 +170,19 @@ class KeyView: UIButton {
         layoutPopupView()
         keyHintLayer?.isHidden = popupView != nil
         keyHintLayer?.layout()
+        
+        if let beganTouch = beganTouch {
+            popupView?.updateSelectedAction(beganTouch)
+            self.beganTouch = nil
+        }
     }
     
     private func layoutPopupView() {
         guard let superview = superview, let popupView = popupView else { return }
         
         popupView.heightClearance = heightClearance
-        popupView.leftClearance = frame.minX - superview.bounds.minX
-        popupView.rightClearance = superview.bounds.maxX - frame.maxX
+        popupView.leftClearance = floor((frame.minX - superview.bounds.minX) / LayoutConstants.forMainScreen.keyButtonWidth) * LayoutConstants.forMainScreen.keyButtonWidth - KeyPopupView.Inset.left / 2
+        popupView.rightClearance = floor((superview.bounds.maxX - frame.maxX) / LayoutConstants.forMainScreen.keyButtonWidth) * LayoutConstants.forMainScreen.keyButtonWidth - KeyPopupView.Inset.right / 2
         popupView.layoutView()
         
         let popupViewSize = popupView.bounds.size
@@ -215,8 +221,9 @@ extension KeyView {
 }
 
 extension KeyView {
-    func keyTouchBegan() {
+    func keyTouchBegan(_ touch: UITouch) {
         updatePopup(isLongPress: false)
+        beganTouch = touch
     }
     
     func keyTouchMoved(_ touch: UITouch) {
@@ -228,13 +235,15 @@ extension KeyView {
         popupView = nil
         
         isPopupInLongPressMode = nil
+        beganTouch = nil
         
         // Restore lables and rounded corners.
         setupView()
     }
     
-    func keyLongPressed() {
+    func keyLongPressed(_ touch: UITouch) {
         updatePopup(isLongPress: true)
+        beganTouch = touch
     }
     
     private func updatePopup(isLongPress: Bool) {
