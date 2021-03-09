@@ -124,7 +124,8 @@ class KeyView: UIButton {
         layer.shadowOpacity = shadowOpacity
         
         // isUserInteractionEnabled = action == .nextKeyboard
-        layoutPopupView()
+        // layoutPopupView()
+        setNeedsLayout()
     }
     
     private func setupKeyHint(_ keyCap: KeyCap, _ buttonHintTitle: String?, _ foregroundColor: UIColor) {
@@ -171,15 +172,26 @@ class KeyView: UIButton {
     }
     
     private func layoutPopupView() {
-        guard let popupView = popupView else { return }
+        guard let superview = superview, let popupView = popupView else { return }
         
         popupView.heightClearance = heightClearance
+        popupView.leftClearance = frame.minX - superview.bounds.minX
+        popupView.rightClearance = superview.bounds.maxX - frame.maxX
         popupView.layoutView()
         
         let popupViewSize = popupView.bounds.size
         let layoutOffsetX = popupView.leftAnchorX
+        var popupViewFrame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height), size: popupViewSize)
+        let popupViewFrameInSuperview = convert(popupViewFrame, to: superview)
         
-        popupView.frame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height), size: popupViewSize)
+        if popupViewFrameInSuperview.minX < 0 {
+            popupViewFrame = popupViewFrame.offsetBy(dx: -popupViewFrameInSuperview.minX, dy: 0)
+        }/* TODO Fix this to make sure popup view isn't OOB.
+         else if popupViewFrameInSuperview.maxX > super.bounds.maxX {
+            popupViewFrame = popupViewFrame.offsetBy(dx: -popupViewFrameInSuperview.maxX - super.bounds.maxX, dy: 0)
+        }*/
+        
+        popupView.frame = popupViewFrame
     }
 }
 

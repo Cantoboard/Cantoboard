@@ -34,7 +34,8 @@ class KeyPopupView: UIView {
         actions[safe: highlightedLabelIndex ?? 0] ?? .none
     }
     
-    var heightClearance: CGFloat?
+    // These clearance values are used to keep the popup view within keyboard view boundary.
+    var heightClearance, leftClearance, rightClearance: CGFloat?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -95,14 +96,11 @@ class KeyPopupView: UIView {
         self.direction = direction
         
         setupLabels(actions)
-        //setupBoundaryPath(keyWidthA: keyWidth, direction: direction)
         
         if actions.count > 1 {
             highlightedLabelIndex = 0
             labels[0].backgroundColor = .systemBlue
         }
-        
-        layoutView()
     }
     
     override func layoutSubviews() {
@@ -113,7 +111,6 @@ class KeyPopupView: UIView {
         var buttonSize = CGSize(
             width: KeyPopupView.Inset.wrapWidth(width: LayoutConstants.forMainScreen.keyButtonWidth),
             height: LayoutConstants.forMainScreen.keyHeight)
-        
         
         var bodySize = KeyPopupView.Inset.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))
         var contentSize = bodySize.extend(height: KeyPopupView.LinkHeight)
@@ -158,7 +155,7 @@ class KeyPopupView: UIView {
         let path = CGMutablePath()
         let bodyRect = CGRect(origin: CGPoint.zero, size: bodySize)
         
-        let anchorLeft, anchorRight, neckLeft, neckRight: CGPoint
+        var anchorLeft, anchorRight, neckLeft, neckRight: CGPoint
         switch direction {
         case .left:
             anchorLeft = CGPoint(x: fullSize.width - keyWidth, y: fullSize.height)
@@ -181,6 +178,15 @@ class KeyPopupView: UIView {
             neckLeft = CGPoint(x: anchorLeft.x - offsetX, y: bodySize.height - 5)
             neckRight = CGPoint(x: fullSize.width, y: bodySize.height - 5)
         }
+        
+        if let leftClearance = leftClearance, anchorLeft.x > leftClearance {
+            let offset = anchorLeft.x - leftClearance
+            anchorLeft.x -= offset
+            anchorRight.x -= offset
+            neckLeft.x -= offset
+            neckRight.x -= offset
+        }
+        
         leftAnchorX = anchorLeft.x
         
         path.addRoundedRect(in: bodyRect, cornerWidth: 5, cornerHeight: 5)
