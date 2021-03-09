@@ -155,7 +155,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .characterWithTone("Z"), .characterWithTone("z"): return "1"
         case .characterWithTone("X"), .characterWithTone("x"): return "2"
         case .characterWithTone("C"), .characterWithTone("c"): return "3"
-        case .contexualSymbols(.english), .character(","), .character("."), .character("?"), .character("!"): return "半"
+        // case .contexualSymbols(.english), .character(","), .character("."), .character("?"), .character("!"): return "半"
         case .contexualSymbols(.chinese), .character("，"), .character("。"), .character("？"), .character("！"): return "全"
         case .rime(.tone1): return "1"
         case .rime(.tone2): return "2"
