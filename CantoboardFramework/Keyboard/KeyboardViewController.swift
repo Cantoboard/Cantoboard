@@ -109,21 +109,24 @@ open class KeyboardViewController: UIInputViewController {
         let newSize = toInterfaceOrientation.isPortrait ? CGSize(width: shortEdge, height: longEdge) : CGSize(width: longEdge, height: shortEdge)
         let nextKeyboardSize = LayoutConstants.getContants(screenSize: newSize).keyboardSize
         
+        // NSLog("willRotate New screen size \(newSize)")
+        
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
         
-        self.view.layoutIfNeeded()
+        self.view.setNeedsLayout()
         
         super.willRotate(to: toInterfaceOrientation, duration: duration)
     }
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
+        // NSLog("didRotate New screen size \(UIScreen.main.bounds)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
         
-        self.view.layoutIfNeeded()
+        self.view.setNeedsLayout()
         
         super.didRotate(from: fromInterfaceOrientation)
     }
