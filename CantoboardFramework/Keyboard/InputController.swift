@@ -102,11 +102,6 @@ class InputController {
                     textDocumentProxy.insertText("")
                 }
             }
-            let textBefore = textDocumentProxy.documentContextBeforeInput
-            if prevTextBefore != nil && prevTextBefore != textBefore && !shouldApplyChromeSearchBarHack {
-                textDidChange(nil)
-            }
-            prevTextBefore = textBefore
             let shouldFeedCharToInputEngine = char.isASCII && char.isLetter && c.count == 1
             if shouldFeedCharToInputEngine && inputEngine.processChar(char) {
                 updateInputState()
