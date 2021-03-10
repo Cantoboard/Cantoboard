@@ -27,7 +27,7 @@ struct LayoutConstants {
     let buttonGap: CGFloat
     let keyViewHeight: CGFloat
     let keyRowGap: CGFloat
-    let widerSymbolButtonWidth: CGFloat
+    // let widerSymbolButtonWidth: CGFloat
 
     internal init(keyboardSize: CGSize,
                   buttonGap: CGFloat,
@@ -49,7 +49,7 @@ struct LayoutConstants {
         // buttonGap = (keyboardSize.width - 2 * edgeHorizontalInset - 10 * inputKeyWidth) / 9
         keyViewHeight = keyboardSize.height - autoCompleteBarHeight - keyViewTopInset - keyViewBottomInset
         keyRowGap = (keyViewHeight - 4 * keyHeight) / 3
-        widerSymbolButtonWidth = (7 * keyButtonWidth + 6 * buttonGap - 4 * buttonGap) / 5
+        // widerSymbolButtonWidth = (7 * keyButtonWidth + 6 * buttonGap - 5 * buttonGap) / 6
     }
 }
 

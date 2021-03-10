@@ -69,7 +69,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFont: UIFont {
         switch self {
-        case .rime: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(14)
+        case .rime, "^_^": return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
         // case .contexualSymbols(.rime): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(18)
         default: return .preferredFont(forTextStyle: buttonFontStyle)
         }
@@ -77,9 +77,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var popupFont: UIFont {
         switch self {
-        case .chineseScript, .rime(.delimiter): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
-        case .rime: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(14)
-        case .character(".com"), .character(".net"), .character(".org"), .character(".edu"): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(14)
+        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu":
+            return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
+        /*case .chineseScript, .rime(.delimiter): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)*/
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
         }
     }
@@ -123,7 +123,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonText: String? {
         switch self {
-        case .character(let text): return text
         case .characterWithTone(let text): return text
         case .newLine: return "return"
         case .space: return "space"
@@ -143,6 +142,17 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.url): return "."
         case .chineseScript(.traditionalHK): return "繁"
         case .chineseScript(.simplified): return "簡"
+        case "（": return "("
+        case "）": return ")"
+        case "「": return "「　"
+        case "」": return "  」"
+        case "《": return "《　"
+        case "》": return "  》"
+        case "［": return "["
+        case "］": return "]"
+        case "｛": return "{"
+        case "｝": return "}"
+        case .character(let text): return text
         default: return nil
         }
     }
@@ -156,7 +166,11 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .characterWithTone("X"), .characterWithTone("x"): return "2"
         case .characterWithTone("C"), .characterWithTone("c"): return "3"
         // case .contexualSymbols(.english), .character(","), .character("."), .character("?"), .character("!"): return "半"
-        case .contexualSymbols(.chinese), .character("，"), .character("。"), .character("？"), .character("！"): return "全"
+        case .contexualSymbols(.chinese), "，", "。", "？", "！",
+             "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
+             "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
+             "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
+             "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉": return "全"
         case .rime(.tone1): return "1"
         case .rime(.tone2): return "2"
         case .rime(.tone3): return "3"
@@ -202,27 +216,74 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             default: return [self]
             }
         // case .character(",") : return [self, "'", "?", "."]
-        case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ","]
-        case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，"]
-        case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]
-        case .contexualSymbols(.url): return [".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
+        case .contexualSymbols(.chinese): return ["," ,"." ,"！" ,"？" ,"，" ,"。"]
+        case .contexualSymbols(.english): return ["，" ,"。" ,"!" ,"?" ,"," ,"."]
+        case .contexualSymbols(.rime): return ["!" ,"?" ,"," ,".", self]
+        case .contexualSymbols(.url): return [.rime(.delimiter), ".edu", ".org", ".net", ".com", "."]
         case .keyboardType(.emojis):
             if Settings.shared.chineseScript != .simplified {
                 return [.chineseScript(.traditionalHK), .chineseScript(.simplified)]
             } else {
                 return [.chineseScript(.simplified), .chineseScript(.traditionalHK) ]
             }
-        case .character("-"): return ["-", "–", "—", "•"]
-        case .character("/"): return ["/", "\\"]
-        case .character("$"): return ["¢", "$", "€", "£", "¥", "₩", "₽"]
-        case .character("&"): return ["&", "§"]
-        case .character("\""): return ["\"", "”", "“", "„", "»", "«"]
-        case .character("."): return [".", "…"]
-        case .character("?"): return ["?", "¿"]
-        case .character("!"): return ["!", "¡"]
-        case .character("‘"): return ["'", "’", "‘", "`"]
-        case .character("="): return ["=", "≠", "≈"]
+        case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
+        case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
+        case "3": return ["③", "叁", "3", "三", "３", "⑶", "⒊", "❸", "㊂", "㈢"]
+        case "4": return ["⒋", "④", "肆", "4", "四", "４", "⑷", "❹", "㊃", "㈣"]
+        case "5": return ["㊄", "⒌", "⑤", "伍", "5", "五", "５", "⑸", "❺", "㈤"]
+        case "6": return ["㈥", "㊅", "⒍", "⑥", "陸", "6", "六", "６", "⑹", "❻"]
+        case "7": return ["㈦", "㊆", "❼", "⒎", "⑦", "柒", "7", "七", "７", "⑺"]
+        case "8": return ["㈧", "㊇", "❽", "⒏", "⑻", "⑧", "捌", "8", "八", "８"]
+        case "9": return ["㈨", "㊈", "❾", "⒐", "⑼", "⑨", "９", "玖", "9", "九"]
+        case "0": return ["°", "⓪", "拾", "十", "零", "０", "0"]
+        case "-": return ["-", "－", "–", "—", "•"]
+        case "/": return ["/", "\\", "／"]
+        case ":": return ["：", ":"]
+        case ";": return ["；", ";"]
+        case "(": return ["（", "("]
+        case ")": return [")", "）"]
+        case "$": return ["₽" ,"₩" ,"¥" ,"£" ,"€" ,"$" ,"¢"]
+        case "@": return ["＠", "@"]
+        case "&": return ["&", "＆", "§"]
+        case "「": return ["‘" ,"“" ,"『" ,"「"]
+        case "」": return ["’" ,"”" ,"』" ,"」"]
+        case "\"": return ["«" ,"»" ,"„" ,"“" ,"”" ,"\""]
+        case ".": return ["。", ".", "…", "⋯", "⋯⋯"]
+        case ",": return ["，", ","]
+        case "?": return ["¿" ,"?" ,"？"]
+        case "!": return ["¡" ,"!" ,"！"]
+        case "‘": return ["`" ,"‘" ,"’" ,"'"]
+        case "=": return ["＝" ,"≈" ,"≠" ,"="]
+        case "。": return [".", "。","…", "⋯", "⋯⋯"]
+        case "，": return [",", "，"]
+        case "？": return ["¿" ,"？" ,"?"]
+        case "！": return ["¡" ,"！" ,"!"]
+        case "[": return ["［" ,"[" ,"【" ,"〔"]
+        case "]": return ["］" ,"]" ,"】" ,"〕"]
+        case "{": return ["｛" ,"{"]
+        case "}": return ["｝" ,"}"]
+        case "#": return ["＃", "#"]
+        case "%": return ["‰", "%", "％"]
+        case "^": return ["^", "＾"]
+        case "*": return ["*", "＊"]
+        case "+": return ["+", "＋"]
+        case "_": return ["＿", "_"]
+        case "\\": return ["＼", "\\"]
+        case "|": return ["｜", "|"]
+        case "~": return ["～", "~"]
+        case "<": return ["＜", "<", "〈",]
+        case ">": return ["＞", ">", "〉"]
+        case "•": return ["°", "·", "•"]
         default: return [self]
+        }
+    }
+    
+    var defaultChildKeyCap: KeyCap? {
+        switch self {
+        case "$", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0":
+            return self
+        default:
+            return nil
         }
     }
 }

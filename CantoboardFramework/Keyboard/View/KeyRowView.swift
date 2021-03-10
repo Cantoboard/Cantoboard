@@ -176,11 +176,7 @@ extension KeyRowView {
     }
     
     private func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
-        if case .character(_) = key.keyCap, rowLayoutMode == .shiftRow && (keyboardType == .symbolic || keyboardType == .numeric) {
-            return layoutConstants.widerSymbolButtonWidth
-        } else {
-            return key.keyCap.buttonWidth(layoutConstants)
-        }
+        return key.keyCap.buttonWidth(layoutConstants)
     }
 }
 

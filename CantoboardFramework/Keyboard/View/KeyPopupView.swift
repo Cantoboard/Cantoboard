@@ -28,6 +28,7 @@ class KeyPopupView: UIView {
     private var hintLayers: [KeyHintLayer] = []
     private var collectionView: UICollectionView?
     private(set) var leftAnchorX: CGFloat = 0
+    private var defaultKeyCapIndex = 0
     private var highlightedLabelIndex: Int?
     
     var selectedAction: KeyboardAction {
@@ -35,7 +36,7 @@ class KeyPopupView: UIView {
     }
     
     // These clearance values are used to keep the popup view within keyboard view boundary.
-    var heightClearance, leftClearance, rightClearance: CGFloat?
+    var heightClearance: CGFloat?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,6 +56,7 @@ class KeyPopupView: UIView {
         label.textColor = ButtonColor.KeyForegroundColor
         label.textAlignment = .center
         label.baselineAdjustment = .alignCenters
+        label.lineBreakMode = .byClipping
         return label
     }
     
@@ -90,16 +92,17 @@ class KeyPopupView: UIView {
         }
     }
     
-    func setup(keyCaps: [KeyCap], direction: PopupDirection = .middle) {
+    func setup(keyCaps: [KeyCap], defaultKeyCapIndex: Int, direction: PopupDirection = .middle) {
         self.keyCaps = keyCaps
         self.actions = keyCaps.map { $0.getAction() }
         self.direction = direction
+        self.defaultKeyCapIndex = defaultKeyCapIndex
         
         setupLabels(actions)
         
         if actions.count > 1 {
-            highlightedLabelIndex = 0
-            labels[0].backgroundColor = .systemBlue
+            highlightedLabelIndex = defaultKeyCapIndex
+            labels[defaultKeyCapIndex].backgroundColor = .systemBlue
         }
     }
     
@@ -108,9 +111,16 @@ class KeyPopupView: UIView {
     }
     
     func layoutView() {
-        var buttonSize = CGSize(
-            width: KeyPopupView.Inset.wrapWidth(width: LayoutConstants.forMainScreen.keyButtonWidth),
-            height: LayoutConstants.forMainScreen.keyHeight)
+        var buttonSize: CGSize
+        if actions.count < 10 {
+            buttonSize = CGSize(
+                width: KeyPopupView.Inset.wrapWidth(width: LayoutConstants.forMainScreen.keyButtonWidth),
+                height: LayoutConstants.forMainScreen.keyHeight)
+        } else {
+            buttonSize = CGSize(
+                width: LayoutConstants.forMainScreen.keyboardSize.width / CGFloat(actions.count),
+                height: LayoutConstants.forMainScreen.keyHeight)
+        }
         
         var bodySize = KeyPopupView.Inset.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))
         var contentSize = bodySize.extend(height: KeyPopupView.LinkHeight)
@@ -129,13 +139,7 @@ class KeyPopupView: UIView {
     private func layoutLabels(buttonSize: CGSize) {
         for i in 0..<actions.count {
             let label = labels[i]
-            let x: CGFloat
-            switch direction {
-            case .right, .middle:
-                x = KeyPopupView.Inset.left + buttonSize.width * CGFloat(i)
-            case .left, .middleExtendLeft:
-                x = KeyPopupView.Inset.left + buttonSize.width * CGFloat(actions.count - 1 - i)
-            }
+            let x = KeyPopupView.Inset.left + buttonSize.width * CGFloat(i)
             
             label.frame = CGRect(origin: CGPoint(x: x, y: KeyPopupView.Inset.top), size: buttonSize)
         }
@@ -167,24 +171,15 @@ class KeyPopupView: UIView {
             anchorRight = CGPoint(x: keyWidth, y: fullSize.height)
             neckLeft = CGPoint(x: 0, y: bodySize.height - 5)
             neckRight = CGPoint(x: anchorRight.x + 2 * offsetX, y: bodySize.height - 5)
-        case .middle:
-            anchorLeft = CGPoint(x: offsetX, y: fullSize.height)
-            anchorRight = CGPoint(x: offsetX + keyWidth, y: fullSize.height)
-            neckLeft = CGPoint(x: 0, y: bodySize.height - 5)
-            neckRight = CGPoint(x: anchorRight.x + offsetX, y: bodySize.height - 5)
-        case .middleExtendLeft:
-            anchorLeft = CGPoint(x: fullSize.width - keyWidth - offsetX, y: fullSize.height)
-            anchorRight = CGPoint(x: fullSize.width - offsetX, y: fullSize.height)
-            neckLeft = CGPoint(x: anchorLeft.x - offsetX, y: bodySize.height - 5)
-            neckRight = CGPoint(x: fullSize.width, y: bodySize.height - 5)
-        }
-        
-        if let leftClearance = leftClearance, anchorLeft.x > leftClearance && direction == .middleExtendLeft {
-            let offset = anchorLeft.x - leftClearance
-            anchorLeft.x -= offset
-            anchorRight.x -= offset
-            neckLeft.x -= offset
-            neckRight.x -= offset
+        default:
+            let defaultKeyCapIndex = min(self.defaultKeyCapIndex, keyCaps.count - 1)
+            guard defaultKeyCapIndex >= 0 else { return }
+            let defaultKeyCapMinX = buttonSize.width * CGFloat(defaultKeyCapIndex)
+            let defaultKeyCapMaxX = defaultKeyCapMinX + KeyPopupView.Inset.wrapWidth(width: buttonSize.width)
+            neckLeft = CGPoint(x: defaultKeyCapMinX, y: bodySize.height - 5)
+            neckRight = CGPoint(x: defaultKeyCapMaxX, y: bodySize.height - 5)
+            anchorLeft = CGPoint(x: neckLeft.x + offsetX, y: fullSize.height)
+            anchorRight = CGPoint(x: anchorLeft.x + superview.bounds.width, y: fullSize.height)
         }
         
         leftAnchorX = anchorLeft.x
@@ -212,13 +207,7 @@ class KeyPopupView: UIView {
         let point = touch.location(in: self)
         for i in 0..<labels.count {
             let label = labels[i]
-            let isLabelSelected: Bool
-            switch direction {
-            case .left, .middleExtendLeft:
-                isLabelSelected = (i == 0 || point.x <= label.frame.maxX) && (i == labels.count - 1 || label.frame.minX <= point.x)
-            case .right, .middle:
-                isLabelSelected = (i == 0 || label.frame.minX <= point.x) && (i == labels.count - 1 || point.x <= label.frame.maxX)
-            }
+            let isLabelSelected = (i == 0 || label.frame.minX <= point.x) && (i == labels.count - 1 || point.x <= label.frame.maxX)
             
             if isLabelSelected {
                 label.backgroundColor = .systemBlue

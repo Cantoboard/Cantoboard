@@ -12,7 +12,6 @@ class KeyView: UIButton {
     private var keyHintLayer: KeyHintLayer?
     private var popupView: KeyPopupView?
     private var isPopupInLongPressMode: Bool?
-    private var beganTouch: UITouch?
     
     private var _keyCap: KeyCap = .none
     var keyCap: KeyCap {
@@ -113,6 +112,7 @@ class KeyView: UIButton {
             setTitle(buttonText, for: .normal)
             titleLabel?.font = keyCap.buttonFont
             titleLabel?.baselineAdjustment = .alignCenters
+            titleLabel?.lineBreakMode = .byClipping
         } else if let buttonImage = keyCap.buttonImage {
             setImage(buttonImage, for: .normal)
             setTitle(nil, for: .normal)
@@ -170,33 +170,16 @@ class KeyView: UIButton {
         layoutPopupView()
         keyHintLayer?.isHidden = popupView != nil
         keyHintLayer?.layout()
-        
-        if let beganTouch = beganTouch {
-            popupView?.updateSelectedAction(beganTouch)
-            self.beganTouch = nil
-        }
     }
     
     private func layoutPopupView() {
-        guard let superview = superview, let popupView = popupView else { return }
-        
+        guard let popupView = popupView else { return }
         popupView.heightClearance = heightClearance
-        popupView.leftClearance = floor((frame.minX - superview.bounds.minX) / LayoutConstants.forMainScreen.keyButtonWidth) * LayoutConstants.forMainScreen.keyButtonWidth - KeyPopupView.Inset.left / 2
-        popupView.rightClearance = floor((superview.bounds.maxX - frame.maxX) / LayoutConstants.forMainScreen.keyButtonWidth) * LayoutConstants.forMainScreen.keyButtonWidth - KeyPopupView.Inset.right / 2
         popupView.layoutView()
         
         let popupViewSize = popupView.bounds.size
         let layoutOffsetX = popupView.leftAnchorX
-        var popupViewFrame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height), size: popupViewSize)
-        let popupViewFrameInSuperview = convert(popupViewFrame, to: superview)
-        
-        if popupViewFrameInSuperview.minX < 0 {
-            popupViewFrame = popupViewFrame.offsetBy(dx: -popupViewFrameInSuperview.minX, dy: 0)
-        }/* TODO Fix this to make sure popup view isn't OOB.
-         else if popupViewFrameInSuperview.maxX > super.bounds.maxX {
-            popupViewFrame = popupViewFrame.offsetBy(dx: -popupViewFrameInSuperview.maxX - super.bounds.maxX, dy: 0)
-        }*/
-        
+        let popupViewFrame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height), size: popupViewSize)
         popupView.frame = popupViewFrame
     }
 }
@@ -223,7 +206,6 @@ extension KeyView {
 extension KeyView {
     func keyTouchBegan(_ touch: UITouch) {
         updatePopup(isLongPress: false)
-        beganTouch = touch
     }
     
     func keyTouchMoved(_ touch: UITouch) {
@@ -235,7 +217,6 @@ extension KeyView {
         popupView = nil
         
         isPopupInLongPressMode = nil
-        beganTouch = nil
         
         // Restore lables and rounded corners.
         setupView()
@@ -243,7 +224,6 @@ extension KeyView {
     
     func keyLongPressed(_ touch: UITouch) {
         updatePopup(isLongPress: true)
-        beganTouch = touch
     }
     
     private func updatePopup(isLongPress: Bool) {
@@ -260,7 +240,15 @@ extension KeyView {
         
         let popupDirection = computePopupDirection()
         let keyCaps = computeKeyCap(isLongPress: isLongPress)
-        popup.setup(keyCaps: keyCaps, direction: popupDirection)
+        let defaultKeyCapIndex: Int
+        if let defaultChildKeyCap = keyCap.defaultChildKeyCap {
+            defaultKeyCapIndex = keyCaps.firstIndex(of: defaultChildKeyCap) ?? 0
+        } else if popupDirection == .right || popupDirection == .middle {
+            defaultKeyCapIndex = 0
+        } else {
+            defaultKeyCapIndex = keyCaps.count - 1
+        }
+        popup.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
         
         isPopupInLongPressMode = isLongPress
         setupView()
@@ -279,7 +267,12 @@ extension KeyView {
 
         let keyViewFrame = convert(bounds, to: superview)
         if keyViewFrame.minX < LayoutConstants.forMainScreen.keyButtonWidth / 2 {
-            return .right
+            // Special case, for key 1, it has 10 children.
+            if self.keyCap.childrenKeyCaps.count > 9 {
+                return .middle
+            } else {
+                return .right
+            }
         }
         
         if superview.bounds.width - keyViewFrame.maxX < LayoutConstants.forMainScreen.keyButtonWidth / 2 {
