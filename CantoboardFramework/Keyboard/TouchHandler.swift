@@ -226,7 +226,7 @@ class TouchHandler {
     }
     
     func touchCancelled(_ touch: UITouch, with event: UIEvent?) {
-        print(Date(), "touchCancelled", touch.description)
+        // print(Date(), "touchCancelled", touch.description)
         
         cancelKeyRepeatTimer()
         

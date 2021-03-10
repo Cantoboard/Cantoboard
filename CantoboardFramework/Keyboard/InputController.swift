@@ -19,9 +19,7 @@ class InputController {
     private var isLastInsertedTextFromCandidate = false
     private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
     private var lastKey: (KeyboardAction, Date)?
-    // private var hasSentTextInCapMode = false
     private var isHoldingShift = false
-    // private var hasTextBeforeTextChange: Bool?
     private var prevTextBefore: String?
     
     private var keyboardType = KeyboardType.alphabetic(.lowercased) {
@@ -50,27 +48,16 @@ class InputController {
     }
     
     func textWillChange(_ textInput: UITextInput?) {
-        // hasTextBeforeTextChange = textDocumentProxy?.hasText
         prevTextBefore = textDocumentProxy?.documentContextBeforeInput
+        // NSLog("textWillChange \(prevTextBefore)")
     }
     
     func textDidChange(_ textInput: UITextInput?) {
-        /*guard let textDocumentProxy = textDocumentProxy else { return }
-                
-        if (textDocumentProxy.documentInputMode == nil || !textDocumentProxy.hasText) && !shouldApplyChromeSearchBarHack {
-            clearInput()
-            hasInsertedAutoSpace = false
-            isLastInsertedTextFromCandidate = false
-            lastKey = nil
-        }*/
-        // NSLog("UUFO hasTextBeforeTextChange\(hasTextBeforeTextChange) hasText \(textDocumentProxy?.hasText)")
-        NSLog("UUFO prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
+        // NSLog("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
-        // if hasTextBeforeTextChange == true && !(textDocumentProxy?.hasText ?? false) && !shouldApplyChromeSearchBarHack {
         if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
             clearState()
         } else if let composition = inputEngine.composition, !shouldApplyChromeSearchBarHack {
-            // NSLog("textDidChange selectedTextRange \(textInput?.selectedTextRange)")
             self.setMarkedText(composition)
         }
         
@@ -181,7 +168,6 @@ class InputController {
         case .shiftRelax:
             isHoldingShift = false
         case .keyboardType(let type):
-            // hasSentTextInCapMode = false
             keyboardType = type
             return
         case .setChineseScript(let cs):
@@ -213,7 +199,7 @@ class InputController {
         // - Full shaped: e.g. "。" -> "<sym>"
         let lastChar = textDocumentProxy.documentContextBeforeInput?.last
         let lastSymbol = textDocumentProxy.documentContextBeforeInput?.last(where: { $0 != " " })
-        //print ("documentContextBeforeInput", textDocumentProxy.documentContextBeforeInput, lastChar)
+        // NSLog("documentContextBeforeInput \(textDocumentProxy.documentContextBeforeInput) \(lastChar)")
         let isFirstCharInDoc = lastChar == nil
         let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isSentensePunctuation ?? false)
         let isFullShapedCase = lastChar?.isFullShapeSentensePunctuation ?? false
@@ -243,7 +229,6 @@ class InputController {
     
     private func insertText(_ text: String) {
         guard !text.isEmpty else { return }
-        // print("Insert Text '\(text)'")
         clearInput()
         
         // We must let the message loop to handle previously entered text first.
@@ -297,7 +282,6 @@ class InputController {
     }
     
     private var shouldEnableSmartInput: Bool {
-        NSLog("UFO textDocumentProxy?.keyboardType \(textDocumentProxy?.keyboardType)")
         guard let textFieldType = textDocumentProxy?.keyboardType else { return true }
         return textFieldType != .URL &&
             textFieldType != .asciiCapableNumberPad &&
@@ -310,7 +294,7 @@ class InputController {
     }
     
     private func insertComposingText(appendBy: String? = nil) -> Bool {
-        if var composingText = inputEngine.composition?.text.filter { $0 != " " }, //inputEngine.englishComposition?.text,
+        if var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
             if let c = appendBy { composingText.append(c) }
             insertText(composingText)
@@ -393,7 +377,7 @@ class InputController {
         guard lastDotIndex == nil ||
               // Scan the text before input from the end, if we hit a dot before hitting a space, do not insert smart space.
               lastSpaceIndex != nil && textDocumentProxy.documentContextBeforeInput?.distance(from: lastDotIndex!, to: lastSpaceIndex!) ?? 0 >= 0 else {
-            NSLog("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
+            // NSLog("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
             return
         }
         

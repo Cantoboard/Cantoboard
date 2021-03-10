@@ -66,8 +66,8 @@ class BilingualInputEngine: InputEngine {
             let caretPosWithoutRimeSpecialChar = rimeComposition.text.prefix(rimeComposition.caretIndex).reduce(0, { r, c in r + (c.isEnglishLetter ? 1 : 0)})
             let updateEnglishEngineState = englishInputEngine.setCaret(position: caretPosWithoutRimeSpecialChar)
             
-            NSLog("Rime \(rimeInputEngine.composition?.text) \(rimeInputEngine.composition?.caretIndex))")
-            NSLog("English \(englishInputEngine.composition?.text) \(englishInputEngine.composition?.caretIndex))")
+            // NSLog("Rime \(rimeInputEngine.composition?.text) \(rimeInputEngine.composition?.caretIndex))")
+            // NSLog("English \(englishInputEngine.composition?.text) \(englishInputEngine.composition?.caretIndex))")
 
             updateInputState(updateEnglishEngineState, updateRimeEngineState)
             return updateEnglishEngineState || updateRimeEngineState
@@ -111,7 +111,7 @@ class BilingualInputEngine: InputEngine {
             let updateRime = rimeInputEngine.processBackspace()
             let updateEnglish = charToBeDeleted.isRimeSpecialChar ? false : englishInputEngine.processBackspace()
             
-            NSLog("\(charToBeDeleted), \(charToBeDeleted.isRimeSpecialChar), \(rimeInputEngine.composition?.text), \(englishComposition?.text)")
+            // NSLog("\(charToBeDeleted), \(charToBeDeleted.isRimeSpecialChar), \(rimeInputEngine.composition?.text), \(englishComposition?.text)")
             
             updateInputState(updateEnglish, updateRime)
             
