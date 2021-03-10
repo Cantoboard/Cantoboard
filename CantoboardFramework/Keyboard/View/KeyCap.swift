@@ -219,7 +219,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.chinese): return ["," ,"." ,"！" ,"？" ,"，" ,"。"]
         case .contexualSymbols(.english): return ["，" ,"。" ,"!" ,"?" ,"," ,"."]
         case .contexualSymbols(.rime): return ["!" ,"?" ,"," ,".", self]
-        case .contexualSymbols(.url): return [.rime(.delimiter), ".edu", ".org", ".net", ".com", "."]
+        case .contexualSymbols(.url): return [.rime(.delimiter), ".edu", ".org", ".net", ".com", ".", "/"]
         case .keyboardType(.emojis):
             if Settings.shared.chineseScript != .simplified {
                 return [.chineseScript(.traditionalHK), .chineseScript(.simplified)]
