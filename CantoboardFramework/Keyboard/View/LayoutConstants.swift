@@ -54,7 +54,47 @@ struct LayoutConstants {
 }
 
 let layoutConstantsList: [IntDuplet: LayoutConstants] = [
-    // iPhone 11 Pro, X, Xs
+    // iPhone 12 Pro Max
+    // Portrait:
+    IntDuplet(428, 926): LayoutConstants(
+        keyboardSize: CGSize(width: 428, height: 175+49+45),
+        buttonGap: 6,
+        systemKeyWidth: 48,
+        shiftKeyWidth: 47,
+        keyHeight: 45,
+        autoCompleteBarHeight: 45,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(926, 428): LayoutConstants(
+        keyboardSize: CGSize(width: 692, height: 160+38),
+        buttonGap: 5,
+        systemKeyWidth: 62,
+        shiftKeyWidth: 84,
+        keyHeight: 32,
+        autoCompleteBarHeight: 36,
+        edgeHorizontalInset: 3),
+    
+    // iPhone 12, 12 Pro
+    // Portrait:
+    IntDuplet(390, 844): LayoutConstants(
+        keyboardSize: CGSize(width: 390, height: 216+45),
+        buttonGap: 6,
+        systemKeyWidth: 43,
+        shiftKeyWidth: 44,
+        keyHeight: 42,
+        autoCompleteBarHeight: 45,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(844, 390): LayoutConstants(
+        keyboardSize: CGSize(width: 694, height: 160+38),
+        buttonGap: 5,
+        systemKeyWidth: 62,
+        shiftKeyWidth: 84,
+        keyHeight: 32,
+        autoCompleteBarHeight: 36,
+        edgeHorizontalInset: 3),
+    
+    // iPhone 12 mini, 11 Pro, X, Xs
     // Portrait:
     IntDuplet(375, 812): LayoutConstants(
         keyboardSize: CGSize(width: 375, height: 216+45),
