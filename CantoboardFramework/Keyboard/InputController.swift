@@ -164,6 +164,9 @@ class InputController {
             isHoldingShift = false
         case .keyboardType(let type):
             keyboardType = type
+            DispatchQueue.main.async {
+                self.checkAutoCap()
+            }
             return
         case .setChineseScript(let cs):
             Settings.shared.chineseScript = cs
