@@ -193,6 +193,26 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyHeight: 32,
         autoCompleteBarHeight: 36,
         edgeHorizontalInset: 2),
+    
+    // iPad 768x1024
+    // Portrait:
+    IntDuplet(768, 1024): LayoutConstants(
+        keyboardSize: CGSize(width: 768, height: 258+55),
+        buttonGap: 12,
+        systemKeyWidth: 56,
+        shiftKeyWidth: 56,
+        keyHeight: 57,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(1024, 768): LayoutConstants(
+        keyboardSize: CGSize(width: 1024, height: 353+55),
+        buttonGap: 14,
+        systemKeyWidth: 77,
+        shiftKeyWidth: 77,
+        keyHeight: 74,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 7),
 ]
 
 extension LayoutConstants {
