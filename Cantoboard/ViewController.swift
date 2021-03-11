@@ -12,7 +12,8 @@ class ViewController: UITableViewController {
     @IBOutlet private var chineseScriptControl: UISegmentedControl!
     @IBOutlet private var enableEnglishControl: UISwitch!
     @IBOutlet private var symbolShapeControl: UISegmentedControl!
-
+    @IBOutlet private var spaceOutputControl: UISegmentedControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,6 +22,7 @@ class ViewController: UITableViewController {
         chineseScriptControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         enableEnglishControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        spaceOutputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -37,9 +39,12 @@ class ViewController: UITableViewController {
         default: selectedSymbolShape = .smart
         }
         
+        let spaceOutputMode: SpaceOutputMode = spaceOutputControl.selectedSegmentIndex == 0 ? .input : .bestCandidate
+        
         Settings.shared.chineseScript = selectedChineseScript
         Settings.shared.isEnablingEnglishInput = enableEnglishControl.isOn
         Settings.shared.symbolShape = selectedSymbolShape
+        Settings.shared.spaceOutputMode = spaceOutputMode
     }
     
     @objc func appMovedToBackground(_ notification: NSNotification) {
@@ -50,6 +55,7 @@ class ViewController: UITableViewController {
         populateChineseScriptSetting()
         populateEnableEnglish()
         populateSymbolShape()
+        populateSpaceOutputMode()
     }
     
     private func populateChineseScriptSetting() {
@@ -79,5 +85,17 @@ class ViewController: UITableViewController {
         }
         
         symbolShapeControl.selectedSegmentIndex = symbolShapeSegmentIndex
+    }
+    
+    private func populateSpaceOutputMode() {
+        let selectedSpaceOutputMode = Settings.shared.spaceOutputMode
+        
+        let selectedSpaceOutputModeSegmentIndex: Int
+        switch selectedSpaceOutputMode {
+        case .input: selectedSpaceOutputModeSegmentIndex = 0
+        case .bestCandidate: selectedSpaceOutputModeSegmentIndex = 1
+        }
+        
+        spaceOutputControl.selectedSegmentIndex = selectedSpaceOutputModeSegmentIndex
     }
 }

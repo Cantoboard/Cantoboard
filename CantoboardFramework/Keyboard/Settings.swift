@@ -19,11 +19,17 @@ public enum SymbolShape: String {
     case smart = "smart"
 }
 
+public enum SpaceOutputMode: String {
+    case input = "input"
+    case bestCandidate = "bestCandidate"
+}
+
 public class Settings {
     private var userDefaults: UserDefaults
     private let chineseScriptKeyName = "chineseScript"
     private let enableEnglishInputKeyName = "enableEnglish"
     private let symbolShapeKeyName = "symbolShape"
+    private let spaceOutputModeKeyName = "spaceOutputMode"
     
     public var chineseScript: ChineseScript {
         get {
@@ -52,6 +58,16 @@ public class Settings {
         }
         set {
             userDefaults.set(newValue.rawValue, forKey: symbolShapeKeyName)
+        }
+    }
+    
+    public var spaceOutputMode: SpaceOutputMode {
+        get {
+            let setting = userDefaults.string(forKey: spaceOutputModeKeyName) ?? ""
+            return SpaceOutputMode(rawValue: setting) ?? .input
+        }
+        set {
+            userDefaults.set(newValue.rawValue, forKey: spaceOutputModeKeyName)
         }
     }
     

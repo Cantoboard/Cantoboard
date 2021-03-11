@@ -82,6 +82,25 @@ class InputController {
         lastKey = nil
     }
     
+    private func handleSpace() {
+        guard let textDocumentProxy = textDocumentProxy else { return }
+        
+        let spaceOutputMode = Settings.shared.spaceOutputMode
+        // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
+        if spaceOutputMode == .input || inputEngine.getCandidates().count == 0 {
+            if !insertComposingText() {
+                if !handleAutoSpace() {
+                    textDocumentProxy.insertText(" ")
+                    DispatchQueue.main.async {
+                        self.checkAutoCap()
+                    }
+                }
+            }
+        } else {
+            candidateSelected(0)
+        }
+    }
+    
     func keyPressed(_ action: KeyboardAction) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         guard RimeApi.shared.state == .succeeded else {
@@ -119,14 +138,7 @@ class InputController {
                 updateInputState()
             }
         case .space:
-            if !insertComposingText() {
-                if !handleSpaceTap() {
-                    textDocumentProxy.insertText(" ")
-                    DispatchQueue.main.async {
-                        self.checkAutoCap()
-                    }
-                }
-            }
+            handleSpace()
         case .newLine:
             _ = insertComposingText()
             DispatchQueue.main.async {
@@ -315,7 +327,7 @@ class InputController {
         }
     }
     
-    private func handleSpaceTap() -> Bool {
+    private func handleAutoSpace() -> Bool {
         guard let textDocumentProxy = textDocumentProxy else { return false }
         
         if hasInsertedAutoSpace && isLastInsertedTextFromCandidate {
