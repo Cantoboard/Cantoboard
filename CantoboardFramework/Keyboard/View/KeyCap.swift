@@ -159,12 +159,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonHint: String? {
         switch self {
-        case .characterWithTone("A"), .characterWithTone("a"): return "4"
-        case .characterWithTone("S"), .characterWithTone("s"): return "5"
-        case .characterWithTone("D"), .characterWithTone("d"): return "6"
-        case .characterWithTone("Z"), .characterWithTone("z"): return "1"
-        case .characterWithTone("X"), .characterWithTone("x"): return "2"
-        case .characterWithTone("C"), .characterWithTone("c"): return "3"
+        case .characterWithTone("F"), .characterWithTone("f"): return "4"
+        case .characterWithTone("G"), .characterWithTone("g"): return "5"
+        case .characterWithTone("H"), .characterWithTone("h"): return "6"
+        case .characterWithTone("C"), .characterWithTone("c"): return "1"
+        case .characterWithTone("V"), .characterWithTone("v"): return "2"
+        case .characterWithTone("B"), .characterWithTone("b"): return "3"
         // case .contexualSymbols(.english), .character(","), .character("."), .character("?"), .character("!"): return "半"
         case .contexualSymbols(.chinese), "，", "。", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
@@ -207,12 +207,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .characterWithTone(let c):
             switch c {
-            case "A", "a": return [.character(c), .rime(RimeChar.tone4)]
-            case "S", "s": return [.character(c), .rime(RimeChar.tone5)]
-            case "D", "d": return [.character(c), .rime(RimeChar.tone6)]
-            case "Z", "z": return [.character(c), .rime(RimeChar.tone1)]
-            case "X", "x": return [.character(c), .rime(RimeChar.tone2)]
-            case "C", "c": return [.character(c), .rime(RimeChar.tone3)]
+            case "F", "f": return [.character(c), .rime(RimeChar.tone4)]
+            case "G", "g": return [.character(c), .rime(RimeChar.tone5)]
+            case "H", "h": return [.character(c), .rime(RimeChar.tone6)]
+            case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
+            case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
+            case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
             default: return [self]
             }
         // case .character(",") : return [self, "'", "?", "."]

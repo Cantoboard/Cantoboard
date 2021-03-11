@@ -209,10 +209,10 @@ class KeyboardView: UIView {
             
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character("A"), .character("S"), .character("D"),
-                     .character("Z"), .character("X"), .character("C"),
-                     .character("a"), .character("s"), .character("d"),
-                     .character("z"), .character("x"), .character("c"):
+                case .character("F"), .character("G"), .character("H"),
+                     .character("C"), .character("V"), .character("B"),
+                     .character("f"), .character("g"), .character("h"),
+                     .character("c"), .character("v"), .character("b"):
                     switch keyboardContextualType {
                     case .rime, .url(true):
                         if case .character(let c) = $0 {
