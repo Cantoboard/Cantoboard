@@ -124,7 +124,7 @@ class KeyView: UIButton {
         default: titleEdgeInsets = UIEdgeInsets.zero
         }
         
-        setupKeyHint(keyCap, buttonHintTitle, foregroundColor)
+        setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
         
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
@@ -138,7 +138,7 @@ class KeyView: UIButton {
         if let buttonHintTitle = buttonHintTitle {
             if keyHintLayer == nil {
                 let keyHintLayer = KeyHintLayer()
-                keyHintLayer.foregroundColor = keyCap.buttonFgColor.resolvedColor(with: traitCollection).cgColor
+                keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
                 self.keyHintLayer = keyHintLayer
                 layer.addSublayer(keyHintLayer)
                 keyHintLayer.layoutSublayers()
@@ -166,7 +166,7 @@ class KeyView: UIButton {
         layer.shadowColor = ButtonColor.KeyShadowColor.resolvedColor(with: traitCollection).cgColor
         
         if let keyHintLayer = keyHintLayer {
-            keyHintLayer.foregroundColor = keyCap.buttonFgColor.resolvedColor(with: traitCollection).cgColor
+            keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
         }
     }
     

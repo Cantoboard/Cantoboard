@@ -107,6 +107,11 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         return ButtonColor.KeyForegroundColor
     }
     
+    var buttonHintFgColor: UIColor {
+        if self == .space { return buttonFgColor.withAlphaComponent(0.6) }
+        return buttonFgColor
+    }
+    
     // TODO Return images < iOS 12
     var buttonImage: UIImage? {
         switch self {
@@ -190,6 +195,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
              "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉": return "全"
         case .charForm(let cs): return Settings.cached.charForm == cs ? "*" : nil
+        case .space: return "Cantoboard"
         default: return nil
         }
     }
