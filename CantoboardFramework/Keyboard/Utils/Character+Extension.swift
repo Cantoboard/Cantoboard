@@ -14,6 +14,7 @@ extension Character {
     
     var isSentensePunctuation: Bool {
         self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self ==  "\n" ||
+            self == ")" || self == "}" || self == "]" ||
             isFullShapeSentensePunctuation
     }
     
