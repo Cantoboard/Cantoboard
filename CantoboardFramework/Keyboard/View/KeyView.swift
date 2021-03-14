@@ -119,6 +119,11 @@ class KeyView: UIButton {
             titleLabel?.text = nil
         }
         
+        switch keyCap {
+        case .character, .characterWithTone: titleEdgeInsets = UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+        default: titleEdgeInsets = UIEdgeInsets.zero
+        }
+        
         setupKeyHint(keyCap, buttonHintTitle, foregroundColor)
         
         layer.maskedCorners = maskedCorners

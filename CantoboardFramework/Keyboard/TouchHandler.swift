@@ -212,7 +212,7 @@ class TouchHandler {
                     // If the user holds the shift key and type, when the user releases the shift key, shift up.
                     callKeyHandler(.shiftUp)
                 }
-            case .keyboardType(.emojis), .character, .space, .newLine, .rime, .setChineseScript:
+            case .keyboardType(.emojis), .character, .space, .newLine, .rime, .setCharForm:
                 callKeyHandler(action)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 if case .character(_) = action,

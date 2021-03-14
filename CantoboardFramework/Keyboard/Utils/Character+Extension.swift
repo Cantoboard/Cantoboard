@@ -26,7 +26,7 @@ extension Character {
     }
     
     var isRimeSpecialChar: Bool {
-        isNumber || self == "'"
+        Settings.cached.rimeSettings.toneInputMode == .longPress ? (isNumber || self == "'") : (self == "'")
     }
     
     var isChineseChar: Bool {!isASCII /* TODO if char is in CJK range */

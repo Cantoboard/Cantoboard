@@ -85,7 +85,7 @@ class InputController {
     private func handleSpace() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        let spaceOutputMode = Settings.shared.spaceOutputMode
+        let spaceOutputMode = Settings.cached.spaceOutputMode
         // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
         if spaceOutputMode == .input || inputEngine.getCandidates().count == 0 {
             if !insertComposingText() {
@@ -180,8 +180,10 @@ class InputController {
                 self.checkAutoCap()
             }
             return
-        case .setChineseScript(let cs):
-            Settings.shared.chineseScript = cs
+        case .setCharForm(let cs):
+            var settings = Settings.cached
+            settings.charForm = cs
+            Settings.save(settings)
             inputEngine.refreshChineseScript()
             updateInputState()
             return
@@ -412,7 +414,8 @@ class InputController {
             keyboardContextualType = .rime
         } else {
             DispatchQueue.main.async {
-                if Settings.shared.symbolShape == .smart {
+                let symbolShape = Settings.cached.symbolShape
+                if symbolShape == .smart {
                     // Default to English.
                     guard let lastChar = textDocumentProxy.documentContextBeforeInput?.last(where: { !$0.isWhitespace }) else {
                         self.keyboardContextualType = .english
@@ -425,7 +428,7 @@ class InputController {
                         self.keyboardContextualType = .english
                     }
                 } else {
-                    self.keyboardContextualType = Settings.shared.symbolShape == .half ? .english : .chinese
+                    self.keyboardContextualType = symbolShape == .half ? .english : .chinese
                 }
             }
         }

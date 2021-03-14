@@ -215,7 +215,7 @@ class KeyboardView: UIView {
                      .character("c"), .character("v"), .character("b"):
                     switch keyboardContextualType {
                     case .rime, .url(true):
-                        if case .character(let c) = $0 {
+                        if case .character(let c) = $0, Settings.cached.rimeSettings.toneInputMode == .longPress {
                             // Show tone keys.
                             return .characterWithTone(c)
                         } else {

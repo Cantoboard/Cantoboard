@@ -27,13 +27,12 @@ class KeyHintLayer: CATextLayer {
         alignmentMode = .right
         allowsFontSubpixelQuantization = true
         contentsScale = UIScreen.main.scale
-        fontSize = 9
     }
     
     func setup(_ keyCap: KeyCap, _ hintText: String) {
         string = hintText
         font = keyCap.buttonFont
-
+        fontSize = keyCap.buttonHintFontSize
     }
     
     override init(layer: Any) {

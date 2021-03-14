@@ -63,7 +63,7 @@ class BilingualInputEngine: InputEngine {
         if isComposing {
             let updateRimeEngineState = rimeInputEngine.moveCaret(offset: offset)
             guard let rimeComposition = rimeInputEngine.composition else { NSLog("Bug check. rimeInputEngine.composition shouldn't be nil"); return true }
-            let caretPosWithoutRimeSpecialChar = rimeComposition.text.prefix(rimeComposition.caretIndex).reduce(0, { r, c in r + (c.isEnglishLetter ? 1 : 0)})
+            let caretPosWithoutRimeSpecialChar = rimeComposition.text.prefix(rimeComposition.caretIndex).reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
             let updateEnglishEngineState = englishInputEngine.setCaret(position: caretPosWithoutRimeSpecialChar)
             
             // NSLog("Rime \(rimeInputEngine.composition?.text) \(rimeInputEngine.composition?.caretIndex))")
@@ -197,14 +197,18 @@ class BilingualInputEngine: InputEngine {
     
     private func updateInputState(_ updateEnglishInputState: Bool, _ updateRimeInputState: Bool) {
         guard updateEnglishInputState || updateRimeInputState else { return }
-        print("updateInputState resetCandidates")
+        
+        // NSLog("English: \(englishInputEngine.composition?.text ?? "") Rime: \(rimeInputEngine.composition?.text ?? "")")
+        // print("updateInputState resetCandidates")
         resetCandidates()
         // populateCandidates()
     }
     
     private func populateCandidates() {
-        guard let composingText = composition?.text else { return }
-        let englishCandidates = Settings.shared.isEnablingEnglishInput ? englishInputEngine.getCandidates() : []
+        guard let rimeComposingText = rimeInputEngine.composition?.text,
+              let englishComposingText = englishInputEngine.composition?.text
+            else { return }
+        let englishCandidates = Settings.cached.isEnablingEnglishInput ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
@@ -214,18 +218,17 @@ class BilingualInputEngine: InputEngine {
                 break
             }
             
-            let composingTextWithOnlySyllables = composingText.filter { $0.isEnglishLetter }.lowercased()
+            let composingTextWithOnlySyllables = rimeComposingText.filter { $0.isEnglishLetter }.lowercased()
             let commentWithOnlySyllables = comment.filter { $0.isEnglishLetter }.lowercased()
-            if !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) {
+            // Rime doesn't return comment if the candidate's an exact match. If commentWithOnlySyllables's empty, treat it as a hit.
+            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) {
                 hasLoadedAllBestRimeCandidates = true
                 break
             }
             
-            if let candidate = rimeCandidates[curRimeCandidateIndex] as? String,
-               !candidate.starts(with: "__") { // TODO Remove this filter.
-                candidatePaths.add(CandidatePath(source: .rime, index: curRimeCandidateIndex))
-                candidates.add(rimeCandidates[curRimeCandidateIndex])
-            }
+            candidatePaths.add(CandidatePath(source: .rime, index: curRimeCandidateIndex))
+            candidates.add(rimeCandidates[curRimeCandidateIndex])
+            
             curRimeCandidateIndex += 1
         }
         
@@ -235,7 +238,7 @@ class BilingualInputEngine: InputEngine {
         // Populate all English candidates.
         while !isForcingRimeMode && curEnglishCandidateIndex < englishCandidates.count {
             let englishCandidate = englishCandidates[curEnglishCandidateIndex] as! String
-            if englishCandidate.caseInsensitiveCompare(composingText) == .orderedSame {
+            if englishCandidate.caseInsensitiveCompare(englishComposingText) == .orderedSame {
                 candidatePaths.insert(CandidatePath(source: .english, index: curEnglishCandidateIndex), at: 0)
                 candidates.insert(englishCandidate, at: 0)
             } else {

@@ -70,7 +70,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     shiftUp, // TODO remove
     shiftRelax,
     rime(RimeChar),
-    setChineseScript(ChineseScript)
+    setCharForm(CharForm)
     
     public init(stringLiteral value: String) {
         self = .character(value)

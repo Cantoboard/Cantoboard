@@ -30,7 +30,6 @@ open class KeyboardViewController: UIInputViewController {
     public override init(nibName: String?, bundle: Bundle?) {
         super.init(nibName: nibName, bundle: bundle)
         
-                
         RimeApi.stateChangeCallbacks.append({ [weak self] rimeApi, newState in
             guard let self = self else { return true }
             
@@ -78,6 +77,14 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let prevSettings = Settings.cached
+        let settings = Settings.reload()
+        if prevSettings.rimeSettings != settings.rimeSettings {
+            RimeApi.generateSchemaPatchFromSettings()
+            RimeApi.closeShared()
+            NSLog("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
+        }
         
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh

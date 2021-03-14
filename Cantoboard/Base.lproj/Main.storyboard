@@ -116,12 +116,37 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="LvM-kE-epQ">
+                                        <rect key="frame" x="0.0" y="202" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LvM-kE-epQ" id="ain-DT-qvQ">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="聲調輸入" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ke-ng-awN">
+                                                    <rect key="frame" x="20" y="11" width="70" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="IDG-2O-Xwy">
+                                                    <rect key="frame" x="300" y="6" width="93" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                                    <segments>
+                                                        <segment title="長按"/>
+                                                        <segment title="vxq"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="輸入法安裝方法" id="nZO-p2-O7y">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="3076" id="uDv-pZ-ndX">
-                                        <rect key="frame" x="0.0" y="258" width="414" height="3076"/>
+                                        <rect key="frame" x="0.0" y="301.5" width="414" height="3076"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uDv-pZ-ndX" id="9xU-we-jCa">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="3076"/>
@@ -135,7 +160,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocInstall2" translatesAutoresizingMaskIntoConstraints="NO" id="cuD-Lx-cAw">
-                                                    <rect key="frame" x="20" y="136" width="375" height="484"/>
+                                                    <rect key="frame" x="20" y="136" width="374" height="484"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocInstall1" translatesAutoresizingMaskIntoConstraints="NO" id="I9H-Cv-We7">
@@ -143,7 +168,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocInstall3" translatesAutoresizingMaskIntoConstraints="NO" id="5Gi-hf-IBU">
-                                                    <rect key="frame" x="20" y="628" width="375" height="484"/>
+                                                    <rect key="frame" x="20" y="628" width="374" height="484"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="「鍵盤」&gt;「新增鍵盤」" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vv5-PI-QYD">
@@ -154,11 +179,11 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocInstall4" translatesAutoresizingMaskIntoConstraints="NO" id="SHV-GG-rMP">
-                                                    <rect key="frame" x="20" y="1149" width="375" height="355"/>
+                                                    <rect key="frame" x="20" y="1149" width="374" height="355"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocInstall5" translatesAutoresizingMaskIntoConstraints="NO" id="Vfe-TN-fw8">
-                                                    <rect key="frame" x="20" y="1512" width="375" height="368"/>
+                                                    <rect key="frame" x="20" y="1512" width="374" height="368"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="選擇「Cantoboard」" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QfM-gA-7ad">
@@ -169,7 +194,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocInstall6" translatesAutoresizingMaskIntoConstraints="NO" id="nBF-vJ-XPm">
-                                                    <rect key="frame" x="20" y="1917" width="375" height="491"/>
+                                                    <rect key="frame" x="20" y="1917" width="374" height="491"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如需啓動學習功能，輸入法需要權限儲存學咗嘅詞語。請允許輸入法「全權取用」權限：" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rqx-Qc-mbs">
@@ -180,11 +205,11 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocRoot1" translatesAutoresizingMaskIntoConstraints="NO" id="guh-ea-xU2">
-                                                    <rect key="frame" x="20" y="2494" width="375" height="368"/>
+                                                    <rect key="frame" x="20" y="2494" width="374" height="368"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="DocRoot2" translatesAutoresizingMaskIntoConstraints="NO" id="neR-H0-fD4">
-                                                    <rect key="frame" x="21" y="2870" width="374" height="191"/>
+                                                    <rect key="frame" x="21" y="2870" width="373" height="191"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                             </subviews>
@@ -199,10 +224,11 @@
                         </connections>
                     </tableView>
                     <connections>
-                        <outlet property="chineseScriptControl" destination="JqT-NC-LHq" id="2nj-yG-rLH"/>
+                        <outlet property="charFormControl" destination="JqT-NC-LHq" id="2nj-yG-rLH"/>
                         <outlet property="enableEnglishControl" destination="VP3-92-EzS" id="sm3-NV-LaD"/>
                         <outlet property="spaceOutputControl" destination="7Sx-ho-3Vf" id="j3O-y3-QDA"/>
                         <outlet property="symbolShapeControl" destination="ZM2-oE-LJv" id="QDE-4r-pWi"/>
+                        <outlet property="toneInputControl" destination="IDG-2O-Xwy" id="Wao-7T-bLD"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ulh-yP-zw2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

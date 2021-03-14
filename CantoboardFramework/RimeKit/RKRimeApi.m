@@ -79,11 +79,11 @@ static void rimeNotificationHandler(void* context_object, RimeSessionId session_
         traits.distribution_name = "Rime-iOS";
         traits.distribution_version = "0.1";
         traits.app_name = "rime.iOS";
-        hasSetupRimeTrait = false; // TODO change this back to true after reverting to stock librime.
+        _rimeApi->setup(&traits);
+        hasSetupRimeTrait = true;
     }
     
     _rimeApi->set_notification_handler(&rimeNotificationHandler, (__bridge void*) self);
-    _rimeApi->setup(&traits);
     _rimeApi->initialize(NULL);
 
     if (_rimeApi->start_maintenance(true)) {

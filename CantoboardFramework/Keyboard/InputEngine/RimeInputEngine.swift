@@ -185,7 +185,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     func refreshChineseScript() {
-        rimeSession?.setOption("simplification", value: Settings.shared.chineseScript == .simplified)
+        rimeSession?.setOption("simplification", value: Settings.cached.charForm == .simplified)
         refreshCandidates()
     }
 }

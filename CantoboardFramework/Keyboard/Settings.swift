@@ -7,81 +7,121 @@
 
 import Foundation
 
-public enum ChineseScript: String {
+public enum CharForm: String, Codable {
     case traditionalHK = "zh-HK"
     case traditionalTW = "zh-TW"
     case simplified = "zh-CN"
 }
 
-public enum SymbolShape: String {
+public enum SymbolShape: String, Codable {
     case half = "half"
     case full = "full"
     case smart = "smart"
 }
 
-public enum SpaceOutputMode: String {
+public enum SpaceOutputMode: String, Codable {
     case input = "input"
     case bestCandidate = "bestCandidate"
 }
 
-public class Settings {
-    private var userDefaults: UserDefaults
-    private let chineseScriptKeyName = "chineseScript"
-    private let enableEnglishInputKeyName = "enableEnglish"
-    private let symbolShapeKeyName = "symbolShape"
-    private let spaceOutputModeKeyName = "spaceOutputMode"
+public enum ToneInputMode: String, Codable {
+    case longPress = "longPress"
+    case vxq = "vxq"
+}
+
+// If any of these settings is changed, we have to redeploy Rime.
+public struct RimeSettings: Codable, Equatable {
+    public var toneInputMode: ToneInputMode
     
-    public var chineseScript: ChineseScript {
+    public init() {
+        toneInputMode = .longPress
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? .longPress
+    }
+}
+
+public struct Settings: Codable, Equatable {
+    private static let settingsKeyName = "Settings"
+    private static let DefaultCharForm: CharForm = .traditionalTW
+    private static let DefaultEnablingEnglishInput: Bool = true
+    private static let DefaultSymbolShape: SymbolShape = .smart
+    private static let DefaultSpaceOutputMode: SpaceOutputMode = .input
+    private static let DefaultRimeSettings: RimeSettings = RimeSettings()
+
+    public var charForm: CharForm
+    public var isEnablingEnglishInput: Bool
+    public var symbolShape: SymbolShape
+    public var spaceOutputMode: SpaceOutputMode
+    public var rimeSettings: RimeSettings
+    
+    public init() {
+        charForm = Settings.DefaultCharForm
+        isEnablingEnglishInput = Settings.DefaultEnablingEnglishInput
+        symbolShape = Settings.DefaultSymbolShape
+        spaceOutputMode = Settings.DefaultSpaceOutputMode
+        rimeSettings = Settings.DefaultRimeSettings
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.DefaultCharForm
+        self.isEnablingEnglishInput = try container.decodeIfPresent(Bool.self, forKey: .isEnablingEnglishInput) ?? Settings.DefaultEnablingEnglishInput
+        self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.DefaultSymbolShape
+        self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.DefaultSpaceOutputMode
+        self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.DefaultRimeSettings
+    }
+    
+    private static var _cached: Settings?
+    
+    public static var cached: Settings {
         get {
-            let setting = userDefaults.string(forKey: chineseScriptKeyName) ?? ""
-            return ChineseScript(rawValue: setting) ?? .traditionalHK
-        }
-        set {
-            userDefaults.set(newValue.rawValue, forKey: chineseScriptKeyName)
+            if _cached == nil {
+                return reload()
+            }
+            return _cached!
         }
     }
     
-    public var isEnablingEnglishInput: Bool {
-        get {
-            let setting = userDefaults.string(forKey: enableEnglishInputKeyName) ?? ""
-            return Bool(setting) ?? true
+    public static func reload() -> Settings {
+        if let saved = userDefaults.object(forKey: settingsKeyName) as? Data {
+            let decoder = JSONDecoder()
+            do {
+                let setting = try decoder.decode(Settings.self, from: saved)
+                _cached = setting
+                return setting
+            } catch {
+                NSLog("Failed to load \(saved). Falling back to default settings. Error: \(error)")
+            }
         }
-        set {
-            userDefaults.set(newValue.description, forKey: enableEnglishInputKeyName)
+        
+        _cached = Settings()
+        return _cached!
+    }
+    
+    public static func save(_ settings: Settings) {
+        _cached = settings
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(settings) {
+            userDefaults.set(encoded, forKey: settingsKeyName)
+        } else {
+            NSLog("Failed to save \(settings)")
         }
     }
     
-    public var symbolShape: SymbolShape {
-        get {
-            let setting = userDefaults.string(forKey: symbolShapeKeyName) ?? ""
-            return SymbolShape(rawValue: setting) ?? .smart
-        }
-        set {
-            userDefaults.set(newValue.rawValue, forKey: symbolShapeKeyName)
-        }
-    }
+    private static var userDefaults: UserDefaults = initUserDefaults()
     
-    public var spaceOutputMode: SpaceOutputMode {
-        get {
-            let setting = userDefaults.string(forKey: spaceOutputModeKeyName) ?? ""
-            return SpaceOutputMode(rawValue: setting) ?? .input
-        }
-        set {
-            userDefaults.set(newValue.rawValue, forKey: spaceOutputModeKeyName)
-        }
-    }
-    
-    init() {
+    private static func initUserDefaults() -> UserDefaults {
         let suiteName = "group.org.cantoboard"
         let appGroupDefaults = UserDefaults(suiteName: suiteName)
         if let appGroupDefaults = appGroupDefaults {
             NSLog("Using UserDefaults \(suiteName).")
-            userDefaults = appGroupDefaults
+            return appGroupDefaults
         } else {
             NSLog("Cannot open app group UserDefaults. Falling back to UserDefaults.standard.")
-            userDefaults = UserDefaults.standard
+            return UserDefaults.standard
         }
     }
-    
-    public static var shared: Settings = Settings()
 }

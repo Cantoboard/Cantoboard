@@ -39,7 +39,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     shift(_ state: KeyboardShiftState),
     rime(RimeChar),
     contexualSymbols(ContextualType),
-    chineseScript(ChineseScript)
+    charForm(CharForm)
     
     public init(stringLiteral value: String) {
         self = .character(value)
@@ -63,7 +63,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return .rime(.delimiter)
         case .contexualSymbols(.url): return "."
-        case .chineseScript(let cs): return .setChineseScript(cs)
+        case .charForm(let cs): return .setCharForm(cs)
         }
     }
     
@@ -140,8 +140,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return "斷"
         case .contexualSymbols(.url): return "."
-        case .chineseScript(.traditionalHK): return "繁"
-        case .chineseScript(.simplified): return "簡"
+        case .charForm(.traditionalHK): return "繁"
+        case .charForm(.simplified): return "簡"
         case "（": return "("
         case "）": return ")"
         case "「": return "「　"
@@ -158,28 +158,53 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHint: String? {
+        if Settings.cached.rimeSettings.toneInputMode == .longPress {
+            switch self {
+            case .characterWithTone("F"), .characterWithTone("f"): return "4"
+            case .characterWithTone("G"), .characterWithTone("g"): return "5"
+            case .characterWithTone("H"), .characterWithTone("h"): return "6"
+            case .characterWithTone("C"), .characterWithTone("c"): return "1"
+            case .characterWithTone("V"), .characterWithTone("v"): return "2"
+            case .characterWithTone("B"), .characterWithTone("b"): return "3"
+            case .rime(.tone1): return "1"
+            case .rime(.tone2): return "2"
+            case .rime(.tone3): return "3"
+            case .rime(.tone4): return "4"
+            case .rime(.tone5): return "5"
+            case .rime(.tone6): return "6"
+            default: ()
+            }
+        } else {
+            switch self {
+            case .character("V"), .character("v"): return "1/4"
+            case .character("X"), .character("x"): return "2/5"
+            case .character("Q"), .character("q"): return "3/6"
+            default: ()
+            }
+        }
+        
         switch self {
-        case .characterWithTone("F"), .characterWithTone("f"): return "4"
-        case .characterWithTone("G"), .characterWithTone("g"): return "5"
-        case .characterWithTone("H"), .characterWithTone("h"): return "6"
-        case .characterWithTone("C"), .characterWithTone("c"): return "1"
-        case .characterWithTone("V"), .characterWithTone("v"): return "2"
-        case .characterWithTone("B"), .characterWithTone("b"): return "3"
-        // case .contexualSymbols(.english), .character(","), .character("."), .character("?"), .character("!"): return "半"
         case .contexualSymbols(.chinese), "，", "。", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
              "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉": return "全"
-        case .rime(.tone1): return "1"
-        case .rime(.tone2): return "2"
-        case .rime(.tone3): return "3"
-        case .rime(.tone4): return "4"
-        case .rime(.tone5): return "5"
-        case .rime(.tone6): return "6"
-        case .chineseScript(let cs): return Settings.shared.chineseScript == cs ? "*" : nil
+        case .charForm(let cs): return Settings.cached.charForm == cs ? "*" : nil
         default: return nil
         }
+    }
+    
+    var buttonHintFontSize: CGFloat {
+        if Settings.cached.rimeSettings.toneInputMode == .vxq {
+            switch self {
+            case .character("V"), .character("v"): return 7
+            case .character("X"), .character("x"): return 7
+            case .character("Q"), .character("q"): return 7
+            default: ()
+            }
+        }
+        
+        return 9
     }
     
     func buttonWidth(_ layoutConstants: LayoutConstants) -> CGFloat {
@@ -221,10 +246,10 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.rime): return ["!" ,"?" ,"," ,".", self]
         case .contexualSymbols(.url): return [.rime(.delimiter), ".edu", ".org", ".net", ".com", ".", "/"]
         case .keyboardType(.emojis):
-            if Settings.shared.chineseScript != .simplified {
-                return [.chineseScript(.traditionalHK), .chineseScript(.simplified)]
+            if Settings.cached.charForm != .simplified {
+                return [.charForm(.traditionalHK), .charForm(.simplified)]
             } else {
-                return [.chineseScript(.simplified), .chineseScript(.traditionalHK) ]
+                return [.charForm(.simplified), .charForm(.traditionalHK) ]
             }
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
