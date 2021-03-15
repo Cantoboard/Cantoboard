@@ -208,7 +208,7 @@ class BilingualInputEngine: InputEngine {
         guard let rimeComposingText = rimeInputEngine.composition?.text,
               let englishComposingText = englishInputEngine.composition?.text
             else { return }
-        let englishCandidates = Settings.cached.isEnablingEnglishInput ? englishInputEngine.getCandidates() : []
+        let englishCandidates = Settings.cached.isEnglishEnabled ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.

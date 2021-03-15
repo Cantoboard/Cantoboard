@@ -46,20 +46,26 @@ public struct RimeSettings: Codable, Equatable {
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
     private static let DefaultCharForm: CharForm = .traditionalTW
-    private static let DefaultEnablingEnglishInput: Bool = true
+    private static let DefaultEnglishInputEnabled: Bool = true
+    private static let DefaultAutoCapEnabled: Bool = true
+    private static let DefaultSmartFullStopEnabled: Bool = true
     private static let DefaultSymbolShape: SymbolShape = .smart
     private static let DefaultSpaceOutputMode: SpaceOutputMode = .input
     private static let DefaultRimeSettings: RimeSettings = RimeSettings()
 
     public var charForm: CharForm
-    public var isEnablingEnglishInput: Bool
+    public var isEnglishEnabled: Bool
+    public var isAutoCapEnabled: Bool
+    public var isSmartFullStopEnabled: Bool
     public var symbolShape: SymbolShape
     public var spaceOutputMode: SpaceOutputMode
     public var rimeSettings: RimeSettings
     
     public init() {
         charForm = Settings.DefaultCharForm
-        isEnablingEnglishInput = Settings.DefaultEnablingEnglishInput
+        isEnglishEnabled = Settings.DefaultEnglishInputEnabled
+        isAutoCapEnabled = Settings.DefaultAutoCapEnabled
+        isSmartFullStopEnabled = Settings.DefaultSmartFullStopEnabled
         symbolShape = Settings.DefaultSymbolShape
         spaceOutputMode = Settings.DefaultSpaceOutputMode
         rimeSettings = Settings.DefaultRimeSettings
@@ -68,7 +74,9 @@ public struct Settings: Codable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.DefaultCharForm
-        self.isEnablingEnglishInput = try container.decodeIfPresent(Bool.self, forKey: .isEnablingEnglishInput) ?? Settings.DefaultEnablingEnglishInput
+        self.isEnglishEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnglishEnabled) ?? Settings.DefaultEnglishInputEnabled
+        self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.DefaultAutoCapEnabled
+        self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.DefaultSmartFullStopEnabled
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.DefaultSymbolShape
         self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.DefaultSpaceOutputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.DefaultRimeSettings

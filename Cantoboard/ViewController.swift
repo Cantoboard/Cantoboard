@@ -11,6 +11,8 @@ import CantoboardFramework
 class ViewController: UITableViewController {
     @IBOutlet private var charFormControl: UISegmentedControl!
     @IBOutlet private var enableEnglishControl: UISwitch!
+    @IBOutlet private var autoCapControl: UISwitch!
+    @IBOutlet private var smartFullStopControl: UISwitch!
     @IBOutlet private var symbolShapeControl: UISegmentedControl!
     @IBOutlet private var spaceOutputControl: UISegmentedControl!
     @IBOutlet private var toneInputControl: UISegmentedControl!
@@ -22,6 +24,8 @@ class ViewController: UITableViewController {
         
         charFormControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         enableEnglishControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        autoCapControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         spaceOutputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -46,7 +50,9 @@ class ViewController: UITableViewController {
         
         var settings = Settings()
         settings.charForm = selectedCharForm
-        settings.isEnablingEnglishInput = enableEnglishControl.isOn
+        settings.isEnglishEnabled = enableEnglishControl.isOn
+        settings.isAutoCapEnabled = autoCapControl.isOn
+        settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
         settings.spaceOutputMode = spaceOutputMode
         settings.rimeSettings.toneInputMode = toneInputMode
@@ -65,7 +71,7 @@ class ViewController: UITableViewController {
     private func populateSettings() {
         let settings = Settings.reload()
         populateCharFormSetting(settings)
-        populateEnableEnglish(settings)
+        populateEnglishSettings(settings)
         populateSymbolShape(settings)
         populateSpaceOutputMode(settings)
         populateToneInput(settings)
@@ -80,8 +86,10 @@ class ViewController: UITableViewController {
         })
     }
     
-    private func populateEnableEnglish(_ settings: Settings) {
-        enableEnglishControl.isOn = settings.isEnablingEnglishInput
+    private func populateEnglishSettings(_ settings: Settings) {
+        enableEnglishControl.isOn = settings.isEnglishEnabled
+        autoCapControl.isOn = settings.isAutoCapEnabled
+        smartFullStopControl.isOn = settings.isSmartFullStopEnabled
     }
     
     private func populateSymbolShape(_ settings: Settings) {

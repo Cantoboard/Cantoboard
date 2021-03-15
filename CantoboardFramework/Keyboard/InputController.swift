@@ -219,7 +219,7 @@ class InputController {
     }
     
     private func checkAutoCap() {
-        guard !isHoldingShift &&
+        guard Settings.cached.isAutoCapEnabled && !isHoldingShift &&
               (keyboardType == .alphabetic(.lowercased) || keyboardType == .alphabetic(.uppercased))
             else { return }
         keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
@@ -340,6 +340,7 @@ class InputController {
             return true
         } else if lastKey?.0 == .some(.space),
            let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
+           Settings.cached.isSmartFullStopEnabled &&
            last2CharsInDoc.first?.isLetter ?? false && last2CharsInDoc.last?.isWhitespace ?? false {
             // Translate double space tap into ". "
             DispatchQueue.main.async {
