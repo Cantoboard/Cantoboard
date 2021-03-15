@@ -36,16 +36,30 @@ class KeyboardView: UIView {
         [[.keyboardType(.numeric), .nextKeyboard], [.space], [.contexualSymbols(.english), .newLine]]
     ]
     
-    private let numbersKeyCapRows: [[[KeyCap]]] = [
+    private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["-", "/", ":", ";", "(", ")", "$", "\"", "「", "」"]],
         [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "‘"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["@", .newLine]]
     ]
     
-    private let symbolsKeyCapRows: [[[KeyCap]]] = [
+    private let symbolsHalfKeyCapRows: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
         [["_", "—", "\\", "|", "~", "<", ">", "《", "》", "•"]],
+        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "‘"], [.backspace]],
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine]]
+    ]
+    
+    private let numbersFullKeyCapRows: [[[KeyCap]]] = [
+        [["１", "２", "３", "４", "５", "６", "７", "８", "９", "０"]],
+        [["－", "／", "：", "；", "（", "）", "＄", "＂", "「", "」"]],
+        [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["＠", .newLine]]
+    ]
+    
+    private let symbolsFullKeyCapRows: [[[KeyCap]]] = [
+        [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
+        [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
         [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "‘"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine]]
     ]
@@ -180,11 +194,13 @@ class KeyboardView: UIView {
         case let .alphabetic(shiftState):
             refreshAlphabeticKeys(shiftState)
         case .numeric:
-            for (index, keyCaps) in numbersKeyCapRows.enumerated() {
+            let rows = keyboardContextualType == .chinese ? numbersFullKeyCapRows : numbersHalfKeyCapRows
+            for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
             }
         case .symbolic:
-            for (index, keyCaps) in symbolsKeyCapRows.enumerated() {
+            let rows = keyboardContextualType == .chinese ? symbolsFullKeyCapRows : symbolsHalfKeyCapRows
+            for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
             }
         default:
