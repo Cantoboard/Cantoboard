@@ -77,10 +77,10 @@ class KeyPopupView: UIView {
         for i in 0..<actions.count {
             let label = labels[i]
             let keyCap = keyCaps[i]
+            label.tag = i
             label.text = keyCap.buttonText
             label.font = keyCap.popupFont
             label.baselineAdjustment = .alignCenters
-            label.tag = i
             label.backgroundColor = .clear
             
             if let hint = keyCaps[i].buttonHint {
@@ -93,16 +93,22 @@ class KeyPopupView: UIView {
     }
     
     func setup(keyCaps: [KeyCap], defaultKeyCapIndex: Int, direction: PopupDirection = .middle) {
-        self.keyCaps = keyCaps
-        self.actions = keyCaps.map { $0.getAction() }
         self.direction = direction
-        self.defaultKeyCapIndex = defaultKeyCapIndex
+
+        if direction == .right || direction == .middle {
+            self.keyCaps = keyCaps
+            self.defaultKeyCapIndex = defaultKeyCapIndex
+        } else {
+            self.keyCaps = keyCaps.reversed()
+            self.defaultKeyCapIndex = keyCaps.count - 1 - defaultKeyCapIndex
+        }
+        self.actions = self.keyCaps.map { $0.getAction() }
         
         setupLabels(actions)
         
         if actions.count > 1 {
-            highlightedLabelIndex = defaultKeyCapIndex
-            labels[defaultKeyCapIndex].backgroundColor = .systemBlue
+            highlightedLabelIndex = self.defaultKeyCapIndex
+            labels[self.defaultKeyCapIndex].backgroundColor = .systemBlue
         }
     }
     

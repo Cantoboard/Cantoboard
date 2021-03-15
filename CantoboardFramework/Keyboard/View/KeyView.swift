@@ -248,10 +248,8 @@ extension KeyView {
         let defaultKeyCapIndex: Int
         if let defaultChildKeyCap = keyCap.defaultChildKeyCap {
             defaultKeyCapIndex = keyCaps.firstIndex(of: defaultChildKeyCap) ?? 0
-        } else if popupDirection == .right || popupDirection == .middle {
-            defaultKeyCapIndex = 0
         } else {
-            defaultKeyCapIndex = keyCaps.count - 1
+            defaultKeyCapIndex = 0
         }
         popup.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
         
