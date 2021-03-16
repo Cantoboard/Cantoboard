@@ -13,6 +13,7 @@ extension Character {
     }
     
     var isSentensePunctuation: Bool {
+        // TODO Distingish apostrophe & single quote.
         self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self ==  "\n" ||
             self == ")" || self == "}" || self == "]" ||
             isFullShapeSentensePunctuation
@@ -20,6 +21,10 @@ extension Character {
     
     var isFullShapeSentensePunctuation: Bool {
         self == "，" || self == "。" || self == "？" || self == "！"
+    }
+    
+    var couldBeFollowedBySmartSpace: Bool {
+        !isSentensePunctuation && self != " "
     }
     
     var lowercasedChar: Character {

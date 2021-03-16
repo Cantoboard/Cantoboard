@@ -341,7 +341,7 @@ class InputController {
         } else if lastKey?.0 == .some(.space),
            let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
            Settings.cached.isSmartFullStopEnabled &&
-           last2CharsInDoc.first?.isLetter ?? false && last2CharsInDoc.last?.isWhitespace ?? false {
+           (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Translate double space tap into ". "
             DispatchQueue.main.async {
                 textDocumentProxy.deleteBackward()
