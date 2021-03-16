@@ -103,12 +103,12 @@ class EnglishInputEngine: InputEngine {
     }
     
     func moveCaret(offset: Int) -> Bool {
-        _ = inputTextBuffer.moveCaret(offset: offset)
+        isFirstLoad = inputTextBuffer.moveCaret(offset: offset)
         return false
     }
     
     func setCaret(position: Int) -> Bool {
-        _ = inputTextBuffer.setCaret(position: position)
+        isFirstLoad = inputTextBuffer.setCaret(position: position)
         return false
     }
     
