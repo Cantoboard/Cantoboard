@@ -328,7 +328,8 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             NSLog("Invalid IndexPath %@. Candidate does not exist.", indexPath.description)
             return CGSize(width: 0, height: 0)
         }
-        let text = candidates[indexPath.row] as? String ?? "⚠"
+        var text = candidates[indexPath.row] as? String ?? "⚠"
+        if text.count == 1 { text += " " } // Pad single char candidate.
         return computeTextSize(text)
     }
     
