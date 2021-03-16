@@ -394,7 +394,7 @@ extension KeyboardView: EmojiViewDelegate {
     }
     
     func emojiViewDidPressChangeKeyboardButton(_ emojiView: EmojiView) {
-        keyboardType = .alphabetic(.lowercased)
+        delegate?.handleKey(.keyboardType(.alphabetic(.lowercased)))
     }
     
     func emojiViewDidPressDeleteBackwardButton(_ emojiView: EmojiView) {
