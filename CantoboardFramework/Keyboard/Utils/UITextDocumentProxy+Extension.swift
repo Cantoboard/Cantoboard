@@ -11,7 +11,7 @@ import UIKit
 extension UITextDocumentProxy {
     func deleteBackwardWord() {
         guard let documentContextBeforeInput = documentContextBeforeInput else { return }
-        let lastWhitespaceIndex = documentContextBeforeInput.lastIndex { $0.isWhitespace || $0.isSentensePunctuation } ?? documentContextBeforeInput.startIndex
+        let lastWhitespaceIndex = documentContextBeforeInput.lastIndex { $0.isWhitespace || $0.isPunctuation } ?? documentContextBeforeInput.startIndex
         let deleteCount = documentContextBeforeInput.distance(from: lastWhitespaceIndex, to: documentContextBeforeInput.endIndex)
         for _ in 0..<deleteCount {
             deleteBackward()

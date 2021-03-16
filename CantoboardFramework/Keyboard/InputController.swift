@@ -213,8 +213,8 @@ class InputController {
         let lastSymbol = textDocumentProxy.documentContextBeforeInput?.last(where: { $0 != " " })
         // NSLog("documentContextBeforeInput \(textDocumentProxy.documentContextBeforeInput) \(lastChar)")
         let isFirstCharInDoc = lastChar == nil
-        let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isSentensePunctuation ?? false)
-        let isFullShapedCase = lastChar?.isFullShapeSentensePunctuation ?? false
+        let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isHalfShapeTerminalPunctuation ?? false)
+        let isFullShapedCase = lastChar?.isFullShapeTerminalPunctuation ?? false
         return isFirstCharInDoc || isHalfShapedCase || isFullShapedCase
     }
     
@@ -366,7 +366,7 @@ class InputController {
             // Remove leading smart space if:
             // English" "(中/.)
             if (last2CharsInDoc.first?.isEnglishLetter ?? false) && textAfter.first!.isChineseChar ||
-               (last2CharsInDoc.first?.isLetter ?? false) && textAfter.first!.isSentensePunctuation {
+               (last2CharsInDoc.first?.isLetter ?? false) && textAfter.first!.isPunctuation {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 DispatchQueue.main.async {
                     textDocumentProxy.deleteBackward()

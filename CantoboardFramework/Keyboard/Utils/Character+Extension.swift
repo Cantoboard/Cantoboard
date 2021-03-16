@@ -12,19 +12,29 @@ extension Character {
         isASCII && isLetter
     }
     
-    var isSentensePunctuation: Bool {
+    var isPunctuation: Bool {
         // TODO Distingish apostrophe & single quote.
         self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self ==  "\n" ||
             self == ")" || self == "}" || self == "]" ||
-            isFullShapeSentensePunctuation
+            isFullShapePunctuation
     }
     
-    var isFullShapeSentensePunctuation: Bool {
+    var isFullShapePunctuation: Bool {
         self == "，" || self == "。" || self == "？" || self == "！"
     }
     
+    var isHalfShapeTerminalPunctuation: Bool {
+        // TODO Distingish apostrophe & single quote.
+        self == "." || self == "?" || self == "!"
+    }
+    
+    var isFullShapeTerminalPunctuation: Bool {
+        self == "。" || self == "？" || self == "！"
+    }
+    
     var couldBeFollowedBySmartSpace: Bool {
-        !isSentensePunctuation && self != " "
+        self != ":" && self != ";" && self != "." && self != "," && self != "?" && self != "!" && self != " " &&
+        self != "，" && self != "。" && self != "？" && self != "！"
     }
     
     var lowercasedChar: Character {
