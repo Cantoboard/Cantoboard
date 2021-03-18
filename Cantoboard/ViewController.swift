@@ -93,7 +93,7 @@ class ViewController: UITableViewController {
     }
     
     private func populateSymbolShape(_ settings: Settings) {
-        populateSetting(toSegmentedControl: spaceOutputControl, settingToIndexMapper: {
+        populateSetting(toSegmentedControl: symbolShapeControl, settingToIndexMapper: {
             switch $0.symbolShape {
             case .half: return 0
             case .smart: return 1
