@@ -305,7 +305,7 @@ class InputController {
     }
     
     private func insertComposingText(appendBy: String? = nil, shouldDisableSmartSpace: Bool = false) -> Bool {
-        if var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
+        if var composingText = inputEngine.composition?.text.filter({ $0 != " " && !$0.isRimeSpecialChar }),
            !composingText.isEmpty {
             if let c = appendBy { composingText.append(c) }
             insertText(composingText, shouldDisableSmartSpace: shouldDisableSmartSpace)
