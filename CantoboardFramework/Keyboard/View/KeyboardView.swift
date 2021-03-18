@@ -51,7 +51,7 @@ class KeyboardView: UIView {
     ]
     
     private let numbersFullKeyCapRows: [[[KeyCap]]] = [
-        [["１", "２", "３", "４", "５", "６", "７", "８", "９", "０"]],
+        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["－", "／", "：", "；", "（", "）", "＄", "＂", "「", "」"]],
         [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["＠", .newLine]]
