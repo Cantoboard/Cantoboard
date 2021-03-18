@@ -346,10 +346,11 @@ class InputController {
                 textDocumentProxy.deleteBackward()
                 if self.keyboardContextualType == .chinese {
                     textDocumentProxy.insertText("。")
+                    self.hasInsertedAutoSpace = false
                 } else {
                     textDocumentProxy.insertText(". ")
+                    self.hasInsertedAutoSpace = true
                 }
-                self.hasInsertedAutoSpace = false
                 self.checkAutoCap()
             }
             return true
@@ -357,15 +358,16 @@ class InputController {
         return false
     }
     
-    private func tryRemoveSmartSpace(_ textAfter: String) {
+    private func tryRemoveSmartSpace(_ textBeingInserted: String) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         if let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
             hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Remove leading smart space if:
             // English" "(中/.)
-            if (last2CharsInDoc.first?.isEnglishLetter ?? false) && textAfter.first!.isChineseChar ||
-               (last2CharsInDoc.first?.isLetter ?? false) && textAfter.first!.isPunctuation {
+            if (last2CharsInDoc.first?.isEnglishLetter ?? false) && textBeingInserted.first!.isChineseChar ||
+               (last2CharsInDoc.first?.isLetter ?? false) && textBeingInserted.first!.isPunctuation ||
+                textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 DispatchQueue.main.async {
                     textDocumentProxy.deleteBackward()
