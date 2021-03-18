@@ -13,8 +13,8 @@ NS_SWIFT_NAME(RimeSession)
 -(bool)getOption:(NSString*)name;
 -(void)setOption:(NSString*)name value:(bool)value;
 
-@property int compositionCaretBytePosition;
-@property (readonly, strong) NSString *compositionText, *commitTextPreview;
+@property int compositionCaretBytePosition, rawInputCaretBytePosition;
+@property (readonly, strong) NSString *compositionText, *commitTextPreview, *rawInput;
 
 @end
 

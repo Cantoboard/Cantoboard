@@ -55,6 +55,9 @@ class BilingualInputEngine: InputEngine {
         }
         if commitedText != nil {
             clearInput()
+        } else {
+            isForcingRimeMode = true
+            _ = updateEnglishCaretPosFromRime()
         }
         updateInputState(true, true)
         return commitedText
@@ -63,19 +66,26 @@ class BilingualInputEngine: InputEngine {
     func moveCaret(offset: Int) -> Bool {
         if isComposing {
             let updateRimeEngineState = rimeInputEngine.moveCaret(offset: offset)
-            guard let rimeComposition = rimeInputEngine.composition else { NSLog("Bug check. rimeInputEngine.composition shouldn't be nil"); return true }
-            let caretPosWithoutRimeSpecialChar = rimeComposition.text.prefix(rimeComposition.caretIndex).reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
-            let updateEnglishEngineState = englishInputEngine.setCaret(position: caretPosWithoutRimeSpecialChar)
-            
-            // NSLog("Rime \(rimeInputEngine.composition?.text) \(rimeInputEngine.composition?.caretIndex))")
-            // NSLog("English \(englishInputEngine.composition?.text) \(englishInputEngine.composition?.caretIndex))")
-
+            let updateEnglishEngineState = updateEnglishCaretPosFromRime()
             updateInputState(updateEnglishEngineState, updateRimeEngineState)
-            return updateEnglishEngineState || updateRimeEngineState
+            return updateRimeEngineState
         } else {
             textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
             return false
         }
+    }
+    
+    private func updateEnglishCaretPosFromRime() -> Bool {
+        guard let rimeRawInput = rimeInputEngine.rawInput else { NSLog("Bug check. rimeRawInput shouldn't be nil"); return true }
+        // guard let englishComposition = englishComposition else { NSLog("Bug check. englishComposition shouldn't be nil"); return true }
+        let rimeRawInputBeforeCaret = rimeRawInput.text.prefix(rimeRawInput.caretIndex)
+        let rimeRawInputCaretWithoutSpecialChars = rimeRawInputBeforeCaret.reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
+        let updateEnglishEngineState = englishInputEngine.setCaret(position: rimeRawInputCaretWithoutSpecialChars)
+        
+        // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
+        // NSLog("English \(englishComposition.text) \(rimeRawInputCaretWithoutSpecialChars)")
+
+        return updateEnglishEngineState
     }
     
     func processChar(_ char: Character) -> Bool {
@@ -102,21 +112,25 @@ class BilingualInputEngine: InputEngine {
     }
     
     func processBackspace() -> Bool {
-        if let rimeComposition = rimeInputEngine.composition {
-            let rimeCompositionText = rimeComposition.text
-            guard rimeComposition.caretIndex > 0 && rimeComposition.caretIndex <= rimeCompositionText.count else {
-                NSLog("processBackspace skipped. caretIndex is out of range. 0 < \(rimeComposition.caretIndex) <= \(rimeCompositionText.count)")
+        if let rimeRawInput = rimeInputEngine.rawInput {
+            guard rimeRawInput.caretIndex > 0 && rimeRawInput.caretIndex <= rimeRawInput.text.count else {
+                NSLog("processBackspace skipped. caretIndex is out of range. 0 < \(rimeRawInput.caretIndex) <= \(rimeRawInput.text.count)")
                 return false
             }
-            let charToBeDeleted = rimeCompositionText[rimeCompositionText.index(rimeCompositionText.startIndex, offsetBy: rimeComposition.caretIndex - 1)]
+            let rimeRawInputCaretPosBefore = rimeRawInput.caretIndex
+            let charToBeDeleted = rimeRawInput.text[rimeRawInput.text.index(rimeRawInput.text.startIndex, offsetBy: rimeRawInput.caretIndex - 1)]
             let updateRime = rimeInputEngine.processBackspace()
-            let updateEnglish = charToBeDeleted.isRimeSpecialChar ? false : englishInputEngine.processBackspace()
+            let rimeRawInputCaretPosAfter = self.rimeInputEngine.rawInput?.caretIndex ?? 0
+            let rimeHasDeleted = rimeRawInputCaretPosBefore > rimeRawInputCaretPosAfter
+            let updateEnglish = !charToBeDeleted.isRimeSpecialChar && rimeHasDeleted ? englishInputEngine.processBackspace() : false
             
+            // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
+            // NSLog("English \(englishComposition?.text ?? "") \(englishComposition?.caretIndex ?? 0)")
             // NSLog("\(charToBeDeleted), \(charToBeDeleted.isRimeSpecialChar), \(rimeInputEngine.composition?.text), \(englishComposition?.text)")
             
             updateInputState(updateEnglish, updateRime)
             
-            isForcingRimeMode = rimeInputEngine.composition?.text.contains(where: { $0.isRimeSpecialChar }) ?? false
+            isForcingRimeMode = self.rimeComposition?.text.contains(where: { $0.isRimeSpecialChar }) ?? false
             
             return updateEnglish || updateRime
         } else {
@@ -140,9 +154,9 @@ class BilingualInputEngine: InputEngine {
     var composition: Composition? {
         get {
             if !isForcingRimeMode && englishInputEngine.isWord {
-                return englishInputEngine.composition
+                return englishComposition
             } else {
-                guard let rimeComposition = rimeInputEngine.composition else { return nil }
+                guard let rimeComposition = rimeComposition else { return nil }
                 guard let englishComposition = englishComposition else { return rimeComposition }
                 
                 let casedMorphedText = caseMorph(rimeText: rimeComposition.text, englishText: englishComposition.text)
@@ -182,8 +196,12 @@ class BilingualInputEngine: InputEngine {
         return casedMorphedText
     }
     
-    var englishComposition: Composition? {
-        get { englishInputEngine.composition }
+    private var englishComposition: Composition? {
+        englishInputEngine.composition
+    }
+    
+    private var rimeComposition: Composition? {
+        rimeInputEngine.composition
     }
     
     private func resetCandidates() {
@@ -206,7 +224,7 @@ class BilingualInputEngine: InputEngine {
     }
     
     private func populateCandidates() {
-        guard let rimeComposingText = rimeInputEngine.composition?.text else { return }
+        guard let rimeComposingText = rimeComposition?.text else { return }
         let englishCandidates = Settings.cached.isEnglishEnabled ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
         

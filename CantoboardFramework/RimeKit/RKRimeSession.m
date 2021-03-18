@@ -29,6 +29,7 @@
     _sessionId = sessionId;
     _candidatesAllLoaded = false;
     _compositionCaretBytePosition = 0;
+    _rawInputCaretBytePosition = 0;
     
     if (_sessionId == 0) {
         @throw [NSException exceptionWithName:@"SessionIdZeroException" reason:@"sessionId cannot be zero." userInfo:nil];
@@ -70,8 +71,10 @@
         // _candidates = nil;
         _compositionText = @"";
         _commitTextPreview = @"";
+        _rawInput = @"";
         _candidatesAllLoaded = false;
         _compositionCaretBytePosition = 0;
+        _rawInputCaretBytePosition = 0;
         // TODO Should I throw?
         _rimeApi->free_context(&ctx);
         return false;
@@ -129,15 +132,21 @@
             NSLog(@"%p get_context() failed.", (void*)_sessionId);
             _compositionText = @"";
             _commitTextPreview = @"";
+            _rawInput = @"";
             _candidatesAllLoaded = false;
             _compositionCaretBytePosition = 0;
+            _rawInputCaretBytePosition = 0;
             // TODO Should I throw?
             return;
         }
         
         _compositionText = nullSafeToNSString(ctx.composition.preedit);
         _commitTextPreview = nullSafeToNSString(ctx.commit_text_preview);
+        _rawInput = nullSafeToNSString(_rimeApi->get_input(_sessionId));
+        
         _compositionCaretBytePosition = ctx.composition.cursor_pos;
+        _rawInputCaretBytePosition = (int)_rimeApi->get_caret_pos(_sessionId);
+        
         // NSLog(@"updateContext");
         return;
     } @finally {

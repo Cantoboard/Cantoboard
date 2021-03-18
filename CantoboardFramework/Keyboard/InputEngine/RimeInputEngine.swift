@@ -142,6 +142,17 @@ class RimeInputEngine: NSObject, InputEngine {
         }
     }
     
+    var rawInput: Composition? {
+        get {
+            guard let rimeSession = rimeSession else { return nil }
+            guard let text = rimeSession.rawInput else { return nil }
+            if text.count == 0 { return nil }
+            let caretByteIndex = Int(rimeSession.rawInputCaretBytePosition)
+            let caretCharIndex = convertUtf8ByteIndexToCharIndex(text, caretByteIndex)
+            return Composition(text: text, caretIndex: Int(caretCharIndex))
+        }
+    }
+    
     private func convertUtf8ByteIndexToCharIndex(_ text: String, _ byteIndex: Int) -> Int {
         let textUtf8 = text.utf8
         let utf8ByteIndex = textUtf8.index(textUtf8.startIndex, offsetBy: byteIndex)
