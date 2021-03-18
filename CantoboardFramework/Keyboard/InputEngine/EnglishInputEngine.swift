@@ -145,7 +145,6 @@ class EnglishInputEngine: InputEngine {
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: EnglishInputEngine.language) ?? []
         
         // If the user is typing a word after an English word, run autocomplete.
-        var candidatesSet = Set<String>()
         let autoCompleteCandidates: [String]
         if documentContextBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
             autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: EnglishInputEngine.language) ?? []
@@ -156,26 +155,17 @@ class EnglishInputEngine: InputEngine {
         // Make sure the exact match appears first.
         if isWord {
             candidates.insert(text, at: 0)
-            candidatesSet.insert(text)
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
-            if /* word.contains("-") || */ word.contains(" ") { continue } // Only do word for word correction.
-            else if word == text {
-                // We added the word already. Ignore.
-                continue
+            if word == text || // We added the word already. Ignore.
+                /* word.contains("-") || */ word.contains(" ") { continue } // Only do word for word correction.
+            if let popularWordInput = EnglishInputEngine.popularWords[word],
+               text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
+                candidates.insert(word, at: 0)
             } else {
                 let caseCorrectedCandidate = text.first!.isUppercase ? word.capitalized : word
-                if !candidatesSet.contains(caseCorrectedCandidate) {
-                    if let popularWordInput = EnglishInputEngine.popularWords[word],
-                       text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
-                        candidates.insert(word, at: 0)
-                        candidatesSet.insert(word)
-                    } else {
-                        candidates.add(caseCorrectedCandidate)
-                        candidatesSet.insert(caseCorrectedCandidate)
-                    }
-                }
+                candidates.add(caseCorrectedCandidate)
             }
         }
     }
