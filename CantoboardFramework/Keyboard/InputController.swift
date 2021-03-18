@@ -140,8 +140,7 @@ class InputController {
         case .space:
             handleSpace()
         case .newLine:
-            _ = insertComposingText()
-            DispatchQueue.main.async {
+            if !insertComposingText(shouldDisableSmartSpace: true) {
                 if self.isTextChromeSearchBar() {
                     self.textDocumentProxy?.insertText("\n")
                 } else {
@@ -239,7 +238,7 @@ class InputController {
         prevTextBefore = nil
     }
     
-    private func insertText(_ text: String) {
+    private func insertText(_ text: String, shouldDisableSmartSpace: Bool = false) {
         guard !text.isEmpty else { return }
         clearInput()
         
@@ -253,7 +252,7 @@ class InputController {
                 guard let textDocumentProxy = self.textDocumentProxy else { return }
                 
                 textDocumentProxy.insertText(text)
-                if self.shouldEnableSmartInput {
+                if self.shouldEnableSmartInput && !shouldDisableSmartSpace {
                     self.tryInsertSmartSpace(text)
                 }
                 self.refreshKeyboardContextualType()
@@ -305,11 +304,11 @@ class InputController {
             textFieldType != .phonePad;
     }
     
-    private func insertComposingText(appendBy: String? = nil) -> Bool {
+    private func insertComposingText(appendBy: String? = nil, shouldDisableSmartSpace: Bool = false) -> Bool {
         if var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
             if let c = appendBy { composingText.append(c) }
-            insertText(composingText)
+            insertText(composingText, shouldDisableSmartSpace: shouldDisableSmartSpace)
             isLastInsertedTextFromCandidate = false
             return true
         }

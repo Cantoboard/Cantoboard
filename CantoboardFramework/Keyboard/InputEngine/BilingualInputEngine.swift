@@ -23,6 +23,7 @@ class BilingualInputEngine: InputEngine {
     private let textDocumentProxy: UITextDocumentProxy
     
     private var candidates = NSMutableArray()
+    private var candidatesSet = Set<String>()
     private var candidatePaths = NSMutableArray()
     private var curEnglishCandidateIndex = 0, curRimeCandidateIndex = 0
     private var hasLoadedAllBestRimeCandidates = false
@@ -191,6 +192,7 @@ class BilingualInputEngine: InputEngine {
 
         candidates = NSMutableArray()
         candidatePaths = NSMutableArray()
+        candidatesSet = Set()
         
         hasLoadedAllBestRimeCandidates = false
     }
@@ -199,17 +201,18 @@ class BilingualInputEngine: InputEngine {
         guard updateEnglishInputState || updateRimeInputState else { return }
         
         // NSLog("English: \(englishInputEngine.composition?.text ?? "") Rime: \(rimeInputEngine.composition?.text ?? "")")
-        // print("updateInputState resetCandidates")
         resetCandidates()
         // populateCandidates()
     }
     
     private func populateCandidates() {
-        guard let rimeComposingText = rimeInputEngine.composition?.text,
-              let englishComposingText = englishInputEngine.composition?.text
-            else { return }
+        guard let rimeComposingText = rimeInputEngine.composition?.text else { return }
         let englishCandidates = Settings.cached.isEnglishEnabled ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
+        
+        if englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {
+            addCurrentEnglishCandidate(englishCandidates)
+        }
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
         while !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < rimeCandidates.count {
@@ -226,37 +229,43 @@ class BilingualInputEngine: InputEngine {
                 break
             }
             
-            candidatePaths.add(CandidatePath(source: .rime, index: curRimeCandidateIndex))
-            candidates.add(rimeCandidates[curRimeCandidateIndex])
-            
-            curRimeCandidateIndex += 1
+            addCurrentRimeCandidate(rimeCandidates)
         }
-        
-        // Do not populate English candidates until all best Rime candidates are populated/
+
+        // Do not populate remaining English candidates until all best Rime candidates are populated.
         if !hasLoadedAllBestRimeCandidates && rimeInputEngine.loadMoreCandidates() { return }
         
         // Populate all English candidates.
         while !isForcingRimeMode && curEnglishCandidateIndex < englishCandidates.count {
-            let englishCandidate = englishCandidates[curEnglishCandidateIndex] as! String
-            if englishCandidate.caseInsensitiveCompare(englishComposingText) == .orderedSame {
-                candidatePaths.insert(CandidatePath(source: .english, index: curEnglishCandidateIndex), at: 0)
-                candidates.insert(englishCandidate, at: 0)
-            } else {
-                candidatePaths.add(CandidatePath(source: .english, index: curEnglishCandidateIndex))
-                candidates.add(englishCandidate)
-            }
-            curEnglishCandidateIndex += 1
+            addCurrentEnglishCandidate(englishCandidates)
         }
         
         // Populate the rest of the Rime candidates.
         while curRimeCandidateIndex < rimeCandidates.count {
-            if let candidate = rimeCandidates[curRimeCandidateIndex] as? String,
-               !candidate.starts(with: "__") {
-                candidatePaths.add(CandidatePath(source: .rime, index: curRimeCandidateIndex))
-                candidates.add(rimeCandidates[curRimeCandidateIndex])
-            }
-            curRimeCandidateIndex += 1
+            addCurrentRimeCandidate(rimeCandidates)
         }
+    }
+    
+    private func addCandidate(_ candidateText: String, source: CandidatePath.Source, index: Int) {
+        if !candidatesSet.contains(candidateText) {
+            candidatePaths.add(CandidatePath(source: source, index: index))
+            candidates.add(candidateText)
+            candidatesSet.insert(candidateText)
+        }
+    }
+    
+    private func addCurrentEnglishCandidate(_ englishCandidates: NSArray) {
+        if let englishCandidate = englishCandidates[curEnglishCandidateIndex] as? String {
+            addCandidate(englishCandidate, source: .english, index: curEnglishCandidateIndex)
+        }
+        curEnglishCandidateIndex += 1
+    }
+    
+    private func addCurrentRimeCandidate(_ rimeCandidates: NSArray) {
+        if let candidateText = rimeCandidates[curRimeCandidateIndex] as? String {
+            addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
+        }
+        curRimeCandidateIndex += 1
     }
     
     func clearInput() {

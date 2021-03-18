@@ -81,8 +81,8 @@ class InputTextBuffer {
 }
 
 class EnglishInputEngine: InputEngine {
-    private static let Language = "en"
-    
+    private static let language = "en"
+    private static let popularWords = ["I": "i", "I'm": "Im", "Can't": "Cant", "can't": "cant"]
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
@@ -138,44 +138,43 @@ class EnglishInputEngine: InputEngine {
         let nsWordRange = NSRange(wordRange, in: combined)
         
         let textChecker = EnglishInputEngine.textChecker
-        isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: EnglishInputEngine.Language).location == NSNotFound
+        isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: EnglishInputEngine.language).location == NSNotFound
         candidates.removeAllObjects()
         isFirstLoad = true
-
-        // Special handling to change i -> I.
-        if text == "i" {
-            candidates.add("i")
-            inputTextBuffer.textOverride = "I"
-            return
-        }
         
-        let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: EnglishInputEngine.Language) ?? []
+        let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: EnglishInputEngine.language) ?? []
         
         // If the user is typing a word after an English word, run autocomplete.
         var candidatesSet = Set<String>()
         let autoCompleteCandidates: [String]
         if documentContextBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
-            autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: EnglishInputEngine.Language) ?? []
+            autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: EnglishInputEngine.language) ?? []
         } else {
             autoCompleteCandidates = []
+        }
+        
+        // Make sure the exact match appears first.
+        if isWord {
+            candidates.insert(text, at: 0)
+            candidatesSet.insert(text)
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
             if /* word.contains("-") || */ word.contains(" ") { continue } // Only do word for word correction.
             else if word == text {
+                // We added the word already. Ignore.
                 continue
-            } else if text.first?.isLowercase ?? false && word == text.capitalized {
-                // Prioritize capitalization correction.
-                if !candidatesSet.contains(word) {
-                    candidates.insert(word, at: 0)
-                    candidatesSet.insert(word)
-                }
-                isWord = true
             } else {
                 let caseCorrectedCandidate = text.first!.isUppercase ? word.capitalized : word
                 if !candidatesSet.contains(caseCorrectedCandidate) {
-                    candidates.add(caseCorrectedCandidate)
-                    candidatesSet.insert(caseCorrectedCandidate)
+                    if let popularWordInput = EnglishInputEngine.popularWords[word],
+                       text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
+                        candidates.insert(word, at: 0)
+                        candidatesSet.insert(word)
+                    } else {
+                        candidates.add(caseCorrectedCandidate)
+                        candidatesSet.insert(caseCorrectedCandidate)
+                    }
                 }
             }
         }
