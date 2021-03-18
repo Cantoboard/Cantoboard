@@ -211,7 +211,7 @@ class InputController {
         let lastChar = textDocumentProxy.documentContextBeforeInput?.last
         let lastSymbol = textDocumentProxy.documentContextBeforeInput?.last(where: { $0 != " " })
         // NSLog("documentContextBeforeInput \(textDocumentProxy.documentContextBeforeInput) \(lastChar)")
-        let isFirstCharInDoc = lastChar == nil
+        let isFirstCharInDoc = lastChar == nil || lastChar == "\n"
         let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isHalfShapeTerminalPunctuation ?? false)
         let isFullShapedCase = lastChar?.isFullShapeTerminalPunctuation ?? false
         return isFirstCharInDoc || isHalfShapedCase || isFullShapedCase
