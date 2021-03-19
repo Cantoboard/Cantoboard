@@ -234,7 +234,8 @@ class BilingualInputEngine: InputEngine {
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
         while !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < rimeCandidates.count {
-            guard let comment = rimeInputEngine.getComment(curRimeCandidateIndex) else {
+            guard let candidate = rimeCandidates[curRimeCandidateIndex] as? String,
+                  let comment = rimeInputEngine.getComment(curRimeCandidateIndex) else {
                 hasLoadedAllBestRimeCandidates = true
                 break
             }
@@ -242,7 +243,8 @@ class BilingualInputEngine: InputEngine {
             let composingTextWithOnlySyllables = rimeComposingText.filter { $0.isEnglishLetter }.lowercased()
             let commentWithOnlySyllables = comment.filter { $0.isEnglishLetter }.lowercased()
             // Rime doesn't return comment if the candidate's an exact match. If commentWithOnlySyllables's empty, treat it as a hit.
-            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) {
+            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) ||
+                candidate.count >= composingTextWithOnlySyllables.count { // 聲母輸入 case
                 hasLoadedAllBestRimeCandidates = true
                 break
             }
@@ -253,14 +255,21 @@ class BilingualInputEngine: InputEngine {
         // Do not populate remaining English candidates until all best Rime candidates are populated.
         if !hasLoadedAllBestRimeCandidates && rimeInputEngine.loadMoreCandidates() { return }
         
-        // Populate all English candidates.
+        // Populate all English candidates with vowels.
         while !isForcingRimeMode && curEnglishCandidateIndex < englishCandidates.count {
+            guard let englishCandidate = englishCandidates[curEnglishCandidateIndex] as? String,
+                  englishCandidate.contains(where: { $0.isVowel || $0.isSymbol }) else { curEnglishCandidateIndex += 1; break }
             addCurrentEnglishCandidate(englishCandidates)
         }
         
-        // Populate the rest of the Rime candidates.
+        // Populate remaining Rime candidates.
         while curRimeCandidateIndex < rimeCandidates.count {
             addCurrentRimeCandidate(rimeCandidates)
+        }
+        
+        // Populate remaining English candidates.
+        while !isForcingRimeMode && curEnglishCandidateIndex < englishCandidates.count {
+            addCurrentEnglishCandidate(englishCandidates)
         }
     }
     

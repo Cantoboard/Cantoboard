@@ -45,6 +45,12 @@ extension Character {
         Settings.cached.rimeSettings.toneInputMode == .longPress ? (isNumber || self == "'") : (self == "'")
     }
     
-    var isChineseChar: Bool {!isASCII /* TODO if char is in CJK range */
+    var isChineseChar: Bool {
+        !isASCII /* TODO if char is in CJK range */
+    }
+    
+    var isVowel: Bool {
+        return self == "a" || self == "e" || self == "i" || self == "o" || self == "u" ||
+            self == "A" || self == "E" || self == "I" || self == "O" || self == "U"
     }
 }

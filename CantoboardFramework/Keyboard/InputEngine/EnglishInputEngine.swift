@@ -157,17 +157,26 @@ class EnglishInputEngine: InputEngine {
             candidates.insert(text, at: 0)
         }
         
+        var worstCandidates: [String] = []
         for word in spellCorrectionCandidates + autoCompleteCandidates {
             if word == text || // We added the word already. Ignore.
                 /* word.contains("-") || */ word.contains(" ") { continue } // Only do word for word correction.
             if let popularWordInput = EnglishInputEngine.popularWords[word],
-               text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
+                text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
                 candidates.insert(word, at: 0)
             } else {
                 let caseCorrectedCandidate = text.first!.isUppercase ? word.capitalized : word
-                candidates.add(caseCorrectedCandidate)
+                // If the current candidate doesn't contain any vowels or symbol(short form), it isn't a good candidate.
+                if caseCorrectedCandidate.contains(where: { $0.isVowel || $0.isSymbol }) {
+                    candidates.add(caseCorrectedCandidate)
+                } else {
+                    worstCandidates.append(caseCorrectedCandidate)
+                }
             }
         }
+        
+        candidates.addObjects(from: worstCandidates)
+        // NSLog("English candidates \(candidates)")
     }
     
     func getCandidates() -> NSArray {
