@@ -25,9 +25,9 @@ class CandidateCell: UICollectionViewCell {
     static let Font = UIFont.systemFont(ofSize: CandidateCell.FontSize)
     static let UnitCharSize: CGSize = "＠".size(withAttributes: [NSAttributedString.Key.font : Font])
     static let Margin = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-
+    
     weak var label: UILabel?
-
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
     }
@@ -65,11 +65,14 @@ class CandidateCell: UICollectionViewCell {
 
 class CandidateCollectionView: UICollectionView {
     var scrollOnLayoutSubviews: (() -> Void)?
+    var didLayoutSubviews: ((UICollectionView) -> Void)?
 
     override func layoutSubviews() {
         super.layoutSubviews()
         scrollOnLayoutSubviews?()
         scrollOnLayoutSubviews = nil
+        
+        didLayoutSubviews?(self)
     }
 }
 
@@ -107,7 +110,7 @@ class CandidatePaneView: UIControl {
                 NSLog("CandidateSource changed. Refreshing collection view.")
                 _ = candidateSource.requestMoreCandidate()
             }
-
+            
             UIView.performWithoutAnimation {
                 collectionView.scrollOnLayoutSubviews = {
                     self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
@@ -176,6 +179,12 @@ class CandidatePaneView: UIControl {
         collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.didLayoutSubviews = { [weak self] in
+            guard let self = self else { return }
+            let cannotExpand = self.mode == .row &&
+                $0.collectionViewLayout.collectionViewContentSize.width < $0.bounds.width
+            self.expandButton.isHidden = cannotExpand
+        }
 
         self.addSubview(collectionView)
 
@@ -199,9 +208,9 @@ class CandidatePaneView: UIControl {
         if self.tableStyleBottomConstraint == nil {
             self.tableStyleBottomConstraint = self.collectionView.bottomAnchor.constraint(equalTo: self.superview!.bottomAnchor)
         }
-                
+        
         let isRowMode = self.mode == .row
-
+        
         self.rowStyleHeightConstraint.isActive = isRowMode
         self.tableStyleBottomConstraint!.isActive = !isRowMode
         
@@ -239,7 +248,7 @@ extension CandidatePaneView {
         
         let expandButtonImage = newMode == .row ? PaneExpandButtonImage : PaneCollapseButtonImage
         self.expandButton.setImage(expandButtonImage, for: .normal)
-
+        
         self.mode = newMode
         if let scrollToIndexPath = firstVisibleIndexPath {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top
