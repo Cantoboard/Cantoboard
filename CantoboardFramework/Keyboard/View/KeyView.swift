@@ -66,7 +66,7 @@ class KeyView: UIButton {
         isUserInteractionEnabled = true
         layer.cornerRadius = 5
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        layer.shadowColor = ButtonColor.KeyShadowColor.resolvedColor(with: traitCollection).cgColor
+        layer.shadowColor = ButtonColor.keyShadowColor.resolvedColor(with: traitCollection).cgColor
         layer.shadowRadius = 0.0
         layer.masksToBounds = false
         layer.cornerRadius = 5
@@ -96,7 +96,7 @@ class KeyView: UIButton {
             let backgroundColorAlpha = backgroundColor?.alpha ?? 1
             if case .shift = keyCap {
                 // Hide the highlighted color in swipe mode.
-                backgroundColor = ButtonColor.SystemKeyBackgroundColor
+                backgroundColor = ButtonColor.systemKeyBackgroundColor
             }
             backgroundColor = backgroundColor?.withAlphaComponent(backgroundColorAlpha * 0.8)
             shadowOpacity = 0
@@ -105,7 +105,7 @@ class KeyView: UIButton {
             setImage(nil, for: .normal)
             setTitle(nil, for: .normal)
             titleLabel?.text = nil
-            backgroundColor = ButtonColor.PopupBackgroundColor
+            backgroundColor = ButtonColor.popupBackgroundColor
             maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         } else if let buttonText = keyCap.buttonText {
             setImage(nil, for: .normal)
@@ -163,7 +163,7 @@ class KeyView: UIButton {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        layer.shadowColor = ButtonColor.KeyShadowColor.resolvedColor(with: traitCollection).cgColor
+        layer.shadowColor = ButtonColor.keyShadowColor.resolvedColor(with: traitCollection).cgColor
         
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor

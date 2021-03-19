@@ -94,17 +94,17 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithTone, .space, .contexualSymbols: return ButtonColor.InputKeyBackgroundColor
-        case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.ShiftKeyHighlightedBackgroundColor
-        default: return ButtonColor.SystemKeyBackgroundColor
+        case .character, .characterWithTone, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
+        case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
+        default: return ButtonColor.systemKeyBackgroundColor
         }
     }
     
     var buttonFgColor: UIColor {
         if self == .shift(.uppercased) || self == .shift(.capsLocked) {
-            return ButtonColor.ShiftKeyHighlightedForegroundColor
+            return ButtonColor.shiftKeyHighlightedForegroundColor
         }
-        return ButtonColor.KeyForegroundColor
+        return ButtonColor.keyForegroundColor
     }
     
     var buttonHintFgColor: UIColor {
@@ -115,12 +115,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     // TODO Return images < iOS 12
     var buttonImage: UIImage? {
         switch self {
-        case .backspace: return ButtonImage.Backspace
-        case .nextKeyboard: return ButtonImage.Globe
-        case .shift(.lowercased): return ButtonImage.Shift
-        case .shift(.uppercased): return ButtonImage.ShiftFilled
-        case .shift(.capsLocked): return ButtonImage.CapLockFilled
-        case .keyboardType(.emojis): return ButtonImage.EmojiKeyboard
+        case .backspace: return ButtonImage.backspace
+        case .nextKeyboard: return ButtonImage.globe
+        case .shift(.lowercased): return ButtonImage.shift
+        case .shift(.uppercased): return ButtonImage.shiftFilled
+        case .shift(.capsLocked): return ButtonImage.capLockFilled
+        case .keyboardType(.emojis): return ButtonImage.emojiKeyboard
         // case .keyboardType(.numeric): return ButtonImage.oneTwoThree
         default: return nil
         }
@@ -366,22 +366,23 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
 let FrameworkBundle = Bundle(for: KeyView.self)
 
 class ButtonImage {
-    static let Globe = UIImage(systemName: "globe")
-    static let Backspace = UIImage(systemName: "delete.left")
-    static let Shift = UIImage(systemName: "shift")
-    static let ShiftFilled = UIImage(systemName: "shift.fill")
-    static let CapLockFilled = UIImage(systemName: "capslock.fill")
-    static let EmojiKeyboard = UIImage(systemName: "face.smiling", withConfiguration: UIImage.SymbolConfiguration(scale: .large))
+    static let globe = UIImage(systemName: "globe")
+    static let backspace = UIImage(systemName: "delete.left")
+    static let shift = UIImage(systemName: "shift")
+    static let shiftFilled = UIImage(systemName: "shift.fill")
+    static let capLockFilled = UIImage(systemName: "capslock.fill")
+    static let emojiKeyboard = UIImage(systemName: "face.smiling", withConfiguration: UIImage.SymbolConfiguration(scale: .large))
+    static let paneCollapseButtonImage = UIImage(systemName: "chevron.up")
+    static let paneExpandButtonImage = UIImage(systemName: "chevron.down")
     // static let oneTwoThree = UIImage(systemName: "textformat.123")
 }
 
-
 class ButtonColor {
-    static let SystemKeyBackgroundColor = UIColor(named: "systemKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let InputKeyBackgroundColor = UIColor(named: "inputKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let KeyForegroundColor = UIColor(named: "keyForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let PopupBackgroundColor = UIColor(named: "PopupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let KeyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let ShiftKeyHighlightedBackgroundColor = UIColor(named: "ShiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let ShiftKeyHighlightedForegroundColor = UIColor(named: "ShiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let systemKeyBackgroundColor = UIColor(named: "systemKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let inputKeyBackgroundColor = UIColor(named: "inputKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let keyForegroundColor = UIColor(named: "keyForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let popupBackgroundColor = UIColor(named: "PopupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let keyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let shiftKeyHighlightedBackgroundColor = UIColor(named: "ShiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let shiftKeyHighlightedForegroundColor = UIColor(named: "ShiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
 }

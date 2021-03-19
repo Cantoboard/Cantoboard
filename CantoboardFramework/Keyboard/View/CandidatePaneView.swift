@@ -90,10 +90,6 @@ class CandidatePaneView: UIControl {
     }
     
     let RowPadding = CGFloat(0)
-
-    // TODO move this to a centralized place.
-    private let PaneCollapseButtonImage = UIImage(systemName: "chevron.up")
-    private let PaneExpandButtonImage = UIImage(systemName: "chevron.down")
     
     weak var collectionView: CandidateCollectionView!
     weak var expandButton: UIButton!
@@ -155,7 +151,7 @@ class CandidatePaneView: UIControl {
         expandButton.translatesAutoresizingMaskIntoConstraints = false
         expandButton.layer.contentsFormat = .gray8Uint
         //expandButton.layer.cornerRadius = 5
-        expandButton.setImage(PaneExpandButtonImage, for: .normal)
+        expandButton.setImage(ButtonImage.paneExpandButtonImage, for: .normal)
         expandButton.setTitleColor(.label, for: .normal)
         expandButton.tintColor = .label
         // expandButton.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
@@ -246,7 +242,7 @@ extension CandidatePaneView {
         NSLog("CandidatePaneView.changeMode start")
         let firstVisibleIndexPath = getFirstVisibleIndexPath()
         
-        let expandButtonImage = newMode == .row ? PaneExpandButtonImage : PaneCollapseButtonImage
+        let expandButtonImage = newMode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         self.expandButton.setImage(expandButtonImage, for: .normal)
         
         self.mode = newMode

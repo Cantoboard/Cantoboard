@@ -40,7 +40,7 @@ class KeyPopupView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = ButtonColor.PopupBackgroundColor // ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).
+        backgroundColor = ButtonColor.popupBackgroundColor // ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).
         layer.contentsFormat = .gray8Uint
 
         shapeLayer = CAShapeLayer()
@@ -53,7 +53,7 @@ class KeyPopupView: UIView {
         label.layer.contentsFormat = .gray8Uint
         label.layer.cornerRadius = 5
         label.layer.masksToBounds = true
-        label.textColor = ButtonColor.KeyForegroundColor
+        label.textColor = ButtonColor.keyForegroundColor
         label.textAlignment = .center
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byClipping
@@ -225,8 +225,8 @@ class KeyPopupView: UIView {
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        shapeLayer.backgroundColor = ButtonColor.InputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
-        hintLayers.forEach { $0.foregroundColor = ButtonColor.KeyForegroundColor.resolvedColor(with: traitCollection).cgColor }
+        shapeLayer.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
+        hintLayers.forEach { $0.foregroundColor = ButtonColor.keyForegroundColor.resolvedColor(with: traitCollection).cgColor }
     }
     
     required init?(coder: NSCoder) {
