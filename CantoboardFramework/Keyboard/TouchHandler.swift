@@ -239,7 +239,7 @@ class TouchHandler {
     }
     
     private func onKeyRepeat(_ timer: Timer) {
-        guard timer == self.keyRepeatTimer else { return } // Timer was invalidated.
+        guard timer == self.keyRepeatTimer else { timer.invalidate(); return } // Timer was overwritten.
         keyRepeatCounter += 1
         if self.inputMode == .backspacing && keyRepeatCounter > TouchHandler.KeyRepeatInitialDelay {
             let action: KeyboardAction
@@ -260,7 +260,10 @@ class TouchHandler {
     private func setupKeyRepeatTimer() {
         keyRepeatTimer?.invalidate()
         keyRepeatCounter = 0
-        keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: TouchHandler.KeyRepeatInterval, repeats: true, block: self.onKeyRepeat)
+        keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: TouchHandler.KeyRepeatInterval, repeats: true) { [weak self] timer in
+            guard let self = self else { timer.invalidate(); return }
+            self.onKeyRepeat(timer)
+        }
     }
     
     private func cancelKeyRepeatTimer() {
