@@ -70,9 +70,14 @@ class InputController {
         shouldSkipNextTextDidChange = false
         
         DispatchQueue.main.async {
-            self.checkAutoCap()
-            self.refreshKeyboardContextualType()
+            self.updateContextualSuggestion()
         }
+    }
+    
+    private func updateContextualSuggestion() {
+        checkAutoCap()
+        showAutoSuggestCandidates()
+        refreshKeyboardContextualType()
     }
     
     func candidateSelected(_ choice: Int) {
@@ -80,7 +85,7 @@ class InputController {
         
         if let staticCandidateSource = keyboardView?.candidateSource as? StaticCandidateSource {
             if let candidate = staticCandidateSource.candidates[choice] as? String {
-                textDocumentProxy?.insertText(candidate)
+                insertText(candidate, shouldClearInput: false)
             }
         } else if let commitedText = inputEngine.selectCandidate(choice) {
             setMarkedText(nil)
@@ -102,7 +107,7 @@ class InputController {
                 if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
                     DispatchQueue.main.async {
-                        self.checkAutoCap()
+                        self.updateContextualSuggestion()
                     }
                 }
             }
@@ -170,8 +175,7 @@ class InputController {
                 }
             }
             DispatchQueue.main.async {
-                self.refreshKeyboardContextualType()
-                self.checkAutoCap()
+                self.updateContextualSuggestion()
             }
         case .emoji(let e):
             AudioFeedbackProvider.Play(keyboardAction: action)
@@ -251,9 +255,9 @@ class InputController {
         prevTextBefore = nil
     }
     
-    private func insertText(_ text: String, shouldDisableSmartSpace: Bool = false) {
+    private func insertText(_ text: String, shouldDisableSmartSpace: Bool = false, shouldClearInput: Bool = true) {
         guard !text.isEmpty else { return }
-        clearInput()
+        if shouldClearInput { clearInput() }
         
         // We must let the message loop to handle previously entered text first.
         // Queue the following steps to the main thread.
@@ -269,7 +273,9 @@ class InputController {
                     self.tryInsertSmartSpace(text)
                 }
                 self.refreshKeyboardContextualType()
-                self.checkAutoCap()
+                DispatchQueue.main.async {
+                    self.updateContextualSuggestion()
+                }
             }
         }
     }
@@ -335,7 +341,7 @@ class InputController {
             DispatchQueue.main.async {
                 self.textDocumentProxy?.adjustTextPosition(byCharacterOffset: offset)
                 DispatchQueue.main.async {
-                    self.checkAutoCap()
+                    self.updateContextualSuggestion()
                 }
             }
         }
@@ -364,7 +370,7 @@ class InputController {
                     textDocumentProxy.insertText(". ")
                     self.hasInsertedAutoSpace = true
                 }
-                self.checkAutoCap()
+                self.updateContextualSuggestion()
             }
             return true
         }
@@ -416,7 +422,9 @@ class InputController {
             lastChar.isEnglishLetter && (nextChar?.isEnglishLetter ?? true) {
             textDocumentProxy.insertText(" ")
             hasInsertedAutoSpace = true
-            checkAutoCap()
+            DispatchQueue.main.async {
+                self.updateContextualSuggestion()
+            }
         }
     }
     
@@ -434,7 +442,6 @@ class InputController {
                     // Default to English.
                     guard let lastChar = textDocumentProxy.documentContextBeforeInput?.last(where: { !$0.isWhitespace }) else {
                         self.keyboardContextualType = .english
-                        self.showAutoSuggestCandidates()
                         return
                     }
                     // If the last char is Chinese, change contextual type to Chinese.
@@ -446,9 +453,6 @@ class InputController {
                 } else {
                     self.keyboardContextualType = symbolShape == .half ? .english : .chinese
                 }
-                
-                // If there's no text following the caret, show punctuation candidates.
-                self.showAutoSuggestCandidates()
             }
         }
     }
@@ -459,7 +463,7 @@ class InputController {
     private static let halfWidthDigitCandidateSource = StaticCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
     private static let fullWidthArabicDigitCandidateSource = StaticCandidateSource(["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"])
     private static let fullWidthLowerDigitCandidateSource = StaticCandidateSource(["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億"])
-    private static let fullWidthUpperDigitCandidateSource = StaticCandidateSource(["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "念", "佰", "仟", "萬", "億"])
+    private static let fullWidthUpperDigitCandidateSource = StaticCandidateSource(["零", "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟", "萬", "億"])
     
     private func showAutoSuggestCandidates() {
         guard let keyboardView = keyboardView, inputEngine.composition == nil else { return }
@@ -467,32 +471,30 @@ class InputController {
         let textAfterInput = textDocumentProxy?.documentContextAfterInput ?? ""
         let textBeforeInput = textDocumentProxy?.documentContextBeforeInput ?? ""
         
-        guard !textBeforeInput.isEmpty else {
+        guard let lastCharBefore = textBeforeInput.last,
+              !lastCharBefore.isWhitespace else {
             keyboardView.candidateSource = nil
             return
         }
         
-        let lastCharBefore = textBeforeInput.last!
-        if !lastCharBefore.isWhitespace {
-            switch keyboardView.keyboardContextualType {
-            case .english where !lastCharBefore.isNumber && textAfterInput.isEmpty:
-                keyboardView.candidateSource = InputController.halfWidthPunctuationCandidateSource
-            case .chinese where !lastCharBefore.isNumber && textAfterInput.isEmpty:
-                keyboardView.candidateSource = InputController.fullWidthPunctuationCandidateSource
-            default:
-                if lastCharBefore.isNumber {
-                    if lastCharBefore.isASCII {
-                        keyboardView.candidateSource = InputController.halfWidthDigitCandidateSource
-                    } else {
-                        switch lastCharBefore {
-                        case "０", "１", "２", "３", "４", "５", "６", "７", "８", "９":
-                            keyboardView.candidateSource = InputController.fullWidthArabicDigitCandidateSource
-                        case "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億":
-                            keyboardView.candidateSource = InputController.fullWidthLowerDigitCandidateSource
-                        case "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "念", "佰", "仟":
-                            keyboardView.candidateSource = InputController.fullWidthUpperDigitCandidateSource
-                        default:()
-                        }
+        switch keyboardView.keyboardContextualType {
+        case .english where !lastCharBefore.isNumber && textAfterInput.isEmpty:
+            keyboardView.candidateSource = InputController.halfWidthPunctuationCandidateSource
+        case .chinese where !lastCharBefore.isNumber && textAfterInput.isEmpty:
+            keyboardView.candidateSource = InputController.fullWidthPunctuationCandidateSource
+        default:
+            if lastCharBefore.isNumber {
+                if lastCharBefore.isASCII {
+                    keyboardView.candidateSource = InputController.halfWidthDigitCandidateSource
+                } else {
+                    switch lastCharBefore {
+                    case "０", "１", "２", "３", "４", "５", "６", "７", "８", "９":
+                        keyboardView.candidateSource = InputController.fullWidthArabicDigitCandidateSource
+                    case "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億":
+                        keyboardView.candidateSource = InputController.fullWidthLowerDigitCandidateSource
+                    case "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟":
+                        keyboardView.candidateSource = InputController.fullWidthUpperDigitCandidateSource
+                    default: keyboardView.candidateSource = nil
                     }
                 }
             }
