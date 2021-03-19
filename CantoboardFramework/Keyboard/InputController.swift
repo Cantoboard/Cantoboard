@@ -164,7 +164,9 @@ class InputController {
             }
         case .emoji(let e):
             AudioFeedbackProvider.Play(keyboardAction: action)
-            textDocumentProxy.insertText(e)
+            if !insertComposingText(appendBy: e, shouldDisableSmartSpace: true) {
+                textDocumentProxy.insertText(e)
+            }
         case .shiftDown:
             isHoldingShift = true
             keyboardType = .alphabetic(.uppercased)
