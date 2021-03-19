@@ -50,7 +50,7 @@ public struct Settings: Codable, Equatable {
     private static let DefaultAutoCapEnabled: Bool = true
     private static let DefaultSmartFullStopEnabled: Bool = true
     private static let DefaultSymbolShape: SymbolShape = .smart
-    private static let DefaultSpaceOutputMode: SpaceOutputMode = .input
+    private static let DefaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
     private static let DefaultRimeSettings: RimeSettings = RimeSettings()
 
     public var charForm: CharForm
