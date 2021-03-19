@@ -97,6 +97,8 @@ class KeyboardView: UIView {
     var candidateSource: CandidateSource? {
         get { candidatePaneView?.candidateSource }
         set {
+            if let candidateSource = candidatePaneView?.candidateSource,
+               candidateSource === newValue { return }
             candidatePaneView?.candidateSource = newValue
         }
     }
@@ -175,7 +177,7 @@ class KeyboardView: UIView {
             destroyCandidatePaneView()
         } else {
             createCandidatePaneView()
-            self.candidatePaneView?.isHidden = (candidateSource?.candidates.count ?? 0) == 0
+            // self.candidatePaneView?.isHidden = (candidateSource?.candidates.count ?? 0) == 0
         }
     }
     

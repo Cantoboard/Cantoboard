@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 class KeyHintLayer: CATextLayer {
+    private var parentInsets = UIEdgeInsets.zero
+    
     override init() {
         super.init()
         
@@ -29,10 +31,11 @@ class KeyHintLayer: CATextLayer {
         contentsScale = UIScreen.main.scale
     }
     
-    func setup(_ keyCap: KeyCap, _ hintText: String) {
+    func setup(keyCap: KeyCap, hintText: String, parentInsets: UIEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)) {
         string = hintText
         font = keyCap.buttonFont
         fontSize = keyCap.buttonHintFontSize
+        self.parentInsets = parentInsets
     }
     
     override init(layer: Any) {
@@ -49,6 +52,6 @@ class KeyHintLayer: CATextLayer {
               let string = string as? NSString else { return }
         
         let size = string.size(withAttributes: [.font: font.withSize(fontSize)])
-        frame = CGRect(origin: CGPoint(x: superlayer.bounds.width - 2 - size.width, y: 2), size: size)
+        frame = CGRect(origin: CGPoint(x: superlayer.bounds.width - size.width - parentInsets.right, y: parentInsets.top), size: size)
     }
 }

@@ -143,7 +143,7 @@ class KeyView: UIButton {
                 layer.addSublayer(keyHintLayer)
                 keyHintLayer.layoutSublayers()
             }
-            self.keyHintLayer?.setup(keyCap, buttonHintTitle)
+            self.keyHintLayer?.setup(keyCap: keyCap, hintText: buttonHintTitle)
         } else {
             keyHintLayer?.removeFromSuperlayer()
             keyHintLayer = nil

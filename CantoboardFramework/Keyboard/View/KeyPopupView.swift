@@ -85,7 +85,7 @@ class KeyPopupView: UIView {
             
             if let hint = keyCaps[i].buttonHint {
                 let hintLayer = KeyHintLayer()
-                hintLayer.setup(keyCap, hint)
+                hintLayer.setup(keyCap: keyCap, hintText: hint)
                 hintLayers.append(hintLayer)
                 label.layer.addSublayer(hintLayer)
             }
