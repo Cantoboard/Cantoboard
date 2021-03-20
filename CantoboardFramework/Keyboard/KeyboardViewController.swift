@@ -89,7 +89,8 @@ open class KeyboardViewController: UIInputViewController {
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
         heightConstraint?.isActive = true
-        
+        NSLog("viewDidLoad screen size \(UIScreen.main.bounds.size)")
+
         createKeyboard()
         
         longPressGestureRecognizer = UILongPressGestureRecognizer()
@@ -116,26 +117,32 @@ open class KeyboardViewController: UIInputViewController {
         let newSize = toInterfaceOrientation.isPortrait ? CGSize(width: shortEdge, height: longEdge) : CGSize(width: longEdge, height: shortEdge)
         let nextKeyboardSize = LayoutConstants.getContants(screenSize: newSize).keyboardSize
         
-        // NSLog("willRotate New screen size \(newSize)")
+        NSLog("willRotate New screen size \(newSize)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
-        
-        self.view.setNeedsLayout()
         
         super.willRotate(to: toInterfaceOrientation, duration: duration)
     }
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
-        // NSLog("didRotate New screen size \(UIScreen.main.bounds)")
+        NSLog("didRotate New screen size \(UIScreen.main.bounds)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
         
-        self.view.setNeedsLayout()
-        
         super.didRotate(from: fromInterfaceOrientation)
+    }
+    
+    public override func viewWillLayoutSubviews() {
+        // On rare occasions, viewDidLoad could pick up the wrong screen size and willRotate/didRotate are not fired.
+        // Reset the size constraints here.
+        let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
+        widthConstraint?.constant = nextKeyboardSize.width
+        heightConstraint?.constant = nextKeyboardSize.height
+        
+        super.viewWillLayoutSubviews()
     }
     
     public func createKeyboard() {
@@ -152,7 +159,8 @@ open class KeyboardViewController: UIInputViewController {
                 keyboardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
             
-            widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.width)
+            let keyboardSize = LayoutConstants.forMainScreen.keyboardSize
+            widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: keyboardSize.width)
             widthConstraint?.isActive = true
             
             self.keyboardView = keyboardView
