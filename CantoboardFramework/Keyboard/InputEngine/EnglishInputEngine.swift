@@ -153,7 +153,7 @@ class EnglishInputEngine: InputEngine {
         }
         
         // Make sure the exact match appears first.
-        if isWord {
+        if isWord && text.count > 1 {
             candidates.insert(text, at: 0)
         }
         
