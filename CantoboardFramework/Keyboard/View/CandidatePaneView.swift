@@ -128,7 +128,6 @@ class CandidatePaneView: UIControl {
                 UIView.performWithoutAnimation {
                     self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
                 }
-                self.setupExpandButton()
                 self.delegate?.candidatePaneCandidateLoaded()
             }
             
@@ -141,9 +140,6 @@ class CandidatePaneView: UIControl {
                     }
                     self.collectionView.reloadData()
                 }
-                self.setupExpandButton()
-                // self.isHidden = self.candidateSource?.candidates.count ?? 0 == 0
-                // if self.candidateSource?.candidates.count ?? 0 == 0 { self.changeMode(.row) }
                 if self.candidateOrganizer?.getCandidates(section: 0).count ?? 0 == 0 { self.changeMode(.row) }
             }
         }
@@ -198,17 +194,16 @@ class CandidatePaneView: UIControl {
         addSubview(expandButton)
         
         self.expandButton = expandButton
-        setupExpandButton()
     }
     
     private func setupExpandButton() {
         guard let candidateOrganizer = candidateOrganizer else { return }
         
+        rightButtonMode = .expand
         let cannotExpand = self.mode == .row &&
-            (collectionView.collectionViewLayout.collectionViewContentSize.width <= 1 ||
-             collectionView.collectionViewLayout.collectionViewContentSize.width < collectionView.bounds.width)
+            (collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width)
         
-        // NSLog("\(collectionView.collectionViewLayout.collectionViewContentSize.width) < \(collectionView.bounds.width)")
+        // NSLog("\(collectionView.contentSize) \(collectionView.bounds.width)")
         
         rightButtonMode = cannotExpand ? .filter : .expand
         if !Settings.cached.isEnglishEnabled && rightButtonMode == .filter { rightButtonMode = .hidden }
@@ -283,7 +278,6 @@ class CandidatePaneView: UIControl {
             case .english: nextFilterMode = .mixed
             }
             candidateOrganizer.filter = nextFilterMode
-            setupExpandButton()
         }
     }
     
