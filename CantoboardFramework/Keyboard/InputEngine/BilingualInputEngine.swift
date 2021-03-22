@@ -52,9 +52,8 @@ class BilingualInputEngine: InputEngine {
         } else {
             commitedText = englishInputEngine.selectCandidate(candidatePath.index)
         }
-        if commitedText != nil {
-            clearInput()
-        } else {
+        // User has selected a candidate and partially complete the composing text.
+        if commitedText == nil {
             isForcingRimeMode = true
             _ = updateEnglishCaretPosFromRime()
         }
