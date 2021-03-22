@@ -94,8 +94,7 @@ class KeyboardView: UIView {
     }
     
     var candidateOrganizer: CandidateOrganizer? {
-        get { candidatePaneView?.candidateOrganizer }
-        set { candidatePaneView?.candidateOrganizer = newValue }
+        didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
     }
         
     var isEnabled: Bool {
@@ -269,6 +268,7 @@ class KeyboardView: UIView {
         
         let candidatePaneView = CandidatePaneView()
         candidatePaneView.delegate = self
+        candidatePaneView.candidateOrganizer = candidateOrganizer
 
         addSubview(candidatePaneView)
         NSLayoutConstraint.activate([
