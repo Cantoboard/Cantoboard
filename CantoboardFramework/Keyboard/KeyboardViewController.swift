@@ -1,9 +1,10 @@
 //
 //  KeyboardViewController.swift
-//  Stockboard
+//  CantoboardFramework
 //
 //  Created by Alex Man on 1/14/21.
 //
+
 import Foundation
 import UIKit
 
@@ -18,12 +19,12 @@ open class KeyboardViewController: UIInputViewController {
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
-    private var candidateSource: CandidateSource? {
+    private var candidateOrganizer: CandidateOrganizer? {
         get {
-            return keyboardView?.candidateSource
+            return keyboardView?.candidateOrganizer
         }
         set {
-            keyboardView?.candidateSource = newValue
+            keyboardView?.candidateOrganizer = newValue
         }
     }
 
@@ -149,6 +150,7 @@ open class KeyboardViewController: UIInputViewController {
         if keyboardView == nil {
             let keyboardView = KeyboardView()
             keyboardView.delegate = self
+            keyboardView.candidateOrganizer = inputController.candidateOrganizer
             keyboardView.translatesAutoresizingMaskIntoConstraints = false
             view.autoresizingMask = []
             view.addSubview(keyboardView)

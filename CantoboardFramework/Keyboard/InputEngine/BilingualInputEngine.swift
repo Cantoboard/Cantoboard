@@ -10,8 +10,7 @@ import UIKit
 
 struct CandidatePath {
     enum Source {
-        case english
-        case rime
+        case english, rime
     }
     let source: Source
     let index: Int
@@ -311,6 +310,11 @@ class BilingualInputEngine: InputEngine {
     
     func getCandidate(_ index: Int) -> String? {
         return candidates[index] as? String
+    }
+    
+    func getCandidateSource(_ index: Int) -> CandidatePath.Source? {
+        guard let path = candidatePaths[index] as? CandidatePath else { return nil }
+        return path.source
     }
     
     func loadMoreCandidates() -> Bool {

@@ -1,6 +1,6 @@
 //
 //  CandidatePaneView.swift
-//  UIKitPlayground
+//  CantoboardFramework
 //
 //  Created by Alex Man on 1/5/21.
 //  Copyright © 2021 Alex Man. All rights reserved.
@@ -8,16 +8,6 @@
 
 import Foundation
 import UIKit
-
-class CandidateSource {
-    let candidates: NSArray
-    let requestMoreCandidate: () -> Bool
-    
-    init(candidates: NSArray, requestMoreCandidate: @escaping () -> Bool) {
-        self.candidates = candidates
-        self.requestMoreCandidate = requestMoreCandidate
-    }
-}
 
 class CandidateCell: UICollectionViewCell {
     static var ReuseId: String = "CandidateCell"
@@ -70,7 +60,7 @@ class CandidateCell: UICollectionViewCell {
         keyHintLayer?.removeFromSuperlayer()
         keyHintLayer = nil
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -115,60 +105,79 @@ protocol CandidatePaneViewDelegate: NSObject {
 
 class CandidatePaneView: UIControl {
     enum Mode {
-        case row
-        case table
+        case row, table
     }
     
-    let RowPadding = CGFloat(0)
+    enum RightButtonMode {
+        case expand, filter
+    }
     
+    let rowPadding = CGFloat(0)
+    
+    weak var candidateOrganizer: CandidateOrganizer? {
+        didSet {
+            candidateOrganizer?.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
+                guard let self = self else { return }
+                
+                let newIndiceStart = self.collectionView.numberOfItems(inSection: 0)
+                let candidates = candidateOrganizer.getCandidates(section: 0)
+                let newIndiceEnd = candidates.count
+                
+                NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
+                
+                UIView.performWithoutAnimation {
+                    self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
+                }
+                self.setupExpandButton()
+                self.delegate?.candidatePaneCandidateLoaded()
+            }
+            
+            candidateOrganizer?.onReloadCandidates = { [weak self] candidateOrganizer in
+                guard let self = self else { return }
+                
+                UIView.performWithoutAnimation {
+                    self.collectionView.scrollOnLayoutSubviews = {
+                        self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
+                    }
+                    self.collectionView.reloadData()
+                }
+                self.setupExpandButton()
+                // self.isHidden = self.candidateSource?.candidates.count ?? 0 == 0
+                // if self.candidateSource?.candidates.count ?? 0 == 0 { self.changeMode(.row) }
+                if self.candidateOrganizer?.getCandidates(section: 0).count ?? 0 == 0 { self.changeMode(.row) }
+            }
+        }
+    }
     weak var collectionView: CandidateCollectionView!
     weak var expandButton: UIButton!
     weak var delegate: CandidatePaneViewDelegate?
-
+    
     var rowStyleHeightConstraint: NSLayoutConstraint!
     var tableStyleBottomConstraint: NSLayoutConstraint?
     
     private(set) var mode: Mode = .row
-    
-    var candidateSource: CandidateSource? {
-        didSet {
-            if let candidateSource = self.candidateSource {
-                NSLog("CandidateSource changed. Refreshing collection view.")
-                _ = candidateSource.requestMoreCandidate()
-            }
-            
-            UIView.performWithoutAnimation {
-                collectionView.scrollOnLayoutSubviews = {
-                    self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
-                }
-                collectionView.reloadData()
-            }
-            
-            isHidden = candidateSource?.candidates.count ?? 0 == 0
-            if isHidden { changeMode(.row) }
-        }
-    }
+    private var rightButtonMode: RightButtonMode = .filter
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         translatesAutoresizingMaskIntoConstraints = false
         // self.backgroundColor = .gray
-        isHidden = true
+        // isHidden = true
         
         loadCollectionView()
         loadExpandButton()
         
-        rowStyleHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: getRowHeight() + RowPadding)
+        rowStyleHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: self.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor),
             expandButton.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             expandButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            expandButton.heightAnchor.constraint(equalToConstant: getRowHeight() + RowPadding),
-            expandButton.widthAnchor.constraint(equalToConstant: getRowHeight() + RowPadding),
-            self.heightAnchor.constraint(equalToConstant: getRowHeight() + RowPadding),
+            expandButton.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            expandButton.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            self.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
         ])
     }
     
@@ -181,7 +190,6 @@ class CandidatePaneView: UIControl {
         expandButton.translatesAutoresizingMaskIntoConstraints = false
         expandButton.layer.contentsFormat = .gray8Uint
         //expandButton.layer.cornerRadius = 5
-        expandButton.setImage(ButtonImage.paneExpandButtonImage, for: .normal)
         expandButton.setTitleColor(.label, for: .normal)
         expandButton.tintColor = .label
         // expandButton.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
@@ -190,11 +198,46 @@ class CandidatePaneView: UIControl {
         addSubview(expandButton)
         
         self.expandButton = expandButton
+        setupExpandButton()
+    }
+    
+    private func setupExpandButton() {
+        guard let candidateOrganizer = candidateOrganizer else { return }
+        
+        let cannotExpand = self.mode == .row &&
+            (collectionView.collectionViewLayout.collectionViewContentSize.width <= 1 ||
+             collectionView.collectionViewLayout.collectionViewContentSize.width < collectionView.bounds.width)
+        
+        // NSLog("\(collectionView.collectionViewLayout.collectionViewContentSize.width) < \(collectionView.bounds.width)")
+        
+        rightButtonMode = cannotExpand ? .filter : .expand
+        
+        switch rightButtonMode {
+        case .expand:
+            let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+            expandButton.setImage(expandButtonImage, for: .normal)
+            expandButton.setTitle(nil, for: .normal)
+            expandButton.titleLabel?.text = nil
+            // expandButton.titleLabel?.backgroundColor = nil
+            //expandButton.titleEdgeInsets = UIEdgeInsets.zero
+        case .filter:
+            expandButton.setImage(nil, for: .normal)
+            var title: String
+            switch candidateOrganizer.filter {
+            case .mixed: title = "雙"
+            case .chinese: title = "中"
+            case .english: title = "英"
+            }
+            expandButton.setTitle(title, for: .normal)
+            // expandButton.titleLabel?.backgroundColor = UIColor(white: 1, alpha: 0.1)
+            // expandButton.titleEdgeInsets = UIEdgeInsets(top: -3, left: -3, bottom: -3, right: -3)
+            // expandButton.titleEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1)
+        }
     }
     
     private func loadCollectionView() {
         let collectionViewLayout = UICollectionViewFlowLayout()
-        collectionViewLayout.headerReferenceSize = CGSize(width: 0, height: RowPadding / CGFloat(2))
+        collectionViewLayout.headerReferenceSize = CGSize(width: 0, height: rowPadding / CGFloat(2))
 
         let collectionView = CandidateCollectionView(frame :.zero, collectionViewLayout: collectionViewLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -205,13 +248,10 @@ class CandidatePaneView: UIControl {
         collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.didLayoutSubviews = { [weak self] in
-            guard let self = self else { return }
-            let cannotExpand = self.mode == .row &&
-                $0.collectionViewLayout.collectionViewContentSize.width < $0.bounds.width
-            self.expandButton.isHidden = cannotExpand
+        collectionView.didLayoutSubviews = { [weak self] _ in
+            self?.setupExpandButton()
         }
-
+        
         self.addSubview(collectionView)
 
         self.collectionView = collectionView
@@ -227,25 +267,37 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func expandButtonClick() {
-        self.changeMode(mode == .row ? .table : .row)
+        if rightButtonMode == .expand {
+            changeMode(mode == .row ? .table : .row)
+        } else {
+            guard let candidateOrganizer = candidateOrganizer else { return }
+            var nextFilterMode: CandidateOrganizer.Filter
+            switch candidateOrganizer.filter {
+            case .mixed: nextFilterMode = .chinese
+            case .chinese: nextFilterMode = .english
+            case .english: nextFilterMode = .mixed
+            }
+            candidateOrganizer.filter = nextFilterMode
+            setupExpandButton()
+        }
     }
     
     override func updateConstraints() {
-        if self.tableStyleBottomConstraint == nil {
-            self.tableStyleBottomConstraint = self.collectionView.bottomAnchor.constraint(equalTo: self.superview!.bottomAnchor)
+        if tableStyleBottomConstraint == nil {
+            tableStyleBottomConstraint = self.collectionView.bottomAnchor.constraint(equalTo: self.superview!.bottomAnchor)
         }
         
         let isRowMode = self.mode == .row
         
-        self.rowStyleHeightConstraint.isActive = isRowMode
-        self.tableStyleBottomConstraint!.isActive = !isRowMode
+        rowStyleHeightConstraint.isActive = isRowMode
+        tableStyleBottomConstraint!.isActive = !isRowMode
         
-        self.collectionView.alwaysBounceHorizontal = isRowMode
-        self.collectionView.alwaysBounceVertical = !isRowMode
+        collectionView.alwaysBounceHorizontal = isRowMode
+        collectionView.alwaysBounceVertical = !isRowMode
         
         let flowLayout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         flowLayout.scrollDirection = isRowMode ? .horizontal : .vertical
-        flowLayout.minimumLineSpacing = RowPadding
+        flowLayout.minimumLineSpacing = rowPadding
         
         super.updateConstraints()
     }
@@ -269,17 +321,16 @@ extension CandidatePaneView {
     private func changeMode(_ newMode: Mode) {
         guard mode != newMode else { return }
         
-        NSLog("CandidatePaneView.changeMode start")
+        // NSLog("CandidatePaneView.changeMode start")
         let firstVisibleIndexPath = getFirstVisibleIndexPath()
+                
+        mode = newMode
+        setupExpandButton()
         
-        let expandButtonImage = newMode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
-        self.expandButton.setImage(expandButtonImage, for: .normal)
-        
-        self.mode = newMode
         if let scrollToIndexPath = firstVisibleIndexPath {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top
             
-            self.collectionView.scrollOnLayoutSubviews = {
+            collectionView.scrollOnLayoutSubviews = {
                 guard let collectionView = self.collectionView else { return }
                 collectionView.scrollToItem(at: scrollToIndexPath, at: scrollToIndexPathDirection, animated: false)
                 
@@ -287,52 +338,40 @@ extension CandidatePaneView {
             }
         }
         
-        self.setNeedsUpdateConstraints()
+        setNeedsUpdateConstraints()
         
         if newMode == .row {
             delegate?.candidatePaneViewCollapsed()
         } else {
             delegate?.candidatePaneViewExpanded()
         }
-        NSLog("CandidatePaneView.changeMode end")
+        // NSLog("CandidatePaneView.changeMode end")
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
         let unitCharSize = CandidateCell.UnitCharSize
         let firstAttempt = self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2), to: self.collectionView))
         if firstAttempt != nil { return firstAttempt }
-        return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2 + 2 * RowPadding), to: self.collectionView))
+        return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2 + 2 * rowPadding), to: self.collectionView))
     }
 }
 
 extension CandidatePaneView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return candidateSource?.candidates.count ?? 0
+        return candidateOrganizer?.getCandidates(section: section).count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.ReuseId, for: indexPath) as! CandidateCell
         
         let candidateCount = self.collectionView.numberOfItems(inSection: 0)
-        if indexPath.row == candidateCount - 1 {
-            DispatchQueue.main.async { self.loadMoreCandidates() }
+        if indexPath.section == 0 && indexPath.row == candidateCount - 1 {
+            DispatchQueue.main.async { [weak self] in
+                self?.candidateOrganizer?.requestMoreCandidates(section: 0)
+            }
         }
         
         return cell
-    }
-    
-    private func loadMoreCandidates() {
-        UIView.performWithoutAnimation {
-            guard let candidateSource = self.candidateSource else { return }
-            
-            guard candidateSource.requestMoreCandidate() else { return }
-            
-            let newIndiceStart = self.collectionView.numberOfItems(inSection: 0)
-            let newIndiceEnd =  candidateSource.candidates.count
-            // print("Inserting new candidates: ", newIndiceStart, newIndiceEnd)
-            self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
-            delegate?.candidatePaneCandidateLoaded()
-        }
     }
 }
 
@@ -353,12 +392,13 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         if mode == .row {
             return 0
         } else {
-            return RowPadding
+            return rowPadding
         }
     }
     
     private func computeCellSize(_ indexPath: IndexPath) -> CGSize {
-        guard let candidates = self.candidateSource?.candidates else { return CGSize(width: 0, height: 0) }
+        guard let candidateOrganizer = candidateOrganizer else { return CGSize(width: 0, height: 0) }
+        let candidates = candidateOrganizer.getCandidates(section: indexPath.section)
         guard indexPath.row < candidates.count else {
             NSLog("Invalid IndexPath %@. Candidate does not exist.", indexPath.description)
             return CGSize(width: 0, height: 0)
@@ -390,14 +430,16 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 
 extension CandidatePaneView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.candidatePaneViewCandidateSelected(indexPath.row)
+        guard let candidateOrganizer = candidateOrganizer,
+              let index = candidateOrganizer.getCandidateIndex(indexPath: indexPath) else { return }
+        delegate?.candidatePaneViewCandidateSelected(index)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let candidates = self.candidateSource?.candidates,
-           let cell = cell as? CandidateCell {
-            cell.initLabel(candidates[indexPath.row] as! String)
-        }
+        guard let candidateOrganizer = candidateOrganizer,
+              let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
+              let cell = cell as? CandidateCell else { return }
+        cell.initLabel(candidate)
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

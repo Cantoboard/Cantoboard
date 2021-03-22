@@ -1,7 +1,6 @@
-
 //
 //  AlphabeticButtons.swift
-//  Stockboard
+//  CantoboardFramework
 //
 //  Created by Alex Man on 1/15/21.
 //
@@ -94,13 +93,9 @@ class KeyboardView: UIView {
         }
     }
     
-    var candidateSource: CandidateSource? {
-        get { candidatePaneView?.candidateSource }
-        set {
-            if let candidateSource = candidatePaneView?.candidateSource,
-               candidateSource === newValue { return }
-            candidatePaneView?.candidateSource = newValue
-        }
+    var candidateOrganizer: CandidateOrganizer? {
+        get { candidatePaneView?.candidateOrganizer }
+        set { candidatePaneView?.candidateOrganizer = newValue }
     }
         
     var isEnabled: Bool {

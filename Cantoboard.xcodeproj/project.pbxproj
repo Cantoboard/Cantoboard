@@ -13,6 +13,7 @@
 		7919A78825F3320F0075DD4D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78625F3320F0075DD4D /* Main.storyboard */; };
 		7919A78A25F332100075DD4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78925F332100075DD4D /* Assets.xcassets */; };
 		7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78B25F332100075DD4D /* LaunchScreen.storyboard */; };
+		79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -230,6 +231,7 @@
 		7919A78925F332100075DD4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7919A78C25F332100075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7919A78E25F332100075DD4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		799F2E4E25F46B0800C53416 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		799F2E5025F46B0800C53416 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -494,6 +496,7 @@
 				79B9B59D25F34A1200238E80 /* KeyboardViewController.swift */,
 				79B9B59E25F34A1200238E80 /* View */,
 				79B9B5A725F34A1200238E80 /* InputController.swift */,
+				799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */,
 				79B9B5A825F34A1200238E80 /* KeyboardAction.swift */,
 			);
 			path = Keyboard;
@@ -1058,6 +1061,7 @@
 				79B9B5F625F34A1200238E80 /* InputEngine.swift in Sources */,
 				79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */,
 				79B9B60D25F34A1200238E80 /* InputController.swift in Sources */,
+				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
 				79B9B5F925F34A1200238E80 /* AudioFeedbackProvider.swift in Sources */,
 				79B9B60225F34A1200238E80 /* TouchHandler.swift in Sources */,
