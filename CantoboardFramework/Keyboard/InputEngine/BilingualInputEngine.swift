@@ -84,10 +84,10 @@ class BilingualInputEngine: InputEngine {
         
         // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
         // NSLog("English \(englishComposition.text) \(rimeRawInputCaretWithoutSpecialChars)")
-
+        
         return updateEnglishEngineState
     }
-        
+    
     func processChar(_ char: Character) -> Bool {
         if char.isASCII {
             let queue = BilingualInputEngine.processCharQueue

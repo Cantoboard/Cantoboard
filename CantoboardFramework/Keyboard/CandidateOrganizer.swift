@@ -66,7 +66,7 @@ class CandidateOrganizer {
             
         }
     }*/
-    var _candidateSource: CandidateSource?
+    private var _candidateSource: CandidateSource?
     var candidateSource: CandidateSource? {
         get { _candidateSource }
         set {

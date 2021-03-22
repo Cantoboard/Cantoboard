@@ -134,18 +134,21 @@ class CandidatePaneView: UIControl {
             candidateOrganizer?.onReloadCandidates = { [weak self] candidateOrganizer in
                 guard let self = self else { return }
                 
+                NSLog("Reloading candidates.")
+                
                 UIView.performWithoutAnimation {
                     self.collectionView.scrollOnLayoutSubviews = {
                         self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
                     }
                     self.collectionView.reloadData()
                 }
-                if self.candidateOrganizer?.getCandidates(section: 0).count ?? 0 == 0 { self.changeMode(.row) }
+                if self.candidateOrganizer?.candidateSource == nil { self.changeMode(.row) }
             }
         }
     }
     weak var collectionView: CandidateCollectionView!
-    weak var expandButton: UIButton!
+    weak var buttonStackView: UIStackView!
+    weak var expandButton, filterButton: UIButton!
     weak var delegate: CandidatePaneViewDelegate?
     
     var rowStyleHeightConstraint: NSLayoutConstraint!
@@ -158,22 +161,28 @@ class CandidatePaneView: UIControl {
         super.init(frame: frame)
         
         translatesAutoresizingMaskIntoConstraints = false
-        // self.backgroundColor = .gray
-        // isHidden = true
         
-        loadCollectionView()
-        loadExpandButton()
+        initCollectionView()
+        initStackView()
         
         rowStyleHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding)
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: self.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor),
-            expandButton.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            expandButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            expandButton.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: buttonStackView.leadingAnchor),
+            
+            buttonStackView.topAnchor.constraint(equalTo: topAnchor),
+            buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            buttonStackView.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            // buttonStackView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
+            
             expandButton.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            self.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            expandButton.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            
+            filterButton.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            filterButton.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
         ])
     }
     
@@ -181,61 +190,67 @@ class CandidatePaneView: UIControl {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func loadExpandButton() {
-        let expandButton = UIButton()
-        expandButton.translatesAutoresizingMaskIntoConstraints = false
-        expandButton.layer.contentsFormat = .gray8Uint
-        //expandButton.layer.cornerRadius = 5
-        expandButton.setTitleColor(.label, for: .normal)
-        expandButton.tintColor = .label
-        // expandButton.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
+    private func initStackView() {
+        let buttonStackView = UIStackView()
+        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
+        buttonStackView.axis = .vertical
+        buttonStackView.alignment = .top
+        buttonStackView.distribution = .fillProportionally
+        addSubview(buttonStackView)
+        self.buttonStackView = buttonStackView
+        
+        expandButton = createAndAddButton()
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
-        
-        addSubview(expandButton)
-        
-        self.expandButton = expandButton
+
+        filterButton = createAndAddButton()
+        filterButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
+        let statusSquareBg = CALayer()
+        statusSquareBg.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: getRowHeight() + rowPadding, height: getRowHeight() + rowPadding)).insetBy(dx: 5, dy: 5)
+        statusSquareBg.backgroundColor = CGColor(gray: 0.5, alpha: 0.5)
+        statusSquareBg.cornerRadius = 3
+        statusSquareBg.masksToBounds = true
+        filterButton.layer.addSublayer(statusSquareBg)
     }
     
-    private func setupExpandButton() {
+    private func createAndAddButton() -> UIButton {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.contentsFormat = .gray8Uint
+        //button.layer.cornerRadius = 5
+        button.setTitleColor(.label, for: .normal)
+        button.tintColor = .label
+        // button.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
+        
+        buttonStackView.addArrangedSubview(button)
+        return button
+    }
+    
+    private func setupButtons() {
         guard let candidateOrganizer = candidateOrganizer else { return }
         
-        rightButtonMode = .expand
-        let cannotExpand = self.mode == .row &&
-            (collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width)
+        let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+        expandButton.setImage(expandButtonImage, for: .normal)
         
-        // NSLog("\(collectionView.contentSize) \(collectionView.bounds.width)")
+        var title: String
+        switch candidateOrganizer.filter {
+        case .mixed: title = "雙"
+        case .chinese: title = "中"
+        case .english: title = "英"
+        }
+        filterButton.setTitle(title, for: .normal)
         
-        rightButtonMode = cannotExpand ? .filter : .expand
-        if !Settings.cached.isEnglishEnabled && rightButtonMode == .filter { rightButtonMode = .hidden }
-        
-        switch rightButtonMode {
-        case .expand:
-            let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
-            expandButton.setImage(expandButtonImage, for: .normal)
-            expandButton.setTitle(nil, for: .normal)
-            expandButton.titleLabel?.text = nil
+        if mode == .table {
             expandButton.isHidden = false
-            // expandButton.titleLabel?.backgroundColor = nil
-            //expandButton.titleEdgeInsets = UIEdgeInsets.zero
-        case .filter:
-            expandButton.setImage(nil, for: .normal)
-            var title: String
-            switch candidateOrganizer.filter {
-            case .mixed: title = "雙"
-            case .chinese: title = "中"
-            case .english: title = "英"
-            }
-            expandButton.setTitle(title, for: .normal)
-            expandButton.isHidden = false
-            // expandButton.titleLabel?.backgroundColor = UIColor(white: 1, alpha: 0.1)
-            // expandButton.titleEdgeInsets = UIEdgeInsets(top: -3, left: -3, bottom: -3, right: -3)
-            // expandButton.titleEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1)
-        case .hidden:
-            expandButton.isHidden = true
+            filterButton.isHidden = false
+        } else {
+            let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
+            
+            expandButton.isHidden = cannotExpand
+            filterButton.isHidden = !cannotExpand || !Settings.cached.isEnglishEnabled
         }
     }
     
-    private func loadCollectionView() {
+    private func initCollectionView() {
         let collectionViewLayout = UICollectionViewFlowLayout()
         collectionViewLayout.headerReferenceSize = CGSize(width: 0, height: rowPadding / CGFloat(2))
 
@@ -249,7 +264,7 @@ class CandidatePaneView: UIControl {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.didLayoutSubviews = { [weak self] _ in
-            self?.setupExpandButton()
+            self?.setupButtons()
         }
         
         self.addSubview(collectionView)
@@ -267,18 +282,20 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func expandButtonClick() {
-        if rightButtonMode == .expand {
-            changeMode(mode == .row ? .table : .row)
-        } else {
-            guard let candidateOrganizer = candidateOrganizer else { return }
-            var nextFilterMode: CandidateOrganizer.Filter
-            switch candidateOrganizer.filter {
-            case .mixed: nextFilterMode = .chinese
-            case .chinese: nextFilterMode = .english
-            case .english: nextFilterMode = .mixed
-            }
-            candidateOrganizer.filter = nextFilterMode
+        changeMode(mode == .row ? .table : .row)
+    }
+    
+    @objc private func filterButtonClick() {
+        guard let candidateOrganizer = candidateOrganizer else { return }
+        
+        var nextFilterMode: CandidateOrganizer.Filter
+        switch candidateOrganizer.filter {
+        case .mixed: nextFilterMode = .chinese
+        case .chinese: nextFilterMode = .english
+        case .english: nextFilterMode = .mixed
         }
+        
+        candidateOrganizer.filter = nextFilterMode
     }
     
     override func updateConstraints() {
@@ -307,12 +324,13 @@ class CandidatePaneView: UIControl {
             return super.hitTest(point, with: event)
         }
         
-        let result = collectionView.hitTest(self.convert(point, to: collectionView), with: event)
-        if result != nil {
-            return result
-        } else {
-            return super.hitTest(point, with: event)
+        for subview in subviews {
+            let result = subview.hitTest(self.convert(point, to: subview), with: event)
+            if result != nil {
+                return result
+            }
         }
+        return super.hitTest(point, with: event)
     }
 }
 
@@ -324,7 +342,7 @@ extension CandidatePaneView {
         let firstVisibleIndexPath = getFirstVisibleIndexPath()
                 
         mode = newMode
-        setupExpandButton()
+        setupButtons()
         
         if let scrollToIndexPath = firstVisibleIndexPath {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top

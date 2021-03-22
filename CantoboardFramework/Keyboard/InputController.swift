@@ -280,17 +280,21 @@ class InputController {
         setMarkedText(inputEngine.composition)
         
         DispatchQueue.main.async {
-            let candidates = self.inputEngine.getCandidates()
-            self.candidateOrganizer.candidateSource = InputEngineCandidateSource(
-                candidates: candidates,
-                requestMoreCandidate: { [weak self] in
-                    guard let self = self else { return false }
-                    return self.inputEngine.loadMoreCandidates()
-                },
-                getCandidateSource: { [weak self] index in
-                    guard let self = self else { return nil }
-                    return self.inputEngine.getCandidateSource(index)
-                })
+            if self.inputEngine.composition == nil {
+                self.candidateOrganizer.candidateSource = nil
+            } else {
+                let candidates = self.inputEngine.getCandidates()
+                self.candidateOrganizer.candidateSource = InputEngineCandidateSource(
+                    candidates: candidates,
+                    requestMoreCandidate: { [weak self] in
+                        guard let self = self else { return false }
+                        return self.inputEngine.loadMoreCandidates()
+                    },
+                    getCandidateSource: { [weak self] index in
+                        guard let self = self else { return nil }
+                        return self.inputEngine.getCandidateSource(index)
+                    })
+            }
         }
         
         refreshKeyboardContextualType()
