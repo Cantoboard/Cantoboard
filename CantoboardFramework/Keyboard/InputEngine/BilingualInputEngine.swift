@@ -17,6 +17,8 @@ struct CandidatePath {
 }
 
 class BilingualInputEngine: InputEngine {
+    private static let processCharQueue = DispatchQueue(label: "org.cantoboard.process-char.queue", attributes: .concurrent)
+    
     private let rimeInputEngine: RimeInputEngine
     private let englishInputEngine: EnglishInputEngine
     private let textDocumentProxy: UITextDocumentProxy
@@ -85,11 +87,21 @@ class BilingualInputEngine: InputEngine {
 
         return updateEnglishEngineState
     }
-    
+        
     func processChar(_ char: Character) -> Bool {
         if char.isASCII {
-            let updateEnglishEngineState = englishInputEngine.processChar(char)
-            let updateRimeEngineState = rimeInputEngine.processChar(char.lowercasedChar)
+            let queue = BilingualInputEngine.processCharQueue
+            let group = DispatchGroup()
+            
+            var updateEnglishEngineState = false, updateRimeEngineState = false
+            queue.async(group: group) {
+                updateRimeEngineState = self.rimeInputEngine.processChar(char.lowercasedChar)
+            }
+            queue.async(group: group) {
+                updateEnglishEngineState = self.englishInputEngine.processChar(char)
+            }
+            group.wait()
+            
             updateInputState(updateEnglishEngineState, updateRimeEngineState)
             return updateEnglishEngineState || updateRimeEngineState
         } else {
