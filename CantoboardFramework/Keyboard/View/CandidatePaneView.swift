@@ -109,7 +109,7 @@ class CandidatePaneView: UIControl {
     }
     
     enum RightButtonMode {
-        case expand, filter
+        case expand, filter, hidden
     }
     
     let rowPadding = CGFloat(0)
@@ -211,6 +211,7 @@ class CandidatePaneView: UIControl {
         // NSLog("\(collectionView.collectionViewLayout.collectionViewContentSize.width) < \(collectionView.bounds.width)")
         
         rightButtonMode = cannotExpand ? .filter : .expand
+        if !Settings.cached.isEnglishEnabled && rightButtonMode == .filter { rightButtonMode = .hidden }
         
         switch rightButtonMode {
         case .expand:
@@ -218,6 +219,7 @@ class CandidatePaneView: UIControl {
             expandButton.setImage(expandButtonImage, for: .normal)
             expandButton.setTitle(nil, for: .normal)
             expandButton.titleLabel?.text = nil
+            expandButton.isHidden = false
             // expandButton.titleLabel?.backgroundColor = nil
             //expandButton.titleEdgeInsets = UIEdgeInsets.zero
         case .filter:
@@ -229,9 +231,12 @@ class CandidatePaneView: UIControl {
             case .english: title = "英"
             }
             expandButton.setTitle(title, for: .normal)
+            expandButton.isHidden = false
             // expandButton.titleLabel?.backgroundColor = UIColor(white: 1, alpha: 0.1)
             // expandButton.titleEdgeInsets = UIEdgeInsets(top: -3, left: -3, bottom: -3, right: -3)
             // expandButton.titleEdgeInsets = UIEdgeInsets(top: -1, left: -1, bottom: -1, right: -1)
+        case .hidden:
+            expandButton.isHidden = true
         }
     }
     
