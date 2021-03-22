@@ -127,7 +127,7 @@ class EnglishInputEngine: InputEngine {
     
     private func updateCandidates() {
         let text = inputTextBuffer.text
-        guard !text.isEmpty else {
+        guard !text.isEmpty && text.count < 25 else {
             isWord = false
             return
         }
