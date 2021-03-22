@@ -102,6 +102,7 @@ class CandidateOrganizer {
             repeat {
                 if candidateSource is AutoSuggestionCandidateSource || filter == .mixed { // Pass-thru mode.
                     candidates = candidateSource.candidates
+                    candidateAdded += candidates.count - candidateIndices.count
                     candidateIndices.append(contentsOf: candidateIndices.count..<candidates.count)
                     lastProcessedCandidateSourceIndex = candidateSource.candidates.count
                 } else { // Filtering mode.
