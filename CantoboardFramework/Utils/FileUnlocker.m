@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RimeKit.h"
+#import "Utils.h"
 
 @implementation FileUnlocker
 

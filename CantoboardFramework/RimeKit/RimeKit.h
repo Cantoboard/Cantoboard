@@ -49,9 +49,4 @@ NS_SWIFT_NAME(RimeApi)
 -(void)onNotification:(NSString*) messageType messageValue:(NSString*) messageValue;
 @end
 
-// This class doesn't really belong to RimeKit.
-@interface FileUnlocker: NSObject
-+ (void)unlockAllOpenedFiles;
-@end
-
 #endif /* __RIME_KIT_H__ */

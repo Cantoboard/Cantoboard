@@ -63,6 +63,9 @@ class ViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        EnglishDictionary.createDb(locale: "en-US")
+        NSLog("EnglishDictionary Created.")
+        
         textbox = UITextView()
         textbox.translatesAutoresizingMaskIntoConstraints = false
         textbox.font = UIFont.systemFont(ofSize: 16)
@@ -78,6 +81,7 @@ class ViewController: UIViewController, UITextViewDelegate {
         
         createKeyboardController()
         
+        // englishDictionary
         /*
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.recreateKeyboardController()

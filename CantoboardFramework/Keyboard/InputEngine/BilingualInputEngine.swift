@@ -253,8 +253,8 @@ class BilingualInputEngine: InputEngine {
             let composingTextWithOnlySyllables = rimeComposingText.filter { $0.isEnglishLetter }.lowercased()
             let commentWithOnlySyllables = comment.filter { $0.isEnglishLetter }.lowercased()
             // Rime doesn't return comment if the candidate's an exact match. If commentWithOnlySyllables's empty, treat it as a hit.
-            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) ||
-                candidate.count >= composingTextWithOnlySyllables.count { // 聲母輸入 case
+            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) &&
+                candidate.count < composingTextWithOnlySyllables.count { // 聲母輸入 case
                 hasLoadedAllBestRimeCandidates = true
                 break
             }

@@ -9,6 +9,8 @@
 
 #import <CantoboardFramework/RimeKit.h>
 
+#import <CantoboardFramework/Utils.h>
+
 //! Project version number for CantoboardFramework.
 FOUNDATION_EXPORT double CantoboardFrameworkVersionNumber;
 

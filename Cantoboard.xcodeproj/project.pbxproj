@@ -14,6 +14,9 @@
 		7919A78A25F332100075DD4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78925F332100075DD4D /* Assets.xcassets */; };
 		7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78B25F332100075DD4D /* LaunchScreen.storyboard */; };
 		79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */; };
+		79515A7E2609AA1500D29A5C /* EnglishDictionary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* EnglishDictionary.mm */; };
+		79515ABC2609AF9C00D29A5C /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79515AB82609AF5D00D29A5C /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79515AD82609BFB400D29A5C /* EnglishDictionary in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* EnglishDictionary */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -33,10 +36,8 @@
 		79B9B57725F3496800238E80 /* CantoboardFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B57525F3496800238E80 /* CantoboardFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B57A25F3496800238E80 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
 		79B9B57B25F3496800238E80 /* CantoboardFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79B9B5EC25F34A1200238E80 /* RimeKit-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58225F34A1200238E80 /* RimeKit-Bridging-Header.h */; };
 		79B9B5ED25F34A1200238E80 /* RimeKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58325F34A1200238E80 /* RimeKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58425F34A1200238E80 /* RKRimeApi.m */; };
-		79B9B5EF25F34A1200238E80 /* rime_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58525F34A1200238E80 /* rime_api.h */; };
 		79B9B5F025F34A1200238E80 /* RimeEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58625F34A1200238E80 /* RimeEngine.h */; };
 		79B9B5F125F34A1200238E80 /* RKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58725F34A1200238E80 /* RKUtils.h */; };
 		79B9B5F225F34A1200238E80 /* FileUnlocker.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58825F34A1200238E80 /* FileUnlocker.m */; };
@@ -231,6 +232,10 @@
 		7919A78925F332100075DD4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7919A78C25F332100075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7919A78E25F332100075DD4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		79515A7D2609AA1500D29A5C /* EnglishDictionary.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EnglishDictionary.mm; sourceTree = "<group>"; };
+		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		79515AD72609BFB400D29A5C /* EnglishDictionary */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = EnglishDictionary; path = CantoboardFramework/EnglishDictionary; sourceTree = SOURCE_ROOT; };
+		79515AED260A6BBB00D29A5C /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		799F2E4E25F46B0800C53416 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -247,10 +252,8 @@
 		79B9B57325F3496800238E80 /* CantoboardFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CantoboardFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79B9B57525F3496800238E80 /* CantoboardFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CantoboardFramework.h; sourceTree = "<group>"; };
 		79B9B57625F3496800238E80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		79B9B58225F34A1200238E80 /* RimeKit-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RimeKit-Bridging-Header.h"; sourceTree = "<group>"; };
 		79B9B58325F34A1200238E80 /* RimeKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RimeKit.h; sourceTree = "<group>"; };
 		79B9B58425F34A1200238E80 /* RKRimeApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKRimeApi.m; sourceTree = "<group>"; };
-		79B9B58525F34A1200238E80 /* rime_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rime_api.h; sourceTree = "<group>"; };
 		79B9B58625F34A1200238E80 /* RimeEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RimeEngine.h; sourceTree = "<group>"; };
 		79B9B58725F34A1200238E80 /* RKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKUtils.h; sourceTree = "<group>"; };
 		79B9B58825F34A1200238E80 /* FileUnlocker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileUnlocker.m; sourceTree = "<group>"; };
@@ -432,6 +435,16 @@
 			path = Cantoboard;
 			sourceTree = "<group>";
 		};
+		79515AB72609AF3F00D29A5C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				79B9B58825F34A1200238E80 /* FileUnlocker.m */,
+				79515A7D2609AA1500D29A5C /* EnglishDictionary.mm */,
+				79515AB82609AF5D00D29A5C /* Utils.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		799F2E4D25F46B0800C53416 /* CantoboardTestApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -460,11 +473,14 @@
 		79B9B57425F3496800238E80 /* CantoboardFramework */ = {
 			isa = PBXGroup;
 			children = (
+				79515AED260A6BBB00D29A5C /* include */,
+				79515AD72609BFB400D29A5C /* EnglishDictionary */,
 				79B9B6E425F34BC100238E80 /* RimeSchema */,
 				79B9B58A25F34A1200238E80 /* Keyboard */,
-				79B9B5E925F34A1200238E80 /* Media.xcassets */,
 				79B9B58125F34A1200238E80 /* RimeKit */,
+				79515AB72609AF3F00D29A5C /* Utils */,
 				79B9B57525F3496800238E80 /* CantoboardFramework.h */,
+				79B9B5E925F34A1200238E80 /* Media.xcassets */,
 				79B9B57625F3496800238E80 /* Info.plist */,
 			);
 			path = CantoboardFramework;
@@ -473,13 +489,10 @@
 		79B9B58125F34A1200238E80 /* RimeKit */ = {
 			isa = PBXGroup;
 			children = (
-				79B9B58225F34A1200238E80 /* RimeKit-Bridging-Header.h */,
 				79B9B58325F34A1200238E80 /* RimeKit.h */,
 				79B9B58425F34A1200238E80 /* RKRimeApi.m */,
-				79B9B58525F34A1200238E80 /* rime_api.h */,
 				79B9B58625F34A1200238E80 /* RimeEngine.h */,
 				79B9B58725F34A1200238E80 /* RKUtils.h */,
-				79B9B58825F34A1200238E80 /* FileUnlocker.m */,
 				79B9B58925F34A1200238E80 /* RKRimeSession.m */,
 			);
 			path = RimeKit;
@@ -742,8 +755,7 @@
 			files = (
 				79B9B57725F3496800238E80 /* CantoboardFramework.h in Headers */,
 				79B9B5ED25F34A1200238E80 /* RimeKit.h in Headers */,
-				79B9B5EC25F34A1200238E80 /* RimeKit-Bridging-Header.h in Headers */,
-				79B9B5EF25F34A1200238E80 /* rime_api.h in Headers */,
+				79515ABC2609AF9C00D29A5C /* Utils.h in Headers */,
 				79B9B5F025F34A1200238E80 /* RimeEngine.h in Headers */,
 				79B9B5F125F34A1200238E80 /* RKUtils.h in Headers */,
 			);
@@ -938,6 +950,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79515AD82609BFB400D29A5C /* EnglishDictionary in Resources */,
 				79B9B6E525F34BC100238E80 /* RimeSchema in Resources */,
 				79B9B64C25F34A1200238E80 /* Media.xcassets in Resources */,
 			);
@@ -1069,6 +1082,7 @@
 				79B9B60525F34A1200238E80 /* CandidatePaneView.swift in Sources */,
 				79B9B5FD25F34A1200238E80 /* Character+Extension.swift in Sources */,
 				79B9B5F525F34A1200238E80 /* EnglishInputEngine.swift in Sources */,
+				79515A7E2609AA1500D29A5C /* EnglishDictionary.mm in Sources */,
 				79B9B5F425F34A1200238E80 /* RimeApi.swift in Sources */,
 				79B9B5F725F34A1200238E80 /* RimeInputEngine.swift in Sources */,
 				79B9B60825F34A1200238E80 /* KeyPopupView.swift in Sources */,
@@ -1178,7 +1192,6 @@
 		7919A78F25F332100075DD4D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1239,7 +1252,6 @@
 		7919A79025F332100075DD4D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1470,6 +1482,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/RimeFramework",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/CantoboardFramework/include";
 				INFOPLIST_FILE = CantoboardFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1478,7 +1491,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.CantoboardFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1508,6 +1520,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/RimeFramework",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/CantoboardFramework/include";
 				INFOPLIST_FILE = CantoboardFramework/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1516,7 +1529,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.CantoboardFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

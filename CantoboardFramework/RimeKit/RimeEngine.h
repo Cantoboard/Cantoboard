@@ -35,9 +35,6 @@ FOUNDATION_EXPORT const unsigned char RimeEngineVersionString[];
 
 -(RimeSession*)createSession;
 
--(void)test;
-
 @end
 
 #endif
-    
