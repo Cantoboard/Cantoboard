@@ -55,6 +55,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     none,
     backspace,
     deleteWord,
+    deleteWordSwipe,
     capsLock,
     character(String),
     emoji(String),

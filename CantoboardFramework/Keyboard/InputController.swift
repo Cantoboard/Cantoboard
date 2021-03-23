@@ -158,16 +158,21 @@ class InputController {
                     self.insertText("\n")
                 }
             }
-        case .backspace, .deleteWord:
+        case .backspace, .deleteWord, .deleteWordSwipe:
             if inputEngine.composition?.text != nil {
                 if inputEngine.processBackspace() {
                     updateInputState()
                 }
             } else {
-                if action == .backspace {
-                    textDocumentProxy.deleteBackward()
-                } else {
-                    textDocumentProxy.deleteBackwardWord()
+                switch action {
+                case .backspace: textDocumentProxy.deleteBackward()
+                case .deleteWord: textDocumentProxy.deleteBackwardWord()
+                case .deleteWordSwipe:
+                    if let lastChar = textDocumentProxy.documentContextBeforeInput?.last,
+                       lastChar.isASCII {
+                        textDocumentProxy.deleteBackwardWord()
+                    }
+                default:()
                 }
             }
             DispatchQueue.main.async {

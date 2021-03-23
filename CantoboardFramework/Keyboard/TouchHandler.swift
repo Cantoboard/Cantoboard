@@ -59,6 +59,7 @@ class TouchHandler {
             touchEnded(lastTouch.0, key: lastTouch.1, with: event)
         }
         
+        hasMovedCursor = false
         switch key.selectedAction {
         case .backspace:
             inputMode = .backspacing
@@ -99,7 +100,21 @@ class TouchHandler {
         // print(Date(), "touchMoved", key.keyCap, touch.description)
         
         switch inputMode {
-        case .backspacing: ()
+        case .backspacing:
+            // Swipe left to delete word.
+            guard let cursorMoveStartPosition = cursorMoveStartPosition else {
+                NSLog("TouchHandler is backspacing in but cursorMoveStartPosition is nil.")
+                return
+            }
+            let point = touch.location(in: keyboardView)
+            let dX = point.x - cursorMoveStartPosition.x
+            if dX < -30 && !hasMovedCursor {
+                callKeyHandler(.deleteWordSwipe)
+                hasMovedCursor = true
+            }
+            if hasMovedCursor {
+                cancelKeyRepeatTimer()
+            }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
                 NSLog("TouchHandler is cursorMoving in but cursorMoveStartPosition is nil.")
