@@ -288,7 +288,7 @@ class CandidatePaneView: UIControl {
     @objc private func filterButtonClick() {
         guard let candidateOrganizer = candidateOrganizer else { return }
         
-        var nextFilterMode: CandidateOrganizer.Filter
+        var nextFilterMode: CandidateFilter
         switch candidateOrganizer.filter {
         case .mixed: nextFilterMode = .chinese
         case .chinese: nextFilterMode = .english

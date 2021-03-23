@@ -39,18 +39,23 @@ class AutoSuggestionCandidateSource: CandidateSource {
 
 // This class filter, group by and sort the candidates.
 class CandidateOrganizer {
-    enum Filter {
-        case mixed, chinese, english
-    }
-    
     enum GroupBy {
         case frequency, radical, stroke, tone
     }
     
-    var filter: Filter = .mixed {
+    var filter: CandidateFilter = .mixed {
         didSet {
             loadMoreCandidates(reset: true)
+            DispatchQueue.main.async {
+                var settings = Settings.cached
+                settings.langFilter = self.filter
+                Settings.save(settings)
+            }
         }
+    }
+    
+    init() {
+        filter = Settings.cached.langFilter
     }
     
     var onMoreCandidatesLoaded: ((CandidateOrganizer) -> Void)?
