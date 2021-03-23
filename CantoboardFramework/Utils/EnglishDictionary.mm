@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 #import <Foundation/Foundation.h>
 
@@ -27,12 +28,15 @@ using namespace std;
     
     leveldb::Options options;
     options.block_cache = leveldb::NewLRUCache(1024); // Reduce cache size to 1kb.
+    options.reuse_logs = true;
     leveldb::Status status = leveldb::DB::Open(options, [dbPath UTF8String], &db);
     
     if (!status.ok()) {
         NSLog(@"Failed to open DB %@. Error: %s", dbPath, status.ToString().c_str());
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
+    
+    [FileUnlocker unlockAllOpenedFiles];
     
     return self;
 }
@@ -54,16 +58,12 @@ using namespace std;
     return false;
 }
 
-+ (bool)createDb:(NSString*) textFilePath dbPath:(NSString*) dbPath {
-    NSLog(@"createDbFromTextFile %@ -> %@", textFilePath, dbPath);
++ (bool)createDb:(NSArray*) textFilePaths dbPath:(NSString*) dbPath {
+    NSLog(@"createDbFromTextFile %@ -> %@", textFilePaths, dbPath);
     
     leveldb::DB* db;
     leveldb::Options options;
     options.create_if_missing = true;
-    
-    ifstream dictFile([textFilePath UTF8String]);
-    
-    [[NSFileManager defaultManager] createDirectoryAtPath:dbPath withIntermediateDirectories:YES attributes:nil error:nil];
     
     leveldb::Status status = leveldb::DB::Open(options, [dbPath UTF8String], &db);
     if (!status.ok()) {
@@ -71,14 +71,23 @@ using namespace std;
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
     
-    string line;
     leveldb::WriteBatch batch;
-    while (getline(dictFile, line)) {
-        if (*line.rbegin() == '\r') line.pop_back();
-        /*if (line.find("Sino") != string::npos) {
-            NSLog(@"UUFFOO '%s'", line.c_str());
-        }*/
-        batch.Put(line, leveldb::Slice());
+    string line;
+    for (NSString* textFilePath in textFilePaths) {
+        ifstream dictFile([textFilePath UTF8String]);
+        
+        [[NSFileManager defaultManager] createDirectoryAtPath:dbPath withIntermediateDirectories:YES attributes:nil error:nil];
+        
+        while (getline(dictFile, line)) {
+            if (*line.rbegin() == '\r') line.pop_back();
+            transform(line.begin(), line.end(), line.begin(), [](unsigned char c){ return tolower(c); });
+            /*if (line.find("Sino") != string::npos) {
+                NSLog(@"UUFFOO '%s'", line.c_str());
+            }*/
+            if (line.empty()) continue;
+            batch.Put(line, leveldb::Slice());
+        }
+        dictFile.close();
     }
     
     leveldb::Status writeStatus = db->Write(leveldb::WriteOptions(), &batch);
@@ -88,7 +97,6 @@ using namespace std;
     }
     
     db->CompactRange(nullptr, nullptr);
-    dictFile.close();
     delete db;
     
     return self;

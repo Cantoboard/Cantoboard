@@ -63,8 +63,13 @@ class ViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        /* // Uncomment to generate English Dictionaries.
         EnglishDictionary.createDb(locale: "en-US")
+        EnglishDictionary.createDb(locale: "en-CA")
+        EnglishDictionary.createDb(locale: "en-GB")
+        EnglishDictionary.createDb(locale: "en-AU")
         NSLog("EnglishDictionary Created.")
+         */
         
         textbox = UITextView()
         textbox.translatesAutoresizingMaskIntoConstraints = false

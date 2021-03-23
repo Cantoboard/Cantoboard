@@ -12,7 +12,7 @@
 - (id)init:(NSString*) dbPath;
 - (bool)hasWord:(NSString*) word;
 
-+ (bool)createDb:(NSString*) textFilePath dbPath:(NSString*) dbPath;
++ (bool)createDb:(NSArray*) textFilePaths dbPath:(NSString*) dbPath;
 @end
 
 @interface FileUnlocker: NSObject

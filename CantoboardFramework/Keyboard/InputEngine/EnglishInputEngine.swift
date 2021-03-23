@@ -8,44 +8,6 @@
 import Foundation
 import UIKit
 
-extension EnglishDictionary {
-    public convenience init(locale: String) {
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let dictDbPath = documentsDirectory.appendingPathComponent("EnglishDictionary/build/\(locale).db", isDirectory: false).path
-        let dictDbImportedPath = dictDbPath + "/imported"
-        // TODO compare the modified date of "EnglishDictionary/build/\(locale).db/LOCK". If the src is newer, reinstall.
-        // try? FileManager.default.removeItem(atPath: dictDbPath)
-        if !FileManager.default.fileExists(atPath: dictDbImportedPath) {
-            guard let resourcePath = Bundle.init(for: EnglishDictionary.self).resourcePath else {
-                fatalError("Bundle.main.resourcePath is nil.")
-            }
-            
-            let srcDictPath = resourcePath + "/EnglishDictionary/build/\(locale).db"
-            let dstDictPath = documentsDirectory.appendingPathComponent("EnglishDictionary/build", isDirectory: false).path
-            try? FileManager.default.removeItem(atPath: dstDictPath)
-            try! FileManager.default.createDirectory(atPath: dstDictPath, withIntermediateDirectories: true, attributes: nil)
-            NSLog("Installing English Dictionary from \(srcDictPath) -> \(dstDictPath)")
-            try! FileManager.default.copyItem(atPath: srcDictPath, toPath: dictDbPath)
-            FileManager.default.createFile(atPath: dictDbImportedPath, contents: nil, attributes: nil)
-        }
-        
-        self.init(dictDbPath)
-    }
-    
-    public static func createDb(locale: String) {
-        guard let resourcePath = Bundle.init(for: EnglishDictionary.self).resourcePath else {
-            fatalError("Bundle.main.resourcePath is nil.")
-        }
-        let dictTextPath = resourcePath + "/EnglishDictionary/\(locale).txt"
-        
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let dictDbPath = documentsDirectory.appendingPathComponent("EnglishDictionary/build/\(locale).db", isDirectory: false).path
-        
-        try? FileManager.default.removeItem(atPath: dictDbPath)
-        EnglishDictionary.createDb(dictTextPath, dbPath: dictDbPath)
-    }
-}
-
 class InputTextBuffer {
     private(set) var _text: String
     private(set) var caretIndex: String.Index
@@ -119,17 +81,21 @@ class InputTextBuffer {
 }
 
 class EnglishInputEngine: InputEngine {
-    private static let language = "en"
-    private static let popularWords = ["I": "i", "I'm": "Im", "Can't": "Cant", "can't": "cant"]
+    private static let language = "en-US"
+    private static let englishDictionary = EnglishDictionary(locale: language)
+
+    private static let popularWords = ["I": "i"] // , "I'm": "Im", "Can't": "Cant", "can't": "cant"]
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
     private static var textChecker = UITextChecker()
     private(set) var isWord: Bool = false
-    private let englishDictionary = EnglishDictionary(locale: "en-US")
     
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
+        DispatchQueue.global(qos: .background).async {
+            _ = EnglishInputEngine.englishDictionary
+        }
     }
 
     func processChar(_ char: Character) -> Bool {
@@ -178,10 +144,12 @@ class EnglishInputEngine: InputEngine {
         var worstCandidates: [String] = []
 
         let textChecker = EnglishInputEngine.textChecker
+        let englishDictionary = EnglishInputEngine.englishDictionary
+        
         isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: EnglishInputEngine.language).location == NSNotFound
         
         // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
-        if isWord && !englishDictionary.hasWord(text) {
+        if isWord && !text.allSatisfy({ $0.isUppercase }) && !englishDictionary.hasWord(text) {
             worstCandidates.append(text)
             isWord = false
         }
@@ -200,17 +168,22 @@ class EnglishInputEngine: InputEngine {
         }
         
         // Make sure the exact match appears first.
-        if isWord && (text == "a" || text.count > 1) {
+        if isWord {
             candidates.insert(text, at: 0)
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
-            if word == text || // We added the word already. Ignore.
-                /* word.contains("-") || */ word.contains(" ") { continue } // Only do word for word correction.
-            if let popularWordInput = EnglishInputEngine.popularWords[word],
+            if word == text {
+                continue // We added the word already. Ignore.
+            } else if word.contains(where: { $0 == " " || $0 == "-" }) {
+                worstCandidates.append(word)
+            } else if let popularWordInput = EnglishInputEngine.popularWords[word],
                 text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
                 candidates.insert(word, at: 0)
-            } else if word.caseInsensitiveCompare(text) == .orderedSame {
+            } else if word.filter({ $0 != "'" }) == text {
+                candidates.insert(word, at: 0)
+                isWord = true
+            } else if word == text || word == text.capitalized {
                 candidates.insert(word, at: isWord ? 1 : 0)
                 isWord = true
             } else {

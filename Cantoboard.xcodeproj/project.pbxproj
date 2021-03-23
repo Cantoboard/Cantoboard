@@ -14,9 +14,10 @@
 		7919A78A25F332100075DD4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78925F332100075DD4D /* Assets.xcassets */; };
 		7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78B25F332100075DD4D /* LaunchScreen.storyboard */; };
 		79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */; };
+		79305FF4260A6EF7002131EF /* EnglishDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79305FF3260A6EF7002131EF /* EnglishDictionary.swift */; };
 		79515A7E2609AA1500D29A5C /* EnglishDictionary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* EnglishDictionary.mm */; };
 		79515ABC2609AF9C00D29A5C /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79515AB82609AF5D00D29A5C /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		79515AD82609BFB400D29A5C /* EnglishDictionary in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* EnglishDictionary */; };
+		79515AD82609BFB400D29A5C /* Dictionary in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* Dictionary */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -232,9 +233,10 @@
 		7919A78925F332100075DD4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7919A78C25F332100075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7919A78E25F332100075DD4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		79305FF3260A6EF7002131EF /* EnglishDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnglishDictionary.swift; sourceTree = "<group>"; };
 		79515A7D2609AA1500D29A5C /* EnglishDictionary.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EnglishDictionary.mm; sourceTree = "<group>"; };
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
-		79515AD72609BFB400D29A5C /* EnglishDictionary */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = EnglishDictionary; path = CantoboardFramework/EnglishDictionary; sourceTree = SOURCE_ROOT; };
+		79515AD72609BFB400D29A5C /* Dictionary */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Dictionary; path = CantoboardFramework/Dictionary; sourceTree = SOURCE_ROOT; };
 		79515AED260A6BBB00D29A5C /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -474,7 +476,7 @@
 			isa = PBXGroup;
 			children = (
 				79515AED260A6BBB00D29A5C /* include */,
-				79515AD72609BFB400D29A5C /* EnglishDictionary */,
+				79515AD72609BFB400D29A5C /* Dictionary */,
 				79B9B6E425F34BC100238E80 /* RimeSchema */,
 				79B9B58A25F34A1200238E80 /* Keyboard */,
 				79B9B58125F34A1200238E80 /* RimeKit */,
@@ -519,10 +521,11 @@
 			isa = PBXGroup;
 			children = (
 				79B9B58C25F34A1200238E80 /* RimeApi.swift */,
-				79B9B58D25F34A1200238E80 /* EnglishInputEngine.swift */,
-				79B9B58E25F34A1200238E80 /* InputEngine.swift */,
 				79B9B58F25F34A1200238E80 /* RimeInputEngine.swift */,
+				79305FF3260A6EF7002131EF /* EnglishDictionary.swift */,
+				79B9B58D25F34A1200238E80 /* EnglishInputEngine.swift */,
 				79B9B59025F34A1200238E80 /* BilingualInputEngine.swift */,
+				79B9B58E25F34A1200238E80 /* InputEngine.swift */,
 			);
 			path = InputEngine;
 			sourceTree = "<group>";
@@ -950,7 +953,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79515AD82609BFB400D29A5C /* EnglishDictionary in Resources */,
+				79515AD82609BFB400D29A5C /* Dictionary in Resources */,
 				79B9B6E525F34BC100238E80 /* RimeSchema in Resources */,
 				79B9B64C25F34A1200238E80 /* Media.xcassets in Resources */,
 			);
@@ -1088,6 +1091,7 @@
 				79B9B60825F34A1200238E80 /* KeyPopupView.swift in Sources */,
 				79B9B60325F34A1200238E80 /* Settings.swift in Sources */,
 				79B9B60725F34A1200238E80 /* KeyRowView.swift in Sources */,
+				79305FF4260A6EF7002131EF /* EnglishDictionary.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
