@@ -160,7 +160,9 @@ class InputController {
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
             if inputEngine.composition?.text != nil {
-                if inputEngine.processBackspace() {
+                if action == .deleteWordSwipe {
+                    clearInput()
+                } else if inputEngine.processBackspace() {
                     updateInputState()
                 }
             } else {
