@@ -108,8 +108,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHintFgColor: UIColor {
-        if self == .space { return buttonFgColor.withAlphaComponent(0.6) }
-        return buttonFgColor
+        return ButtonColor.keyHintColor
     }
     
     // TODO Return images < iOS 12
@@ -381,6 +380,7 @@ class ButtonColor {
     static let systemKeyBackgroundColor = UIColor(named: "systemKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let inputKeyBackgroundColor = UIColor(named: "inputKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyForegroundColor = UIColor(named: "keyForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let keyHintColor = UIColor(named: "keyHintColor", in: FrameworkBundle, compatibleWith: nil)!
     static let popupBackgroundColor = UIColor(named: "PopupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
     static let shiftKeyHighlightedBackgroundColor = UIColor(named: "ShiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
