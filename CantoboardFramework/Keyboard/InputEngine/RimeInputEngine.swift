@@ -34,7 +34,8 @@ class RimeInputEngine: NSObject, InputEngine {
     func processBackspace() -> Bool {
         guard composition?.caretIndex ?? 0 > 0 else { return false }
         rimeSession?.processKey(0xff08, modifier: 0)// Backspace
-        processKey(0xff50) // Home
+        rimeSession?.setCandidateMenuToFirstPage()
+        refreshCandidates()
         return true
     }
     
@@ -92,8 +93,7 @@ class RimeInputEngine: NSObject, InputEngine {
     func clearInput() {
         guard let rimeSession = self.rimeSession else { return }
         rimeSession.processKey(0xff1b, modifier: 0) // Esc
-        rimeSession.processKey(0xff1b, modifier: 0)
-        processKey(0xff50) // Home
+        processKey(0xff1b)
     }
     
     func getCandidates() -> NSArray {

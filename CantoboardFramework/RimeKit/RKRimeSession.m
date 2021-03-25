@@ -164,4 +164,29 @@
     _rimeApi->set_option(_sessionId, name.UTF8String, value);
 }
 
+-(void)setCandidateMenuToFirstPage {
+    RIME_STRUCT(RimeContext, ctx);
+    bool isFirstPage = false;
+    do {
+        if (!_rimeApi->get_context(_sessionId, &ctx)) {
+            NSLog(@"%p get_context() failed.", (void*)_sessionId);
+            _compositionText = @"";
+            _commitTextPreview = @"";
+            _rawInput = @"";
+            _candidatesAllLoaded = false;
+            _compositionCaretBytePosition = 0;
+            _rawInputCaretBytePosition = 0;
+            _rimeApi->free_context(&ctx);
+            return;
+        }
+        
+        _rimeApi->process_key(_sessionId, 0xff55, 0);
+        
+        isFirstPage = ctx.menu.page_no == 0;
+        _rimeApi->free_context(&ctx);
+    } while (!isFirstPage);
+
+    _candidatesAllLoaded = false;
+}
+
 @end
