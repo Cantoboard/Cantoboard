@@ -12,15 +12,15 @@ extension EnglishDictionary {
     
     public convenience init(locale: String) {
         let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let dictsPath = documentsDirectory.appendingPathComponent("\(EnglishDictionary.dictionaryDirName)", isDirectory: false).path
+        let dictsPath = documentsDirectory.appendingPathComponent("\(Self.dictionaryDirName)", isDirectory: false).path
         
-        EnglishDictionary.installDictionariesIfNeeded(dictsPath: dictsPath)
+        Self.installDictionariesIfNeeded(dictsPath: dictsPath)
         
         self.init(dictsPath + "/\(locale).db")
     }
     
     private static func installDictionariesIfNeeded(dictsPath: String) {
-        guard let resourcePath = Bundle.init(for: EnglishDictionary.self).resourcePath else {
+        guard let resourcePath = Bundle.init(for: Self.self).resourcePath else {
             fatalError("Bundle.main.resourcePath is nil.")
         }
         
@@ -58,7 +58,7 @@ extension EnglishDictionary {
     }
     
     public static func createDb(locale: String) {
-        guard let resourcePath = Bundle.init(for: EnglishDictionary.self).resourcePath else {
+        guard let resourcePath = Bundle.init(for: Self.self).resourcePath else {
             fatalError("Bundle.main.resourcePath is nil.")
         }
         let dictTextPath = resourcePath + "/\(dictionaryDirName)/\(locale).txt"
@@ -68,6 +68,6 @@ extension EnglishDictionary {
         let dictDbPath = documentsDirectory.appendingPathComponent("\(dictionaryDirName)-build/\(locale).db", isDirectory: false).path
         
         try? FileManager.default.removeItem(atPath: dictDbPath)
-        EnglishDictionary.createDb([dictTextPath, commonDictPath], dbPath: dictDbPath)
+        Self.createDb([dictTextPath, commonDictPath], dbPath: dictDbPath)
     }
 }

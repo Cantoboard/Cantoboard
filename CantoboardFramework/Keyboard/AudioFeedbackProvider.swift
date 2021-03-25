@@ -18,11 +18,11 @@ class AudioFeedbackProvider {
         switch keyboardAction {
         case .character(_), .rime(_), .emoji(_):
             // UIDevice.current.playInputClick()
-            AudioServicesPlaySystemSound(AudioFeedbackProvider.ClickPress)
+            AudioServicesPlaySystemSound(Self.ClickPress)
         case .backspace, .deleteWord:
-            AudioServicesPlaySystemSound(AudioFeedbackProvider.DeletePress)
+            AudioServicesPlaySystemSound(Self.DeletePress)
         case .keyboardType(_), .space, .newLine:
-            AudioServicesPlaySystemSound(AudioFeedbackProvider.ModifierPress)
+            AudioServicesPlaySystemSound(Self.ModifierPress)
         default: ()
         }
     }

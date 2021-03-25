@@ -124,7 +124,7 @@ class TouchHandler {
             var dX = point.x - cursorMoveStartPosition.x
             let isLeft = dX < 0
             dX = isLeft ? -dX : dX
-            let threshold = TouchHandler.CursorMovingStepX
+            let threshold = Self.CursorMovingStepX
             while dX > threshold {
                 dX -= threshold
                 callKeyHandler(isLeft ? .moveCursorBackward : .moveCursorForward)
@@ -161,7 +161,7 @@ class TouchHandler {
             // Ignore short swipe.
             guard let cursorMoveStartPosition = cursorMoveStartPosition else { return }
             let point = touch.location(in: keyboardView), deltaX = abs(point.x - cursorMoveStartPosition.x)
-            guard deltaX >= TouchHandler.InitialCursorMovingThreshold else { return }
+            guard deltaX >= Self.InitialCursorMovingThreshold else { return }
             
             // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
             let tapStartAction = currentTouch.2
@@ -256,7 +256,7 @@ class TouchHandler {
     private func onKeyRepeat(_ timer: Timer) {
         guard timer == self.keyRepeatTimer else { timer.invalidate(); return } // Timer was overwritten.
         keyRepeatCounter += 1
-        if self.inputMode == .backspacing && keyRepeatCounter > TouchHandler.KeyRepeatInitialDelay {
+        if self.inputMode == .backspacing && keyRepeatCounter > Self.KeyRepeatInitialDelay {
             let action: KeyboardAction
             if keyRepeatCounter <= 20 {
                 action = .backspace
@@ -265,7 +265,7 @@ class TouchHandler {
             }
             callKeyHandler(action)
             AudioFeedbackProvider.Play(keyboardAction: action)
-        } else if self.inputMode == .typing && keyRepeatCounter > TouchHandler.LongPressDelay,
+        } else if self.inputMode == .typing && keyRepeatCounter > Self.LongPressDelay,
             let currentTouch = currentTouch {
             currentTouch.1.keyLongPressed(currentTouch.0)
             cancelKeyRepeatTimer()
@@ -275,7 +275,7 @@ class TouchHandler {
     private func setupKeyRepeatTimer() {
         keyRepeatTimer?.invalidate()
         keyRepeatCounter = 0
-        keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: TouchHandler.KeyRepeatInterval, repeats: true) { [weak self] timer in
+        keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: Self.KeyRepeatInterval, repeats: true) { [weak self] timer in
             guard let self = self else { timer.invalidate(); return }
             self.onKeyRepeat(timer)
         }

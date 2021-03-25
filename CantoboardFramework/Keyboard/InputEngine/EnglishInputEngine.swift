@@ -94,7 +94,7 @@ class EnglishInputEngine: InputEngine {
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
         DispatchQueue.global(qos: .background).async {
-            _ = EnglishInputEngine.englishDictionary
+            _ = Self.englishDictionary
         }
     }
 
@@ -143,10 +143,10 @@ class EnglishInputEngine: InputEngine {
         let nsWordRange = NSRange(wordRange, in: combined)
         var worstCandidates: [String] = []
 
-        let textChecker = EnglishInputEngine.textChecker
-        let englishDictionary = EnglishInputEngine.englishDictionary
+        let textChecker = Self.textChecker
+        let englishDictionary = Self.englishDictionary
         
-        isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: EnglishInputEngine.language).location == NSNotFound
+        isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
         
         // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
         if isWord && !text.allSatisfy({ $0.isUppercase }) && !englishDictionary.hasWord(text) {
@@ -157,12 +157,12 @@ class EnglishInputEngine: InputEngine {
         candidates.removeAllObjects()
         isFirstLoad = true
         
-        let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: EnglishInputEngine.language) ?? []
+        let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
         // If the user is typing a word after an English word, run autocomplete.
         let autoCompleteCandidates: [String]
         if documentContextBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
-            autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: EnglishInputEngine.language) ?? []
+            autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         } else {
             autoCompleteCandidates = []
         }
@@ -177,7 +177,7 @@ class EnglishInputEngine: InputEngine {
                 continue // We added the word already. Ignore.
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
                 worstCandidates.append(word)
-            } else if let popularWordInput = EnglishInputEngine.popularWords[word],
+            } else if let popularWordInput = Self.popularWords[word],
                 text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
                 candidates.insert(word, at: 0)
             } else if word.filter({ $0 != "'" }) == text ||

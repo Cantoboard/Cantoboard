@@ -90,7 +90,7 @@ class BilingualInputEngine: InputEngine {
     
     func processChar(_ char: Character) -> Bool {
         if char.isASCII {
-            let queue = BilingualInputEngine.processCharQueue
+            let queue = Self.processCharQueue
             let group = DispatchGroup()
             
             var updateEnglishEngineState = false, updateRimeEngineState = false
