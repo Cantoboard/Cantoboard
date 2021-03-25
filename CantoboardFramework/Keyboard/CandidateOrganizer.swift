@@ -105,6 +105,7 @@ class CandidateOrganizer {
         var candidateAdded = 0
         if let candidateSource = self.candidateSource {
             repeat {
+                loaded = candidateSource.requestMoreCandidate()
                 if candidateSource is AutoSuggestionCandidateSource || filter == .mixed { // Pass-thru mode.
                     candidates = candidateSource.candidates
                     candidateAdded += candidates.count - candidateIndices.count
@@ -128,7 +129,6 @@ class CandidateOrganizer {
                         lastProcessedCandidateSourceIndex += 1
                     }
                 }
-                loaded = candidateSource.requestMoreCandidate()
             } while loaded && candidateAdded < 10
         }
         
