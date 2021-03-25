@@ -148,8 +148,11 @@ class EnglishInputEngine: InputEngine {
         
         isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
         
-        // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
-        if isWord && !text.allSatisfy({ $0.isUppercase }) && !englishDictionary.hasWord(text) {
+        let isInEnglishDictionary = englishDictionary.hasWord(text)
+        if !isWord && isInEnglishDictionary {
+            isWord = true
+        } else if isWord && !text.allSatisfy({ $0.isUppercase }) && !isInEnglishDictionary {
+            // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
             worstCandidates.append(text)
             isWord = false
         }
