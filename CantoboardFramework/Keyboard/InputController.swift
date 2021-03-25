@@ -306,7 +306,9 @@ class InputController {
             }
         }
         
-        refreshKeyboardContextualType()
+        DispatchQueue.main.async {
+            self.updateContextualSuggestion()
+        }
     }
     
     private func setMarkedText() {
