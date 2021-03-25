@@ -81,10 +81,16 @@ open class KeyboardViewController: UIInputViewController {
         
         let prevSettings = Settings.cached
         let settings = Settings.reload()
+        
         if prevSettings.rimeSettings != settings.rimeSettings {
             RimeApi.generateSchemaPatchFromSettings()
             RimeApi.closeShared()
             NSLog("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
+        }
+        
+        if prevSettings.englishLocale != settings.englishLocale {
+            EnglishInputEngine.language = settings.englishLocale.rawValue
+            NSLog("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
         }
         
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)

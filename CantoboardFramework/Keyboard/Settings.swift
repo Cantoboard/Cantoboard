@@ -35,6 +35,13 @@ public enum ToneInputMode: String, Codable {
     case vxq = "vxq"
 }
 
+public enum EnglishLocale: String, Codable {
+    case us = "en-US"
+    case gb = "en-GB"
+    case ca = "en-CA"
+    case au = "en-AU"
+}
+
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var toneInputMode: ToneInputMode
@@ -59,6 +66,7 @@ public struct Settings: Codable, Equatable {
     private static let DefaultSymbolShape: SymbolShape = .smart
     private static let DefaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
     private static let DefaultRimeSettings: RimeSettings = RimeSettings()
+    private static let DefaultEnglishLocale: EnglishLocale = .us
 
     public var charForm: CharForm
     public var isMixedModeEnabled: Bool
@@ -68,6 +76,7 @@ public struct Settings: Codable, Equatable {
     public var symbolShape: SymbolShape
     public var spaceOutputMode: SpaceOutputMode
     public var rimeSettings: RimeSettings
+    public var englishLocale: EnglishLocale
     
     public init() {
         charForm = Settings.DefaultCharForm
@@ -78,6 +87,7 @@ public struct Settings: Codable, Equatable {
         symbolShape = Settings.DefaultSymbolShape
         spaceOutputMode = Settings.DefaultSpaceOutputMode
         rimeSettings = Settings.DefaultRimeSettings
+        englishLocale = Settings.DefaultEnglishLocale
     }
     
     public init(from decoder: Decoder) throws {
@@ -90,6 +100,7 @@ public struct Settings: Codable, Equatable {
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.DefaultSymbolShape
         self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.DefaultSpaceOutputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.DefaultRimeSettings
+        self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.DefaultEnglishLocale
     }
     
     private static var _cached: Settings?

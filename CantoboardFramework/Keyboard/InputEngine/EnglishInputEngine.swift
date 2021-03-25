@@ -81,8 +81,12 @@ class InputTextBuffer {
 }
 
 class EnglishInputEngine: InputEngine {
-    private static let language = "en-US"
-    private static let englishDictionary = EnglishDictionary(locale: language)
+    static var language = Settings.cached.englishLocale.rawValue {
+        didSet {
+            englishDictionary = EnglishDictionary(locale: language)
+        }
+    }
+    private static var englishDictionary = EnglishDictionary(locale: language)
 
     private static let popularWords = ["I": "i", "Can't": "Cant", "can't": "cant"] // , "I'm": "Im", ]
     private var textDocumentProxy: UITextDocumentProxy!

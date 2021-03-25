@@ -16,7 +16,8 @@ class ViewController: UITableViewController {
     @IBOutlet private var symbolShapeControl: UISegmentedControl!
     @IBOutlet private var spaceOutputControl: UISegmentedControl!
     @IBOutlet private var toneInputControl: UISegmentedControl!
-    
+    @IBOutlet private var englishLocaleInputControl: UISegmentedControl!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,6 +30,7 @@ class ViewController: UITableViewController {
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         spaceOutputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        englishLocaleInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -48,6 +50,15 @@ class ViewController: UITableViewController {
         let spaceOutputMode: SpaceOutputMode = spaceOutputControl.selectedSegmentIndex == 0 ? .input : .bestCandidate
         let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .longPress : .vxq
         
+        let englishLocale: EnglishLocale
+        switch englishLocaleInputControl.selectedSegmentIndex {
+        case 3: englishLocale = .us
+        case 2: englishLocale = .gb
+        case 1: englishLocale = .ca
+        case 0: englishLocale = .au
+        default: englishLocale = .us
+        }
+        
         var settings = Settings()
         settings.charForm = selectedCharForm
         settings.isMixedModeEnabled = enableMixedModeControl.isOn
@@ -56,6 +67,7 @@ class ViewController: UITableViewController {
         settings.symbolShape = selectedSymbolShape
         settings.spaceOutputMode = spaceOutputMode
         settings.rimeSettings.toneInputMode = toneInputMode
+        settings.englishLocale = englishLocale
         Settings.save(settings)
     }
     
@@ -90,6 +102,15 @@ class ViewController: UITableViewController {
         enableMixedModeControl.isOn = settings.isMixedModeEnabled
         autoCapControl.isOn = settings.isAutoCapEnabled
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
+        
+        populateSetting(toSegmentedControl: englishLocaleInputControl, settingToIndexMapper: {
+            switch $0.englishLocale {
+            case .au: return 0
+            case .ca: return 1
+            case .gb: return 2
+            case .us: return 3
+            }
+        })
     }
     
     private func populateSymbolShape(_ settings: Settings) {

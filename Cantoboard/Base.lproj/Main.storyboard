@@ -183,12 +183,39 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="4P6-Or-M6e">
+                                        <rect key="frame" x="0.0" y="332.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4P6-Or-M6e" id="t35-RH-yhA">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="英文詞典" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Pr-8T-E6F">
+                                                    <rect key="frame" x="20" y="11" width="70" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="3" translatesAutoresizingMaskIntoConstraints="NO" id="rKe-fT-nEO">
+                                                    <rect key="frame" x="189" y="6" width="200" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                                    <segments>
+                                                        <segment title="澳洲"/>
+                                                        <segment title="加拿大"/>
+                                                        <segment title="英國"/>
+                                                        <segment title="美國"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="輸入法安裝方法" id="nZO-p2-O7y">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="3076" id="uDv-pZ-ndX">
-                                        <rect key="frame" x="0.0" y="388.5" width="414" height="3076"/>
+                                        <rect key="frame" x="0.0" y="432" width="414" height="3076"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uDv-pZ-ndX" id="9xU-we-jCa">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="3076"/>
@@ -269,6 +296,7 @@
                         <outlet property="autoCapControl" destination="HWw-Ww-K7d" id="V1Z-Ln-25O"/>
                         <outlet property="charFormControl" destination="JqT-NC-LHq" id="2nj-yG-rLH"/>
                         <outlet property="enableMixedModeControl" destination="VP3-92-EzS" id="sm3-NV-LaD"/>
+                        <outlet property="englishLocaleInputControl" destination="rKe-fT-nEO" id="t3g-pf-zfQ"/>
                         <outlet property="smartFullStopControl" destination="5cN-TT-a0k" id="ofc-z7-t6j"/>
                         <outlet property="spaceOutputControl" destination="7Sx-ho-3Vf" id="j3O-y3-QDA"/>
                         <outlet property="symbolShapeControl" destination="ZM2-oE-LJv" id="QDE-4r-pWi"/>
