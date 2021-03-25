@@ -43,19 +43,19 @@ class CandidateOrganizer {
         case frequency, radical, stroke, tone
     }
     
-    var filter: CandidateFilter = .mixed {
+    var inputMode: InputMode = .mixed {
         didSet {
             loadMoreCandidates(reset: true)
             DispatchQueue.main.async {
                 var settings = Settings.cached
-                settings.langFilter = self.filter
+                settings.lastInputMode = self.inputMode
                 Settings.save(settings)
             }
         }
     }
     
     init() {
-        filter = Settings.cached.langFilter
+        inputMode = Settings.cached.lastInputMode
     }
     
     var onMoreCandidatesLoaded: ((CandidateOrganizer) -> Void)?
@@ -93,7 +93,7 @@ class CandidateOrganizer {
     private func loadMoreCandidates(reset: Bool) {
         if reset {
             candidateIndices = []
-            if filter == .mixed {
+            if inputMode == .mixed {
                 candidates = candidateSource?.candidates ?? []
             } else {
                 candidates = NSMutableArray()
@@ -106,7 +106,7 @@ class CandidateOrganizer {
         if let candidateSource = self.candidateSource {
             repeat {
                 loaded = candidateSource.requestMoreCandidate()
-                if candidateSource is AutoSuggestionCandidateSource || filter == .mixed { // Pass-thru mode.
+                if candidateSource is AutoSuggestionCandidateSource || inputMode == .mixed { // Pass-thru mode.
                     candidates = candidateSource.candidates
                     candidateAdded += candidates.count - candidateIndices.count
                     candidateIndices.append(contentsOf: candidateIndices.count..<candidates.count)
@@ -117,8 +117,8 @@ class CandidateOrganizer {
                               let candidates = candidates as? NSMutableArray else { lastProcessedCandidateSourceIndex += 1; continue }
                         let source = candidateSource.getCandidateSource(i)
                         guard source == nil ||
-                              filter == .chinese && source == .some(.rime) ||
-                              filter == .english && source == .some(.english) else {
+                              inputMode == .chinese && source == .some(.rime) ||
+                              inputMode == .english && source == .some(.english) else {
                             lastProcessedCandidateSourceIndex += 1;
                             continue
                         }

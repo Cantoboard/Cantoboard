@@ -101,6 +101,9 @@ protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewCollapsed()
     func candidatePaneViewCandidateSelected(_ choice: Int)
     func candidatePaneCandidateLoaded()
+    func handleKey(_ action: KeyboardAction)
+    var symbolShape: SymbolShape { get }
+    var symbolShapeOverride: SymbolShape? { get set }
 }
 
 class CandidatePaneView: UIControl {
@@ -108,8 +111,8 @@ class CandidatePaneView: UIControl {
         case row, table
     }
     
-    enum RightButtonMode {
-        case expand, filter, hidden
+    enum FilterMode {
+        case lang, shape
     }
     
     let rowPadding = CGFloat(0)
@@ -148,14 +151,18 @@ class CandidatePaneView: UIControl {
     }
     weak var collectionView: CandidateCollectionView!
     weak var buttonStackView: UIStackView!
-    weak var expandButton, filterButton: UIButton!
+    weak var expandButton, filterButton, backspaceButton: UIButton!
     weak var delegate: CandidatePaneViewDelegate?
     
     var rowStyleHeightConstraint: NSLayoutConstraint!
     var tableStyleBottomConstraint: NSLayoutConstraint?
     
     private(set) var mode: Mode = .row
-    private var rightButtonMode: RightButtonMode = .filter
+    var filterMode: FilterMode = .lang {
+        didSet {
+            setupButtons()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -177,12 +184,6 @@ class CandidatePaneView: UIControl {
             buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             buttonStackView.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
             // buttonStackView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
-            
-            expandButton.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            expandButton.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            
-            filterButton.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            filterButton.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
         ])
     }
     
@@ -202,14 +203,11 @@ class CandidatePaneView: UIControl {
         expandButton = createAndAddButton()
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
 
-        filterButton = createAndAddButton()
+        filterButton = createAndAddButtonWithBackground()
         filterButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
-        let statusSquareBg = CALayer()
-        statusSquareBg.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: getRowHeight() + rowPadding, height: getRowHeight() + rowPadding)).insetBy(dx: 5, dy: 5)
-        statusSquareBg.backgroundColor = CGColor(gray: 0.5, alpha: 0.5)
-        statusSquareBg.cornerRadius = 3
-        statusSquareBg.masksToBounds = true
-        filterButton.layer.addSublayer(statusSquareBg)
+        
+        backspaceButton = createAndAddButton()
+        backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
     }
     
     private func createAndAddButton() -> UIButton {
@@ -221,7 +219,25 @@ class CandidatePaneView: UIControl {
         button.tintColor = .label
         // button.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
         
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+            button.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
+        ])
+        
         buttonStackView.addArrangedSubview(button)
+        return button
+    }
+    
+    private func createAndAddButtonWithBackground() -> UIButton {
+        let button = createAndAddButton()
+        
+        let statusSquareBg = CALayer()
+        statusSquareBg.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: getRowHeight() + rowPadding, height: getRowHeight() + rowPadding)).insetBy(dx: 5, dy: 5)
+        statusSquareBg.backgroundColor = CGColor(gray: 0.5, alpha: 0.5)
+        statusSquareBg.cornerRadius = 3
+        statusSquareBg.masksToBounds = true
+        button.layer.addSublayer(statusSquareBg)
+        
         return button
     }
     
@@ -231,22 +247,37 @@ class CandidatePaneView: UIControl {
         let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(expandButtonImage, for: .normal)
         
-        var title: String
-        switch candidateOrganizer.filter {
-        case .mixed: title = "雙"
-        case .chinese: title = "中"
-        case .english: title = "英"
+        var title: String?
+        if filterMode == .lang {
+            switch candidateOrganizer.inputMode {
+            case .mixed: title = "雙"
+            case .chinese: title = "中"
+            case .english: title = "英"
+            }
+        } else {
+            if let symbolShape = delegate?.symbolShape {
+                switch symbolShape {
+                case .full: title = "全"
+                case .half: title = "半"
+                default: title = nil
+                }
+            }
         }
+        
         filterButton.setTitle(title, for: .normal)
+        
+        backspaceButton.setImage(ButtonImage.backspace, for: .normal)
         
         if mode == .table {
             expandButton.isHidden = false
-            filterButton.isHidden = false
+            filterButton.isHidden = false || title == nil
+            backspaceButton.isHidden = false
         } else {
             let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
             
             expandButton.isHidden = cannotExpand
-            filterButton.isHidden = !cannotExpand || !Settings.cached.isEnglishEnabled
+            filterButton.isHidden = !cannotExpand || !Settings.cached.isEnglishEnabled || title == nil
+            backspaceButton.isHidden = true
         }
     }
     
@@ -286,16 +317,30 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func filterButtonClick() {
-        guard let candidateOrganizer = candidateOrganizer else { return }
-        
-        var nextFilterMode: CandidateFilter
-        switch candidateOrganizer.filter {
-        case .mixed: nextFilterMode = .chinese
-        case .chinese: nextFilterMode = .english
-        case .english: nextFilterMode = .mixed
+        if filterMode == .lang {
+            guard let candidateOrganizer = candidateOrganizer else { return }
+            
+            var nextFilterMode: InputMode
+            switch candidateOrganizer.inputMode {
+            case .mixed: nextFilterMode = .chinese
+            case .chinese: nextFilterMode = .english
+            case .english: nextFilterMode = .mixed
+            }
+            
+            candidateOrganizer.inputMode = nextFilterMode
+        } else {
+            guard let symbolShape = delegate?.symbolShape else { return }
+            switch symbolShape {
+            case .full: delegate?.symbolShapeOverride = .half
+            case .half: delegate?.symbolShapeOverride = .full
+            default: ()
+            }
+            setupButtons()
         }
-        
-        candidateOrganizer.filter = nextFilterMode
+    }
+    
+    @objc private func backspaceButtonClick() {
+        delegate?.handleKey(.backspace)
     }
     
     override func updateConstraints() {

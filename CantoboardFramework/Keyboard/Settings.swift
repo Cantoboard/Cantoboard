@@ -13,7 +13,7 @@ public enum CharForm: String, Codable {
     case simplified = "zh-CN"
 }
 
-public enum CandidateFilter: String, Codable {
+public enum InputMode: String, Codable {
     case mixed = "mixed"
     case chinese = "chinese"
     case english = "english"
@@ -53,7 +53,7 @@ public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
     private static let DefaultCharForm: CharForm = .traditionalTW
     private static let DefaultEnglishInputEnabled: Bool = true
-    private static let DefaultLangFilter: CandidateFilter = .mixed
+    private static let DefaultInputMode: InputMode = .mixed
     private static let DefaultAutoCapEnabled: Bool = true
     private static let DefaultSmartFullStopEnabled: Bool = true
     private static let DefaultSymbolShape: SymbolShape = .smart
@@ -62,7 +62,7 @@ public struct Settings: Codable, Equatable {
 
     public var charForm: CharForm
     public var isEnglishEnabled: Bool
-    public var langFilter: CandidateFilter
+    public var lastInputMode: InputMode
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
     public var symbolShape: SymbolShape
@@ -71,7 +71,7 @@ public struct Settings: Codable, Equatable {
     
     public init() {
         charForm = Settings.DefaultCharForm
-        langFilter = Settings.DefaultLangFilter
+        lastInputMode = Settings.DefaultInputMode
         isEnglishEnabled = Settings.DefaultEnglishInputEnabled
         isAutoCapEnabled = Settings.DefaultAutoCapEnabled
         isSmartFullStopEnabled = Settings.DefaultSmartFullStopEnabled
@@ -83,7 +83,7 @@ public struct Settings: Codable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.DefaultCharForm
-        self.langFilter = try container.decodeIfPresent(CandidateFilter.self, forKey: .langFilter) ?? Settings.DefaultLangFilter
+        self.lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Settings.DefaultInputMode
         self.isEnglishEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnglishEnabled) ?? Settings.DefaultEnglishInputEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.DefaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.DefaultSmartFullStopEnabled

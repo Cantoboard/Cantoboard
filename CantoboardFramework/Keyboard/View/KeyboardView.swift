@@ -67,6 +67,14 @@ class KeyboardView: UIView {
         get { _keyboardType }
         set {
             if _keyboardType != newValue {
+                switch newValue {
+                case .alphabetic:
+                    symbolShapeOverride = nil
+                    candidatePaneView?.filterMode = .lang
+                case .symbolic, .numeric:
+                    candidatePaneView?.filterMode = .shape
+                default: ()
+                }
                 _keyboardType = newValue
                 setupView()
             }
@@ -80,6 +88,20 @@ class KeyboardView: UIView {
                 _keyboardContextualType = newValue
                 setupView()
             }
+        }
+    }
+    
+    var symbolShapeOverride: SymbolShape? {
+        didSet {
+            setupView()
+        }
+    }
+    
+    var symbolShape: SymbolShape {
+        if let symbolShapeOverride = symbolShapeOverride {
+            return symbolShapeOverride
+        } else {
+            return _keyboardContextualType == .chinese ? .full : .half
         }
     }
     
@@ -192,12 +214,12 @@ class KeyboardView: UIView {
         case let .alphabetic(shiftState):
             refreshAlphabeticKeys(shiftState)
         case .numeric:
-            let rows = keyboardContextualType == .chinese ? numbersFullKeyCapRows : numbersHalfKeyCapRows
+            let rows = symbolShape == .full ? numbersFullKeyCapRows : numbersHalfKeyCapRows
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
             }
         case .symbolic:
-            let rows = keyboardContextualType == .chinese ? symbolsFullKeyCapRows : symbolsHalfKeyCapRows
+            let rows = symbolShape == .full ? symbolsFullKeyCapRows : symbolsHalfKeyCapRows
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
             }
@@ -336,6 +358,10 @@ extension KeyboardView: CandidatePaneViewDelegate {
     
     func candidatePaneCandidateLoaded() {
         refreshCandidatePaneViewVisibility()
+    }
+    
+    func handleKey(_ action: KeyboardAction) {
+        delegate?.handleKey(action)
     }
 }
 
