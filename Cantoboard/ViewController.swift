@@ -37,25 +37,25 @@ class ViewController: UITableViewController {
     }
     
     @objc func updateSettings(_ sender: Any) {
-        let selectedCharForm: CharForm = charFormControl.selectedSegmentIndex == 0 ? .traditionalHK : .simplified
+        let selectedCharForm: CharForm = charFormControl.selectedSegmentIndex == 1 ? .traditionalHK : .simplified
         
         let selectedSymbolShape: SymbolShape
         switch symbolShapeControl.selectedSegmentIndex {
         case 0: selectedSymbolShape = .half
-        case 1: selectedSymbolShape = .smart
-        case 2: selectedSymbolShape = .full
+        case 1: selectedSymbolShape = .full
+        case 2: selectedSymbolShape = .smart
         default: selectedSymbolShape = .smart
         }
         
         let spaceOutputMode: SpaceOutputMode = spaceOutputControl.selectedSegmentIndex == 0 ? .input : .bestCandidate
-        let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .longPress : .vxq
+        let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
         let englishLocale: EnglishLocale
         switch englishLocaleInputControl.selectedSegmentIndex {
-        case 3: englishLocale = .us
-        case 2: englishLocale = .gb
-        case 1: englishLocale = .ca
         case 0: englishLocale = .au
+        case 1: englishLocale = .ca
+        case 2: englishLocale = .gb
+        case 3: englishLocale = .us
         default: englishLocale = .us
         }
         
@@ -92,8 +92,8 @@ class ViewController: UITableViewController {
     private func populateCharFormSetting(_ settings: Settings) {
         populateSetting(toSegmentedControl: charFormControl, settingToIndexMapper: {
             switch $0.charForm {
-            case .traditionalHK, .traditionalTW: return 0
-            case .simplified: return 1
+            case .traditionalHK, .traditionalTW: return 1
+            case .simplified: return 0
             }
         })
     }
@@ -117,8 +117,8 @@ class ViewController: UITableViewController {
         populateSetting(toSegmentedControl: symbolShapeControl, settingToIndexMapper: {
             switch $0.symbolShape {
             case .half: return 0
-            case .smart: return 1
-            case .full: return 2
+            case .full: return 1
+            case .smart: return 2
             }
         })
     }
@@ -135,8 +135,8 @@ class ViewController: UITableViewController {
     private func populateToneInput(_ settings: Settings) {
         populateSetting(toSegmentedControl: toneInputControl, settingToIndexMapper: {
             switch $0.rimeSettings.toneInputMode {
-            case .longPress: return 0
-            case .vxq: return 1
+            case .vxq: return 0
+            case .longPress: return 1
             }
         })
     }

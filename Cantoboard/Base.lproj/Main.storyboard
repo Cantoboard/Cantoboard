@@ -37,8 +37,8 @@
                                                     <rect key="frame" x="296" y="7" width="93" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
-                                                        <segment title="繁體"/>
                                                         <segment title="簡體"/>
+                                                        <segment title="繁體"/>
                                                     </segments>
                                                 </segmentedControl>
                                             </subviews>
@@ -126,8 +126,8 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="半形"/>
-                                                        <segment title="自動"/>
                                                         <segment title="全形"/>
+                                                        <segment title="自動"/>
                                                     </segments>
                                                 </segmentedControl>
                                             </subviews>
@@ -176,8 +176,8 @@
                                                     <rect key="frame" x="299" y="6" width="91" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
-                                                        <segment title="長按"/>
                                                         <segment title="vxq"/>
+                                                        <segment title="長按"/>
                                                     </segments>
                                                 </segmentedControl>
                                             </subviews>
