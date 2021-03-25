@@ -51,7 +51,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="英文輸入" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hnh-6m-IXx">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="雙語混打" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hnh-6m-IXx">
                                                     <rect key="frame" x="20" y="11" width="70" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -122,7 +122,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="ZM2-oE-LJv">
-                                                    <rect key="frame" x="254" y="6" width="135" height="32"/>
+                                                    <rect key="frame" x="253" y="6" width="136" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="半形"/>
@@ -152,7 +152,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="原始英文字串"/>
-                                                        <segment title="第一候選字"/>
+                                                        <segment title="最佳候選字"/>
                                                     </segments>
                                                 </segmentedControl>
                                             </subviews>
@@ -173,7 +173,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="IDG-2O-Xwy">
-                                                    <rect key="frame" x="299" y="6" width="93" height="32"/>
+                                                    <rect key="frame" x="299" y="6" width="91" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="長按"/>
@@ -268,7 +268,7 @@
                     <connections>
                         <outlet property="autoCapControl" destination="HWw-Ww-K7d" id="V1Z-Ln-25O"/>
                         <outlet property="charFormControl" destination="JqT-NC-LHq" id="2nj-yG-rLH"/>
-                        <outlet property="enableEnglishControl" destination="VP3-92-EzS" id="sm3-NV-LaD"/>
+                        <outlet property="enableMixedModeControl" destination="VP3-92-EzS" id="sm3-NV-LaD"/>
                         <outlet property="smartFullStopControl" destination="5cN-TT-a0k" id="ofc-z7-t6j"/>
                         <outlet property="spaceOutputControl" destination="7Sx-ho-3Vf" id="j3O-y3-QDA"/>
                         <outlet property="symbolShapeControl" destination="ZM2-oE-LJv" id="QDE-4r-pWi"/>

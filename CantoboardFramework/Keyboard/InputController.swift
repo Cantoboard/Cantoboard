@@ -58,8 +58,8 @@ class InputController {
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
         if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
             clearState()
-        } else if let composition = inputEngine.composition, !shouldApplyChromeSearchBarHack {
-            self.setMarkedText(composition)
+        } else if inputEngine.composition != nil, !shouldApplyChromeSearchBarHack {
+            self.setMarkedText()
         }
         
         shouldSkipNextTextDidChange = false
@@ -284,7 +284,7 @@ class InputController {
     }
     
     private func updateInputState() {
-        setMarkedText(inputEngine.composition)
+        setMarkedText()
         
         DispatchQueue.main.async {
             if self.inputEngine.composition == nil {
@@ -305,6 +305,14 @@ class InputController {
         }
         
         refreshKeyboardContextualType()
+    }
+    
+    private func setMarkedText() {
+        switch candidateOrganizer.inputMode {
+        case .chinese: setMarkedText(inputEngine.rimeComposition)
+        case .english: setMarkedText(inputEngine.englishComposition)
+        case .mixed: setMarkedText(inputEngine.composition)
+        }
     }
     
     private func setMarkedText(_ composition: Composition?) {

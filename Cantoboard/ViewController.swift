@@ -10,7 +10,7 @@ import CantoboardFramework
 
 class ViewController: UITableViewController {
     @IBOutlet private var charFormControl: UISegmentedControl!
-    @IBOutlet private var enableEnglishControl: UISwitch!
+    @IBOutlet private var enableMixedModeControl: UISwitch!
     @IBOutlet private var autoCapControl: UISwitch!
     @IBOutlet private var smartFullStopControl: UISwitch!
     @IBOutlet private var symbolShapeControl: UISegmentedControl!
@@ -23,7 +23,7 @@ class ViewController: UITableViewController {
         populateSettings()
         
         charFormControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
-        enableEnglishControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        enableMixedModeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         autoCapControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -50,7 +50,7 @@ class ViewController: UITableViewController {
         
         var settings = Settings()
         settings.charForm = selectedCharForm
-        settings.isEnglishEnabled = enableEnglishControl.isOn
+        settings.isMixedModeEnabled = enableMixedModeControl.isOn
         settings.isAutoCapEnabled = autoCapControl.isOn
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
@@ -71,7 +71,7 @@ class ViewController: UITableViewController {
     private func populateSettings() {
         let settings = Settings.reload()
         populateCharFormSetting(settings)
-        populateEnglishSettings(settings)
+        populateSmartInputSettings(settings)
         populateSymbolShape(settings)
         populateSpaceOutputMode(settings)
         populateToneInput(settings)
@@ -86,8 +86,8 @@ class ViewController: UITableViewController {
         })
     }
     
-    private func populateEnglishSettings(_ settings: Settings) {
-        enableEnglishControl.isOn = settings.isEnglishEnabled
+    private func populateSmartInputSettings(_ settings: Settings) {
+        enableMixedModeControl.isOn = settings.isMixedModeEnabled
         autoCapControl.isOn = settings.isAutoCapEnabled
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
     }

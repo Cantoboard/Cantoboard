@@ -107,6 +107,8 @@ protocol CandidatePaneViewDelegate: NSObject {
 }
 
 class CandidatePaneView: UIControl {
+    private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    
     enum Mode {
         case row, table
     }
@@ -276,7 +278,7 @@ class CandidatePaneView: UIControl {
             let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
             
             expandButton.isHidden = cannotExpand
-            filterButton.isHidden = !cannotExpand || !Settings.cached.isEnglishEnabled || title == nil
+            filterButton.isHidden = !cannotExpand || title == nil
             backspaceButton.isHidden = true
         }
     }
@@ -317,14 +319,16 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func filterButtonClick() {
+        Self.hapticsGenerator.impactOccurred(intensity: 1)
+        
         if filterMode == .lang {
             guard let candidateOrganizer = candidateOrganizer else { return }
             
             var nextFilterMode: InputMode
             switch candidateOrganizer.inputMode {
-            case .mixed: nextFilterMode = .chinese
+            case .mixed: nextFilterMode = .english
             case .chinese: nextFilterMode = .english
-            case .english: nextFilterMode = .mixed
+            case .english: nextFilterMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
             }
             
             candidateOrganizer.inputMode = nextFilterMode

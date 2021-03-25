@@ -206,11 +206,11 @@ class BilingualInputEngine: InputEngine {
         return casedMorphedText
     }
     
-    private var englishComposition: Composition? {
+    var englishComposition: Composition? {
         englishInputEngine.composition
     }
     
-    private var rimeComposition: Composition? {
+    var rimeComposition: Composition? {
         rimeInputEngine.composition
     }
     
@@ -235,7 +235,7 @@ class BilingualInputEngine: InputEngine {
     
     private func populateCandidates() {
         guard let rimeComposingText = rimeComposition?.text else { return }
-        let englishCandidates = Settings.cached.isEnglishEnabled ? englishInputEngine.getCandidates() : []
+        let englishCandidates = Settings.cached.isMixedModeEnabled ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
         
         if englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {

@@ -43,19 +43,19 @@ class CandidateOrganizer {
         case frequency, radical, stroke, tone
     }
     
-    var inputMode: InputMode = .mixed {
-        didSet {
-            loadMoreCandidates(reset: true)
-            DispatchQueue.main.async {
-                var settings = Settings.cached
-                settings.lastInputMode = self.inputMode
-                Settings.save(settings)
-            }
+    var inputMode: InputMode {
+        get {
+            let lastInputMode = Settings.cached.lastInputMode
+            if Settings.cached.isMixedModeEnabled && lastInputMode == .chinese { return .mixed }
+            if !Settings.cached.isMixedModeEnabled && lastInputMode == .mixed { return .chinese }
+            return lastInputMode
         }
-    }
-    
-    init() {
-        inputMode = Settings.cached.lastInputMode
+        set {
+            loadMoreCandidates(reset: true)
+            var settings = Settings.cached
+            settings.lastInputMode = newValue
+            Settings.save(settings)
+        }
     }
     
     var onMoreCandidatesLoaded: ((CandidateOrganizer) -> Void)?

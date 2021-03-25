@@ -52,7 +52,7 @@ public struct RimeSettings: Codable, Equatable {
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
     private static let DefaultCharForm: CharForm = .traditionalTW
-    private static let DefaultEnglishInputEnabled: Bool = true
+    private static let DefaultMixedModeEnabled: Bool = true
     private static let DefaultInputMode: InputMode = .mixed
     private static let DefaultAutoCapEnabled: Bool = true
     private static let DefaultSmartFullStopEnabled: Bool = true
@@ -61,7 +61,7 @@ public struct Settings: Codable, Equatable {
     private static let DefaultRimeSettings: RimeSettings = RimeSettings()
 
     public var charForm: CharForm
-    public var isEnglishEnabled: Bool
+    public var isMixedModeEnabled: Bool
     public var lastInputMode: InputMode
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
@@ -72,7 +72,7 @@ public struct Settings: Codable, Equatable {
     public init() {
         charForm = Settings.DefaultCharForm
         lastInputMode = Settings.DefaultInputMode
-        isEnglishEnabled = Settings.DefaultEnglishInputEnabled
+        isMixedModeEnabled = Settings.DefaultMixedModeEnabled
         isAutoCapEnabled = Settings.DefaultAutoCapEnabled
         isSmartFullStopEnabled = Settings.DefaultSmartFullStopEnabled
         symbolShape = Settings.DefaultSymbolShape
@@ -84,7 +84,7 @@ public struct Settings: Codable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.DefaultCharForm
         self.lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Settings.DefaultInputMode
-        self.isEnglishEnabled = try container.decodeIfPresent(Bool.self, forKey: .isEnglishEnabled) ?? Settings.DefaultEnglishInputEnabled
+        self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.DefaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.DefaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.DefaultSmartFullStopEnabled
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.DefaultSymbolShape
