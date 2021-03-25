@@ -71,7 +71,8 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     shiftUp, // TODO remove
     shiftRelax,
     rime(RimeChar),
-    setCharForm(CharForm)
+    setCharForm(CharForm),
+    refreshMarkedText
     
     public init(stringLiteral value: String) {
         self = .character(value)

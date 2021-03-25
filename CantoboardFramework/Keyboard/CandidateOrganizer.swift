@@ -51,10 +51,10 @@ class CandidateOrganizer {
             return lastInputMode
         }
         set {
-            loadMoreCandidates(reset: true)
             var settings = Settings.cached
             settings.lastInputMode = newValue
             Settings.save(settings)
+            loadMoreCandidates(reset: true)
         }
     }
     
@@ -91,6 +91,8 @@ class CandidateOrganizer {
     private var lastProcessedCandidateSourceIndex = 0
     
     private func loadMoreCandidates(reset: Bool) {
+        let inputMode = Settings.cached.lastInputMode
+        
         if reset {
             candidateIndices = []
             if inputMode == .mixed {

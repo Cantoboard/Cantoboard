@@ -332,6 +332,7 @@ class CandidatePaneView: UIControl {
             }
             
             candidateOrganizer.inputMode = nextFilterMode
+            delegate?.handleKey(.refreshMarkedText)
         } else {
             guard let symbolShape = delegate?.symbolShape else { return }
             switch symbolShape {

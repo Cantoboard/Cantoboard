@@ -206,6 +206,8 @@ class InputController {
             inputEngine.refreshChineseScript()
             updateInputState()
             return
+        case .refreshMarkedText:
+            setMarkedText()
         default:
             ()
         }
