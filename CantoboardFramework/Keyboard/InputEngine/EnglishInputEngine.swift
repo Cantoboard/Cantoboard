@@ -84,7 +84,7 @@ class EnglishInputEngine: InputEngine {
     private static let language = "en-US"
     private static let englishDictionary = EnglishDictionary(locale: language)
 
-    private static let popularWords = ["I": "i"] // , "I'm": "Im", "Can't": "Cant", "can't": "cant"]
+    private static let popularWords = ["I": "i", "Can't": "Cant", "can't": "cant"] // , "I'm": "Im", ]
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
@@ -180,10 +180,8 @@ class EnglishInputEngine: InputEngine {
             } else if let popularWordInput = EnglishInputEngine.popularWords[word],
                 text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
                 candidates.insert(word, at: 0)
-            } else if word.filter({ $0 != "'" }) == text {
-                candidates.insert(word, at: 0)
-                isWord = true
-            } else if word == text || word == text.capitalized {
+            } else if word.filter({ $0 != "'" }) == text ||
+                      word == text.capitalized {
                 candidates.insert(word, at: isWord ? 1 : 0)
                 isWord = true
             } else {
