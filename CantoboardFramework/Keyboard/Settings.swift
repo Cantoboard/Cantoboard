@@ -36,10 +36,10 @@ public enum ToneInputMode: String, Codable {
 }
 
 public enum EnglishLocale: String, Codable {
-    case us = "en-US"
-    case gb = "en-GB"
-    case ca = "en-CA"
-    case au = "en-AU"
+    case us = "en_US"
+    case gb = "en_GB"
+    case ca = "en_CA"
+    case au = "en_AU"
 }
 
 // If any of these settings is changed, we have to redeploy Rime.
