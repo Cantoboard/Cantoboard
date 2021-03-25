@@ -77,9 +77,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var popupFont: UIFont {
         switch self {
+        case .rime(.delimiter): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
         case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu":
             return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        /*case .chineseScript, .rime(.delimiter): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)*/
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
         }
     }
@@ -188,6 +188,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
         
         switch self {
+        case .contexualSymbols(.url): return "/"
         case .contexualSymbols(.chinese), "，", "。", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",

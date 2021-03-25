@@ -31,7 +31,7 @@ class KeyHintLayer: CATextLayer {
         contentsScale = UIScreen.main.scale
     }
     
-    func setup(keyCap: KeyCap, hintText: String, parentInsets: UIEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)) {
+    func setup(keyCap: KeyCap, hintText: String, parentInsets: UIEdgeInsets = UIEdgeInsets(top: 2, left: 2.5, bottom: 2, right: 2.5)) {
         string = hintText
         font = keyCap.buttonFont
         fontSize = keyCap.buttonHintFontSize
