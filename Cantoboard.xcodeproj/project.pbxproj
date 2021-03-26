@@ -18,6 +18,7 @@
 		79515A7E2609AA1500D29A5C /* EnglishDictionary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* EnglishDictionary.mm */; };
 		79515ABC2609AF9C00D29A5C /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79515AB82609AF5D00D29A5C /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79515AD82609BFB400D29A5C /* Dictionary in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* Dictionary */; };
+		79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -238,6 +239,7 @@
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		79515AD72609BFB400D29A5C /* Dictionary */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Dictionary; path = CantoboardFramework/Dictionary; sourceTree = SOURCE_ROOT; };
 		79515AED260A6BBB00D29A5C /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
+		79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionView.swift; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		799F2E4E25F46B0800C53416 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 		79B9B59E25F34A1200238E80 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */,
 				79B9B59F25F34A1200238E80 /* CandidatePaneView.swift */,
 				79B9B5A025F34A1200238E80 /* KeyView.swift */,
 				79B9B5A125F34A1200238E80 /* KeyRowView.swift */,
@@ -1073,6 +1076,7 @@
 				79B9B5F825F34A1200238E80 /* BilingualInputEngine.swift in Sources */,
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,
+				79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */,
 				79B9B60025F34A1200238E80 /* Utils.swift in Sources */,
 				79B9B5F625F34A1200238E80 /* InputEngine.swift in Sources */,
 				79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */,
