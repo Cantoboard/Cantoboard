@@ -320,6 +320,7 @@ class CandidatePaneView: UIControl {
     
     @objc private func filterButtonClick() {
         Self.hapticsGenerator.impactOccurred(intensity: 1)
+        AudioFeedbackProvider.play(keyboardAction: .none)
         
         if filterMode == .lang {
             guard let candidateOrganizer = candidateOrganizer else { return }

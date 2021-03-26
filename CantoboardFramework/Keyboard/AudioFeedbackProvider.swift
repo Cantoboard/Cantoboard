@@ -10,19 +10,19 @@ import AudioToolbox
 import UIKit
 
 class AudioFeedbackProvider {
-    private static let ClickPress: SystemSoundID = 1123
-    private static let DeletePress: SystemSoundID = 1155
-    private static let ModifierPress: SystemSoundID = 1156
+    private static let clickPress: SystemSoundID = 1123
+    private static let deletePress: SystemSoundID = 1155
+    private static let modifierPress: SystemSoundID = 1156
 
-    static func Play(keyboardAction: KeyboardAction) {
+    static func play(keyboardAction: KeyboardAction) {
         switch keyboardAction {
-        case .character(_), .rime(_), .emoji(_):
+        case .none, .character(_), .rime(_), .emoji(_):
             // UIDevice.current.playInputClick()
-            AudioServicesPlaySystemSound(Self.ClickPress)
+            AudioServicesPlaySystemSound(Self.clickPress)
         case .backspace, .deleteWord:
-            AudioServicesPlaySystemSound(Self.DeletePress)
+            AudioServicesPlaySystemSound(Self.deletePress)
         case .keyboardType(_), .space, .newLine:
-            AudioServicesPlaySystemSound(Self.ModifierPress)
+            AudioServicesPlaySystemSound(Self.modifierPress)
         default: ()
         }
     }

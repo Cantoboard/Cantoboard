@@ -76,7 +76,7 @@ class InputController {
     }
     
     func candidateSelected(_ choice: Int) {
-        AudioFeedbackProvider.Play(keyboardAction: .character(""))
+        AudioFeedbackProvider.play(keyboardAction: .none)
         
         if let staticCandidateSource = candidateOrganizer.candidateSource as? AutoSuggestionCandidateSource {
             if let candidate = staticCandidateSource.candidates[choice] as? String {
@@ -181,7 +181,7 @@ class InputController {
                 self.updateContextualSuggestion()
             }
         case .emoji(let e):
-            AudioFeedbackProvider.Play(keyboardAction: action)
+            AudioFeedbackProvider.play(keyboardAction: action)
             if !insertComposingText(appendBy: e, shouldDisableSmartSpace: true) {
                 textDocumentProxy.insertText(e)
             }

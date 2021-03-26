@@ -163,7 +163,6 @@ class EnglishInputEngine: InputEngine {
         
         candidates.removeAllObjects()
         isFirstLoad = true
-        
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
         // If the user is typing a word after an English word, run autocomplete.

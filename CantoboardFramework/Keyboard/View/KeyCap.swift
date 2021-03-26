@@ -379,7 +379,7 @@ class ButtonImage {
     static let shift = UIImage(systemName: "shift")
     static let shiftFilled = UIImage(systemName: "shift.fill")
     static let capLockFilled = UIImage(systemName: "capslock.fill")
-    static let emojiKeyboard = UIImage(systemName: "face.smiling", withConfiguration: UIImage.SymbolConfiguration(scale: .large))
+    static let emojiKeyboard = UIImage(systemName: "face.smiling.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18))
     static let paneCollapseButtonImage = UIImage(systemName: "chevron.up")
     static let paneExpandButtonImage = UIImage(systemName: "chevron.down")
     // static let oneTwoThree = UIImage(systemName: "textformat.123")

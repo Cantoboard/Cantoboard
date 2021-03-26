@@ -65,12 +65,12 @@ class TouchHandler {
         switch key.selectedAction {
         case .backspace:
             inputMode = .backspacing
-            AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
+            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
             callKeyHandler(.backspace)
         case .keyboardType(.emojis), .character, .rime:
-            AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
+            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
         case .keyboardType:
-            AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
+            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
             callKeyHandler(key.selectedAction)
         case .nextKeyboard:
             guard let event = event else { return }
@@ -86,7 +86,7 @@ class TouchHandler {
                 callKeyHandler(.keyboardType(.alphabetic(.capsLocked)))
             }
         case .space, .newLine:
-            AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
+            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
         default: () // Ignore other keys on key down.
         }
         
@@ -265,7 +265,7 @@ class TouchHandler {
                 action = .deleteWord
             }
             callKeyHandler(action)
-            AudioFeedbackProvider.Play(keyboardAction: action)
+            AudioFeedbackProvider.play(keyboardAction: action)
         } else if self.inputMode == .typing && keyRepeatCounter > Self.LongPressDelay,
             let currentTouch = currentTouch {
             currentTouch.1.keyLongPressed(currentTouch.0)
