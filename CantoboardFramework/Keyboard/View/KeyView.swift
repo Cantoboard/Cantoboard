@@ -12,6 +12,42 @@ class KeyView: UIButton {
     private var keyHintLayer: KeyHintLayer?
     private var popupView: KeyPopupView?
     private var isPopupInLongPressMode: Bool?
+    private var originalBackgroundColor: UIColor?
+    
+    private var highlightedColor: UIColor? {
+        didSet {
+            setupBackgroundColor()
+        }
+    }
+    
+    override var backgroundColor: UIColor? {
+        get { super.backgroundColor }
+        set {
+            if super.backgroundColor != newValue {
+                originalBackgroundColor = newValue
+                setupBackgroundColor()
+            }
+        }
+    }
+    
+    private var _isHighlighted: Bool = false
+    internal override var isHighlighted: Bool {
+        get { _isHighlighted }
+        set {
+            if _isHighlighted != newValue {
+                _isHighlighted = newValue
+                setupBackgroundColor()
+            }
+        }
+    }
+    
+    private func setupBackgroundColor() {
+        if !_isHighlighted {
+            super.backgroundColor = originalBackgroundColor
+        } else {
+            super.backgroundColor = highlightedColor ?? originalBackgroundColor
+        }
+    }
     
     private var _keyCap: KeyCap = .none
     var keyCap: KeyCap {
@@ -88,7 +124,8 @@ class KeyView: UIButton {
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
         var buttonHintTitle = keyCap.buttonHint
-        
+        highlightedColor = nil
+
         if !isKeyEnabled {
             setImage(nil, for: .normal)
             setTitle(nil, for: .normal)
@@ -113,10 +150,12 @@ class KeyView: UIButton {
             titleLabel?.font = keyCap.buttonFont
             titleLabel?.baselineAdjustment = .alignCenters
             titleLabel?.lineBreakMode = .byClipping
+            highlightedColor = keyCap.buttonBgHighlightedColor
         } else if let buttonImage = keyCap.buttonImage {
             setImage(buttonImage, for: .normal)
             setTitle(nil, for: .normal)
             titleLabel?.text = nil
+            highlightedColor = keyCap.buttonBgHighlightedColor
         }
         
         switch keyCap {
@@ -193,6 +232,7 @@ extension KeyView {
     // Forward all touch events to the superview.
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         superview?.touchesBegan(touches, with: event)
+        isHighlighted = true
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -205,11 +245,13 @@ extension KeyView {
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         superview?.touchesCancelled(touches, with: event)
+        isHighlighted = false
     }
 }
 
 extension KeyView {
     func keyTouchBegan(_ touch: UITouch) {
+        isHighlighted = true
         updatePopup(isLongPress: false)
     }
     
@@ -218,6 +260,7 @@ extension KeyView {
     }
     
     func keyTouchEnded() {
+        isHighlighted = false
         popupView?.removeFromSuperview()
         popupView = nil
         

@@ -100,6 +100,14 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    var buttonBgHighlightedColor: UIColor? {
+        switch self {
+        case .character, .characterWithTone, .contexualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
+        case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
+        default: return ButtonColor.systemHighlightedKeyBackgroundColor
+        }
+    }
+    
     var buttonFgColor: UIColor {
         if self == .shift(.uppercased) || self == .shift(.capsLocked) {
             return ButtonColor.shiftKeyHighlightedForegroundColor
@@ -382,8 +390,10 @@ class ButtonColor {
     static let inputKeyBackgroundColor = UIColor(named: "inputKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyForegroundColor = UIColor(named: "keyForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyHintColor = UIColor(named: "keyHintColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let popupBackgroundColor = UIColor(named: "PopupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let popupBackgroundColor = UIColor(named: "popupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let shiftKeyHighlightedBackgroundColor = UIColor(named: "ShiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let shiftKeyHighlightedForegroundColor = UIColor(named: "ShiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let shiftKeyHighlightedBackgroundColor = UIColor(named: "shiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let shiftKeyHighlightedForegroundColor = UIColor(named: "shiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let spaceKeyHighlightedBackgroundColor = UIColor(named: "spaceKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let systemHighlightedKeyBackgroundColor = UIColor(named: "systemHighlightedKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
 }

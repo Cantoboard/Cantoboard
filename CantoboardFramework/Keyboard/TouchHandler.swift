@@ -59,6 +59,8 @@ class TouchHandler {
             touchEnded(lastTouch.0, key: lastTouch.1, with: event)
         }
         
+        key.keyTouchBegan(touch)
+        
         hasMovedCursor = false
         switch key.selectedAction {
         case .backspace:
@@ -67,7 +69,6 @@ class TouchHandler {
             callKeyHandler(.backspace)
         case .keyboardType(.emojis), .character, .rime:
             AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
-            key.keyTouchBegan(touch)
         case .keyboardType:
             AudioFeedbackProvider.Play(keyboardAction: key.selectedAction)
             callKeyHandler(key.selectedAction)
