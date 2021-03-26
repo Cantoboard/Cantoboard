@@ -151,7 +151,13 @@ class KeyView: UIButton {
             titleLabel?.baselineAdjustment = .alignCenters
             titleLabel?.lineBreakMode = .byClipping
             highlightedColor = keyCap.buttonBgHighlightedColor
-        } else if let buttonImage = keyCap.buttonImage {
+        } else {
+            var buttonImage = keyCap.buttonImage
+            if keyCap == .keyboardType(.emojis) {
+                // Special handling for emoji icon. We use different symbols in light/dark mode.
+                let isDarkMode = traitCollection.userInterfaceStyle == .dark
+                buttonImage = isDarkMode ? ButtonImage.emojiKeyboardDark : ButtonImage.emojiKeyboardLight
+            }
             setImage(buttonImage, for: .normal)
             setTitle(nil, for: .normal)
             titleLabel?.text = nil
@@ -203,6 +209,8 @@ class KeyView: UIButton {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         layer.shadowColor = ButtonColor.keyShadowColor.resolvedColor(with: traitCollection).cgColor
+        
+        if keyCap == .keyboardType(.emojis) { setupView() }
         
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor

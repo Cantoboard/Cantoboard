@@ -127,7 +127,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.lowercased): return ButtonImage.shift
         case .shift(.uppercased): return ButtonImage.shiftFilled
         case .shift(.capsLocked): return ButtonImage.capLockFilled
-        case .keyboardType(.emojis): return ButtonImage.emojiKeyboard
         // case .keyboardType(.numeric): return ButtonImage.oneTwoThree
         default: return nil
         }
@@ -379,7 +378,8 @@ class ButtonImage {
     static let shift = UIImage(systemName: "shift")
     static let shiftFilled = UIImage(systemName: "shift.fill")
     static let capLockFilled = UIImage(systemName: "capslock.fill")
-    static let emojiKeyboard = UIImage(systemName: "face.smiling.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18))
+    static let emojiKeyboardLight = UIImage(systemName: "face.smiling", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18))
+    static let emojiKeyboardDark = UIImage(systemName: "face.smiling.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18))
     static let paneCollapseButtonImage = UIImage(systemName: "chevron.up")
     static let paneExpandButtonImage = UIImage(systemName: "chevron.down")
     // static let oneTwoThree = UIImage(systemName: "textformat.123")
