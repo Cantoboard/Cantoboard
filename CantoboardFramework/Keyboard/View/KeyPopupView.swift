@@ -120,7 +120,7 @@ class KeyPopupView: UIView {
         var buttonSize: CGSize
         if actions.count < 10 {
             buttonSize = CGSize(
-                width: KeyPopupView.Inset.wrapWidth(width: LayoutConstants.forMainScreen.keyButtonWidth),
+                width: KeyPopupView.Inset.wrap(width: LayoutConstants.forMainScreen.keyButtonWidth),
                 height: LayoutConstants.forMainScreen.keyHeight)
         } else {
             buttonSize = CGSize(
@@ -181,7 +181,7 @@ class KeyPopupView: UIView {
             let defaultKeyCapIndex = min(self.defaultKeyCapIndex, keyCaps.count - 1)
             guard defaultKeyCapIndex >= 0 else { return }
             let defaultKeyCapMinX = buttonSize.width * CGFloat(defaultKeyCapIndex)
-            let defaultKeyCapMaxX = defaultKeyCapMinX + KeyPopupView.Inset.wrapWidth(width: buttonSize.width)
+            let defaultKeyCapMaxX = defaultKeyCapMinX + KeyPopupView.Inset.wrap(width: buttonSize.width)
             neckLeft = CGPoint(x: defaultKeyCapMinX, y: bodySize.height - 5)
             neckRight = CGPoint(x: defaultKeyCapMaxX, y: bodySize.height - 5)
             anchorLeft = CGPoint(x: neckLeft.x + offsetX, y: fullSize.height)

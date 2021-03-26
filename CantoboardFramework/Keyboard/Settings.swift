@@ -67,6 +67,7 @@ public struct Settings: Codable, Equatable {
     private static let DefaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
     private static let DefaultRimeSettings: RimeSettings = RimeSettings()
     private static let DefaultEnglishLocale: EnglishLocale = .us
+    private static let DefaultShowRomanization: Bool = false
 
     public var charForm: CharForm
     public var isMixedModeEnabled: Bool
@@ -77,6 +78,7 @@ public struct Settings: Codable, Equatable {
     public var spaceOutputMode: SpaceOutputMode
     public var rimeSettings: RimeSettings
     public var englishLocale: EnglishLocale
+    public var shouldShowRomanization: Bool
     
     public init() {
         charForm = Settings.DefaultCharForm
@@ -88,6 +90,7 @@ public struct Settings: Codable, Equatable {
         spaceOutputMode = Settings.DefaultSpaceOutputMode
         rimeSettings = Settings.DefaultRimeSettings
         englishLocale = Settings.DefaultEnglishLocale
+        shouldShowRomanization = Settings.DefaultShowRomanization
     }
     
     public init(from decoder: Decoder) throws {
@@ -101,6 +104,7 @@ public struct Settings: Codable, Equatable {
         self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.DefaultSpaceOutputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.DefaultRimeSettings
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.DefaultEnglishLocale
+        self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.DefaultShowRomanization
     }
     
     private static var _cached: Settings?

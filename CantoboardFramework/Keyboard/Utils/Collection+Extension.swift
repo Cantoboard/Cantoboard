@@ -13,3 +13,11 @@ extension Collection {
         return indices.contains(index) ? self[index] : nil
     }
 }
+
+extension NSArray {
+    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+    subscript (safe index: Int) -> Element? {
+        guard 0 <= index && index < count else { return nil }
+        return self[index]
+    }
+}

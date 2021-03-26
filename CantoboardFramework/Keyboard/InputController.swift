@@ -203,7 +203,7 @@ class InputController {
             var settings = Settings.cached
             settings.charForm = cs
             Settings.save(settings)
-            inputEngine.refreshChineseScript()
+            inputEngine.refreshChineseCharForm()
             updateInputState()
             return
         case .refreshMarkedText:
@@ -296,12 +296,13 @@ class InputController {
                 self.candidateOrganizer.candidateSource = InputEngineCandidateSource(
                     candidates: candidates,
                     requestMoreCandidate: { [weak self] in
-                        guard let self = self else { return false }
-                        return self.inputEngine.loadMoreCandidates()
+                        return self?.inputEngine.loadMoreCandidates() ?? false
                     },
                     getCandidateSource: { [weak self] index in
-                        guard let self = self else { return nil }
-                        return self.inputEngine.getCandidateSource(index)
+                        return self?.inputEngine.getCandidateSource(index)
+                    },
+                    getCandidateComment: { [weak self] index in
+                        return self?.inputEngine.getCandidateComment(index)
                     })
             }
         }

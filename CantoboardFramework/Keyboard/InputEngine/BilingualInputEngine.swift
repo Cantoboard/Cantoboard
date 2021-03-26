@@ -25,7 +25,7 @@ class BilingualInputEngine: InputEngine {
     
     private var candidates = NSMutableArray()
     private var candidatesSet = Set<String>()
-    private var candidatePaths = NSMutableArray()
+    private var candidatePaths:[CandidatePath] = []
     private var curEnglishCandidateIndex = 0, curRimeCandidateIndex = 0
     private var hasLoadedAllBestRimeCandidates = false
     private var isForcingRimeMode = false
@@ -43,7 +43,7 @@ class BilingualInputEngine: InputEngine {
     }
     
     func selectCandidate(_ index: Int) -> String? {
-        guard let candidatePath = candidatePaths[index] as? CandidatePath else {
+        guard let candidatePath = candidatePaths[safe: index] else {
             NSLog("Invalid candidate %d selected. Count: %d", index, candidatePaths.count)
             return nil
         }
@@ -219,7 +219,7 @@ class BilingualInputEngine: InputEngine {
         curRimeCandidateIndex = 0
 
         candidates = NSMutableArray()
-        candidatePaths = NSMutableArray()
+        candidatePaths = []
         candidatesSet = Set()
         
         hasLoadedAllBestRimeCandidates = false
@@ -245,7 +245,7 @@ class BilingualInputEngine: InputEngine {
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
         while !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < rimeCandidates.count {
             guard let candidate = rimeCandidates[curRimeCandidateIndex] as? String,
-                  let comment = rimeInputEngine.getComment(curRimeCandidateIndex) else {
+                  let comment = rimeInputEngine.getCandidateComment(curRimeCandidateIndex) else {
                 hasLoadedAllBestRimeCandidates = true
                 break
             }
@@ -285,7 +285,7 @@ class BilingualInputEngine: InputEngine {
     
     private func addCandidate(_ candidateText: String, source: CandidatePath.Source, index: Int) {
         if !candidatesSet.contains(candidateText) {
-            candidatePaths.add(CandidatePath(source: source, index: index))
+            candidatePaths.append(CandidatePath(source: source, index: index))
             candidates.add(candidateText)
             candidatesSet.insert(candidateText)
         }
@@ -323,9 +323,16 @@ class BilingualInputEngine: InputEngine {
         return candidates[index] as? String
     }
     
+    func getCandidateComment(_ index: Int) -> String? {
+        guard let path = candidatePaths[safe: index] else { return nil }
+        if path.source == .rime {
+            return rimeInputEngine.getCandidateComment(path.index)
+        }
+        return nil
+    }
+    
     func getCandidateSource(_ index: Int) -> CandidatePath.Source? {
-        guard let path = candidatePaths[index] as? CandidatePath else { return nil }
-        return path.source
+        return candidatePaths[safe: index]?.source
     }
     
     func loadMoreCandidates() -> Bool {
@@ -334,8 +341,8 @@ class BilingualInputEngine: InputEngine {
         return hasLoadedNew
     }
     
-    func refreshChineseScript() {
-        rimeInputEngine.refreshChineseScript()
+    func refreshChineseCharForm() {
+        rimeInputEngine.refreshCharForm()
         resetCandidates()
     }
 }

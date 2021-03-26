@@ -21,7 +21,15 @@ extension UIEdgeInsets {
         return CGSize(width: size.width + left + right, height: size.height + top + bottom)
     }
     
-    func wrapWidth(width: CGFloat) -> CGFloat {
+    func wrap(width: CGFloat) -> CGFloat {
         return width + left + right
+    }
+    
+    func wrap(widthOnly: CGSize) -> CGSize {
+        return CGSize(width: widthOnly.width + left + right, height: widthOnly.height)
+    }
+    
+    func wrap(height: CGFloat) -> CGFloat {
+        return height + top + bottom
     }
 }

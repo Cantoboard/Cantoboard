@@ -9,6 +9,16 @@
 import Foundation
 import UIKit
 
+protocol CandidatePaneViewDelegate: NSObject {
+    func candidatePaneViewExpanded()
+    func candidatePaneViewCollapsed()
+    func candidatePaneViewCandidateSelected(_ choice: Int)
+    func candidatePaneCandidateLoaded()
+    func handleKey(_ action: KeyboardAction)
+    var symbolShape: SymbolShape { get }
+    var symbolShapeOverride: SymbolShape? { get set }
+}
+
 class CandidatePaneView: UIControl {
     private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
     
@@ -195,7 +205,7 @@ class CandidatePaneView: UIControl {
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(CandidateCell.self, forCellWithReuseIdentifier: CandidateCell.ReuseId)
+        collectionView.register(CandidateCell.self, forCellWithReuseIdentifier: CandidateCell.reuseId)
         collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
@@ -214,7 +224,7 @@ class CandidatePaneView: UIControl {
     }
     
     private func getRowHeight() -> CGFloat {
-        return CandidateCell.UnitCharSize.height + CandidateCell.Margin.top + CandidateCell.Margin.bottom
+        return LayoutConstants.forMainScreen.autoCompleteBarHeight
     }
     
     @objc private func expandButtonClick() {
@@ -320,7 +330,7 @@ extension CandidatePaneView {
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
-        let unitCharSize = CandidateCell.UnitCharSize
+        let unitCharSize = CandidateCell.unitCharSize
         let firstAttempt = self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2), to: self.collectionView))
         if firstAttempt != nil { return firstAttempt }
         return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2 + 2 * rowPadding), to: self.collectionView))
@@ -333,7 +343,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.ReuseId, for: indexPath) as! CandidateCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.reuseId, for: indexPath) as! CandidateCell
         
         let candidateCount = self.collectionView.numberOfItems(inSection: 0)
         if indexPath.section == 0 && indexPath.row == candidateCount - 1 {
@@ -370,32 +380,38 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     private func computeCellSize(_ indexPath: IndexPath) -> CGSize {
         guard let candidateOrganizer = candidateOrganizer else { return CGSize(width: 0, height: 0) }
         let candidates = candidateOrganizer.getCandidates(section: indexPath.section)
+        
         guard indexPath.row < candidates.count else {
             NSLog("Invalid IndexPath %@. Candidate does not exist.", indexPath.description)
             return CGSize(width: 0, height: 0)
         }
-        var text = candidates[indexPath.row] as? String ?? "⚠"
-        if text.count == 1 { text += " " } // Pad single char candidate.
-        return computeTextSize(text)
+        
+        let text = candidates[safe: indexPath.row] as? String ?? "⚠"
+        
+        var cellWidth = computeTextSize(text, font: CandidateCell.mainFont).width
+        //var cellHeight = CandidateCell.margin.wrap(height: CandidateCell.unitCharSize.height)
+        let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
+        
+        if Settings.cached.shouldShowRomanization {
+            let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
+            let commentWidth = computeTextSize(comment, font: CandidateCell.commentFont).width
+            cellWidth = max(cellWidth, commentWidth)
+        }
+        
+        cellWidth = max(cellWidth, 1 * CandidateCell.unitCharSize.width)
+        // cellWidth = ceil(cellWidth / CandidateCell.unitCharSize.width) * CandidateCell.unitCharSize.width
+        
+        return CandidateCell.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
     }
     
-    /*
-    // Fixed width mode.
-    private func computeTextSize(_ text: String) -> CGSize {
-        let textLen = CGFloat(text.count)
-        let result = CGSize(
-            width: UNIT_CHAR_SIZE.height * textLen + CANDIDATE_MARGIN.left + CANDIDATE_MARGIN.right,
-            height: UNIT_CHAR_SIZE.height + CANDIDATE_MARGIN.top + CANDIDATE_MARGIN.bottom)
-        // print(text, ratio, result.width, result.height)
-        return result
-    }*/
-    
     // Font based.
-    private func computeTextSize(_ text: String) -> CGSize {
-        let fontAttributes = [NSAttributedString.Key.font:  CandidateCell.Font]
-        var size = (text as NSString).size(withAttributes: fontAttributes)
-        if size.width < CandidateCell.UnitCharSize.width { size.width = CandidateCell.UnitCharSize.width }
-        return CGSize(width: size.width + CandidateCell.Margin.left + CandidateCell.Margin.right, height: size.height + CandidateCell.Margin.top + CandidateCell.Margin.bottom)
+    private func computeTextSize(_ text: String, font: UIFont) -> CGSize {
+        let mainFontAttributes = [NSAttributedString.Key.font: font]
+        
+        var size = (text as NSString).size(withAttributes: mainFontAttributes)
+        if size.width < CandidateCell.unitCharSize.width { size.width = CandidateCell.unitCharSize.width }
+        
+        return size
     }
 }
 
@@ -410,7 +426,8 @@ extension CandidatePaneView: UICollectionViewDelegate {
         guard let candidateOrganizer = candidateOrganizer,
               let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
               let cell = cell as? CandidateCell else { return }
-        cell.initLabel(candidate)
+        let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
+        cell.initLabel(candidate, comment)
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

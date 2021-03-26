@@ -59,7 +59,7 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func refreshCandidates() {
         candidates = NSMutableArray()
-        comments = NSMutableArray()
+        comments = []
         // _ = requestMoreCandidates()
     }
         
@@ -101,11 +101,13 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     func getCandidate(_ index: Int) -> String? {
-        return candidates[index] as? String
+        return candidates[safe: index] as? String
     }
     
-    func getComment(_ index: Int) -> String? {
-        return comments[index] as? String
+    func getCandidateComment(_ index: Int) -> String? {
+        guard let comment = comments[safe: index] as? String else { return nil }
+        
+        return comment.isEmpty ? composition?.text : comment
     }
     
     // Return true if it has loaded more candidates
@@ -194,10 +196,10 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func createRimeSession() {
         rimeSession = RimeApi.shared.createSession()
-        refreshChineseScript()
+        refreshCharForm()
     }
     
-    func refreshChineseScript() {
+    func refreshCharForm() {
         rimeSession?.setOption("simplification", value: Settings.cached.charForm == .simplified)
         refreshCandidates()
     }

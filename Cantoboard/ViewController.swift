@@ -17,6 +17,7 @@ class ViewController: UITableViewController {
     @IBOutlet private var spaceOutputControl: UISegmentedControl!
     @IBOutlet private var toneInputControl: UISegmentedControl!
     @IBOutlet private var englishLocaleInputControl: UISegmentedControl!
+    @IBOutlet private var showRomanizationControl: UISwitch!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +32,7 @@ class ViewController: UITableViewController {
         spaceOutputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         englishLocaleInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        showRomanizationControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -68,6 +70,7 @@ class ViewController: UITableViewController {
         settings.spaceOutputMode = spaceOutputMode
         settings.rimeSettings.toneInputMode = toneInputMode
         settings.englishLocale = englishLocale
+        settings.shouldShowRomanization = showRomanizationControl.isOn
         Settings.save(settings)
     }
     
@@ -102,6 +105,7 @@ class ViewController: UITableViewController {
         enableMixedModeControl.isOn = settings.isMixedModeEnabled
         autoCapControl.isOn = settings.isAutoCapEnabled
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
+        showRomanizationControl.isOn = settings.shouldShowRomanization
         
         populateSetting(toSegmentedControl: englishLocaleInputControl, settingToIndexMapper: {
             switch $0.englishLocale {

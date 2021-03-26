@@ -11,17 +11,23 @@ protocol CandidateSource: class {
     var candidates: NSArray { get }
     var requestMoreCandidate: () -> Bool { get }
     var getCandidateSource: (Int) -> CandidatePath.Source? { get }
+    var getCandidateComment: ((Int) -> String?)? { get }
 }
 
 class InputEngineCandidateSource: CandidateSource {
     let candidates: NSArray
     let requestMoreCandidate: () -> Bool
     let getCandidateSource: (Int) -> CandidatePath.Source?
-    
-    init(candidates: NSArray, requestMoreCandidate: @escaping () -> Bool, getCandidateSource: @escaping (Int) -> CandidatePath.Source?) {
+    let getCandidateComment: ((Int) -> String?)?
+
+    init(candidates: NSArray,
+         requestMoreCandidate: @escaping () -> Bool,
+         getCandidateSource: @escaping (Int) -> CandidatePath.Source?,
+         getCandidateComment: @escaping (Int) -> String?) {
         self.candidates = candidates
         self.requestMoreCandidate = requestMoreCandidate
         self.getCandidateSource = getCandidateSource
+        self.getCandidateComment = getCandidateComment
     }
 }
 
@@ -29,6 +35,7 @@ class AutoSuggestionCandidateSource: CandidateSource {
     let candidates: NSArray
     let requestMoreCandidate: () -> Bool
     let getCandidateSource: (Int) -> CandidatePath.Source?
+    let getCandidateComment: ((Int) -> String?)? = nil
     
     init(_ candidates: [String]) {
         self.candidates = NSArray(array: candidates)
@@ -150,12 +157,18 @@ class CandidateOrganizer {
     func getCandidate(indexPath: IndexPath) -> String? {
         guard indexPath.section == 0 && indexPath.row < candidates.count else { return nil }
         
-        return candidates[indexPath.row] as? String
+        return candidates[safe: indexPath.row] as? String
     }
     
     func getCandidateIndex(indexPath: IndexPath) -> Int? {
         guard indexPath.section == 0 && indexPath.row < candidateIndices.count else { return nil }
         
-        return candidateIndices[indexPath.row]
+        return candidateIndices[safe: indexPath.row]
+    }
+    
+    func getCandidateComment(indexPath: IndexPath) -> String? {
+        guard let candidateIndex = getCandidateIndex(indexPath: indexPath) else { return nil }
+        
+        return candidateSource?.getCandidateComment?(candidateIndex)
     }
 }

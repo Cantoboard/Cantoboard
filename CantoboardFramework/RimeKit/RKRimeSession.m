@@ -84,10 +84,10 @@
     for (int i = 0; i < ctx.menu.num_candidates; ++i) {
         RimeCandidate* c = ctx.menu.candidates + i;
         if (!c->text) continue;
+        
         [output addObject:nullSafeToNSString(c->text)];
-        if (comments != nil) {
-            [comments addObject:nullSafeToNSString(c->comment)];
-        }
+        [comments addObject:nullSafeToNSString(c->comment)];
+        
         hasLoadedData = true;
         // if
         // NSLog("%s %s %d %d", c->text, c->comment, ctx.composition.sel_start, ctx.composition.sel_end);

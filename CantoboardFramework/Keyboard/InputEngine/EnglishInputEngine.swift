@@ -211,7 +211,7 @@ class EnglishInputEngine: InputEngine {
     }
     
     func getCandidate(_ index: Int) -> String? {
-        return candidates[index] as? String
+        return candidates[safe: index] as? String
     }
     
     private var isFirstLoad = false
