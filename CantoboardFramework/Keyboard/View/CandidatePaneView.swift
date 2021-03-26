@@ -427,7 +427,8 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
-        cell.initLabel(candidate, comment)
+        let showComment = Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english && candidateOrganizer.candidateSource is InputEngineCandidateSource
+        cell.initLabel(candidate, comment, showComment: showComment)
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

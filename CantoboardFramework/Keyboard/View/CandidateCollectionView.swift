@@ -29,7 +29,9 @@ class CandidateCell: UICollectionViewCell {
     static let commentFont = UIFont.systemFont(ofSize: CandidateCell.commentFontSize)
     static let unitCharSize: CGSize = "＠".size(withAttributes: [NSAttributedString.Key.font : mainFont])
     static let commentUnitHeight = "＠".size(withAttributes: [NSAttributedString.Key.font : commentFont]).height
-    static let margin = UIEdgeInsets(top: 2, left: 8, bottom: 2, right: 8)
+    static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
+    
+    var showComment: Bool = false
     
     weak var label: UILabel?
     weak var keyHintLayer: KeyHintLayer?
@@ -39,7 +41,9 @@ class CandidateCell: UICollectionViewCell {
         super.init(frame: .zero)
     }
     
-    func initLabel(_ text: String, _ comment: String?) {
+    func initLabel(_ text: String, _ comment: String?, showComment: Bool) {
+        self.showComment = showComment
+        
         if label == nil {
             let label = UILabel()
             label.textAlignment = .center
@@ -65,7 +69,7 @@ class CandidateCell: UICollectionViewCell {
                 keyHintLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
             }
             
-            keyHintLayer?.setup(keyCap: keyCap, hintText: hintText, parentInsets: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
+            keyHintLayer?.setup(keyCap: keyCap, hintText: hintText)
         }
         
         if Settings.cached.shouldShowRomanization, let comment = comment {
@@ -112,12 +116,12 @@ class CandidateCell: UICollectionViewCell {
     }
     
     private func layoutTextLayers(_ bounds: CGRect) {
-        if Settings.cached.shouldShowRomanization {
+        if showComment {
             let margin = Self.margin
-            let textFrame = CGRect(x: margin.left, y: margin.top, width: bounds.width, height: Self.unitCharSize.height)
+            let textFrame = CGRect(x: 0, y: margin.top, width: bounds.width, height: Self.unitCharSize.height)
             
             self.label?.frame = textFrame
-            commentLayer?.frame = CGRect(x: margin.left, y: bounds.height - Self.commentUnitHeight - margin.bottom, width: bounds.width, height: Self.commentUnitHeight)
+            commentLayer?.frame = CGRect(x: 0, y: bounds.height - Self.commentUnitHeight - margin.bottom, width: bounds.width, height: Self.commentUnitHeight)
         } else {
             self.label?.frame = bounds
         }
@@ -125,7 +129,7 @@ class CandidateCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        keyHintLayer?.layout()
+        keyHintLayer?.layout(insets: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

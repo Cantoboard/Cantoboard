@@ -221,7 +221,7 @@ class KeyView: UIButton {
         super.layoutSubviews()
         layoutPopupView()
         keyHintLayer?.isHidden = popupView != nil
-        keyHintLayer?.layout()
+        keyHintLayer?.layout(insets: KeyHintLayer.buttonInsets)
     }
     
     private func layoutPopupView() {

@@ -149,7 +149,7 @@ class KeyPopupView: UIView {
             
             label.frame = CGRect(origin: CGPoint(x: x, y: KeyPopupView.Inset.top), size: buttonSize)
         }
-        hintLayers.forEach { $0.layout() }
+        hintLayers.forEach { $0.layout(insets: KeyHintLayer.buttonInsets) }
     }
     
     private func layoutPopupShape(buttonSize: CGSize, bodySize: CGSize, contentSize: CGSize) {

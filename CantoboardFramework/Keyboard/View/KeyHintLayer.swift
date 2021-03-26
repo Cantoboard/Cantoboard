@@ -9,7 +9,9 @@ import Foundation
 import UIKit
 
 class KeyHintLayer: CATextLayer {
-    private var parentInsets = UIEdgeInsets.zero
+    static let buttonInsets = UIEdgeInsets(top: 2, left: 2.5, bottom: 2, right: 2.5)
+    
+    private var contentSize: CGSize = .zero
     
     override init() {
         super.init()
@@ -31,11 +33,11 @@ class KeyHintLayer: CATextLayer {
         contentsScale = UIScreen.main.scale
     }
     
-    func setup(keyCap: KeyCap, hintText: String, parentInsets: UIEdgeInsets = UIEdgeInsets(top: 2, left: 2.5, bottom: 2, right: 2.5)) {
+    func setup(keyCap: KeyCap, hintText: String) {
         string = hintText
         font = keyCap.buttonFont
         fontSize = keyCap.buttonHintFontSize
-        self.parentInsets = parentInsets
+        contentSize = (hintText as NSString).size(withAttributes: [.font: keyCap.buttonFont.withSize(keyCap.buttonHintFontSize)])
     }
     
     override init(layer: Any) {
@@ -46,12 +48,8 @@ class KeyHintLayer: CATextLayer {
         fatalError("Not supported.")
     }
     
-    func layout() {
-        guard let font = font as? UIFont,
-              let superlayer = superlayer,
-              let string = string as? NSString else { return }
-        
-        let size = string.size(withAttributes: [.font: font.withSize(fontSize)])
-        frame = CGRect(origin: CGPoint(x: superlayer.bounds.width - size.width - parentInsets.right, y: parentInsets.top), size: size)
+    func layout(insets: UIEdgeInsets) {
+        guard let superlayer = superlayer else { return }
+        frame = CGRect(origin: CGPoint(x: superlayer.bounds.width - contentSize.width - insets.right, y: insets.top), size: contentSize)
     }
 }
