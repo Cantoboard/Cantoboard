@@ -20,15 +20,22 @@ class CandidateCollectionView: UICollectionView {
         
         didLayoutSubviews?(self)
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard let previousTraitCollection = previousTraitCollection,
+              traitCollection.verticalSizeClass != previousTraitCollection.verticalSizeClass ||
+              traitCollection.horizontalSizeClass != previousTraitCollection.horizontalSizeClass else {
+                return
+        }
+        
+        // Invalidate layout to resize cells.
+        collectionViewLayout.invalidateLayout()
+    }
 }
 
 class CandidateCell: UICollectionViewCell {
     static var reuseId: String = "CandidateCell"
-    static let mainFontSize = CGFloat(22), commentFontSize = CGFloat(12)
-    static let mainFont = UIFont.systemFont(ofSize: CandidateCell.mainFontSize)
-    static let commentFont = UIFont.systemFont(ofSize: CandidateCell.commentFontSize)
-    static let unitCharSize: CGSize = "＠".size(withAttributes: [NSAttributedString.Key.font : mainFont])
-    static let commentUnitHeight = "＠".size(withAttributes: [NSAttributedString.Key.font : commentFont]).height
     static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
     
     var showComment: Bool = false
@@ -42,6 +49,7 @@ class CandidateCell: UICollectionViewCell {
     }
     
     func initLabel(_ text: String, _ comment: String?, showComment: Bool) {
+        let layoutConstants = LayoutConstants.forMainScreen
         self.showComment = showComment
         
         if label == nil {
@@ -49,14 +57,12 @@ class CandidateCell: UICollectionViewCell {
             label.textAlignment = .center
             label.baselineAdjustment = .alignBaselines
             label.isUserInteractionEnabled = false
-            label.font = CandidateCell.mainFont
 
             self.contentView.addSubview(label)
             self.label = label
         }
         
-        //let textFrame = CGRect(x: Self.margin.left, y: Self.margin.top, width: bounds.width, height: Self.unitCharSize.height)
-        // label?.frame = textFrame
+        label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize)
         label?.text = text
         
         let keyCap = KeyCap(stringLiteral: text)
@@ -78,14 +84,12 @@ class CandidateCell: UICollectionViewCell {
                 self.commentLayer = commentLayer
                 layer.addSublayer(commentLayer)
                 commentLayer.alignmentMode = .center
-                commentLayer.font = Self.commentFont
-                commentLayer.fontSize = Self.commentFontSize
                 commentLayer.allowsFontSubpixelQuantization = true
                 commentLayer.contentsScale = UIScreen.main.scale
                 commentLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
             }
-            //commentLayer?.frame = CGRect(x: Self.margin.left, y: textFrame.maxY, width: bounds.width, height: bounds.height - Self.unitCharSize.height)
-            // commentLayer?.frame = CGRect(x: Self.margin.left, y: textFrame.maxY, width: bounds.width, height: bounds.height - Self.unitCharSize.height)
+            commentLayer?.font = UIFont.systemFont(ofSize: layoutConstants.candidateCommentFontSize)
+            commentLayer?.fontSize = layoutConstants.candidateCommentFontSize
             commentLayer?.string = comment
         } else {
             commentLayer?.removeFromSuperlayer()
@@ -116,12 +120,19 @@ class CandidateCell: UICollectionViewCell {
     }
     
     private func layoutTextLayers(_ bounds: CGRect) {
+        let layoutConstants = LayoutConstants.forMainScreen
+
+        label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize)
+        commentLayer?.font = UIFont.systemFont(ofSize: layoutConstants.candidateCommentFontSize)
+        commentLayer?.fontSize = layoutConstants.candidateCommentFontSize
+        
         if showComment {
             let margin = Self.margin
-            let textFrame = CGRect(x: 0, y: margin.top, width: bounds.width, height: Self.unitCharSize.height)
+            let textFrame = CGRect(x: 0, y: margin.top, width: bounds.width, height: layoutConstants.candidateCharSize.height)
             
             self.label?.frame = textFrame
-            commentLayer?.frame = CGRect(x: 0, y: bounds.height - Self.commentUnitHeight - margin.bottom, width: bounds.width, height: Self.commentUnitHeight)
+            let commentHeight = layoutConstants.candidateCommentCharSize.height
+            commentLayer?.frame = CGRect(x: 0, y: bounds.height - commentHeight - margin.bottom, width: bounds.width, height: commentHeight)
         } else {
             self.label?.frame = bounds
         }

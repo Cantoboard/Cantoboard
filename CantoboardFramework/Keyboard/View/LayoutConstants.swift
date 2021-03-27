@@ -9,6 +9,9 @@ import Foundation
 import UIKit
 
 struct LayoutConstants {
+    private static let portraitCandidateFontSize = CGFloat(22), landscapeCandidateFontSize = CGFloat(20.5)
+    private static let portraitCandidateCommentFontSize = CGFloat(12), landscapeCandidateCommentFontSize = CGFloat(10)
+    
     // Fixed:
     let keyViewTopInset = CGFloat(8)
     let keyViewBottomInset = CGFloat(3)
@@ -21,15 +24,18 @@ struct LayoutConstants {
     let keyHeight: CGFloat
     let autoCompleteBarHeight: CGFloat
     let edgeHorizontalInset: CGFloat
-
     
     // Computed:
     let buttonGap: CGFloat
     let keyViewHeight: CGFloat
     let keyRowGap: CGFloat
-    // let widerSymbolButtonWidth: CGFloat
-
-    internal init(keyboardSize: CGSize,
+    let candidateFontSize: CGFloat
+    let candidateCharSize: CGSize
+    let candidateCommentFontSize: CGFloat
+    let candidateCommentCharSize: CGSize
+    
+    internal init(isPortrait: Bool,
+                  keyboardSize: CGSize,
                   buttonGap: CGFloat,
                   systemKeyWidth: CGFloat,
                   shiftKeyWidth: CGFloat,
@@ -38,7 +44,6 @@ struct LayoutConstants {
                   edgeHorizontalInset: CGFloat) {
         self.keyboardSize = keyboardSize
         self.buttonGap = buttonGap
-        // self.keyButtonWidth = inputKeyWidth
         self.edgeHorizontalInset = edgeHorizontalInset
         self.shiftButtonWidth = shiftKeyWidth
         self.systemButtonWidth = systemKeyWidth
@@ -46,10 +51,13 @@ struct LayoutConstants {
         self.autoCompleteBarHeight = autoCompleteBarHeight
         
         keyButtonWidth = (keyboardSize.width - 2 * edgeHorizontalInset - 9 * buttonGap) / 10
-        // buttonGap = (keyboardSize.width - 2 * edgeHorizontalInset - 10 * inputKeyWidth) / 9
         keyViewHeight = keyboardSize.height - autoCompleteBarHeight - keyViewTopInset - keyViewBottomInset
         keyRowGap = (keyViewHeight - 4 * keyHeight) / 3
-        // widerSymbolButtonWidth = (7 * keyButtonWidth + 6 * buttonGap - 5 * buttonGap) / 6
+        
+        candidateFontSize = isPortrait ? Self.portraitCandidateFontSize : Self.landscapeCandidateFontSize
+        candidateCommentFontSize = isPortrait ? Self.portraitCandidateCommentFontSize : Self.landscapeCandidateCommentFontSize
+        candidateCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateFontSize))
+        candidateCommentCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize))
     }
 }
 
@@ -57,6 +65,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone 12 Pro Max
     // Portrait:
     IntDuplet(428, 926): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 428, height: 175+49+45),
         buttonGap: 6,
         systemKeyWidth: 48,
@@ -66,6 +75,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 3),
     // Landscape:
     IntDuplet(926, 428): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 692, height: 160+38),
         buttonGap: 5,
         systemKeyWidth: 62,
@@ -77,6 +87,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone 12, 12 Pro
     // Portrait:
     IntDuplet(390, 844): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 390, height: 216+45),
         buttonGap: 6,
         systemKeyWidth: 43,
@@ -86,6 +97,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 3),
     // Landscape:
     IntDuplet(844, 390): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 694, height: 160+38),
         buttonGap: 5,
         systemKeyWidth: 62,
@@ -97,6 +109,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone 12 mini, 11 Pro, X, Xs
     // Portrait:
     IntDuplet(375, 812): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 375, height: 216+45),
         buttonGap: 6,
         systemKeyWidth: 40,
@@ -106,6 +119,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 3),
     // Landscape:
     IntDuplet(812, 375): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 662, height: 150+38),
         buttonGap: 5,
         systemKeyWidth: 59,
@@ -117,6 +131,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone 11 Pro Max, Xs Max, 11, Xr
     // Portrait:
     IntDuplet(414, 896): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 414, height: 226+45),
         buttonGap: 6,
         systemKeyWidth: 46,
@@ -126,6 +141,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 4),
     // Landscape:
     IntDuplet(896, 414): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 662, height: 150+38),
         buttonGap: 5,
         systemKeyWidth: 59,
@@ -137,6 +153,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone 8+, 7+, 6s+, 6+
     // Portrait:
     IntDuplet(414, 736): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 414, height: 226+45),
         buttonGap: 6,
         systemKeyWidth: 46,
@@ -146,6 +163,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 4),
     // Landscape:
     IntDuplet(736, 414): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 588, height: 162+38),
         buttonGap: 6,
         systemKeyWidth: 69,
@@ -157,6 +175,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone SE (2nd gen), 8, 7, 6s, 6
     // Portrait:
     IntDuplet(375, 667): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 375, height: 216+44),
         buttonGap: 6,
         systemKeyWidth: 40,
@@ -166,6 +185,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 3),
     // Landscape:
     IntDuplet(667, 375): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 526, height: 162+38),
         buttonGap: 6,
         systemKeyWidth: 63,
@@ -177,6 +197,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone SE (1st gen), 5c, 5s, 5
     // Portrait:
     IntDuplet(320, 568): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 320, height: 216+38),
         buttonGap: 6,
         systemKeyWidth: 34,
@@ -186,6 +207,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 3),
     // Landscape:
     IntDuplet(568, 320): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 568, height: 162+38),
         buttonGap: 5,
         systemKeyWidth: 50,
@@ -197,6 +219,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPad 768x1024
     // Portrait:
     IntDuplet(768, 1024): LayoutConstants(
+        isPortrait: true,
         keyboardSize: CGSize(width: 768, height: 258+55),
         buttonGap: 12,
         systemKeyWidth: 56,
@@ -206,6 +229,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         edgeHorizontalInset: 3),
     // Landscape:
     IntDuplet(1024, 768): LayoutConstants(
+        isPortrait: false,
         keyboardSize: CGSize(width: 1024, height: 353+55),
         buttonGap: 14,
         systemKeyWidth: 77,

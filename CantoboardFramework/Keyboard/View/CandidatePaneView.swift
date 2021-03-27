@@ -330,10 +330,10 @@ extension CandidatePaneView {
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
-        let unitCharSize = CandidateCell.unitCharSize
-        let firstAttempt = self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2), to: self.collectionView))
+        let candidateCharSize = LayoutConstants.forMainScreen.candidateCharSize
+        let firstAttempt = self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2), to: self.collectionView))
         if firstAttempt != nil { return firstAttempt }
-        return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: unitCharSize.width / 2, y: unitCharSize.height / 2 + 2 * rowPadding), to: self.collectionView))
+        return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2 + 2 * rowPadding), to: self.collectionView))
     }
 }
 
@@ -380,6 +380,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     private func computeCellSize(_ indexPath: IndexPath) -> CGSize {
         guard let candidateOrganizer = candidateOrganizer else { return CGSize(width: 0, height: 0) }
         let candidates = candidateOrganizer.getCandidates(section: indexPath.section)
+        let layoutConstant = LayoutConstants.forMainScreen
         
         guard indexPath.row < candidates.count else {
             NSLog("Invalid IndexPath %@. Candidate does not exist.", indexPath.description)
@@ -388,30 +389,19 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         
         let text = candidates[safe: indexPath.row] as? String ?? "⚠"
         
-        var cellWidth = computeTextSize(text, font: CandidateCell.mainFont).width
-        //var cellHeight = CandidateCell.margin.wrap(height: CandidateCell.unitCharSize.height)
+        var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         
         if Settings.cached.shouldShowRomanization {
             let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
-            let commentWidth = computeTextSize(comment, font: CandidateCell.commentFont).width
+            let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width
             cellWidth = max(cellWidth, commentWidth)
         }
         
-        cellWidth = max(cellWidth, 1 * CandidateCell.unitCharSize.width)
-        // cellWidth = ceil(cellWidth / CandidateCell.unitCharSize.width) * CandidateCell.unitCharSize.width
+        // Min width
+        cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width)
         
         return CandidateCell.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
-    }
-    
-    // Font based.
-    private func computeTextSize(_ text: String, font: UIFont) -> CGSize {
-        let mainFontAttributes = [NSAttributedString.Key.font: font]
-        
-        var size = (text as NSString).size(withAttributes: mainFontAttributes)
-        if size.width < CandidateCell.unitCharSize.width { size.width = CandidateCell.unitCharSize.width }
-        
-        return size
     }
 }
 
