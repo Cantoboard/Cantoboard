@@ -93,6 +93,10 @@ open class KeyboardViewController: UIInputViewController {
             NSLog("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
         }
         
+        if prevSettings.charForm != settings.charForm {
+            inputController.keyPressed(.setCharForm(settings.charForm))
+        }
+        
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
         heightConstraint?.isActive = true
