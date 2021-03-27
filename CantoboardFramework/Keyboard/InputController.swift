@@ -71,8 +71,8 @@ class InputController {
     
     private func updateContextualSuggestion() {
         checkAutoCap()
-        showAutoSuggestCandidates()
         refreshKeyboardContextualType()
+        showAutoSuggestCandidates()
     }
     
     func candidateSelected(_ choice: Int) {
@@ -304,11 +304,8 @@ class InputController {
                     getCandidateComment: { [weak self] index in
                         return self?.inputEngine.getCandidateComment(index)
                     })
+                self.refreshKeyboardContextualType()
             }
-        }
-        
-        DispatchQueue.main.async {
-            self.updateContextualSuggestion()
         }
     }
     
@@ -465,23 +462,21 @@ class InputController {
         } else if inputEngine.composition?.text != nil {
             keyboardContextualType = .rime
         } else {
-            DispatchQueue.main.async {
-                let symbolShape = Settings.cached.symbolShape
-                if symbolShape == .smart {
-                    // Default to English.
-                    guard let lastChar = textDocumentProxy.documentContextBeforeInput?.last(where: { !$0.isWhitespace }) else {
-                        self.keyboardContextualType = .english
-                        return
-                    }
-                    // If the last char is Chinese, change contextual type to Chinese.
-                    if lastChar.isChineseChar {
-                        self.keyboardContextualType = .chinese
-                    } else {
-                        self.keyboardContextualType = .english
-                    }
-                } else {
-                    self.keyboardContextualType = symbolShape == .half ? .english : .chinese
+            let symbolShape = Settings.cached.symbolShape
+            if symbolShape == .smart {
+                // Default to English.
+                guard let lastChar = textDocumentProxy.documentContextBeforeInput?.last(where: { !$0.isWhitespace }) else {
+                    self.keyboardContextualType = .english
+                    return
                 }
+                // If the last char is Chinese, change contextual type to Chinese.
+                if lastChar.isChineseChar {
+                    self.keyboardContextualType = .chinese
+                } else {
+                    self.keyboardContextualType = .english
+                }
+            } else {
+                self.keyboardContextualType = symbolShape == .half ? .english : .chinese
             }
         }
     }
