@@ -15,9 +15,9 @@ class AudioFeedbackProvider {
     private static let modifierPress: SystemSoundID = 1156
 
     static func play(keyboardAction: KeyboardAction) {
+        guard Settings.cached.isAudioFeedbackEnabled else { return }
         switch keyboardAction {
         case .none, .character(_), .rime(_), .emoji(_):
-            // UIDevice.current.playInputClick()
             AudioServicesPlaySystemSound(Self.clickPress)
         case .backspace, .deleteWord:
             AudioServicesPlaySystemSound(Self.deletePress)
