@@ -150,15 +150,14 @@ class EnglishInputEngine: InputEngine {
         let textChecker = Self.textChecker
         let englishDictionary = Self.englishDictionary
         
-        isWord = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
+        let isInAppleDictionary = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
         
-        let isInEnglishDictionary = englishDictionary.hasWord(text)
-        if !isWord && isInEnglishDictionary {
-            isWord = true
-        } else if isWord && !text.allSatisfy({ $0.isUppercase }) && !isInEnglishDictionary {
+        isWord = englishDictionary.hasWord(text)
+        isWord = englishDictionary.hasWord(text) || text.allSatisfy({ $0.isUppercase })
+
+        if isInAppleDictionary && !isWord {
             // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
             worstCandidates.append(text)
-            isWord = false
         }
         
         candidates.removeAllObjects()
