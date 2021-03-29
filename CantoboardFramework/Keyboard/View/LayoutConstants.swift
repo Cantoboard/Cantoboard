@@ -33,6 +33,7 @@ struct LayoutConstants {
     let candidateCharSize: CGSize
     let candidateCommentFontSize: CGFloat
     let candidateCommentCharSize: CGSize
+    let statusIndicatorFontSize: CGFloat
     
     internal init(isPortrait: Bool,
                   keyboardSize: CGSize,
@@ -58,6 +59,8 @@ struct LayoutConstants {
         candidateCommentFontSize = isPortrait ? Self.portraitCandidateCommentFontSize : Self.landscapeCandidateCommentFontSize
         candidateCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateFontSize))
         candidateCommentCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize))
+        
+        statusIndicatorFontSize = isPortrait ? 20 : 15
     }
 }
 

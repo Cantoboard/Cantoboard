@@ -19,6 +19,41 @@ protocol CandidatePaneViewDelegate: NSObject {
     var symbolShapeOverride: SymbolShape? { get set }
 }
 
+class StatusButton: UIButton {
+    private static let statusInset: CGFloat = 4
+    private weak var statusSquareBg: CALayer?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        let statusSquareBg = CALayer()
+        let newActions = [
+            "position": NSNull(),
+            "bounds": NSNull(),
+            "hidden": NSNull(),
+        ]
+        statusSquareBg.actions = newActions
+        statusSquareBg.frame = frame.insetBy(dx: Self.statusInset, dy: Self.statusInset)
+        statusSquareBg.backgroundColor = CGColor(gray: 0.5, alpha: 0.5)
+        statusSquareBg.cornerRadius = 3
+        statusSquareBg.masksToBounds = true
+        layer.addSublayer(statusSquareBg)
+        
+        self.statusSquareBg = statusSquareBg
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        titleLabel?.font = UIFont.systemFont(ofSize: LayoutConstants.forMainScreen.statusIndicatorFontSize)
+        statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
+    }
+}
+
 class CandidatePaneView: UIControl {
     private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
     
@@ -65,68 +100,42 @@ class CandidatePaneView: UIControl {
         }
     }
     weak var collectionView: CandidateCollectionView!
-    weak var buttonStackView: UIStackView!
-    weak var expandButton, filterButton, backspaceButton: UIButton!
+    weak var expandButton, inputModeButton, backspaceButton: UIButton!
     weak var delegate: CandidatePaneViewDelegate?
-    
-    var rowStyleHeightConstraint: NSLayoutConstraint!
-    var tableStyleBottomConstraint: NSLayoutConstraint?
     
     private(set) var mode: Mode = .row
     var filterMode: FilterMode = .lang {
         didSet {
+            // TODO dedup
             setupButtons()
         }
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         translatesAutoresizingMaskIntoConstraints = false
         
         initCollectionView()
-        initStackView()
-        
-        rowStyleHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding)
-        NSLayoutConstraint.activate([
-            heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            
-            collectionView.topAnchor.constraint(equalTo: topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: buttonStackView.leadingAnchor),
-            
-            buttonStackView.topAnchor.constraint(equalTo: topAnchor),
-            buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            buttonStackView.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            // buttonStackView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
-        ])
+        initButtons()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initStackView() {
-        let buttonStackView = UIStackView()
-        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        buttonStackView.axis = .vertical
-        buttonStackView.alignment = .top
-        buttonStackView.distribution = .fillProportionally
-        addSubview(buttonStackView)
-        self.buttonStackView = buttonStackView
-        
-        expandButton = createAndAddButton()
+    private func initButtons() {
+        expandButton = createAndAddButton(isStatusIndicator: false)
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
 
-        filterButton = createAndAddButtonWithBackground()
-        filterButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
+        inputModeButton = createAndAddButton(isStatusIndicator: true)
+        inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
         
-        backspaceButton = createAndAddButton()
+        backspaceButton = createAndAddButton(isStatusIndicator: false)
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
     }
     
-    private func createAndAddButton() -> UIButton {
-        let button = UIButton()
+    private func createAndAddButton(isStatusIndicator: Bool) -> UIButton {
+        let button = isStatusIndicator ? StatusButton() : UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.contentsFormat = .gray8Uint
         //button.layer.cornerRadius = 5
@@ -134,25 +143,7 @@ class CandidatePaneView: UIControl {
         button.tintColor = .label
         // button.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
         
-        NSLayoutConstraint.activate([
-            button.widthAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-            button.heightAnchor.constraint(equalToConstant: getRowHeight() + rowPadding),
-        ])
-        
-        buttonStackView.addArrangedSubview(button)
-        return button
-    }
-    
-    private func createAndAddButtonWithBackground() -> UIButton {
-        let button = createAndAddButton()
-        
-        let statusSquareBg = CALayer()
-        statusSquareBg.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: getRowHeight() + rowPadding, height: getRowHeight() + rowPadding)).insetBy(dx: 5, dy: 5)
-        statusSquareBg.backgroundColor = CGColor(gray: 0.5, alpha: 0.5)
-        statusSquareBg.cornerRadius = 3
-        statusSquareBg.masksToBounds = true
-        button.layer.addSublayer(statusSquareBg)
-        
+        addSubview(button)
         return button
     }
     
@@ -179,21 +170,22 @@ class CandidatePaneView: UIControl {
             }
         }
         
-        filterButton.setTitle(title, for: .normal)
+        inputModeButton.setTitle(title, for: .normal)
         
         backspaceButton.setImage(ButtonImage.backspace, for: .normal)
         
         if mode == .table {
             expandButton.isHidden = false
-            filterButton.isHidden = false || title == nil
+            inputModeButton.isHidden = false || title == nil
             backspaceButton.isHidden = false
         } else {
             let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
             
             expandButton.isHidden = cannotExpand
-            filterButton.isHidden = !cannotExpand || title == nil
+            inputModeButton.isHidden = !cannotExpand || title == nil
             backspaceButton.isHidden = true
         }
+        setNeedsLayout()
     }
     
     private func initCollectionView() {
@@ -213,8 +205,11 @@ class CandidatePaneView: UIControl {
             self?.setupButtons()
         }
         
+        let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        flowLayout.scrollDirection = mode == .row ? .horizontal : .vertical
+        flowLayout.minimumLineSpacing = rowPadding
+        
         self.addSubview(collectionView)
-
         self.collectionView = collectionView
     }
     
@@ -223,8 +218,8 @@ class CandidatePaneView: UIControl {
         self.updateConstraints() // TODO revisit
     }
     
-    private func getRowHeight() -> CGFloat {
-        return LayoutConstants.forMainScreen.autoCompleteBarHeight
+    private var rowHeight: CGFloat {
+        return LayoutConstants.forMainScreen.autoCompleteBarHeight + rowPadding
     }
     
     @objc private func expandButtonClick() {
@@ -262,27 +257,26 @@ class CandidatePaneView: UIControl {
         delegate?.handleKey(.backspace)
     }
     
-    override func updateConstraints() {
-        if tableStyleBottomConstraint == nil {
-            tableStyleBottomConstraint = self.collectionView.bottomAnchor.constraint(equalTo: self.superview!.bottomAnchor)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard let superview = superview else { return }
+        let layoutConstants = LayoutConstants.forMainScreen
+        let height = mode == .row ? layoutConstants.autoCompleteBarHeight : superview.bounds.height
+        let buttonWidth = layoutConstants.autoCompleteBarHeight
+        let candidateViewWidth = superview.bounds.width - buttonWidth
+        
+        collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
+        
+        let buttons = [expandButton, inputModeButton, backspaceButton]
+        var buttonY: CGFloat = 0
+        for button in buttons {
+            guard let button = button, !button.isHidden else { continue }
+            button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: buttonWidth, height: buttonWidth))
+            buttonY += layoutConstants.autoCompleteBarHeight
         }
-        
-        let isRowMode = self.mode == .row
-        
-        rowStyleHeightConstraint.isActive = isRowMode
-        tableStyleBottomConstraint!.isActive = !isRowMode
-        
-        collectionView.alwaysBounceHorizontal = isRowMode
-        collectionView.alwaysBounceVertical = !isRowMode
-        
-        let flowLayout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        flowLayout.scrollDirection = isRowMode ? .horizontal : .vertical
-        flowLayout.minimumLineSpacing = rowPadding
-        
-        super.updateConstraints()
     }
     
-    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         if isHidden || window == nil { return nil }
         if mode == .row {
             return super.hitTest(point, with: event)
@@ -319,7 +313,12 @@ extension CandidatePaneView {
             }
         }
         
-        setNeedsUpdateConstraints()
+        if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.scrollDirection = mode == .row ? .horizontal : .vertical
+            flowLayout.minimumLineSpacing = rowPadding
+        }
+        
+        setNeedsLayout()
         
         if newMode == .row {
             delegate?.candidatePaneViewCollapsed()

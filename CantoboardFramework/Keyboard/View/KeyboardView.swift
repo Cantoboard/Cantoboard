@@ -163,6 +163,11 @@ class KeyboardView: UIView {
         NSLog("layoutSubviews screen size \(UIScreen.main.bounds.size)")
         let layoutConstants = LayoutConstants.forMainScreen
         
+        layoutKeyboardSubviews(layoutConstants)
+        layoutCandidateSubviews(layoutConstants)
+    }
+    
+    private func layoutKeyboardSubviews(_ layoutConstants: LayoutConstants) {
         directionalLayoutMargins = NSDirectionalEdgeInsets(top: layoutConstants.keyViewTopInset,
                                                            leading: layoutConstants.edgeHorizontalInset,
                                                            bottom: layoutConstants.keyViewBottomInset,
@@ -188,6 +193,12 @@ class KeyboardView: UIView {
             keyRow.frame = CGRect(x: 0, y: keyRowY , width: frame.width, height: keyRowsHeight[index])
             keyRow.directionalLayoutMargins = keyRowsMargin[index]
         }
+    }
+    
+    private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
+        guard let candidatePaneView = candidatePaneView else { return }
+        let height = candidatePaneView.mode == .row ? layoutConstants.autoCompleteBarHeight : bounds.height
+        candidatePaneView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: bounds.width, height: height))
     }
     
     private func refreshCandidatePaneViewVisibility() {
@@ -292,13 +303,7 @@ class KeyboardView: UIView {
         candidatePaneView.delegate = self
         candidatePaneView.candidateOrganizer = candidateOrganizer
 
-        addSubview(candidatePaneView)
-        NSLayoutConstraint.activate([
-            candidatePaneView.topAnchor.constraint(equalTo: self.topAnchor),
-            candidatePaneView.leftAnchor.constraint(equalTo: self.leftAnchor),
-            candidatePaneView.rightAnchor.constraint(equalTo: self.rightAnchor),
-        ])
-        
+        addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)
         
         self.candidatePaneView = candidatePaneView
@@ -347,11 +352,13 @@ extension KeyboardView: CandidatePaneViewDelegate {
     }
     
     func candidatePaneViewExpanded() {
+        setNeedsLayout()
         refreshCandidatePaneViewVisibility()
         refreshKeyRowsVisibility()
     }
     
     func candidatePaneViewCollapsed() {
+        setNeedsLayout()
         refreshCandidatePaneViewVisibility()
         refreshKeyRowsVisibility()
     }
