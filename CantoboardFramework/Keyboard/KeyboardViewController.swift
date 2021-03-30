@@ -79,23 +79,7 @@ open class KeyboardViewController: UIInputViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        let prevSettings = Settings.cached
-        let settings = Settings.reload()
-        
-        if prevSettings.rimeSettings != settings.rimeSettings {
-            RimeApi.generateSchemaPatchFromSettings()
-            RimeApi.closeShared()
-            NSLog("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
-        }
-        
-        if prevSettings.englishLocale != settings.englishLocale {
-            EnglishInputEngine.language = settings.englishLocale.rawValue
-            NSLog("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
-        }
-        
-        if prevSettings.charForm != settings.charForm {
-            inputController.keyPressed(.setCharForm(settings.charForm))
-        }
+        reloadSettings()
         
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
@@ -190,6 +174,8 @@ open class KeyboardViewController: UIInputViewController {
             NSLog("Unlocking all open files on viewDidAppear.")
             FileUnlocker.unlockAllOpenedFiles()
         }
+        
+        reloadSettings()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -210,6 +196,26 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func viewDidLayoutSubviews() {
         logView?.frame = view.bounds
+    }
+    
+    private func reloadSettings() {
+        let prevSettings = Settings.cached
+        let settings = Settings.reload()
+        
+        if prevSettings.rimeSettings != settings.rimeSettings {
+            RimeApi.generateSchemaPatchFromSettings()
+            RimeApi.closeShared()
+            NSLog("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
+        }
+        
+        if prevSettings.englishLocale != settings.englishLocale {
+            EnglishInputEngine.language = settings.englishLocale.rawValue
+            NSLog("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
+        }
+        
+        if prevSettings.charForm != settings.charForm {
+            inputController.keyPressed(.setCharForm(settings.charForm))
+        }
     }
 }
 
