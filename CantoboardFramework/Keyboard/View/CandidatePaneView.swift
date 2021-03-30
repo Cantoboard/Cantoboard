@@ -426,6 +426,7 @@ extension CandidatePaneView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let candidateOrganizer = candidateOrganizer,
               let index = candidateOrganizer.getCandidateIndex(indexPath: indexPath) else { return }
+        AudioFeedbackProvider.play(keyboardAction: .none)
         delegate?.candidatePaneViewCandidateSelected(index)
     }
     

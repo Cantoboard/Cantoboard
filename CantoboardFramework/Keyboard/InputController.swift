@@ -76,8 +76,6 @@ class InputController {
     }
     
     func candidateSelected(_ choice: Int) {
-        AudioFeedbackProvider.play(keyboardAction: .none)
-        
         if let staticCandidateSource = candidateOrganizer.candidateSource as? AutoSuggestionCandidateSource {
             if let candidate = staticCandidateSource.candidates[choice] as? String {
                 insertText(candidate, shouldClearInput: false)
