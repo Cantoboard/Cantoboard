@@ -193,7 +193,10 @@ class TouchHandler {
                 self.currentTouch = nil
                 inputMode = .typing
             }
-            if isShiftTouch { self.shiftTouch = nil }
+            if isShiftTouch {
+                shiftTouch?.1.keyTouchEnded()
+                self.shiftTouch = nil
+            }
         }
         
         cancelKeyRepeatTimer()
