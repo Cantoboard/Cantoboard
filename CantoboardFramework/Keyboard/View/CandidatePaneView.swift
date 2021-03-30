@@ -100,7 +100,7 @@ class CandidatePaneView: UIControl {
         }
     }
     weak var collectionView: CandidateCollectionView!
-    weak var expandButton, inputModeButton, backspaceButton: UIButton!
+    weak var expandButton, inputModeButton, backspaceButton, charFormButton: UIButton!
     weak var delegate: CandidatePaneViewDelegate?
     
     private(set) var mode: Mode = .row
@@ -132,6 +132,9 @@ class CandidatePaneView: UIControl {
         
         backspaceButton = createAndAddButton(isStatusIndicator: false)
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
+        
+        charFormButton = createAndAddButton(isStatusIndicator: true)
+        charFormButton.addTarget(self, action: #selector(self.charFormButtonClick), for: .touchUpInside)
     }
     
     private func createAndAddButton(isStatusIndicator: Bool) -> UIButton {
@@ -169,21 +172,30 @@ class CandidatePaneView: UIControl {
                 }
             }
         }
-        
         inputModeButton.setTitle(title, for: .normal)
-        
+
         backspaceButton.setImage(ButtonImage.backspace, for: .normal)
+        
+        var charFormText: String
+        if Settings.cached.charForm == .simplified {
+            charFormText = "簡"
+        } else {
+            charFormText = "繁"
+        }
+        charFormButton.setTitle(charFormText, for: .normal)
         
         if mode == .table {
             expandButton.isHidden = false
             inputModeButton.isHidden = false || title == nil
             backspaceButton.isHidden = false
+            charFormButton.isHidden = false
         } else {
             let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
             
             expandButton.isHidden = cannotExpand
             inputModeButton.isHidden = !cannotExpand || title == nil
             backspaceButton.isHidden = true
+            charFormButton.isHidden = true
         }
         setNeedsLayout()
     }
@@ -257,6 +269,12 @@ class CandidatePaneView: UIControl {
         delegate?.handleKey(.backspace)
     }
     
+    @objc private func charFormButtonClick() {
+        let currentCharForm = Settings.cached.charForm
+        let newCharForm: CharForm = currentCharForm == .simplified ? .traditionalTW : .simplified
+        delegate?.handleKey(.setCharForm(newCharForm))
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         guard let superview = superview else { return }
@@ -267,7 +285,7 @@ class CandidatePaneView: UIControl {
         
         collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
         
-        let buttons = [expandButton, inputModeButton, backspaceButton]
+        let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
