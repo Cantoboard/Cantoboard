@@ -195,8 +195,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
         
         switch self {
+        case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
-        case .contexualSymbols(.chinese), "，", "。", "？", "！",
+        case "，", "。", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
