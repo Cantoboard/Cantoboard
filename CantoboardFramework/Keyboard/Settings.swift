@@ -67,7 +67,7 @@ public struct Settings: Codable, Equatable {
     private static let DefaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
     private static let DefaultRimeSettings: RimeSettings = RimeSettings()
     private static let DefaultEnglishLocale: EnglishLocale = .us
-    private static let DefaultShowRomanization: Bool = false
+    private static let DefaultShowRomanization: Bool = true
     private static let DefaultAudioFeedbackEnabled: Bool = true
 
     public var charForm: CharForm
