@@ -107,7 +107,7 @@ translator:
 
 variants_hk:
   option_name: variants_hk
-  opencc_config: t2hkf.json
+  opencc_config: t2hk.json
 
 trad_tw:
   option_name: trad_tw
