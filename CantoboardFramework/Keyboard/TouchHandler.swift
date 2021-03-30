@@ -95,7 +95,7 @@ class TouchHandler {
         cursorMoveStartPosition = touch.location(in: keyboardView)
     }
     
-    func touchMoved(_ touch: UITouch, key: KeyView, with event: UIEvent?) {
+    func touchMoved(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
         if keyRepeatTimer == nil { setupKeyRepeatTimer() }
         
         // print(Date(), "touchMoved", key.keyCap, touch.description)
@@ -139,7 +139,7 @@ class TouchHandler {
         case .typing:
             guard touch == currentTouch?.0 else { return } // Ignore shift touch.
             
-            guard let currentTouch = currentTouch else { return }
+            guard let currentTouch = currentTouch, let key = key else { return }
             
             // If there's an popup accepting touch, forward all events to it.
             if currentTouch.1.hasInputAcceptingPopup {

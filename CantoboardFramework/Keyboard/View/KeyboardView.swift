@@ -390,9 +390,7 @@ extension KeyboardView {
         
         for touch in touches {
             let key = findTouchingView(touch, with: event) as? KeyView
-            if let key = key {
-                touchHandler.touchMoved(touch, key: key , with: event)
-            }
+            touchHandler.touchMoved(touch, key: key, with: event)
         }
     }
     
@@ -400,8 +398,8 @@ extension KeyboardView {
         super.touchesEnded(touches, with: event)
         
         for touch in touches {
-            let key = findTouchingView(touch, with: event)
-            touchHandler.touchEnded(touch, key: key as? KeyView, with: event)
+            let key = findTouchingView(touch, with: event) as? KeyView
+            touchHandler.touchEnded(touch, key: key, with: event)
         }
     }
     
