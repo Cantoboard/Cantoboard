@@ -240,7 +240,6 @@ extension KeyView {
     // Forward all touch events to the superview.
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         superview?.touchesBegan(touches, with: event)
-        isHighlighted = true
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

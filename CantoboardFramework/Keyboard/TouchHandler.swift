@@ -42,12 +42,13 @@ class TouchHandler {
     
     func touchBegan(_ touch: UITouch, key: KeyView, with event: UIEvent?) {
         guard key.isKeyEnabled &&
-              inputMode == .typing // Ignore new touches if we are not in typing mode.
+              inputMode == .typing && // Ignore new touches if we are not in typing mode.
+              currentTouch?.0 != touch // Dedup began events coming from gesture recognizer and touch event.
             else { return }
 
         let touchTuple = (touch, key, key.selectedAction)
         
-        // print(Date(), Thread.current, "touchBegan", key.keyCap, key.selectedAction, currentTouch?.0, touch)
+        NSLog("UFO touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
         
         keyRepeatCounter = 0
         
@@ -99,6 +100,7 @@ class TouchHandler {
         if keyRepeatTimer == nil { setupKeyRepeatTimer() }
         
         // print(Date(), "touchMoved", key.keyCap, touch.description)
+        NSLog("UFO touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         switch inputMode {
         case .backspacing:
@@ -184,6 +186,7 @@ class TouchHandler {
         let isShiftTouch = shiftTouch?.0 == touch
                
         // print(Date(), Thread.current, "touchEnded", key?.keyCap, currentTouch?.0, touch)
+        NSLog("UFO touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         guard isCurrentTouch || isShiftTouch else { return }
         defer {
@@ -246,14 +249,16 @@ class TouchHandler {
     
     func touchCancelled(_ touch: UITouch, with event: UIEvent?) {
         // print(Date(), "touchCancelled", touch.description)
+        NSLog("UFO touchCancelled \(currentTouch?.0) \(touch)")
         
         cancelKeyRepeatTimer()
         
-        if let currentTouch = currentTouch {
-            currentTouch.1.keyTouchEnded()
-        }
-        
+        currentTouch?.1.keyTouchEnded()
         currentTouch = nil
+        
+        shiftTouch?.1.keyTouchEnded()
+        shiftTouch = nil
+        
         inputMode = .typing
     }
     
