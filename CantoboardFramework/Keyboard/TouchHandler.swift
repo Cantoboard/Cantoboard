@@ -13,7 +13,7 @@ class TouchHandler {
     
     private var currentTouch, shiftTouch: (UITouch, /*_ currentKeyView:*/ KeyView, /*_ initialAction:*/ KeyboardAction)?
     private var cursorMoveStartPosition: CGPoint?
-    private var hasMovedCursor = false
+    private var hasTakenAction = false
     private var _inputMode: InputMode = .typing
     private var inputMode: InputMode {
         get { _inputMode }
@@ -62,12 +62,11 @@ class TouchHandler {
         
         key.keyTouchBegan(touch)
         
-        hasMovedCursor = false
+        hasTakenAction = false
         switch key.selectedAction {
         case .backspace:
             inputMode = .backspacing
             AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
-            callKeyHandler(.backspace)
         case .keyboardType(.emojis), .character, .rime:
             AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
         case .keyboardType:
@@ -111,11 +110,11 @@ class TouchHandler {
             }
             let point = touch.location(in: keyboardView)
             let dX = point.x - cursorMoveStartPosition.x
-            if dX < -30 && !hasMovedCursor {
+            if dX < -30 && !hasTakenAction {
                 callKeyHandler(.deleteWordSwipe)
-                hasMovedCursor = true
+                hasTakenAction = true
             }
-            if hasMovedCursor {
+            if hasTakenAction {
                 cancelKeyRepeatTimer()
             }
         case .cursorMoving:
@@ -131,7 +130,7 @@ class TouchHandler {
             while dX > threshold {
                 dX -= threshold
                 callKeyHandler(isLeft ? .moveCursorBackward : .moveCursorForward)
-                hasMovedCursor = true
+                hasTakenAction = true
             }
             self.cursorMoveStartPosition = point
             self.cursorMoveStartPosition!.x -= isLeft ? -dX : dX
@@ -174,7 +173,7 @@ class TouchHandler {
                  .character(_) where isForceSwiping:
                 self.cursorMoveStartPosition = point
                 inputMode = .cursorMoving
-                hasMovedCursor = false
+                hasTakenAction = false
                 currentTouch.1.keyTouchEnded()
             default: ()
             }
@@ -205,7 +204,9 @@ class TouchHandler {
         cancelKeyRepeatTimer()
         
         switch inputMode {
-        case .backspacing: inputMode = .typing
+        case .backspacing:
+            if !hasTakenAction { callKeyHandler(.backspace) }
+            inputMode = .typing
         case .cursorMoving:
             callKeyHandler(.moveCursorEnded)
             inputMode = .typing
@@ -273,6 +274,7 @@ class TouchHandler {
                 action = .deleteWord
             }
             callKeyHandler(action)
+            hasTakenAction = true
             AudioFeedbackProvider.play(keyboardAction: action)
         } else if self.inputMode == .typing && keyRepeatCounter > Self.LongPressDelay,
             let currentTouch = currentTouch {
