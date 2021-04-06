@@ -87,8 +87,7 @@ class EnglishInputEngine: InputEngine {
         }
     }
     private static var englishDictionary = EnglishDictionary(locale: language)
-
-    private static let popularWords = ["I": "i", "Can't": "Cant", "can't": "cant"] // , "I'm": "Im", ]
+    private static let popularWords = ["I": "i", "Can't": "Cant", "can't": "cant", "Let's": "Lets", "let's": "lets"]
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
@@ -152,7 +151,6 @@ class EnglishInputEngine: InputEngine {
         
         let isInAppleDictionary = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
         
-        isWord = englishDictionary.hasWord(text)
         isWord = englishDictionary.hasWord(text) || text.allSatisfy({ $0.isUppercase })
 
         if isInAppleDictionary && !isWord {
