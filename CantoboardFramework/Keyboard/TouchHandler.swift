@@ -111,11 +111,9 @@ class TouchHandler {
             let point = touch.location(in: keyboardView)
             let dX = point.x - cursorMoveStartPosition.x
             if dX < -30 && !hasTakenAction {
-                callKeyHandler(.deleteWordSwipe)
-                hasTakenAction = true
-            }
-            if hasTakenAction {
                 cancelKeyRepeatTimer()
+                hasTakenAction = true
+                callKeyHandler(.deleteWordSwipe)
             }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
