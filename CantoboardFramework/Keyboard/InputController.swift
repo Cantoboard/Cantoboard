@@ -168,9 +168,10 @@ class InputController {
                 case .backspace: textDocumentProxy.deleteBackward()
                 case .deleteWord: textDocumentProxy.deleteBackwardWord()
                 case .deleteWordSwipe:
-                    if let lastChar = textDocumentProxy.documentContextBeforeInput?.last,
-                       lastChar.isASCII {
+                    if textDocumentProxy.documentContextBeforeInput?.last?.isASCII ?? false {
                         textDocumentProxy.deleteBackwardWord()
+                    } else {
+                        textDocumentProxy.deleteBackward()
                     }
                 default:()
                 }
