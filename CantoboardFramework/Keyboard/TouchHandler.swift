@@ -48,7 +48,7 @@ class TouchHandler {
 
         let touchTuple = (touch, key, key.selectedAction)
         
-        NSLog("UFO touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
+        // NSLog("UFO touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
         
         keyRepeatCounter = 0
         
@@ -99,7 +99,7 @@ class TouchHandler {
         if keyRepeatTimer == nil { setupKeyRepeatTimer() }
         
         // print(Date(), "touchMoved", key.keyCap, touch.description)
-        NSLog("UFO touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
+        // NSLog("UFO touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         switch inputMode {
         case .backspacing:
@@ -185,7 +185,7 @@ class TouchHandler {
         let isShiftTouch = shiftTouch?.0 == touch
                
         // print(Date(), Thread.current, "touchEnded", key?.keyCap, currentTouch?.0, touch)
-        NSLog("UFO touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
+        // NSLog("UFO touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         guard isCurrentTouch || isShiftTouch else { return }
         defer {
@@ -250,7 +250,7 @@ class TouchHandler {
     
     func touchCancelled(_ touch: UITouch, with event: UIEvent?) {
         // print(Date(), "touchCancelled", touch.description)
-        NSLog("UFO touchCancelled \(currentTouch?.0) \(touch)")
+        // NSLog("UFO touchCancelled \(currentTouch?.0) \(touch)")
         
         cancelKeyRepeatTimer()
         
