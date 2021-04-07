@@ -34,7 +34,7 @@ class StatusButton: UIButton {
         ]
         statusSquareBg.actions = newActions
         statusSquareBg.frame = frame.insetBy(dx: Self.statusInset, dy: Self.statusInset)
-        statusSquareBg.backgroundColor = CGColor(gray: 0.5, alpha: 0.5)
+        statusSquareBg.backgroundColor = ButtonColor.systemKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
         statusSquareBg.cornerRadius = 3
         statusSquareBg.masksToBounds = true
         layer.addSublayer(statusSquareBg)
@@ -51,6 +51,10 @@ class StatusButton: UIButton {
         
         titleLabel?.font = UIFont.systemFont(ofSize: LayoutConstants.forMainScreen.statusIndicatorFontSize)
         statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        statusSquareBg?.backgroundColor = ButtonColor.systemKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
 }
 
