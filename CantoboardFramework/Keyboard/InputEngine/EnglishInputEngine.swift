@@ -180,7 +180,7 @@ class EnglishInputEngine: InputEngine {
                 candidates.add(text)
                 candidates.add(textCapitalized)
             }
-        } else if isInDict {
+        } else if isInDict || isInAppleDictionary {
             candidates.add(text)
         }
         
