@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 
 #import <Foundation/Foundation.h>
 
@@ -36,6 +37,8 @@ using namespace std;
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
     
+    NSLog(@"Opened English dictionary at %@.", dbPath);
+    
     [FileUnlocker unlockAllOpenedFiles];
     
     return self;
@@ -46,16 +49,16 @@ using namespace std;
     db = nullptr;
 }
 
-- (bool)hasWord:(NSString*) word {
+- (NSString*)getWords:(NSString*) word {
     leveldb::ReadOptions options;
     options.fill_cache = false;
     string val;
     leveldb::Status status;
-    status = db->Get(options, [word UTF8String], &val);
-    if (status.ok()) return true;
     status = db->Get(options, [[word lowercaseString] UTF8String], &val);
-    if (status.ok()) return true;
-    return false;
+    if (status.ok()) {
+        return [NSString stringWithUTF8String:val.c_str()];
+    }
+    return nil;
 }
 
 + (bool)createDb:(NSArray*) textFilePaths dbPath:(NSString*) dbPath {
@@ -71,25 +74,37 @@ using namespace std;
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
     
-    leveldb::WriteBatch batch;
+    // lowercased key -> list of strings with original cases.
+    unordered_map<string, string> wordCasesMap;
     string line;
     for (NSString* textFilePath in textFilePaths) {
+        NSLog(@"Loading %@...", textFilePath);
         ifstream dictFile([textFilePath UTF8String]);
         
         [[NSFileManager defaultManager] createDirectoryAtPath:dbPath withIntermediateDirectories:YES attributes:nil error:nil];
         
         while (getline(dictFile, line)) {
             if (*line.rbegin() == '\r') line.pop_back();
-            transform(line.begin(), line.end(), line.begin(), [](unsigned char c){ return tolower(c); });
-            /*if (line.find("Sino") != string::npos) {
-                NSLog(@"UUFFOO '%s'", line.c_str());
-            }*/
-            if (line.empty()) continue;
-            batch.Put(line, leveldb::Slice());
+            if (line.empty() || line.find(',') != std::string::npos) continue;
+            string key(line);
+            transform(key.begin(), key.end(), key.begin(), [](unsigned char c){ return tolower(c); });
+            
+            auto it = wordCasesMap.find(key);
+            if (it == wordCasesMap.end()) {
+                wordCasesMap.insert(make_pair(string(key), string(line)));
+            } else {
+                it->second.append(",");
+                it->second.append(line);
+            }
         }
         dictFile.close();
     }
     
+    leveldb::WriteBatch batch;
+    for (auto it = wordCasesMap.begin(); it != wordCasesMap.end(); it++) {
+        // NSLog(@"%s -> %s\n", it->first.c_str(), it->second.c_str());
+        batch.Put(it->first, it->second);
+    }
     leveldb::Status writeStatus = db->Write(leveldb::WriteOptions(), &batch);
     if (!writeStatus.ok()) {
         NSLog(@"Failed to insert into DB. Error: %s", status.ToString().c_str());

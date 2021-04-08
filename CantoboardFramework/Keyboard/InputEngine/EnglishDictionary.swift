@@ -14,29 +14,29 @@ extension EnglishDictionary {
         let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let dictsPath = documentsDirectory.appendingPathComponent("\(Self.dictionaryDirName)", isDirectory: false).path
         
-        Self.installDictionariesIfNeeded(dictsPath: dictsPath)
+        Self.installDictionariesIfNeeded(dstPath: dictsPath)
         
         self.init(dictsPath + "/\(locale).db")
     }
     
-    private static func installDictionariesIfNeeded(dictsPath: String) {
+    private static func installDictionariesIfNeeded(dstPath: String) {
         guard let resourcePath = Bundle.init(for: Self.self).resourcePath else {
             fatalError("Bundle.main.resourcePath is nil.")
         }
         
         let srcDictionariesPath = resourcePath + "/\(dictionaryDirName)"
-        if isDstFileOutdated(srcPath: srcDictionariesPath + "/generated", dstPath: dictsPath + "/generated") {
+        if isDstFileOutdated(srcPath: srcDictionariesPath + "/generated", dstPath: dstPath + "/generated") {
             NSLog("English Dictionary is outdated. Reinstalling...")
-            try? FileManager.default.removeItem(atPath: dictsPath)
+            try? FileManager.default.removeItem(atPath: dstPath)
         } else {
             NSLog("English Dictionary is up to date.")
         }
         
-        let dictsImportedPath = dictsPath + "/imported"
+        let dictsImportedPath = dstPath + "/imported"
         if !FileManager.default.fileExists(atPath: dictsImportedPath) {
-            try? FileManager.default.removeItem(atPath: dictsPath)
-            NSLog("Installing English Dictionary from \(srcDictionariesPath) -> \(dictsPath)")
-            try! FileManager.default.copyItem(atPath: srcDictionariesPath, toPath: dictsPath)
+            try? FileManager.default.removeItem(atPath: dstPath)
+            NSLog("Installing English Dictionary from \(srcDictionariesPath) -> \(dstPath)")
+            try! FileManager.default.copyItem(atPath: srcDictionariesPath, toPath: dstPath)
             FileManager.default.createFile(atPath: dictsImportedPath, contents: nil, attributes: nil)
         }
     }

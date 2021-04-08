@@ -87,7 +87,6 @@ class EnglishInputEngine: InputEngine {
         }
     }
     private static var englishDictionary = EnglishDictionary(locale: language)
-    private static let popularWords = ["I": "i", "Can't": "Cant", "can't": "cant", "Let's": "Lets", "let's": "lets"]
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
@@ -150,13 +149,9 @@ class EnglishInputEngine: InputEngine {
         let englishDictionary = Self.englishDictionary
         
         let isInAppleDictionary = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
+        let englishDictionaryWords = englishDictionary.getWords(text)?.split(separator: ",").mapToSet({ String($0) })
         
-        isWord = englishDictionary.hasWord(text) || text.allSatisfy({ $0.isUppercase })
-
-        if isInAppleDictionary && !isWord {
-            // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
-            worstCandidates.append(text)
-        }
+        isWord = text != "m" && (englishDictionaryWords != nil || text.allSatisfy({ $0.isUppercase }))
         
         candidates.removeAllObjects()
         isFirstLoad = true
@@ -170,28 +165,41 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
-        // Make sure the exact match appears first.
-        if isWord {
-            candidates.insert(text, at: 0)
+        // These are exact matches ignoring cases.
+        let textCapitalized = text.capitalized
+        let isInDict = englishDictionaryWords?.contains(text.lowercased()) ?? isInAppleDictionary
+        let isCapInDict = englishDictionaryWords?.contains(textCapitalized) ?? isInAppleDictionary
+        
+        if !isInDict && isCapInDict {
+            candidates.add(textCapitalized)
+        } else if isInDict && isCapInDict {
+            if text == "i" || text.first!.isUppercase {
+                candidates.add(textCapitalized)
+                candidates.add(text)
+            } else {
+                candidates.add(text)
+                candidates.add(textCapitalized)
+            }
+        } else if isInDict {
+            candidates.add(text)
+        }
+        
+        // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
+        if isInAppleDictionary && !isWord {
+            worstCandidates.append(text)
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
-            if word == text {
+            if word == text || word == text.capitalized {
                 continue // We added the word already. Ignore.
+            } else if word.count == text.count + 1 && text.caseInsensitiveCompare(word.filter({ $0 != "'" })) == .orderedSame {
+                candidates.insert(word, at: 0)
+                isWord = true
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
                 worstCandidates.append(word)
-            } else if let popularWordInput = Self.popularWords[word],
-                text.caseInsensitiveCompare(popularWordInput) == .orderedSame {
-                candidates.insert(word, at: 0)
-            } else if word.filter({ $0 != "'" }) == text ||
-                      word == text.capitalized {
-                candidates.insert(word, at: isWord ? 1 : 0)
-                isWord = true
             } else {
                 let caseCorrectedCandidate = text.first!.isUppercase ? word.capitalized : word
-                // If the current candidate doesn't contain any vowels or symbol(short form), it isn't a good candidate.
-                // if caseCorrectedCandidate.contains(where: { $0.isVowel || $0.isSymbol }) {
-                if englishDictionary.hasWord(caseCorrectedCandidate) {
+                if englishDictionaryWords?.contains(caseCorrectedCandidate) ?? false {
                     candidates.add(caseCorrectedCandidate)
                 } else {
                     worstCandidates.append(caseCorrectedCandidate)

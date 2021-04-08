@@ -10,7 +10,7 @@
 
 @interface EnglishDictionary: NSObject
 - (id)init:(NSString*) dbPath;
-- (bool)hasWord:(NSString*) word;
+- (NSString*)getWords:(NSString*) word;
 
 + (bool)createDb:(NSArray*) textFilePaths dbPath:(NSString*) dbPath;
 @end

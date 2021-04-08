@@ -27,3 +27,13 @@ func ==<A, B> (lhs: Duplet<A, B>, rhs: Duplet<A, B>) -> Bool {
 }
 
 typealias IntDuplet = Duplet<Int, Int>
+
+extension Array {
+    func mapToSet<T: Hashable>(_ transform: (Element) -> T) -> Set<T> {
+        var result = Set<T>()
+        for item in self {
+            result.insert(transform(item))
+        }
+        return result
+    }
+}
