@@ -83,10 +83,10 @@ class InputTextBuffer {
 class EnglishInputEngine: InputEngine {
     static var language = Settings.cached.englishLocale.rawValue {
         didSet {
-            englishDictionary = EnglishDictionary(locale: language)
+            englishDictionary = DefaultDictionary(locale: language)
         }
     }
-    private static var englishDictionary = EnglishDictionary(locale: language)
+    private static var englishDictionary = DefaultDictionary(locale: language)
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
@@ -133,7 +133,7 @@ class EnglishInputEngine: InputEngine {
     }
     
     private func updateCandidates() {
-        let text = inputTextBuffer.text
+        let text = inputTextBuffer.text, textLowercased = text.lowercased()
         guard !text.isEmpty && text.count < 25 else {
             isWord = false
             return
@@ -149,9 +149,9 @@ class EnglishInputEngine: InputEngine {
         let englishDictionary = Self.englishDictionary
         
         let isInAppleDictionary = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
-        let englishDictionaryWords = englishDictionary.getWords(text)?.split(separator: ",").mapToSet({ String($0) })
+        let englishDictionaryWords = englishDictionary.get(keyLowercased: textLowercased).mapToSet({ String($0) })
         
-        isWord = text != "m" && (englishDictionaryWords != nil || text.allSatisfy({ $0.isUppercase }))
+        isWord = text != "m" && (!englishDictionaryWords.isEmpty || text.allSatisfy({ $0.isUppercase }))
         
         candidates.removeAllObjects()
         isFirstLoad = true
@@ -167,8 +167,8 @@ class EnglishInputEngine: InputEngine {
         
         // These are exact matches ignoring cases.
         let textCapitalized = text.capitalized
-        let isInDict = englishDictionaryWords?.contains(text.lowercased()) ?? isInAppleDictionary
-        let isCapInDict = englishDictionaryWords?.contains(textCapitalized) ?? isInAppleDictionary
+        let isInDict = englishDictionaryWords.contains(textLowercased)
+        let isCapInDict = englishDictionaryWords.contains(textCapitalized)
         
         if !isInDict && isCapInDict {
             candidates.add(textCapitalized)
@@ -199,7 +199,7 @@ class EnglishInputEngine: InputEngine {
                 worstCandidates.append(word)
             } else {
                 let caseCorrectedCandidate = text.first!.isUppercase ? word.capitalized : word
-                if englishDictionaryWords?.contains(caseCorrectedCandidate) ?? false {
+                if englishDictionaryWords.contains(caseCorrectedCandidate) {
                     candidates.add(caseCorrectedCandidate)
                 } else {
                     worstCandidates.append(caseCorrectedCandidate)

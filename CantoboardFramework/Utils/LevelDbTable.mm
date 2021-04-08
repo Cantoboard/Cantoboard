@@ -20,16 +20,17 @@
 
 using namespace std;
 
-@implementation EnglishDictionary {
+@implementation LevelDbTable {
     leveldb::DB* db;
 }
 
-- (id)init:(NSString*) dbPath {
+- (id)init:(NSString*) dbPath createDbIfMissing:(bool) createDbIfMissing {
     self = [super init];
     
     leveldb::Options options;
-    options.block_cache = leveldb::NewLRUCache(1024); // Reduce cache size to 1kb.
+    options.block_cache = leveldb::NewLRUCache(64);
     options.reuse_logs = true;
+    options.create_if_missing = createDbIfMissing;
     leveldb::Status status = leveldb::DB::Open(options, [dbPath UTF8String], &db);
     
     if (!status.ok()) {
@@ -49,28 +50,39 @@ using namespace std;
     db = nullptr;
 }
 
-- (NSString*)getWords:(NSString*) word {
+- (NSString*)get:(NSString*) key {
     leveldb::ReadOptions options;
     options.fill_cache = false;
     string val;
     leveldb::Status status;
-    status = db->Get(options, [[word lowercaseString] UTF8String], &val);
+    status = db->Get(options, [key UTF8String], &val);
     if (status.ok()) {
         return [NSString stringWithUTF8String:val.c_str()];
     }
     return nil;
 }
 
-+ (bool)createDb:(NSArray*) textFilePaths dbPath:(NSString*) dbPath {
-    NSLog(@"createDbFromTextFile %@ -> %@", textFilePaths, dbPath);
+- (bool)put:(NSString*) key value:(NSString*) value {
+    leveldb::Status status;
+    status = db->Put(leveldb::WriteOptions(), [key UTF8String], [value UTF8String]);
+    if (status.ok()) {
+        return true;
+    } else {
+        NSLog(@"Failed to put to db. Error: %s", status.ToString().c_str());
+        return false;
+    }
+}
+
++ (bool)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dictDbPath {
+    NSLog(@"createEnglishDictionary %@ -> %@", textFilePaths, dictDbPath);
     
     leveldb::DB* db;
     leveldb::Options options;
     options.create_if_missing = true;
     
-    leveldb::Status status = leveldb::DB::Open(options, [dbPath UTF8String], &db);
+    leveldb::Status status = leveldb::DB::Open(options, [dictDbPath UTF8String], &db);
     if (!status.ok()) {
-        NSLog(@"Failed to open DB %@. Error: %s", dbPath, status.ToString().c_str());
+        NSLog(@"Failed to open DB %@. Error: %s", dictDbPath, status.ToString().c_str());
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
     
@@ -81,7 +93,7 @@ using namespace std;
         NSLog(@"Loading %@...", textFilePath);
         ifstream dictFile([textFilePath UTF8String]);
         
-        [[NSFileManager defaultManager] createDirectoryAtPath:dbPath withIntermediateDirectories:YES attributes:nil error:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:dictDbPath withIntermediateDirectories:YES attributes:nil error:nil];
         
         while (getline(dictFile, line)) {
             if (*line.rbegin() == '\r') line.pop_back();

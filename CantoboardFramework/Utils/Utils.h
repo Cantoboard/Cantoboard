@@ -8,11 +8,12 @@
 #ifndef Utils_h
 #define Utils_h
 
-@interface EnglishDictionary: NSObject
-- (id)init:(NSString*) dbPath;
-- (NSString*)getWords:(NSString*) word;
+@interface LevelDbTable: NSObject
+- (id)init:(NSString*) dbPath createDbIfMissing:(bool) createDbIfMissing;
+- (NSString*)get:(NSString*) word;
+- (bool)put:(NSString*) key value:(NSString*) value;
 
-+ (bool)createDb:(NSArray*) textFilePaths dbPath:(NSString*) dbPath;
++ (bool)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dbPath;
 @end
 
 @interface FileUnlocker: NSObject

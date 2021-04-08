@@ -7,16 +7,21 @@
 
 import Foundation
 
-extension EnglishDictionary {
+class DefaultDictionary {
     private static let dictionaryDirName = "Dictionary"
+    private let dict: LevelDbTable
     
-    public convenience init(locale: String) {
+    init(locale: String) {
         let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let dictsPath = documentsDirectory.appendingPathComponent("\(Self.dictionaryDirName)", isDirectory: false).path
         
         Self.installDictionariesIfNeeded(dstPath: dictsPath)
         
-        self.init(dictsPath + "/\(locale).db")
+        dict = LevelDbTable(dictsPath + "/\(locale).db", createDbIfMissing: false)
+    }
+    
+    func get(keyLowercased: String) -> [String.SubSequence] {
+        return dict.get(keyLowercased)?.split(separator: ",") ?? []
     }
     
     private static func installDictionariesIfNeeded(dstPath: String) {
@@ -68,6 +73,17 @@ extension EnglishDictionary {
         let dictDbPath = documentsDirectory.appendingPathComponent("\(dictionaryDirName)-build/\(locale).db", isDirectory: false).path
         
         try? FileManager.default.removeItem(atPath: dictDbPath)
-        Self.createDb([dictTextPath, commonDictPath], dbPath: dictDbPath)
+        LevelDbTable.createEnglishDictionary([dictTextPath, commonDictPath], dictDbPath: dictDbPath)
+    }
+}
+
+class UserDictionary {
+    private let dict: LevelDbTable
+    
+    public init(userDictName: String) {
+        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let userDataPath = documentsDirectory.appendingPathComponent("RimeUserData/\(userDictName)", isDirectory: true).path
+        
+        dict = LevelDbTable(userDataPath, createDbIfMissing: true)
     }
 }
