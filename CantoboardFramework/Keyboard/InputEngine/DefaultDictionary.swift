@@ -20,8 +20,8 @@ class DefaultDictionary {
         dict = LevelDbTable(dictsPath + "/\(locale).db", createDbIfMissing: false)
     }
     
-    func get(keyLowercased: String) -> [String.SubSequence] {
-        return dict.get(keyLowercased)?.split(separator: ",") ?? []
+    func getWords(wordLowercased: String) -> [String.SubSequence] {
+        return dict.get(wordLowercased)?.split(separator: ",") ?? []
     }
     
     private static func installDictionariesIfNeeded(dstPath: String) {
@@ -74,16 +74,5 @@ class DefaultDictionary {
         
         try? FileManager.default.removeItem(atPath: dictDbPath)
         LevelDbTable.createEnglishDictionary([dictTextPath, commonDictPath], dictDbPath: dictDbPath)
-    }
-}
-
-class UserDictionary {
-    private let dict: LevelDbTable
-    
-    public init(userDictName: String) {
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let userDataPath = documentsDirectory.appendingPathComponent("RimeUserData/\(userDictName)", isDirectory: true).path
-        
-        dict = LevelDbTable(userDataPath, createDbIfMissing: true)
     }
 }

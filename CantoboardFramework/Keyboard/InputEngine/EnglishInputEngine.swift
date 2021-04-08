@@ -86,7 +86,8 @@ class EnglishInputEngine: InputEngine {
             englishDictionary = DefaultDictionary(locale: language)
         }
     }
-    private static var englishDictionary = DefaultDictionary(locale: language)
+    private(set) static var englishDictionary = DefaultDictionary(locale: language)
+    public static var userDictionary = UserDictionary()
     private var textDocumentProxy: UITextDocumentProxy!
     private var inputTextBuffer = InputTextBuffer()
     private var candidates = NSMutableArray()
@@ -147,11 +148,15 @@ class EnglishInputEngine: InputEngine {
 
         let textChecker = Self.textChecker
         let englishDictionary = Self.englishDictionary
+        let userDictionary = Self.userDictionary
         
         let isInAppleDictionary = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
-        let englishDictionaryWords = englishDictionary.get(keyLowercased: textLowercased).mapToSet({ String($0) })
+        let defaultEnglishDictionaryWords = englishDictionary.getWords(wordLowercased: textLowercased)
+        let userDictionaryWords = userDictionary.getWords(wordLowercased: textLowercased)
+        let englishDictionaryWords = defaultEnglishDictionaryWords + userDictionaryWords
+        let englishDictionaryWordsSet = englishDictionaryWords.mapToSet({ String($0) })
         
-        isWord = text != "m" && (!englishDictionaryWords.isEmpty || text.allSatisfy({ $0.isUppercase }))
+        isWord = text != "m" && (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
         
         candidates.removeAllObjects()
         isFirstLoad = true
@@ -165,22 +170,16 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
-        // These are exact matches ignoring cases.
-        let textCapitalized = text.capitalized
-        let isInDict = englishDictionaryWords.contains(textLowercased)
-        let isCapInDict = englishDictionaryWords.contains(textCapitalized)
-        
-        if !isInDict && isCapInDict {
-            candidates.add(textCapitalized)
-        } else if isInDict && isCapInDict {
-            if text == "i" || text.first!.isUppercase {
-                candidates.add(textCapitalized)
-                candidates.add(text)
+        englishDictionaryWords.forEach({ word in
+            if word == text {
+                candidates.insert(word, at: 0)
             } else {
-                candidates.add(text)
-                candidates.add(textCapitalized)
+                candidates.add(word)
             }
-        } else if isInDict || isInAppleDictionary {
+        })
+        
+        // TODO This's a hack to rule out words like Liu,Jiu which Apple considers as words.
+        if isInAppleDictionary {
             candidates.add(text)
         }
         
@@ -190,7 +189,7 @@ class EnglishInputEngine: InputEngine {
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
-            if word == text || word == text.capitalized {
+            if word.isEmpty || word == text {
                 continue // We added the word already. Ignore.
             } else if word.count == text.count + 1 && text.caseInsensitiveCompare(word.filter({ $0 != "'" })) == .orderedSame {
                 candidates.insert(word, at: 0)
@@ -198,8 +197,8 @@ class EnglishInputEngine: InputEngine {
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
                 worstCandidates.append(word)
             } else {
-                let caseCorrectedCandidate = text.first!.isUppercase ? word.capitalized : word
-                if englishDictionaryWords.contains(caseCorrectedCandidate) {
+                let caseCorrectedCandidate = text.first!.isUppercase && word.first!.isLowercase ? word.capitalized : word
+                if englishDictionaryWordsSet.contains(caseCorrectedCandidate) {
                     candidates.add(caseCorrectedCandidate)
                 } else {
                     worstCandidates.append(caseCorrectedCandidate)
