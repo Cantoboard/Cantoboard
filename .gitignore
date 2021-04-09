@@ -5,7 +5,7 @@
 xcuserdata/
 
 ## Build generated
-build/
+/build/
 DerivedData/
 
 ## Various settings
