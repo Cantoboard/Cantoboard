@@ -93,6 +93,7 @@ class EnglishInputEngine: InputEngine {
     private var candidates = NSMutableArray()
     private static var textChecker = UITextChecker()
     private(set) var isWord: Bool = false
+    private let highFreqWords = ["i'm", "can't", "let's"]
     
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
@@ -170,7 +171,11 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
-        englishDictionaryWords.forEach({ word in
+        englishDictionaryWordsSet.forEach({ word in
+            var word = word
+            if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
+                word = word.capitalized
+            }
             if word == text {
                 candidates.insert(word, at: 0)
             } else {
@@ -191,7 +196,7 @@ class EnglishInputEngine: InputEngine {
         for word in spellCorrectionCandidates + autoCompleteCandidates {
             if word.isEmpty || word == text {
                 continue // We added the word already. Ignore.
-            } else if word.count == text.count + 1 && text.caseInsensitiveCompare(word.filter({ $0 != "'" })) == .orderedSame {
+            } else if highFreqWords.contains(word.lowercased()) {
                 candidates.insert(word, at: 0)
                 isWord = true
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
