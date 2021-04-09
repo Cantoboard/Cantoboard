@@ -142,7 +142,7 @@ class InputController {
                 keyboardType = .alphabetic(.lowercased)
             }
         case .rime(let rc):
-            guard inputEngine.composition != nil else { return }
+            guard inputEngine.composition != nil || rc == .sym else { return }
             if inputEngine.processRimeChar(rc.rawValue) {
                 updateInputState()
             }

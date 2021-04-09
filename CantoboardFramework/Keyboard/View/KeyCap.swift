@@ -77,7 +77,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var popupFont: UIFont {
         switch self {
-        case .rime(.delimiter): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
+        case .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
         case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu":
             return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
@@ -147,6 +147,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.tone5): return "陽上"
         case .rime(.tone6): return "陽去"
         case .rime(.delimiter): return "分"
+        case .rime(.sym): return "符"
         case .contexualSymbols(.chinese): return "，"
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return "分"
@@ -255,8 +256,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
             default: return [self]
             }
-        case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ","]
-        case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，"]
+        case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
+        case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]
         case .contexualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
         case .keyboardType(.emojis):

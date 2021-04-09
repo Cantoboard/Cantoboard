@@ -32,6 +32,7 @@ public enum RimeChar: Character {
     case tone5 = "5"
     case tone6 = "6"
     case delimiter = "'"
+    case sym = "/"
 }
 
 /**

@@ -238,7 +238,7 @@ class BilingualInputEngine: InputEngine {
         let englishCandidates = Settings.cached.isMixedModeEnabled ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
         
-        if englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {
+        if !isForcingRimeMode && englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {
             addCurrentEnglishCandidate(englishCandidates)
         }
         
@@ -261,7 +261,7 @@ class BilingualInputEngine: InputEngine {
             
             addCurrentRimeCandidate(rimeCandidates)
         }
-
+        
         // Do not populate remaining English candidates until all best Rime candidates are populated.
         if !hasLoadedAllBestRimeCandidates && rimeInputEngine.loadMoreCandidates() { return }
         
