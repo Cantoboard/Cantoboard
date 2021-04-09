@@ -164,6 +164,16 @@
     _rimeApi->set_option(_sessionId, name.UTF8String, value);
 }
 
+-(NSString*)getCurrentSchemaId {
+    char schemaId[1024];
+    _rimeApi->get_current_schema(_sessionId, schemaId, sizeof(schemaId));
+    return [NSString stringWithUTF8String:schemaId];
+}
+
+-(void)setCurrentSchema:(NSString*)schemaId {
+    _rimeApi->select_schema(_sessionId, [schemaId UTF8String]);
+}
+
 -(void)setCandidateMenuToFirstPage {
     RIME_STRUCT(RimeContext, ctx);
     bool isFirstPage = false;

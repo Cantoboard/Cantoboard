@@ -43,7 +43,6 @@
 		79B9B57B25F3496800238E80 /* CantoboardFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79B9B5ED25F34A1200238E80 /* RimeKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58325F34A1200238E80 /* RimeKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58425F34A1200238E80 /* RKRimeApi.m */; };
-		79B9B5F025F34A1200238E80 /* RimeEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58625F34A1200238E80 /* RimeEngine.h */; };
 		79B9B5F125F34A1200238E80 /* RKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58725F34A1200238E80 /* RKUtils.h */; };
 		79B9B5F225F34A1200238E80 /* FileUnlocker.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58825F34A1200238E80 /* FileUnlocker.m */; };
 		79B9B5F325F34A1200238E80 /* RKRimeSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58925F34A1200238E80 /* RKRimeSession.m */; };
@@ -264,7 +263,6 @@
 		79B9B57625F3496800238E80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		79B9B58325F34A1200238E80 /* RimeKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RimeKit.h; sourceTree = "<group>"; };
 		79B9B58425F34A1200238E80 /* RKRimeApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKRimeApi.m; sourceTree = "<group>"; };
-		79B9B58625F34A1200238E80 /* RimeEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RimeEngine.h; sourceTree = "<group>"; };
 		79B9B58725F34A1200238E80 /* RKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKUtils.h; sourceTree = "<group>"; };
 		79B9B58825F34A1200238E80 /* FileUnlocker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileUnlocker.m; sourceTree = "<group>"; };
 		79B9B58925F34A1200238E80 /* RKRimeSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKRimeSession.m; sourceTree = "<group>"; };
@@ -501,7 +499,6 @@
 			children = (
 				79B9B58325F34A1200238E80 /* RimeKit.h */,
 				79B9B58425F34A1200238E80 /* RKRimeApi.m */,
-				79B9B58625F34A1200238E80 /* RimeEngine.h */,
 				79B9B58725F34A1200238E80 /* RKUtils.h */,
 				79B9B58925F34A1200238E80 /* RKRimeSession.m */,
 			);
@@ -771,7 +768,6 @@
 				79B9B57725F3496800238E80 /* CantoboardFramework.h in Headers */,
 				79B9B5ED25F34A1200238E80 /* RimeKit.h in Headers */,
 				79515ABC2609AF9C00D29A5C /* Utils.h in Headers */,
-				79B9B5F025F34A1200238E80 /* RimeEngine.h in Headers */,
 				79B9B5F125F34A1200238E80 /* RKUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,6 +14,9 @@ NS_SWIFT_NAME(RimeSession)
 -(void)setOption:(NSString*)name value:(bool)value;
 -(void)setCandidateMenuToFirstPage;
 
+-(NSString*)getCurrentSchemaId;
+-(void)setCurrentSchema:(NSString*)schemaId;
+
 @property int compositionCaretBytePosition, rawInputCaretBytePosition;
 @property (readonly, strong) NSString *compositionText, *commitTextPreview, *rawInput;
 
