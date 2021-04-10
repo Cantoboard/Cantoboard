@@ -169,7 +169,7 @@ class BilingualInputEngine: InputEngine {
     
     var composition: Composition? {
         get {
-            if !isForcingRimeMode && englishInputEngine.isWord {
+            if !isForcingRimeMode && englishInputEngine.isWord && reverseLookupSchemaId == nil {
                 return englishComposition
             } else {
                 guard let rimeComposition = rimeComposition else { return nil }

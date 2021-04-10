@@ -24,7 +24,7 @@ class InputController {
     private(set) var reverseLookupSchemaId: RimeSchemaId? {
         didSet {
             inputEngine.reverseLookupSchemaId = reverseLookupSchemaId
-            keyboardView?.reverseLookupSchemaId = reverseLookupSchemaId
+            keyboardView?.currentRimeSchemaId = reverseLookupSchemaId ?? .jyutping
         }
     }
     
@@ -256,7 +256,7 @@ class InputController {
     }
     
     private func checkAutoCap() {
-        guard Settings.cached.isAutoCapEnabled && !isHoldingShift &&
+        guard Settings.cached.isAutoCapEnabled && !isHoldingShift && reverseLookupSchemaId == nil &&
               (keyboardType == .alphabetic(.lowercased) || keyboardType == .alphabetic(.uppercased))
             else { return }
         keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
@@ -281,7 +281,7 @@ class InputController {
         guard !text.isEmpty else { return }
         if shouldClearInput { clearInput() }
         
-        // We must let the message loop to handle previously entered text first.
+        // We must let the message loop to hasndle previously entered text first.
         // Queue the following steps to the main thread.
         DispatchQueue.main.async {
             self.tryRemoveSmartSpace(text)
@@ -330,7 +330,7 @@ class InputController {
         switch candidateOrganizer.inputMode {
         case .chinese: setMarkedText(inputEngine.rimeComposition)
         case .english: setMarkedText(inputEngine.englishComposition)
-        case .mixed: reverseLookupSchemaId == nil ? setMarkedText(inputEngine.composition) : setMarkedText(inputEngine.rimeComposition) 
+        case .mixed: setMarkedText(inputEngine.composition)
         }
     }
     

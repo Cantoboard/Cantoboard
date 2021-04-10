@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.5.3
   timestamps:
     cangjie5.custom: 0
-    cangjie5.schema: 1618040958
-    default: 1618040958
-    default.custom: 1618040958
-    symbols: 1618040958
+    cangjie5.schema: 1618092280
+    default: 1618092280
+    default.custom: 1618092280
+    symbols: 1618092280
     symbols.custom: 0
-    symbols_cantonese: 1618040958
+    symbols_cantonese: 1618092280
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -378,7 +378,7 @@ trad_tw:
   option_name: trad_tw
 translator:
   comment_format:
-    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+    - "xlit|abcdefghijklmnopqrstuvwxy~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜～|"
   dictionary: cangjie5
   disable_user_dict_for_patterns:
     - "^z.*$"
@@ -390,7 +390,7 @@ translator:
   max_phrase_length: 5
   preedit_format:
     - "xform/^([a-z ]*)$/\\U$1\\E/"
-    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
+    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXY|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜|"
 variants_hk:
   opencc_config: t2hk.json
   option_name: variants_hk

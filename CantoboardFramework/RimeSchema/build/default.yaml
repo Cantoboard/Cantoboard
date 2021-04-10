@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.5.3
   timestamps:
-    default: 1618040958
-    default.custom: 1618040958
+    default: 1618092280
+    default.custom: 1618092280
 ascii_composer:
   switch_key:
     Control_L: noop
@@ -115,7 +115,6 @@ recognizer:
 schema_list:
   - schema: jyut6ping3
   - schema: cangjie5
-  - schema: loengfan
   - schema: luna_pinyin
   - schema: stroke
 switcher:

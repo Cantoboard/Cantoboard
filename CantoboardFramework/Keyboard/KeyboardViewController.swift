@@ -35,7 +35,7 @@ open class KeyboardViewController: UIInputViewController {
             guard let self = self else { return true }
             
             DispatchQueue.main.async {
-                if newState == .failure {
+                if newState == .failure /*|| newState == .succeeded*/ {
                     let logs = self.fetchLog()
                     NSLog("Rime Engine deployment failed. Log: \(logs)")
                     self.showLogs(logs)
@@ -69,7 +69,9 @@ open class KeyboardViewController: UIInputViewController {
         NSLog("Warn log:\n%@", warnLog ?? "")
         NSLog("Info log:\n%@", infoLog ?? "")
         
-        return ["=== Rime logs ===\n", "Error log:\n", errorLog ?? "", "Warn log:\n", warnLog ?? "", "Info log:\n", infoLog ?? ""]
+        let log = ["=== Rime logs ===\n", "Error log:\n", errorLog ?? "", "Warn log:\n", warnLog ?? "", "Info log:\n", infoLog ?? ""]
+        UIPasteboard.general.string = log.joined()
+        return log
     }
     
     required public init?(coder: NSCoder) {
@@ -159,7 +161,7 @@ open class KeyboardViewController: UIInputViewController {
             widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: keyboardSize.width)
             widthConstraint?.isActive = true
             
-            keyboardView.reverseLookupSchemaId = inputController.reverseLookupSchemaId
+            keyboardView.currentRimeSchemaId = inputController.reverseLookupSchemaId ?? .jyutping
             
             self.keyboardView = keyboardView
         }

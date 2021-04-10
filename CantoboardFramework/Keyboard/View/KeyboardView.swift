@@ -28,9 +28,14 @@ class KeyboardView: UIView {
     private var _isEnabled = true
     weak var delegate: KeyboardViewDelegate?
     
-    var reverseLookupSchemaId: RimeSchemaId? {
-        didSet {
-            candidatePaneView?.reverseLookupSchemaId = reverseLookupSchemaId
+    private var _currentRimeSchemaId: RimeSchemaId = .jyutping
+    var currentRimeSchemaId: RimeSchemaId {
+        get { _currentRimeSchemaId }
+        set {
+            guard _currentRimeSchemaId != newValue else { return }
+            _currentRimeSchemaId = newValue
+            candidatePaneView?.currentRimeSchemaId = currentRimeSchemaId
+            setupView()
         }
     }
     
@@ -262,13 +267,16 @@ class KeyboardView: UIView {
             
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
+                case .character(let c) where currentRimeSchemaId == .cangjie && c.first?.isEnglishLetter ?? false:
+                    return .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),
                      .character("f"), .character("g"), .character("h"),
                      .character("c"), .character("v"), .character("b"):
                     switch keyboardContextualType {
                     case .rime, .url(true):
-                        if case .character(let c) = $0, Settings.cached.rimeSettings.toneInputMode == .longPress {
+                        if case .character(let c) = $0,
+                           currentRimeSchemaId == .jyutping && Settings.cached.rimeSettings.toneInputMode == .longPress {
                             // Show tone keys.
                             return .characterWithTone(c)
                         } else {
@@ -308,7 +316,7 @@ class KeyboardView: UIView {
         let candidatePaneView = CandidatePaneView()
         candidatePaneView.delegate = self
         candidatePaneView.candidateOrganizer = candidateOrganizer
-        candidatePaneView.reverseLookupSchemaId = reverseLookupSchemaId
+        candidatePaneView.currentRimeSchemaId = currentRimeSchemaId
         
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)

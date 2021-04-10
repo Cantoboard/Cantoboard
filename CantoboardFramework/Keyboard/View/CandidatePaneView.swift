@@ -71,7 +71,7 @@ class CandidatePaneView: UIControl {
     
     let rowPadding = CGFloat(0)
     
-    var reverseLookupSchemaId: RimeSchemaId? {
+    var currentRimeSchemaId: RimeSchemaId = .jyutping {
         didSet {
             setupButtons()
         }
@@ -168,8 +168,8 @@ class CandidatePaneView: UIControl {
         
         var title: String?
         if filterMode == .lang {
-            if let reverseLookupSchemaId = reverseLookupSchemaId {
-                title = reverseLookupSchemaId.signChar
+            if currentRimeSchemaId != .jyutping {
+                title = currentRimeSchemaId.signChar
             } else {
                 switch candidateOrganizer.inputMode {
                 case .mixed: title = "雙"
@@ -253,7 +253,7 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func filterButtonClick() {
-        guard reverseLookupSchemaId == nil else { return }
+        guard currentRimeSchemaId == nil else { return }
         
         Self.hapticsGenerator.impactOccurred(intensity: 1)
         AudioFeedbackProvider.play(keyboardAction: .none)
@@ -426,7 +426,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         
         let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
-            (reverseLookupSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
+            (currentRimeSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         if showComment {
             let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
             let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width
@@ -454,7 +454,7 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
         let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
-            (reverseLookupSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
+            (currentRimeSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         cell.initLabel(candidate, comment, showComment: showComment)
     }
     
