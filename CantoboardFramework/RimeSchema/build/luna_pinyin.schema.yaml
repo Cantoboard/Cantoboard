@@ -3,22 +3,26 @@ __build_info:
   timestamps:
     default: 1618033893
     default.custom: 1618033893
-    jyut6ping3.custom: 0
-    jyut6ping3.schema: 1618033893
+    grammar: 0
+    luna_pinyin.custom: 0
+    luna_pinyin.schema: 1618033893
+    pinyin: 1618033893
+    pinyin.custom: 0
     symbols: 1618033893
     symbols.custom: 0
     symbols_cantonese: 1618033893
-emoji_suggestion:
-  opencc_config: emoji.json
-  option_name: emoji_suggestion
-  tips: all
+custom_phrase:
+  db_class: stabledb
+  dictionary: ""
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 1
+  user_dict: custom_phrase
 engine:
   filters:
-    - "simplifier@variants_hk"
-    - "simplifier@trad_tw"
     - simplifier
-    - "simplifier@emoji_suggestion"
     - uniquifier
+    - "reverse_lookup_filter@jyut6ping3_reverse_lookup"
   processors:
     - ascii_composer
     - recognizer
@@ -36,9 +40,40 @@ engine:
     - fallback_segmentor
   translators:
     - punct_translator
+    - "table_translator@custom_phrase"
     - script_translator
+jyut6ping3_reverse_lookup:
+  dictionary: jyut6ping3
+  overwrite_comment: true
+key_binder:
+  bindings:
+    - {accept: "Control+p", send: Up, when: composing}
+    - {accept: "Control+n", send: Down, when: composing}
+    - {accept: "Control+b", send: Left, when: composing}
+    - {accept: "Control+f", send: Right, when: composing}
+    - {accept: "Control+a", send: Home, when: composing}
+    - {accept: "Control+e", send: End, when: composing}
+    - {accept: "Control+d", send: Delete, when: composing}
+    - {accept: "Control+k", send: "Shift+Delete", when: composing}
+    - {accept: "Control+g", send: Escape, when: composing}
+    - {accept: "Alt+v", send: Page_Up, when: composing}
+    - {accept: "Control+v", send: Page_Down, when: composing}
+    - {accept: ISO_Left_Tab, send: "Shift+Left", when: composing}
+    - {accept: "Shift+Tab", send: "Shift+Left", when: composing}
+    - {accept: Tab, send: "Shift+Right", when: composing}
+    - {accept: minus, send: Page_Up, when: paging}
+    - {accept: equal, send: Page_Down, when: has_menu}
+    - {accept: comma, send: Page_Up, when: paging}
+    - {accept: period, send: Page_Down, when: has_menu}
+    - {accept: "Control+Shift+1", select: .next, when: always}
+    - {accept: "Control+Shift+2", toggle: ascii_mode, when: always}
+    - {accept: "Control+Shift+3", toggle: full_shape, when: always}
+    - {accept: "Control+Shift+4", toggle: simplification, when: always}
+    - {accept: "Control+Shift+5", toggle: extended_charset, when: always}
+    - {accept: "Shift+space", toggle: full_shape, when: always}
+    - {accept: "Control+period", toggle: ascii_punct, when: always}
+  import_preset: default
 menu:
-  alternative_select_keys: "          "
   page_size: 10
 punctuator:
   full_shape:
@@ -318,43 +353,41 @@ recognizer:
   import_preset: default
   patterns:
     email: "^[a-z][-_.0-9a-z]*@.*$"
-    punct: "^/([0-9]0?|[a-z]+)$"
+    punct: "^/([0-9]0?|[A-Za-z]+)$"
+    reverse_lookup: "`[a-z]*'?$"
     uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
     url: "^(www[.]|https?:|ftp:|mailto:).*$|^[a-z]+[.].+$"
 schema:
   author:
-    - "sgalal <sgalal.me@outlook.com>"
-    - "LeiMaau <leimaau@qq.com>"
-    - "chaaklau <chaakming@gmail.com>"
-    - "laubonghaudoi <laubonghaudoi@icloud.com>"
-    - "tanxpyox <tanxpyox@gmail.com>"
-    - "William915 <William915@gmail.com>"
-    - "szc126 (@szc126)"
-    - "Bing Jeung <bing@ososo.io>"
-    - "Ayaka Mikazuki <ayaka@mail.shn.hk>"
+    - "佛振 <chen.sst@gmail.com>"
+  dependencies:
+    - jyut6ping3
   description: |
-    採用香港語言學學會粵語拼音方案
-    https://www.lshk.org/jyutping
-    支援聲調顯示同輸入
-    Telegram 用户交流組 https://t.me/rime_cantonese
-  name: "粵語拼音"
-  schema_id: jyut6ping3
-  version: 2020.11.26
+    Rime 預設的拼音輸入方案。
+    參考以下作品而創作：
+      * CC-CEDICT
+      * Android open source project
+      * Chewing - 新酷音
+      * opencc - 開放中文轉換
+    
+  name: "朙月拼音"
+  schema_id: luna_pinyin
+  version: 0.26
 speller:
   algebra:
-    - "derive/[123456]//"
-    - "derive/^([aeiou])/q$1/"
-    - "derive/^jy?([aeiou])/y$1/"
-    - "derive/^jyu/ju/"
-    - "derive/yu/y/"
-    - "derive/eoi$/oey/"
-    - "derive/eoi$/eoy/"
-    - "derive/eo/oe/"
-    - "derive/oe(ng|k)$/eo$1/"
-    - "derive/aa$/a/"
     - "abbrev/^([a-z]).+$/$1/"
-    - "abbrev/^([a-z]{2}).+$/$1/"
-  alphabet: zyxwvutsrqponmlkjihgfedcba654321
+    - "abbrev/^([zcs]h).+$/$1/"
+    - "derive/^([nl])ve$/$1ue/"
+    - "derive/^([jqxy])u/$1v/"
+    - "derive/un$/uen/"
+    - "derive/ui$/uei/"
+    - "derive/iu$/iou/"
+    - "derive/([aeiou])ng$/$1gn/"
+    - "derive/([dtngkhrzcs])o(u|ng)$/$1o/"
+    - "derive/ong$/on/"
+    - "derive/ao$/oa/"
+    - "derive/([iu])a(o|ng?)$/a$1$2/"
+  alphabet: zyxwvutsrqponmlkjihgfedcba
   delimiter: " '"
 switches:
   - name: ascii_mode
@@ -363,18 +396,18 @@ switches:
   - name: full_shape
     states: ["半角", "全角"]
   - options: [noop, variants_hk, trad_tw, simplification]
-    reset: 1
     states: ["傳統漢字", "香港傳統漢字", "臺灣傳統漢字", "大陆简化汉字"]
   - name: ascii_punct
     states: ["。，", "．，"]
-  - name: emoji_suggestion
-    states: ["冇 Emoji", "有 Emoji"]
 trad_tw:
   opencc_config: t2tw.json
   option_name: trad_tw
 translator:
-  dictionary: jyut6ping3
-  spelling_hints: 8
+  dictionary: luna_pinyin
+  preedit_format:
+    - "xform/([nl])v/$1ü/"
+    - "xform/([nl])ue/$1üe/"
+    - "xform/([jqxy])v/$1u/"
 variants_hk:
   opencc_config: t2hk.json
   option_name: variants_hk
