@@ -1,4 +1,5 @@
 patch:
   schema_list:
     - {schema: jyut6ping3}
+    - {schema: luna_pinyin}
   "menu/page_size": 10

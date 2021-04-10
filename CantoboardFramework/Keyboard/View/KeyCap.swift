@@ -39,7 +39,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     shift(_ state: KeyboardShiftState),
     rime(RimeChar),
     contexualSymbols(ContextualType),
-    charForm(CharForm)
+    charForm(CharForm),
+    reverseLookup(RimeSchemaId)
     
     public init(stringLiteral value: String) {
         self = .character(value)
@@ -64,6 +65,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.rime): return .rime(.delimiter)
         case .contexualSymbols(.url): return "."
         case .charForm(let cs): return .setCharForm(cs)
+        case .reverseLookup(let s): return .reverseLookup(s)
         }
     }
     
@@ -148,6 +150,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.tone6): return "陽去"
         case .rime(.delimiter): return "分"
         case .rime(.sym): return "符"
+        case .reverseLookup(.mandarin): return "普"
         case .contexualSymbols(.chinese): return "，"
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return "分"
@@ -256,6 +259,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
             default: return [self]
             }
+        case "x", "X": return [self, .reverseLookup(.mandarin)]
         case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
         case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]

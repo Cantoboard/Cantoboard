@@ -71,6 +71,12 @@ class CandidatePaneView: UIControl {
     
     let rowPadding = CGFloat(0)
     
+    var reverseLookupSchemaId: RimeSchemaId? {
+        didSet {
+            setupButtons()
+        }
+    }
+    
     weak var candidateOrganizer: CandidateOrganizer? {
         didSet {
             candidateOrganizer?.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
@@ -162,10 +168,14 @@ class CandidatePaneView: UIControl {
         
         var title: String?
         if filterMode == .lang {
-            switch candidateOrganizer.inputMode {
-            case .mixed: title = "雙"
-            case .chinese: title = "中"
-            case .english: title = "英"
+            if let reverseLookupSchemaId = reverseLookupSchemaId {
+                title = reverseLookupSchemaId.signChar
+            } else {
+                switch candidateOrganizer.inputMode {
+                case .mixed: title = "雙"
+                case .chinese: title = "中"
+                case .english: title = "英"
+                }
             }
         } else {
             if let symbolShape = delegate?.symbolShape {
@@ -243,6 +253,8 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func filterButtonClick() {
+        guard reverseLookupSchemaId == nil else { return }
+        
         Self.hapticsGenerator.impactOccurred(intensity: 1)
         AudioFeedbackProvider.play(keyboardAction: .none)
         

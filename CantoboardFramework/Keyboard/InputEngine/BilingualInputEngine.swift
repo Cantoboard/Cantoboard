@@ -30,6 +30,12 @@ class BilingualInputEngine: InputEngine {
     private var hasLoadedAllBestRimeCandidates = false
     private var isForcingRimeMode = false
     
+    var reverseLookupSchemaId: RimeSchemaId? {
+        didSet {
+            rimeInputEngine.activeSchemaId = reverseLookupSchemaId ?? RimeSchemaId.jyutping
+        }
+    }
+    
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
         rimeInputEngine = RimeInputEngine()
@@ -237,8 +243,10 @@ class BilingualInputEngine: InputEngine {
         guard let rimeComposingText = rimeComposition?.text else { return }
         let englishCandidates = Settings.cached.isMixedModeEnabled ? englishInputEngine.getCandidates() : []
         let rimeCandidates = rimeInputEngine.getCandidates()
+        let isReverseLookupMode = rimeInputEngine.activeSchemaId.rawValue != "jyut6ping3"
+        let isInRimeOnlyMode = isForcingRimeMode || isReverseLookupMode
         
-        if !isForcingRimeMode && englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {
+        if !isInRimeOnlyMode && englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {
             addCurrentEnglishCandidate(englishCandidates)
         }
         
@@ -259,14 +267,14 @@ class BilingualInputEngine: InputEngine {
                 break
             }
             
-            addCurrentRimeCandidate(rimeCandidates)
+            addCurrentRimeCandidate(rimeCandidates, isReverseLookupMode: isReverseLookupMode)
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
         if !hasLoadedAllBestRimeCandidates && rimeInputEngine.loadMoreCandidates() { return }
         
         // Populate all English candidates with vowels.
-        while !isForcingRimeMode && curEnglishCandidateIndex < englishCandidates.count {
+        while !isInRimeOnlyMode && !isReverseLookupMode && curEnglishCandidateIndex < englishCandidates.count {
             guard let englishCandidate = englishCandidates[curEnglishCandidateIndex] as? String,
                   englishCandidate.contains(where: { $0.isVowel || $0.isSymbol }) else { curEnglishCandidateIndex += 1; break }
             addCurrentEnglishCandidate(englishCandidates)
@@ -274,11 +282,11 @@ class BilingualInputEngine: InputEngine {
         
         // Populate remaining Rime candidates.
         while curRimeCandidateIndex < rimeCandidates.count {
-            addCurrentRimeCandidate(rimeCandidates)
+            addCurrentRimeCandidate(rimeCandidates, isReverseLookupMode: isReverseLookupMode)
         }
         
         // Populate remaining English candidates.
-        while !isForcingRimeMode && curEnglishCandidateIndex < englishCandidates.count {
+        while !isInRimeOnlyMode && curEnglishCandidateIndex < englishCandidates.count {
             addCurrentEnglishCandidate(englishCandidates)
         }
     }
@@ -298,8 +306,9 @@ class BilingualInputEngine: InputEngine {
         curEnglishCandidateIndex += 1
     }
     
-    private func addCurrentRimeCandidate(_ rimeCandidates: NSArray) {
-        if let candidateText = rimeCandidates[curRimeCandidateIndex] as? String {
+    private func addCurrentRimeCandidate(_ rimeCandidates: NSArray, isReverseLookupMode: Bool) {
+        if let candidateText = rimeCandidates[curRimeCandidateIndex] as? String,
+           !isReverseLookupMode || isReverseLookupMode && candidateText.count == 1 {
             addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
         }
         curRimeCandidateIndex += 1

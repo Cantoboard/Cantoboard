@@ -73,7 +73,8 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     shiftRelax,
     rime(RimeChar),
     setCharForm(CharForm),
-    refreshMarkedText
+    refreshMarkedText,
+    reverseLookup(RimeSchemaId)
     
     public init(stringLiteral value: String) {
         self = .character(value)

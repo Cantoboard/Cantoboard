@@ -28,6 +28,12 @@ class KeyboardView: UIView {
     private var _isEnabled = true
     weak var delegate: KeyboardViewDelegate?
     
+    var reverseLookupSchemaId: RimeSchemaId? {
+        didSet {
+            candidatePaneView?.reverseLookupSchemaId = reverseLookupSchemaId
+        }
+    }
+    
     private let englishLettersKeyCapRows: [[[KeyCap]]] = [
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
@@ -302,7 +308,8 @@ class KeyboardView: UIView {
         let candidatePaneView = CandidatePaneView()
         candidatePaneView.delegate = self
         candidatePaneView.candidateOrganizer = candidateOrganizer
-
+        candidatePaneView.reverseLookupSchemaId = reverseLookupSchemaId
+        
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)
         

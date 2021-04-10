@@ -8,10 +8,39 @@
 import Foundation
 import UIKit
 
+enum RimeSchemaId: String {
+    case jyutping = "jyut6ping3"
+    case cangjie = "cangjie5"
+    case mandarin = "luna_pinyin"
+    case stroke = "stroke"
+    case loengfan = "loengfan"
+    
+    var signChar: String {
+        switch self {
+        case .cangjie: return "倉"
+        case .jyutping: return "粵"
+        case .loengfan: return "兩"
+        case .mandarin: return "普"
+        case .stroke: return "筆"
+        }
+    }
+}
+
 class RimeInputEngine: NSObject, InputEngine {
     private weak var rimeSession: RimeSession?
     private var candidates = NSMutableArray(), comments = NSMutableArray()
-        
+    // private var activeSchemaId = "jyut6ping3"
+    private var _activeSchemaId: RimeSchemaId = .jyutping
+    
+    var activeSchemaId: RimeSchemaId {
+        get { _activeSchemaId }
+        set {
+            guard newValue != _activeSchemaId else { return }
+            _activeSchemaId = newValue
+            rimeSession?.setCurrentSchema(_activeSchemaId.rawValue)
+        }
+    }
+    
     override init() {
         super.init()
         tryCreateRimeSessionIfNeeded()
@@ -94,6 +123,9 @@ class RimeInputEngine: NSObject, InputEngine {
         guard let rimeSession = self.rimeSession else { return }
         rimeSession.processKey(0xff1b, modifier: 0) // Esc
         processKey(0xff1b)
+        
+        rimeSession.setCurrentSchema(activeSchemaId.rawValue)
+        // print(rimeSession.getCurrentSchemaId())
     }
     
     func getCandidates() -> NSArray {
@@ -196,11 +228,13 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func createRimeSession() {
         rimeSession = RimeApi.shared.createSession()
+        rimeSession?.setCurrentSchema(activeSchemaId.rawValue)
         refreshCharForm()
     }
     
     func refreshCharForm() {
         rimeSession?.setOption("simplification", value: Settings.cached.charForm == .simplified)
+        rimeSession?.setCandidateMenuToFirstPage()
         refreshCandidates()
     }
 }

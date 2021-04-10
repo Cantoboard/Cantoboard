@@ -64,7 +64,6 @@ engine:
     - simplifier
     - simplifier@emoji_suggestion
     - uniquifier
-    - reverse_lookup_filter@jyut6ping3_reverse_lookup
 
 menu:
   alternative_select_keys: "          " # Change select key to 0x7f to allow us to type number keys for tone input.

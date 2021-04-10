@@ -159,6 +159,8 @@ open class KeyboardViewController: UIInputViewController {
             widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: keyboardSize.width)
             widthConstraint?.isActive = true
             
+            keyboardView.reverseLookupSchemaId = inputController.reverseLookupSchemaId
+            
             self.keyboardView = keyboardView
         }
     }

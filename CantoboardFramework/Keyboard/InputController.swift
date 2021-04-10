@@ -21,11 +21,24 @@ class InputController {
     private var lastKey: (KeyboardAction, Date)?
     private var isHoldingShift = false
     private var prevTextBefore: String?
+    private(set) var reverseLookupSchemaId: RimeSchemaId? {
+        didSet {
+            inputEngine.reverseLookupSchemaId = reverseLookupSchemaId
+            keyboardView?.reverseLookupSchemaId = reverseLookupSchemaId
+        }
+    }
+    
     private(set) var candidateOrganizer = CandidateOrganizer()
     
-    private var keyboardType = KeyboardType.alphabetic(.lowercased) {
-        didSet {
-            keyboardView?.keyboardType = keyboardType
+    private var _keyboardType = KeyboardType.alphabetic(.lowercased)
+    private var keyboardType: KeyboardType {
+        get { _keyboardType }
+        set {
+            guard _keyboardType != newValue else { return }
+            _keyboardType = newValue
+            // TODO instead of setting a bunch of fields to keyboardView, cuasing unnecessary changes,
+            // pass input controller to keyboardView. Then call a method to update keyboardView.
+            keyboardView?.keyboardType = _keyboardType
         }
     }
     
@@ -157,7 +170,9 @@ class InputController {
                 }
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
-            if inputEngine.composition?.text != nil {
+            if reverseLookupSchemaId != nil && inputEngine.composition?.text.isEmpty ?? true {
+                reverseLookupSchemaId = nil
+            } else if inputEngine.composition?.text != nil {
                 if action == .deleteWordSwipe {
                     clearInput()
                 } else if inputEngine.processBackspace() {
@@ -207,6 +222,8 @@ class InputController {
             return
         case .refreshMarkedText:
             setMarkedText()
+        case .reverseLookup(let schemaId):
+            reverseLookupSchemaId = schemaId
         default:
             ()
         }
@@ -248,6 +265,7 @@ class InputController {
     private func clearInput() {
         inputEngine.clearInput()
         updateInputState()
+        reverseLookupSchemaId = nil
     }
     
     func clearState() {
