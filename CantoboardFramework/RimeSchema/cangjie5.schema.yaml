@@ -1,0 +1,96 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: cangjie5
+  name: 倉頡五代
+  version: "0.30"
+  author:
+    - 發明人 朱邦復先生
+  description: |
+    第五代倉頡輸入法
+    碼表源自倉頡之友發佈的《五倉世紀版》
+    www.chinesecj.com
+  dependencies:
+    - jyut6ping3
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - options: [ noop, variants_hk, trad_tw, simplification ]
+    states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator
+  filters:
+    - simplifier@variants_hk
+    - simplifier@trad_tw
+    - simplifier
+    - uniquifier
+    - reverse_lookup_filter@jyut6ping3_reverse_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " ;"
+  #max_code_length: 5  # 五碼頂字上屏
+
+translator:
+  dictionary: cangjie5
+  enable_charset_filter: true
+  enable_sentence: true
+  enable_encoder: true
+  encode_commit_history: true
+  max_phrase_length: 5
+  preedit_format:
+    - 'xform/^([a-z ]*)$/\U$1\E/'
+    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
+  comment_format:
+    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+    - "^yyy.*$"
+
+punctuator:
+  import_preset: symbols_cantonese
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: '^/([0-9]0?|[A-Za-z]+)$'
+
+variants_hk:
+  option_name: variants_hk
+  opencc_config: t2hk.json
+
+trad_tw:
+  option_name: trad_tw
+  opencc_config: t2tw.json
+
+jyut6ping3_reverse_lookup:
+  overwrite_comment: true
+  dictionary: jyut6ping3

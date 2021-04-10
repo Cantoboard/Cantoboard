@@ -1,5 +1,8 @@
 patch:
   schema_list:
     - {schema: jyut6ping3}
+    - {schema: cangjie5}
+    # - {schema: loengfan}
     - {schema: luna_pinyin}
+    - {schema: stroke}
   "menu/page_size": 10

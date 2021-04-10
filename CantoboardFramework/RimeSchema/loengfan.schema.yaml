@@ -1,0 +1,90 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: loengfan
+  name: 粵語兩分
+  version: "2020.08.05"
+  author:
+    - TianHeng <2417647441@qq.com>
+    - Ayaka Mikazuki <ayaka@mail.shn.hk>
+  description: |-
+    The Cantonese version of Liang Fen (兩分) input method.
+  dependencies:
+    - jyut6ping3
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 英文 ]
+  - name: full_shape
+    states: [ 半形, 全形 ]
+  - options: [ noop, variants_hk, trad_tw, simplification ]
+    states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+  filters:
+    - simplifier@variants_hk
+    - simplifier@trad_tw
+    - simplifier
+    - uniquifier
+    - reverse_lookup_filter@jyut6ping3_reverse_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"
+  algebra:
+    - derive/[123456]//           # 忽略聲調
+    - xform/1/v/                  # 陰平
+    - xform/4/vv/                 # 陽平
+    - xform/2/x/                  # 陰上
+    - xform/5/xx/                 # 陽上
+    - xform/3/q/                  # 陰去
+    - xform/6/qq/                 # 陽去
+
+translator:
+  dictionary: loengfan
+  spelling_hints: 20
+
+punctuator:
+  import_preset: symbols_cantonese
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: '^/([0-9]0?|[A-Za-z]+)$'
+
+variants_hk:
+  option_name: variants_hk
+  opencc_config: t2hk.json
+
+trad_tw:
+  option_name: trad_tw
+  opencc_config: t2tw.json
+
+jyut6ping3_reverse_lookup:
+  overwrite_comment: true
+  dictionary: jyut6ping3

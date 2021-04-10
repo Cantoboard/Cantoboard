@@ -110,7 +110,7 @@ class KeyView: UIButton {
     
     func setKeyCap(_ keyCap: KeyCap) {
         self._keyCap = keyCap
-        self.action = keyCap.getAction()
+        self.action = keyCap.action
         setupView()
     }
         

@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.5.3
   timestamps:
-    default: 1618033893
-    default.custom: 1618033893
+    default: 1618040958
+    default.custom: 1618040958
 ascii_composer:
   switch_key:
     Control_L: noop
@@ -114,7 +114,10 @@ recognizer:
     url: "^(www[.]|https?:|ftp:|mailto:).*$|^[a-z]+[.].+$"
 schema_list:
   - schema: jyut6ping3
+  - schema: cangjie5
+  - schema: loengfan
   - schema: luna_pinyin
+  - schema: stroke
 switcher:
   abbreviate_options: true
   caption: "〔方案選單〕"

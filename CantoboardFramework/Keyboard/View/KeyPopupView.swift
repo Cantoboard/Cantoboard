@@ -102,7 +102,7 @@ class KeyPopupView: UIView {
             self.keyCaps = keyCaps.reversed()
             self.defaultKeyCapIndex = keyCaps.count - 1 - defaultKeyCapIndex
         }
-        self.actions = self.keyCaps.map { $0.getAction() }
+        self.actions = self.keyCaps.map { $0.action }
         
         setupLabels(actions)
         

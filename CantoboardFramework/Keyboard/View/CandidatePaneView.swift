@@ -425,7 +425,9 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         
-        if Settings.cached.shouldShowRomanization {
+        let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
+            (reverseLookupSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
+        if showComment {
             let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
             let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width
             cellWidth = max(cellWidth, commentWidth)
@@ -451,7 +453,8 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
-        let showComment = Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english && candidateOrganizer.candidateSource is InputEngineCandidateSource
+        let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
+            (reverseLookupSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         cell.initLabel(candidate, comment, showComment: showComment)
     }
     

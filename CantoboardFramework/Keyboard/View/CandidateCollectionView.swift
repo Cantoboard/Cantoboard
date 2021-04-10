@@ -78,7 +78,7 @@ class CandidateCell: UICollectionViewCell {
             keyHintLayer?.setup(keyCap: keyCap, hintText: hintText)
         }
         
-        if Settings.cached.shouldShowRomanization, let comment = comment {
+        if showComment, let comment = comment {
             if commentLayer == nil {
                 let commentLayer = CATextLayer()
                 self.commentLayer = commentLayer

@@ -46,7 +46,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         self = .character(value)
     }
     
-    func getAction(/* type, state*/) -> KeyboardAction {
+    var action: KeyboardAction {
         switch self {
         case .none: return .none
         case .backspace: return .backspace
@@ -72,7 +72,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFont: UIFont {
         switch self {
         case .rime, "^_^": return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        // case .contexualSymbols(.rime): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(18)
         default: return .preferredFont(forTextStyle: buttonFontStyle)
         }
     }
@@ -150,7 +149,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.tone6): return "陽去"
         case .rime(.delimiter): return "分"
         case .rime(.sym): return "符"
-        case .reverseLookup(.mandarin): return "普"
+        case .reverseLookup(let schema): return schema.signChar
         case .contexualSymbols(.chinese): return "，"
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return "分"
@@ -259,7 +258,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
             default: return [self]
             }
-        case "x", "X": return [self, .reverseLookup(.mandarin)]
+        case "x", "X": return [self, .reverseLookup(.cangjie), .reverseLookup(.mandarin), /*.reverseLookup(.loengfan),*/ .reverseLookup(.stroke)]
         case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
         case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]

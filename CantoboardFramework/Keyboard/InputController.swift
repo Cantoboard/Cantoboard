@@ -330,7 +330,7 @@ class InputController {
         switch candidateOrganizer.inputMode {
         case .chinese: setMarkedText(inputEngine.rimeComposition)
         case .english: setMarkedText(inputEngine.englishComposition)
-        case .mixed: setMarkedText(inputEngine.composition)
+        case .mixed: reverseLookupSchemaId == nil ? setMarkedText(inputEngine.composition) : setMarkedText(inputEngine.rimeComposition) 
         }
     }
     

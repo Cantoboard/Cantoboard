@@ -1,16 +1,16 @@
 __build_info:
   rime_version: 1.5.3
   timestamps:
-    default: 1618033893
-    default.custom: 1618033893
+    default: 1618040958
+    default.custom: 1618040958
     grammar: 0
     luna_pinyin.custom: 0
-    luna_pinyin.schema: 1618033893
-    pinyin: 1618033893
+    luna_pinyin.schema: 1618040958
+    pinyin: 1618040958
     pinyin.custom: 0
-    symbols: 1618033893
+    symbols: 1618040958
     symbols.custom: 0
-    symbols_cantonese: 1618033893
+    symbols_cantonese: 1618040958
 custom_phrase:
   db_class: stabledb
   dictionary: ""
@@ -20,6 +20,8 @@ custom_phrase:
   user_dict: custom_phrase
 engine:
   filters:
+    - "simplifier@variants_hk"
+    - "simplifier@trad_tw"
     - simplifier
     - uniquifier
     - "reverse_lookup_filter@jyut6ping3_reverse_lookup"
@@ -354,7 +356,6 @@ recognizer:
   patterns:
     email: "^[a-z][-_.0-9a-z]*@.*$"
     punct: "^/([0-9]0?|[A-Za-z]+)$"
-    reverse_lookup: "`[a-z]*'?$"
     uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
     url: "^(www[.]|https?:|ftp:|mailto:).*$|^[a-z]+[.].+$"
 schema:

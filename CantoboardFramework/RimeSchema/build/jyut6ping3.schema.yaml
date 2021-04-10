@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.5.3
   timestamps:
-    default: 1618033893
-    default.custom: 1618033893
+    default: 1618040958
+    default.custom: 1618040958
     jyut6ping3.custom: 0
-    jyut6ping3.schema: 1618033893
-    symbols: 1618033893
+    jyut6ping3.schema: 1618040958
+    symbols: 1618040958
     symbols.custom: 0
-    symbols_cantonese: 1618033893
+    symbols_cantonese: 1618040958
 emoji_suggestion:
   opencc_config: emoji.json
   option_name: emoji_suggestion
