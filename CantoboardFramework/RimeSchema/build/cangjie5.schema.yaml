@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.5.3
   timestamps:
     cangjie5.custom: 0
-    cangjie5.schema: 1618092280
-    default: 1618092280
-    default.custom: 1618092280
-    symbols: 1618092280
+    cangjie5.schema: 1618179789
+    default: 1618179789
+    default.custom: 1618179789
+    symbols: 1618179789
     symbols.custom: 0
-    symbols_cantonese: 1618092280
+    symbols_cantonese: 1618179789
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -34,6 +34,8 @@ engine:
     - punct_translator
     - table_translator
 jyut6ping3_reverse_lookup:
+  comment_format:
+    - "xlit| |/|"
   dictionary: jyut6ping3
   overwrite_comment: true
 key_binder:
