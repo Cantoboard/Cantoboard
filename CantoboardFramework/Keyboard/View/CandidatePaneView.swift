@@ -426,7 +426,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         
         let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
-            (currentRimeSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
+            (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         if showComment {
             let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
             let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width
@@ -454,7 +454,7 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
         let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
-            (currentRimeSchemaId != nil || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
+            (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         cell.initLabel(candidate, comment, showComment: showComment)
     }
     

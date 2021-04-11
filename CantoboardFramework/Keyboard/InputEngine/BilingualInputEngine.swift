@@ -267,7 +267,7 @@ class BilingualInputEngine: InputEngine {
                 break
             }
             
-            addCurrentRimeCandidate(rimeCandidates, isReverseLookupMode: isReverseLookupMode)
+            addCurrentRimeCandidate(rimeCandidates)
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
@@ -282,7 +282,7 @@ class BilingualInputEngine: InputEngine {
         
         // Populate remaining Rime candidates.
         while curRimeCandidateIndex < rimeCandidates.count {
-            addCurrentRimeCandidate(rimeCandidates, isReverseLookupMode: isReverseLookupMode)
+            addCurrentRimeCandidate(rimeCandidates)
         }
         
         // Populate remaining English candidates.
@@ -306,9 +306,8 @@ class BilingualInputEngine: InputEngine {
         curEnglishCandidateIndex += 1
     }
     
-    private func addCurrentRimeCandidate(_ rimeCandidates: NSArray, isReverseLookupMode: Bool) {
-        if let candidateText = rimeCandidates[curRimeCandidateIndex] as? String,
-           !isReverseLookupMode || isReverseLookupMode && candidateText.count == 1 {
+    private func addCurrentRimeCandidate(_ rimeCandidates: NSArray) {
+        if let candidateText = rimeCandidates[curRimeCandidateIndex] as? String {
             addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
         }
         curRimeCandidateIndex += 1

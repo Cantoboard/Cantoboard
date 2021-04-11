@@ -291,6 +291,11 @@ class KeyboardView: UIView {
                 }
             } }
             
+            // TODO Hide shift button if we are not in jyutping mode.
+            /*
+            if index == 2 && (currentRimeSchemaId != .jyutping || currentRimeSchemaId == .jyutping && Settings.cached.lastInputMode == .chinese) {
+                
+            }*/
             keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
         }
     }

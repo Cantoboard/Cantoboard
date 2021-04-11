@@ -30,7 +30,6 @@
 name: luna_pinyin
 version: "2020.02.08"
 sort: by_weight
-max_phrase_length: 1
 use_preset_vocabulary: true
 ...
 

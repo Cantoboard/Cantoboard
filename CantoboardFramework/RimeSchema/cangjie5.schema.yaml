@@ -94,3 +94,5 @@ trad_tw:
 jyut6ping3_reverse_lookup:
   overwrite_comment: true
   dictionary: jyut6ping3
+  comment_format:
+    - "xlit| |/|"

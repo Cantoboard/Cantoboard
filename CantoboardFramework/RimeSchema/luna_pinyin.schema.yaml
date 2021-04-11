@@ -101,6 +101,8 @@ trad_tw:
 jyut6ping3_reverse_lookup:
   overwrite_comment: true
   dictionary: jyut6ping3
+  comment_format:
+    - "xlit| |/|"
 
 __patch:
   # 使用八股文語言模型
