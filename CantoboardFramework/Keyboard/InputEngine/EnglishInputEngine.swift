@@ -196,7 +196,8 @@ class EnglishInputEngine: InputEngine {
         for word in spellCorrectionCandidates + autoCompleteCandidates {
             if word.isEmpty || word == text {
                 continue // We added the word already. Ignore.
-            } else if highFreqWords.contains(word.lowercased()) {
+            } else if highFreqWords.contains(word.lowercased()) && word.filter({ $0.isEnglishLetter }).caseInsensitiveCompare(text) == .orderedSame {
+                // Special case for correcting patterns like cant -> can't. lets -> let's.
                 candidates.insert(word, at: 0)
                 isWord = true
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
