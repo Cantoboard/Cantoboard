@@ -82,11 +82,13 @@ open class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         
         reloadSettings()
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(onNSExtensionHostDidBecomeActive), name: NSNotification.Name.NSExtensionHostDidBecomeActive, object: nil)
         
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
         heightConstraint?.isActive = true
-        NSLog("viewDidLoad screen size \(UIScreen.main.bounds.size)")
+        // NSLog("viewDidLoad screen size \(UIScreen.main.bounds.size)")
 
         createKeyboard()
         
@@ -114,7 +116,7 @@ open class KeyboardViewController: UIInputViewController {
         let newSize = toInterfaceOrientation.isPortrait ? CGSize(width: shortEdge, height: longEdge) : CGSize(width: longEdge, height: shortEdge)
         let nextKeyboardSize = LayoutConstants.getContants(screenSize: newSize).keyboardSize
         
-        NSLog("willRotate New screen size \(newSize)")
+        // NSLog("willRotate New screen size \(newSize)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
@@ -124,7 +126,7 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
-        NSLog("didRotate New screen size \(UIScreen.main.bounds)")
+        // NSLog("didRotate New screen size \(UIScreen.main.bounds)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
@@ -175,11 +177,9 @@ open class KeyboardViewController: UIInputViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         DispatchQueue.global(qos: .background).async {
-            NSLog("Unlocking all open files on viewDidAppear.")
+            // NSLog("Unlocking all open files on viewDidAppear.")
             FileUnlocker.unlockAllOpenedFiles()
         }
-        
-        reloadSettings()
     }
     
     public override func viewDidDisappear(_ animated: Bool) {
@@ -219,7 +219,13 @@ open class KeyboardViewController: UIInputViewController {
         
         if prevSettings.charForm != settings.charForm {
             inputController.keyPressed(.setCharForm(settings.charForm))
+            NSLog("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }
+    }
+    
+    @objc private func onNSExtensionHostDidBecomeActive(_ sender: Any) {
+        NSLog("Reloading settings onNSExtensionHostDidBecomeActive.")
+        reloadSettings()
     }
 }
 

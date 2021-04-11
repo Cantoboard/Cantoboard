@@ -36,8 +36,10 @@ class RimeInputEngine: NSObject, InputEngine {
         get { _activeSchemaId }
         set {
             guard newValue != _activeSchemaId else { return }
+            NSLog("Switching scheam of session \(rimeSession?.debugDescription ?? "") from \(activeSchemaId) to \(newValue)")
             _activeSchemaId = newValue
             rimeSession?.setCurrentSchema(_activeSchemaId.rawValue)
+            refreshCharForm()
         }
     }
     
@@ -123,9 +125,6 @@ class RimeInputEngine: NSObject, InputEngine {
         guard let rimeSession = self.rimeSession else { return }
         rimeSession.processKey(0xff1b, modifier: 0) // Esc
         processKey(0xff1b)
-        
-        rimeSession.setCurrentSchema(activeSchemaId.rawValue)
-        // print(rimeSession.getCurrentSchemaId())
     }
     
     func getCandidates() -> NSArray {
