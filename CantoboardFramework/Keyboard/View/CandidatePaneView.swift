@@ -253,7 +253,7 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func filterButtonClick() {
-        guard currentRimeSchemaId == nil else { return }
+        guard currentRimeSchemaId == .jyutping else { return }
         
         Self.hapticsGenerator.impactOccurred(intensity: 1)
         AudioFeedbackProvider.play(keyboardAction: .none)
