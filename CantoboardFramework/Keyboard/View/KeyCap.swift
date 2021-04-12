@@ -250,7 +250,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithConditioanlPopup, .contexualSymbols: return true
+        case .character, .characterWithConditioanlPopup, .contexualSymbols, .cangjie: return true
         case .keyboardType(.emojis): return true
         default: return false
         }
