@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.5.3
   timestamps:
-    default: 1618179789
-    default.custom: 1618179789
+    default: 1618200563
+    default.custom: 1618200563
     stroke.custom: 0
-    stroke.schema: 1618179789
-    symbols: 1618179789
+    stroke.schema: 1618200563
+    symbols: 1618200563
     symbols.custom: 0
-    symbols_cantonese: 1618179789
+    symbols_cantonese: 1618200563
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -373,6 +373,7 @@ switches:
   - name: full_shape
     states: ["半角", "全角"]
   - options: [noop, variants_hk, trad_tw, simplification]
+    reset: 1
     states: ["傳統漢字", "香港傳統漢字", "臺灣傳統漢字", "大陆简化汉字"]
   - name: ascii_punct
     states: ["。，", "．，"]
