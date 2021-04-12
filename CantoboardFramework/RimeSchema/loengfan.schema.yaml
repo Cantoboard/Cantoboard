@@ -21,6 +21,7 @@ switches:
     states: [ 半形, 全形 ]
   - options: [ noop, variants_hk, trad_tw, simplification ]
     states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
+    reset: 1
   - name: ascii_punct
     states: [ 。，, ．， ]
 

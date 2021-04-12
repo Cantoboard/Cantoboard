@@ -43,7 +43,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     charForm(CharForm),
     reverseLookup(RimeSchemaId)
     
-    private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜"]
+    private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
     public init(stringLiteral value: String) {
         self = .character(value)
@@ -266,7 +266,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
             case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
-            case "x", "X": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.mandarin), /*.reverseLookup(.loengfan),*/ .reverseLookup(.stroke)]
+            case "x", "X": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
             default: return [self]
             }
         case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]

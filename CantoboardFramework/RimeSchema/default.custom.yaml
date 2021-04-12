@@ -2,7 +2,8 @@ patch:
   schema_list:
     - {schema: jyut6ping3}
     - {schema: cangjie5}
-    # - {schema: loengfan}
+    - {schema: quick5}
     - {schema: luna_pinyin}
     - {schema: stroke}
+    - {schema: loengfan}
   "menu/page_size": 10

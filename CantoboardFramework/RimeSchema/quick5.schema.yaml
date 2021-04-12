@@ -1,19 +1,16 @@
-# Rime schema
+# Rime schema settings
 # encoding: utf-8
 
 schema:
-  schema_id: luna_pinyin
-  name: 朙月拼音
-  version: '0.26'
+  schema_id: quick5
+  name: 速成
+  version: "0.20"
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
-    Rime 預設的拼音輸入方案。
-    參考以下作品而創作：
-      * CC-CEDICT
-      * Android open source project
-      * Chewing - 新酷音
-      * opencc - 開放中文轉換
+    速成、倉頡詞句連打
+    碼表源自倉頡之友發佈的《五倉世紀版》
+    www.chinesecj.com
   dependencies:
     - jyut6ping3
 
@@ -47,7 +44,6 @@ engine:
     - fallback_segmentor
   translators:
     - punct_translator
-    - table_translator@custom_phrase
     - script_translator
   filters:
     - simplifier@variants_hk
@@ -58,27 +54,20 @@ engine:
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
-  delimiter: " '"
+  delimiter: " ;'"
   algebra:
-    __patch:
-      - pinyin:/abbreviation
-      - pinyin:/spelling_correction
-      - pinyin:/key_correction
+    - 'derive/^([^z])\w+(\w)$/$1$2/'  # 取倉頡首尾二碼爲速成碼
 
 translator:
-  dictionary: luna_pinyin
+  dictionary: quick5
+  prism: quick5
   preedit_format:
-    - xform/([nl])v/$1ü/
-    - xform/([nl])ue/$1üe/
-    - xform/([jqxy])v/$1u/
-
-custom_phrase:
-  dictionary: ""
-  user_dict: custom_phrase
-  db_class: stabledb
-  enable_completion: false
-  enable_sentence: false
-  initial_quality: 1
+    - "xlit|abcdefghijklmnopqrstuvwxyz;'|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符··|"
+  comment_format:
+    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+    - "^yyy.*$"
 
 punctuator:
   import_preset: symbols_cantonese
@@ -104,9 +93,3 @@ jyut6ping3_reverse_lookup:
   dictionary: jyut6ping3
   comment_format:
     - "xlit| |/|"
-
-__patch:
-  # 使用八股文語言模型
-  - grammar:/hant?
-  # 用家自選配置
-  - luna_pinyin.custom:/patch?

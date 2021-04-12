@@ -22,6 +22,7 @@ switches:
     states: [ 半角, 全角 ]
   - options: [ noop, variants_hk, trad_tw, simplification ]
     states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
+    reset: 1
   - name: ascii_punct
     states: [ 。，, ．， ]
 
@@ -65,9 +66,9 @@ translator:
   max_phrase_length: 5
   preedit_format:
     - 'xform/^([a-z ]*)$/\U$1\E/'
-    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXY|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜|"
+    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
   comment_format:
-    - "xlit|abcdefghijklmnopqrstuvwxy~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜～|"
+    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
   disable_user_dict_for_patterns:
     - "^z.*$"
     - "^yyy.*$"

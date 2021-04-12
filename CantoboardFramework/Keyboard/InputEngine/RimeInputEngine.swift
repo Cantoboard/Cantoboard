@@ -11,6 +11,7 @@ import UIKit
 enum RimeSchemaId: String {
     case jyutping = "jyut6ping3"
     case cangjie = "cangjie5"
+    case quick = "quick5"
     case mandarin = "luna_pinyin"
     case stroke = "stroke"
     case loengfan = "loengfan"
@@ -18,11 +19,16 @@ enum RimeSchemaId: String {
     var signChar: String {
         switch self {
         case .cangjie: return "倉"
+        case .quick: return "速"
         case .jyutping: return "粵"
         case .loengfan: return "兩"
         case .mandarin: return "普"
         case .stroke: return "筆"
         }
+    }
+    
+    var isCangjieFamily: Bool {
+        self == .cangjie || self == .quick
     }
 }
 

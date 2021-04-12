@@ -267,7 +267,7 @@ class KeyboardView: UIView {
             
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character(let c) where currentRimeSchemaId == .cangjie && c.first?.isEnglishLetter ?? false:
+                case .character(let c) where currentRimeSchemaId.isCangjieFamily && c.first?.isEnglishLetter ?? false:
                     return .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),
