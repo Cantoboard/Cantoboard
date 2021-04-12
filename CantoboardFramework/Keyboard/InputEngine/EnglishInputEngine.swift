@@ -93,7 +93,7 @@ class EnglishInputEngine: InputEngine {
     private var candidates = NSMutableArray()
     private static var textChecker = UITextChecker()
     private(set) var isWord: Bool = false
-    private let highFreqWords = ["i'm", "can't", "let's"]
+    private let highFreqWords = ["i'm", "can't", "let's", "won't"]
     
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
