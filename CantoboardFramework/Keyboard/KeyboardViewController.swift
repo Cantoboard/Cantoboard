@@ -223,7 +223,7 @@ open class KeyboardViewController: UIInputViewController {
         }
     }
     
-    @objc private func onNSExtensionHostDidBecomeActive(_ sender: Any) {
+    @objc private func onNSExtensionHostDidBecomeActive(_ notification: NSNotification) {
         NSLog("Reloading settings onNSExtensionHostDidBecomeActive.")
         reloadSettings()
     }

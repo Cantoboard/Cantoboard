@@ -302,14 +302,19 @@ class InputController {
             textToBeInserted = text
         }
         
-        // Apps like Google Calender doesn't like keyboard calling setMarkedText() and insertText().
-        // To improve compatibility, call setMarkedText() then unmarkText().
-        textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.count, length: 0))
-        textDocumentProxy.unmarkText()
+        if text == "\n" {
+            // Chrome doesn't handle \n if it's inserted via marked text.
+            textDocumentProxy.insertText(text)
+        } else {
+            // Apps like Google Calender doesn't like keyboard calling setMarkedText() and insertText().
+            // To improve compatibility, call setMarkedText() then unmarkText().
+            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.count, length: 0))
+            textDocumentProxy.unmarkText()
+        }
         
         isLastInsertedTextFromCandidate = isFromSelectingCandidate
         
-        NSLog("UFO hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
+        // NSLog("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
         
         self.refreshKeyboardContextualType()
         DispatchQueue.main.async {
