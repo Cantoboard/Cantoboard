@@ -176,7 +176,7 @@ class EnglishInputEngine: InputEngine {
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
             }
-            if word == text {
+            if word == text || word == "I" {
                 candidates.insert(word, at: 0)
             } else {
                 candidates.add(word)
