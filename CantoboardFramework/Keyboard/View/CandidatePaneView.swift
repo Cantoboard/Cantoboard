@@ -22,6 +22,11 @@ protocol CandidatePaneViewDelegate: NSObject {
 class StatusButton: UIButton {
     private static let statusInset: CGFloat = 4
     private weak var statusSquareBg: CALayer?
+    var isMini: Bool = false {
+        didSet {
+            setNeedsLayout()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -49,7 +54,7 @@ class StatusButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel?.font = UIFont.systemFont(ofSize: LayoutConstants.forMainScreen.statusIndicatorFontSize)
+        titleLabel?.font = UIFont.systemFont(ofSize: isMini ? CandidatePaneView.miniStatusFontSize : LayoutConstants.forMainScreen.statusIndicatorFontSize)
         statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
     }
     
@@ -60,6 +65,8 @@ class StatusButton: UIButton {
 
 class CandidatePaneView: UIControl {
     private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    private static let miniStatusSize = CGSize(width: 20, height: 20)
+    static let miniStatusFontSize: CGFloat = 10
     
     enum Mode {
         case row, table
@@ -110,7 +117,8 @@ class CandidatePaneView: UIControl {
         }
     }
     weak var collectionView: CandidateCollectionView!
-    weak var expandButton, inputModeButton, backspaceButton, charFormButton: UIButton!
+    weak var expandButton, backspaceButton, charFormButton: UIButton!
+    weak var inputModeButton: StatusButton!
     weak var delegate: CandidatePaneViewDelegate?
     
     private(set) var mode: Mode = .row
@@ -137,8 +145,9 @@ class CandidatePaneView: UIControl {
         expandButton = createAndAddButton(isStatusIndicator: false)
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
 
-        inputModeButton = createAndAddButton(isStatusIndicator: true)
+        inputModeButton = (createAndAddButton(isStatusIndicator: true) as! StatusButton)
         inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
+        sendSubviewToBack(inputModeButton)
         
         backspaceButton = createAndAddButton(isStatusIndicator: false)
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
@@ -201,13 +210,17 @@ class CandidatePaneView: UIControl {
         if mode == .table {
             expandButton.isHidden = false
             inputModeButton.isHidden = false || title == nil
+            inputModeButton.isMini = false
+            inputModeButton.isUserInteractionEnabled = true
             backspaceButton.isHidden = false
             charFormButton.isHidden = false
         } else {
             let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
             
             expandButton.isHidden = cannotExpand
-            inputModeButton.isHidden = !cannotExpand || title == nil
+            inputModeButton.isHidden = title == nil
+            inputModeButton.isMini = !cannotExpand
+            inputModeButton.isUserInteractionEnabled = cannotExpand
             backspaceButton.isHidden = true
             charFormButton.isHidden = true
         }
@@ -310,6 +323,10 @@ class CandidatePaneView: UIControl {
         var buttonY: CGFloat = 0
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
+            if button == inputModeButton && inputModeButton.isMini {
+                button.frame = CGRect(origin: CGPoint(x: bounds.size.width - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
+                continue
+            }
             button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: buttonWidth, height: buttonWidth))
             buttonY += layoutConstants.autoCompleteBarHeight
         }
