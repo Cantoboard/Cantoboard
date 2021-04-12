@@ -110,6 +110,8 @@ class KeyPopupView: UIView {
             highlightedLabelIndex = self.defaultKeyCapIndex
             labels[self.defaultKeyCapIndex].backgroundColor = .systemBlue
         }
+        
+        hintLayers.forEach { $0.foregroundColor = ButtonColor.keyForegroundColor.resolvedColor(with: traitCollection).cgColor }
     }
     
     override func layoutSubviews() {

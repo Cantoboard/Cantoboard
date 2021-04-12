@@ -30,7 +30,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     backspace,
     capsLock,
     character(String),
-    characterWithTone(String),
+    characterWithConditioanlPopup(String),
     cangjie(String),
     emoji(String),
     keyboardType(KeyboardType),
@@ -55,7 +55,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .backspace: return .backspace
         case .capsLock: return .capsLock
         case .character(let c): return .character(c)
-        case .characterWithTone(let c): return .character(c)
+        case .characterWithConditioanlPopup(let c): return .character(c)
         case .cangjie(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
@@ -82,7 +82,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var popupFont: UIFont {
         switch self {
-        case .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
+        case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(26)
         case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu":
             return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
@@ -91,7 +91,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFontStyle: UIFont.TextStyle {
         switch self {
-        case .character, .characterWithTone, .cangjie, .emoji, .contexualSymbols: return .title2
+        case .character, .characterWithConditioanlPopup, .cangjie, .emoji, .contexualSymbols: return .title2
         case .keyboardType(.emojis): return .title1
         default: return .body
         }
@@ -99,7 +99,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithTone, .cangjie, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
+        case .character, .characterWithConditioanlPopup, .cangjie, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         default: return ButtonColor.systemKeyBackgroundColor
         }
@@ -107,7 +107,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgHighlightedColor: UIColor? {
         switch self {
-        case .character, .characterWithTone, .cangjie, .contexualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
+        case .character, .characterWithConditioanlPopup, .cangjie, .contexualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default: return ButtonColor.systemHighlightedKeyBackgroundColor
         }
@@ -139,7 +139,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonText: String? {
         switch self {
-        case .characterWithTone(let text): return text
+        case .characterWithConditioanlPopup(let text): return text
         case .newLine: return "return"
         case .space: return "space"
         case .keyboardType(.numeric): return "123"
@@ -182,12 +182,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonHint: String? {
         if Settings.cached.rimeSettings.toneInputMode == .longPress {
             switch self {
-            case .characterWithTone("F"), .characterWithTone("f"): return "4"
-            case .characterWithTone("G"), .characterWithTone("g"): return "5"
-            case .characterWithTone("H"), .characterWithTone("h"): return "6"
-            case .characterWithTone("C"), .characterWithTone("c"): return "1"
-            case .characterWithTone("V"), .characterWithTone("v"): return "2"
-            case .characterWithTone("B"), .characterWithTone("b"): return "3"
+            case .characterWithConditioanlPopup("F"), .characterWithConditioanlPopup("f"): return "4"
+            case .characterWithConditioanlPopup("G"), .characterWithConditioanlPopup("g"): return "5"
+            case .characterWithConditioanlPopup("H"), .characterWithConditioanlPopup("h"): return "6"
+            case .characterWithConditioanlPopup("C"), .characterWithConditioanlPopup("c"): return "1"
+            case .characterWithConditioanlPopup("V"), .characterWithConditioanlPopup("v"): return "2"
+            case .characterWithConditioanlPopup("B"), .characterWithConditioanlPopup("b"): return "3"
             case .rime(.tone1): return "1"
             case .rime(.tone2): return "2"
             case .rime(.tone3): return "3"
@@ -198,14 +198,16 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             }
         } else {
             switch self {
-            case .character("V"), .character("v"): return "1/4"
-            case .character("X"), .character("x"): return "2/5"
-            case .character("Q"), .character("q"): return "3/6"
+            case "V", "v": return "1/4"
+            case "X", "x": return "2/5"
+            case "Q", "q": return "3/6"
             default: ()
             }
         }
         
         switch self {
+        case .characterWithConditioanlPopup("X"), .characterWithConditioanlPopup("x"): return "反"
+        case .reverseLookup: return "反"
         case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
         case "，", "。", "？", "！",
@@ -239,7 +241,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             return layoutConstants.shiftButtonWidth
         case .newLine:
             return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .characterWithTone, .contexualSymbols:
+        case .character, .characterWithConditioanlPopup, .contexualSymbols:
             return layoutConstants.keyButtonWidth
         default:
             return layoutConstants.systemButtonWidth
@@ -248,7 +250,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithTone, .contexualSymbols: return true
+        case .character, .characterWithConditioanlPopup, .contexualSymbols: return true
         case .keyboardType(.emojis): return true
         default: return false
         }
@@ -256,7 +258,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var childrenKeyCaps: [KeyCap] {
         switch self {
-        case .characterWithTone(let c):
+        case .characterWithConditioanlPopup(let c):
             switch c {
             case "F", "f": return [.character(c), .rime(RimeChar.tone4)]
             case "G", "g": return [.character(c), .rime(RimeChar.tone5)]
@@ -264,9 +266,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
             case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
+            case "x", "X": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.mandarin), /*.reverseLookup(.loengfan),*/ .reverseLookup(.stroke)]
             default: return [self]
             }
-        case "x", "X": return [self, .reverseLookup(.cangjie), .reverseLookup(.mandarin), /*.reverseLookup(.loengfan),*/ .reverseLookup(.stroke)]
         case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
         case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]

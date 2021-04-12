@@ -278,13 +278,18 @@ class KeyboardView: UIView {
                         if case .character(let c) = $0,
                            currentRimeSchemaId == .jyutping && Settings.cached.rimeSettings.toneInputMode == .longPress {
                             // Show tone keys.
-                            return .characterWithTone(c)
+                            return .characterWithConditioanlPopup(c)
                         } else {
                             return $0
                         }
                     default:
                         return $0
                     }
+                case "X", "x":
+                    if currentRimeSchemaId == .jyutping, case .character(let c) = $0 {
+                        return .characterWithConditioanlPopup(c)
+                    }
+                    return $0
                 case .contexualSymbols: return .contexualSymbols(keyboardContextualType)
                 default:
                     return $0

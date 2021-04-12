@@ -222,6 +222,8 @@ class InputController {
             setMarkedText()
         case .reverseLookup(let schemaId):
             reverseLookupSchemaId = schemaId
+            inputEngine.clearInput()
+            updateInputState()
         default:
             ()
         }
