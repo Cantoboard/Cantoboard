@@ -253,9 +253,14 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func filterButtonClick() {
-        guard currentRimeSchemaId == .jyutping else { return }
-        
         Self.hapticsGenerator.impactOccurred(intensity: 1)
+        
+        guard currentRimeSchemaId == .jyutping else {
+            // Disable reverse look up mode on tap.
+            delegate?.handleKey(.reverseLookup(.jyutping))
+            return
+        }
+        
         AudioFeedbackProvider.play(keyboardAction: .none)
         
         if filterMode == .lang {
