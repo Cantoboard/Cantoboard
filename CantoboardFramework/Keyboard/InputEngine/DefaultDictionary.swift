@@ -20,8 +20,8 @@ class DefaultDictionary {
         dict = LevelDbTable(dictsPath + "/\(locale).db", createDbIfMissing: false)
     }
     
-    func getWords(wordLowercased: String) -> [String.SubSequence] {
-        return dict.get(wordLowercased)?.split(separator: ",") ?? []
+    func getWords(wordLowercased: String) -> [String] {
+        return dict.get(wordLowercased)?.split(separator: ",").map({ String($0) }) ?? []
     }
     
     private static func installDictionariesIfNeeded(dstPath: String) {

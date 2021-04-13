@@ -155,7 +155,7 @@ class EnglishInputEngine: InputEngine {
         let defaultEnglishDictionaryWords = englishDictionary.getWords(wordLowercased: textLowercased)
         let userDictionaryWords = userDictionary.getWords(wordLowercased: textLowercased)
         let englishDictionaryWords = defaultEnglishDictionaryWords + userDictionaryWords
-        let englishDictionaryWordsSet = englishDictionaryWords.mapToSet({ String($0) })
+        let englishDictionaryWordsSet = englishDictionaryWords.mapToSet({ $0 })
         
         isWord = text != "m" && (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
         

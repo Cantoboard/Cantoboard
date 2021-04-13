@@ -392,10 +392,7 @@ class InputController {
     private func insertComposingText(appendBy: String? = nil, shouldDisableSmartSpace: Bool = false) -> Bool {
         if var composingText = inputEngine.composition?.text.filter({ $0 != " " && !$0.isRimeSpecialChar }),
            !composingText.isEmpty {
-            if composingText.allSatisfy({ $0.isEnglishLetter }) &&
-                EnglishInputEngine.englishDictionary.getWords(wordLowercased: composingText.lowercased()).isEmpty {
-                EnglishInputEngine.userDictionary.learnWord(word: composingText)
-            }
+            EnglishInputEngine.userDictionary.learnWordIfNeeded(word: composingText)
             if let c = appendBy { composingText.append(c) }
             insertText(composingText, isFromSelectingCandidate: false, shouldDisableSmartSpace: shouldDisableSmartSpace)
             return true

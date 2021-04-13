@@ -59,6 +59,7 @@ class BilingualInputEngine: InputEngine {
             commitedText = rimeInputEngine.selectCandidate(candidatePath.index)
         } else {
             commitedText = englishInputEngine.selectCandidate(candidatePath.index)
+            if let commitedText = commitedText { EnglishInputEngine.userDictionary.learnWordIfNeeded(word: commitedText) }
         }
         // User has selected a candidate and partially complete the composing text.
         if commitedText == nil {

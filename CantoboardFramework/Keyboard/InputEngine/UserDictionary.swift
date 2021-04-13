@@ -18,8 +18,8 @@ class UserDictionary {
         dict = LevelDbTable(userDataPath, createDbIfMissing: true)
     }
     
-    func getWords(wordLowercased: String) -> [String.SubSequence] {
-        guard let parsed = dict.get(wordLowercased)?.split(separator: ","), parsed.count > 1 else { return [] }
+    func getWords(wordLowercased: String) -> [String] {
+        guard let parsed = dict.get(wordLowercased)?.split(separator: ",").map({ String($0) }), parsed.count > 1 else { return [] }
         let freq = Int64(parsed[0]) ?? 0
         
         // To avoid over-learning, do not return words learnt less than 3 times.
@@ -43,6 +43,13 @@ class UserDictionary {
         } else {
             dict.put(key, value: "1,\(word)")
             return
+        }
+    }
+    
+    func learnWordIfNeeded(word: String) {
+        if word.allSatisfy({ $0.isEnglishLetter }) &&
+            !EnglishInputEngine.englishDictionary.getWords(wordLowercased: word.lowercased()).contains(word) {
+            EnglishInputEngine.userDictionary.learnWord(word: word)
         }
     }
 }
