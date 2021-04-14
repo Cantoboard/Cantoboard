@@ -15,11 +15,16 @@ enum ContextualType: Equatable {
 class InputController {
     private weak var keyboardViewController: KeyboardViewController?
     private let inputEngine: BilingualInputEngine
-    private var hasInsertedAutoSpace = false
-    private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
+    
     private var lastKey: KeyboardAction?
     private var isHoldingShift = false
+    
+    private var hasInsertedAutoSpace = false
+    private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
+    private var needClearInput = false
+    
     private var prevTextBefore: String?
+    
     private(set) var reverseLookupSchemaId: RimeSchemaId? {
         didSet {
             inputEngine.reverseLookupSchemaId = reverseLookupSchemaId
@@ -85,39 +90,31 @@ class InputController {
         showAutoSuggestCandidates()
     }
     
-    private func candidateSelected(_ choice: Int, isFromCandidateBar: Bool) -> Bool {
+    private func candidateSelected(_ choice: Int, isFromCandidateBar: Bool) {
         if let staticCandidateSource = candidateOrganizer.candidateSource as? AutoSuggestionCandidateSource {
             if let candidate = staticCandidateSource.candidates[choice] as? String {
-                insertText(candidate, isFromCandidateBar: isFromCandidateBar, shouldClearInput: false)
-                return true
+                insertText(candidate, isFromCandidateBar: isFromCandidateBar)
             }
         } else if let commitedText = inputEngine.selectCandidate(choice) {
             insertText(commitedText, isFromCandidateBar: isFromCandidateBar)
-            return true
         }
-        return false
     }
     
-    private func handleSpace() -> Bool {
-        guard let textDocumentProxy = textDocumentProxy else { return false }
+    private func handleSpace() {
+        guard let textDocumentProxy = textDocumentProxy else { return }
         
         let spaceOutputMode = Settings.cached.spaceOutputMode
         // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
         if spaceOutputMode == .bestCandidate && candidateOrganizer.candidateSource is InputEngineCandidateSource,
            let bestCandidateIndex = candidateOrganizer.getCandidateIndex(indexPath: [0, 0]) {
-            return candidateSelected(bestCandidateIndex, isFromCandidateBar: false)
+            candidateSelected(bestCandidateIndex, isFromCandidateBar: false)
         } else {
-            if insertComposingText() {
-                return true
-            } else {
-                if handleAutoSpace() {
-                    return true
-                } else {
+            if !insertComposingText() {
+                if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
                 }
             }
         }
-        return false
     }
     
     func keyPressed(_ action: KeyboardAction) {
@@ -133,8 +130,8 @@ class InputController {
             lastKey = action
         }
         
+        needClearInput = false
         let isComposing = inputEngine.isComposing
-        var needClearInput = false
         
         switch action {
         case .moveCursorForward, .moveCursorBackward:
@@ -150,7 +147,6 @@ class InputController {
                 if !insertComposingText(appendBy: c) {
                     insertText(c)
                 }
-                needClearInput = true
             }
             if !isHoldingShift && keyboardType == .some(.alphabetic(.uppercased)) {
                 keyboardType = .alphabetic(.lowercased)
@@ -159,17 +155,10 @@ class InputController {
             guard isComposing || rc == .sym else { return }
             _ = inputEngine.processRimeChar(rc.rawValue)
         case .space:
-            needClearInput = handleSpace()
+            handleSpace()
         case .newLine:
-            if insertComposingText(shouldDisableSmartSpace: true) {
-                needClearInput = true
-            } else {
-                if isTextChromeSearchBar() {
-                    textDocumentProxy.insertText("\n")
-                } else {
-                    insertText("\n")
-                    needClearInput = true
-                }
+            if !insertComposingText(shouldDisableSmartSpace: true) {
+                insertText("\n")
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
             if reverseLookupSchemaId != nil && !isComposing {
@@ -195,9 +184,7 @@ class InputController {
             }
         case .emoji(let e):
             AudioFeedbackProvider.play(keyboardAction: action)
-            if insertComposingText(appendBy: e, shouldDisableSmartSpace: true) {
-                needClearInput = true
-            } else {
+            if !insertComposingText(appendBy: e, shouldDisableSmartSpace: true) {
                 textDocumentProxy.insertText(e)
             }
         case .shiftDown:
@@ -227,7 +214,7 @@ class InputController {
             clearInput(needResetSchema: false)
             return
         case .selectCandidate(let choice):
-            needClearInput = candidateSelected(choice, isFromCandidateBar: true)
+            candidateSelected(choice, isFromCandidateBar: true)
         default: ()
         }
         if needClearInput {
@@ -285,10 +272,11 @@ class InputController {
     
     private var hasMarkedText = false
     
-    private func insertText(_ text: String, isFromCandidateBar: Bool = false, shouldDisableSmartSpace: Bool = false, shouldClearInput: Bool = true) {
+    private func insertText(_ text: String, isFromCandidateBar: Bool = false) {
         guard !text.isEmpty else { return }
         guard let textDocumentProxy = textDocumentProxy else { return }
-                
+        let isNewLine = text == "\n"
+        
         if shouldRemoveSmartSpace(text) {
             // If there's marked text, we've to make an extra call to deleteBackward to remove the marked text before we could delete the space.
             if hasMarkedText {
@@ -302,27 +290,24 @@ class InputController {
             hasInsertedAutoSpace = false
         }
         
-        // if shouldClearInput { clearInput() }
-        
-        let shouldInsertSmartSpace = shouldEnableSmartInput && !shouldDisableSmartSpace && self.shouldInsertSmartSpace(text, isFromCandidateBar)
         let textToBeInserted: String
-        if shouldInsertSmartSpace {
+        
+        if shouldInsertSmartSpace(text, isFromCandidateBar, isNewLine) {
             textToBeInserted = text + " "
             hasInsertedAutoSpace = true
         } else {
             textToBeInserted = text
         }
         
-        if text == "\n" {
-            // Chrome doesn't handle \n if it's inserted via marked text.
-            textDocumentProxy.insertText(text)
-        } else {
-            // Apps like Google Calender doesn't like keyboard calling setMarkedText() and insertText().
-            // To improve compatibility, call setMarkedText() then unmarkText().
-            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.count, length: 0))
+        if hasMarkedText {
+            textDocumentProxy.setMarkedText("", selectedRange: NSRange(location: 0, length: 0))
             textDocumentProxy.unmarkText()
             hasMarkedText = false
         }
+        
+        textDocumentProxy.insertText(textToBeInserted)
+        
+        needClearInput = true
         
         // NSLog("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
     }
@@ -399,7 +384,7 @@ class InputController {
            !composingText.isEmpty {
             EnglishInputEngine.userDictionary.learnWordIfNeeded(word: composingText)
             if let c = appendBy { composingText.append(c) }
-            insertText(composingText, shouldDisableSmartSpace: shouldDisableSmartSpace)
+            insertText(composingText)
             return true
         }
         return false
@@ -440,7 +425,10 @@ class InputController {
     }
     
     private func shouldRemoveSmartSpace(_ textBeingInserted: String) -> Bool {
-        guard let textDocumentProxy = textDocumentProxy else { return false }
+        guard
+            // If we are inserting newline in Google Chrome address bar, do not remove smart space
+            !(isTextChromeSearchBar() && textBeingInserted == "\n"),
+            let textDocumentProxy = textDocumentProxy else { return false }
         
         if let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
             hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
@@ -457,8 +445,9 @@ class InputController {
         return false
     }
     
-    private func shouldInsertSmartSpace(_ insertingText: String, _ isFromCandidateBar: Bool) -> Bool {
-        guard let textDocumentProxy = textDocumentProxy,
+    private func shouldInsertSmartSpace(_ insertingText: String, _ isFromCandidateBar: Bool, _ isNewLine: Bool) -> Bool {
+        guard shouldEnableSmartInput && !isNewLine,
+              let textDocumentProxy = textDocumentProxy,
               let lastChar = insertingText.last else { return false }
         
         // If we are typing a url or just sent combo text like .com, do not insert smart space.
