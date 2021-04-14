@@ -347,7 +347,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "；": return ["；", ";"]
         case "（": return ["（", "("]
         case "）": return ["）", ")"]
-        case "＄": return ["￠", "＄", "€", "￡", "￥", "￦", "₽"]
+        case "＄": return ["￠", "$", "＄", "€", "￡", "￥", "￦", "₽"]
         case "＂": return ["＂", "\"", "”", "“", "c", "»", "«"]
         // 123 3rd row full width
         case "。": return ["。", ".","…", "⋯", "⋯⋯"]
