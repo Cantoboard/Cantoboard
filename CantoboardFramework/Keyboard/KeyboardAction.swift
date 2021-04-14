@@ -74,7 +74,8 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     rime(RimeChar),
     setCharForm(CharForm),
     refreshMarkedText,
-    reverseLookup(RimeSchemaId)
+    reverseLookup(RimeSchemaId),
+    selectCandidate(Int)
     
     public init(stringLiteral value: String) {
         self = .character(value)

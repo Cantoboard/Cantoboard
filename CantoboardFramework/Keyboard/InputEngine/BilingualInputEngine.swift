@@ -42,9 +42,9 @@ class BilingualInputEngine: InputEngine {
         englishInputEngine = EnglishInputEngine(textDocumentProxy: textDocumentProxy)
     }
     
-    private var isComposing: Bool {
+    var isComposing: Bool {
         get {
-            return composition?.text != nil
+            return !(rimeInputEngine.composition?.text.isEmpty ?? true)
         }
     }
     

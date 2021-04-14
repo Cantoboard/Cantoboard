@@ -230,10 +230,6 @@ open class KeyboardViewController: UIInputViewController {
 }
 
 extension KeyboardViewController: KeyboardViewDelegate {
-    func onCandidateSelected(_ candidateIndex: Int) {
-        inputController.candidateSelected(candidateIndex)
-    }
-    
     func handleKey(_ action: KeyboardAction) {
         inputController.keyPressed(action)
     }

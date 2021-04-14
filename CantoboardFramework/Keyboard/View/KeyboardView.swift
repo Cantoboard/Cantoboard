@@ -13,7 +13,6 @@ import ISEmojiView
 protocol KeyboardViewDelegate: NSObject {
     func handleKey(_ action: KeyboardAction)
     func handleInputModeList(from: UIView, with: UIEvent)
-    func onCandidateSelected(_ candidateIndex: Int)
 }
 
 class KeyboardView: UIView {
@@ -373,7 +372,7 @@ class KeyboardView: UIView {
 
 extension KeyboardView: CandidatePaneViewDelegate {
     func candidatePaneViewCandidateSelected(_ choice: Int) {
-        delegate?.onCandidateSelected(choice)
+        delegate?.handleKey(.selectCandidate(choice))
     }
     
     func candidatePaneViewExpanded() {
