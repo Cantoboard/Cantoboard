@@ -176,41 +176,12 @@ class BilingualInputEngine: InputEngine {
                 guard let rimeComposition = rimeComposition else { return nil }
                 guard let englishComposition = englishComposition else { return rimeComposition }
                 
-                let casedMorphedText = caseMorph(rimeText: rimeComposition.text, englishText: englishComposition.text)
+                let casedMorphedText = rimeComposition.text.caseMorph(caseForm: englishComposition.text)
 
                 let casedMorphedComposition = Composition(text: casedMorphedText, caretIndex: rimeComposition.caretIndex)
                 return casedMorphedComposition
             }
         }
-    }
-    
-    // Apply the case if english text to rime text. e.g. rime text: a b'c, english text: Abc. Return A b'c
-    private func caseMorph(rimeText: String, englishText: String) -> String {
-        var casedMorphedText = ""
-        
-        var rimeTextCharIndex = rimeText.startIndex, englishTextCharIndex = englishText.startIndex
-        while rimeTextCharIndex != rimeText.endIndex && englishTextCharIndex != englishText.endIndex {
-            let rc = rimeText[rimeTextCharIndex], ec = englishText[englishTextCharIndex]
-            if rc.isEnglishLetter {
-                let isEnglishCharUppercased = ec.isUppercase
-                if isEnglishCharUppercased {
-                    casedMorphedText.append(rc.uppercased())
-                } else {
-                    casedMorphedText.append(rc.lowercased())
-                }
-            } else {
-                casedMorphedText.append(rc)
-            }
-            rimeTextCharIndex = rimeText.index(after: rimeTextCharIndex)
-            if rc != " " && rc != "'" {
-                englishTextCharIndex = englishText.index(after: englishTextCharIndex)
-            }
-        }
-        while rimeTextCharIndex != rimeText.endIndex {
-            casedMorphedText.append(rimeText[rimeTextCharIndex])
-            rimeTextCharIndex = rimeText.index(after: rimeTextCharIndex)
-        }
-        return casedMorphedText
     }
     
     var englishComposition: Composition? {
