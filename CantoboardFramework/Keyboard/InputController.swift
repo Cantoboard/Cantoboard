@@ -345,8 +345,8 @@ class InputController {
                 })
         } else {
             candidateOrganizer.candidateSource = nil
-            updateContextualSuggestion()
         }
+        updateContextualSuggestion()
     }
     
     private func updateMarkedText() {
