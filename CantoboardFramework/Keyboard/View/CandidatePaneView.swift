@@ -57,6 +57,7 @@ class StatusButton: UIButton {
         titleLabel?.font = UIFont.systemFont(ofSize: isMini ? CandidatePaneView.miniStatusFontSize : LayoutConstants.forMainScreen.statusIndicatorFontSize)
         statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         statusSquareBg?.isHidden = isMini
+        setTitleColor(isMini ? ButtonColor.keyHintColor : .label, for: .normal)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

@@ -149,5 +149,8 @@ class CandidateCell: UICollectionViewCell {
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
         }
+        if let commentLayer = commentLayer {
+            commentLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
+        }
     }
 }
