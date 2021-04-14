@@ -34,7 +34,8 @@ class TouchHandler {
     private weak var keyboardView: KeyboardView?
     private var keyRepeatTimer: Timer?
     private var keyRepeatCounter: Int = 0
-    private var selectionGenerator = UISelectionFeedbackGenerator()
+    private let selectionGenerator = UISelectionFeedbackGenerator()
+    private let impactGenerator = UIImpactFeedbackGenerator(style: .medium)
     
     init(keyboardView: KeyboardView) {
         self.keyboardView = keyboardView
@@ -113,6 +114,7 @@ class TouchHandler {
                 cancelKeyRepeatTimer()
                 hasTakenAction = true
                 callKeyHandler(.deleteWordSwipe)
+                impactGenerator.impactOccurred()
             }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
