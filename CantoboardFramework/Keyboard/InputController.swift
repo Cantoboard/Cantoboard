@@ -300,12 +300,12 @@ class InputController {
         }
         
         if hasMarkedText {
-            textDocumentProxy.setMarkedText("", selectedRange: NSRange(location: 0, length: 0))
+            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.count, length: 0))
             textDocumentProxy.unmarkText()
             hasMarkedText = false
+        } else {
+            textDocumentProxy.insertText(textToBeInserted)
         }
-        
-        textDocumentProxy.insertText(textToBeInserted)
         
         needClearInput = true
         
