@@ -135,7 +135,7 @@ class EnglishInputEngine: InputEngine {
     }
     
     private func updateCandidates() {
-        let text = inputTextBuffer.text, textLowercased = text.lowercased()
+        var text = inputTextBuffer.text, textLowercased = text.lowercased()
         guard !text.isEmpty && text.count < 25 else {
             isWord = false
             return
@@ -171,12 +171,14 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
+        if text == "i" { text = "I" }
+        
         englishDictionaryWordsSet.forEach({ word in
             var word = word
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
             }
-            if word == text || word == "I" {
+            if word == text {
                 candidates.insert(word, at: 0)
             } else {
                 candidates.add(word)
