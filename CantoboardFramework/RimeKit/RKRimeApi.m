@@ -19,7 +19,7 @@
 #include "RKUtils.h"
 
 @interface RKRimeSession (extended)
-- (id)init:(RimeApi*)rimeApi sessionId:(RimeSessionId)sessionId;
+- (id)init:(RimeApi *)rimeApi sessionId:(RimeSessionId)sessionId;
 - (void)close;
 @end
 
@@ -31,9 +31,9 @@
 
 static bool hasSetupRimeTrait = false;
 
-static void rimeNotificationHandler(void* context_object, RimeSessionId session_id, const char* message_type, const char* message_value) {
+static void rimeNotificationHandler(void *context_object, RimeSessionId session_id, const char *message_type, const char *message_value) {
     NSLog(@"Event type: %s value: %s.\n", message_type, message_value);
-    RKRimeApi* zelf = (__bridge RKRimeApi*) context_object;
+    RKRimeApi *zelf = (__bridge RKRimeApi *) context_object;
     
     if (zelf->_rimeEventListener) {
         if (0 == strcmp(message_type, "deploy")) {
@@ -49,7 +49,7 @@ static void rimeNotificationHandler(void* context_object, RimeSessionId session_
                 return;
             }
             // NSLog("Rime state: %ld -> %ld.", zelf->_state, newState);
-            [zelf->_rimeEventListener onStateChange: zelf newState: newState];
+            [zelf->_rimeEventListener onStateChange:zelf newState:newState];
             zelf->_state = newState;
         } else {
             [zelf->_rimeEventListener onNotification:[NSString stringWithUTF8String:message_type] messageValue:[NSString stringWithUTF8String:message_value]];
@@ -57,18 +57,18 @@ static void rimeNotificationHandler(void* context_object, RimeSessionId session_
     }
 }
 
--(id)init:(NSObject<RKRimeNotificationHandler>*) eventListener sharedDataPath:(NSString*) sharedDataPath userDataPath:(NSString*) userDataPath {
+-(id)init:(NSObject<RKRimeNotificationHandler> *)eventListener sharedDataPath:(NSString *)sharedDataPath userDataPath:(NSString *)userDataPath {
     self = [super init];
     
     _rimeEventListener = eventListener;
     _sessions = [NSMutableArray array];
     _rimeApi = rime_get_api();
     _state = RKRimeApiStateUninitialized;
-    [self initRime: sharedDataPath userDataPath: userDataPath];
+    [self initRime:sharedDataPath userDataPath:userDataPath];
     return self;
 }
 
--(void)initRime:(NSString*) sharedDataPath userDataPath:(NSString*) userDataPath {
+-(void)initRime:(NSString *)sharedDataPath userDataPath:(NSString *)userDataPath {
     NSLog(@"Initializing Rime API.");
     RIME_STRUCT(RimeTraits, traits);
     
@@ -83,7 +83,7 @@ static void rimeNotificationHandler(void* context_object, RimeSessionId session_
         hasSetupRimeTrait = true;
     }
     
-    _rimeApi->set_notification_handler(&rimeNotificationHandler, (__bridge void*) self);
+    _rimeApi->set_notification_handler(&rimeNotificationHandler, (__bridge void *)self);
     _rimeApi->initialize(NULL);
 
     if (_rimeApi->start_maintenance(true)) {
@@ -105,15 +105,15 @@ static void rimeNotificationHandler(void* context_object, RimeSessionId session_
     NSLog(@"Closed Rime API.");
 }
 
--(NSString*)getVersion {
+-(NSString *)getVersion {
     return nullSafeToNSString(_rimeApi->get_version());
 }
 
--(RKRimeSession*)createSession {
+-(RKRimeSession *)createSession {
     RimeSessionId sessionId = _rimeApi->create_session();
     if (sessionId == 0) return NULL;
-    RKRimeSession* newSession = [[RKRimeSession alloc] init:_rimeApi sessionId: sessionId];
-    [_sessions addObject: newSession];
+    RKRimeSession* newSession = [[RKRimeSession alloc] init:_rimeApi sessionId:sessionId];
+    [_sessions addObject:newSession];
     return newSession;
 }
 

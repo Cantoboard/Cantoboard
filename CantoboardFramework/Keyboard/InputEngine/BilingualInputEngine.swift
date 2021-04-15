@@ -214,7 +214,6 @@ class BilingualInputEngine: InputEngine {
     private func populateCandidates() {
         guard let rimeComposingText = rimeComposition?.text else { return }
         let englishCandidates = Settings.cached.isMixedModeEnabled ? englishInputEngine.getCandidates() : []
-        let rimeCandidates = rimeInputEngine.getCandidates()
         let isReverseLookupMode = rimeInputEngine.activeSchemaId.rawValue != "jyut6ping3"
         let isInRimeOnlyMode = isForcingRimeMode || isReverseLookupMode
         
@@ -223,8 +222,8 @@ class BilingualInputEngine: InputEngine {
         }
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
-        while !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < rimeCandidates.count {
-            guard let candidate = rimeCandidates[curRimeCandidateIndex] as? String,
+        while !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < rimeInputEngine.loadedCandidatesCount {
+            guard let candidate = rimeInputEngine.getCandidate(curRimeCandidateIndex),
                   let comment = rimeInputEngine.getCandidateComment(curRimeCandidateIndex) else {
                 hasLoadedAllBestRimeCandidates = true
                 break
@@ -239,7 +238,7 @@ class BilingualInputEngine: InputEngine {
                 break
             }
             
-            addCurrentRimeCandidate(rimeCandidates)
+            addCurrentRimeCandidate(candidate)
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
@@ -253,8 +252,9 @@ class BilingualInputEngine: InputEngine {
         }
         
         // Populate remaining Rime candidates.
-        while curRimeCandidateIndex < rimeCandidates.count {
-            addCurrentRimeCandidate(rimeCandidates)
+        while curRimeCandidateIndex < rimeInputEngine.loadedCandidatesCount {
+            guard let candidate = rimeInputEngine.getCandidate(curRimeCandidateIndex) else { continue }
+            addCurrentRimeCandidate(candidate)
         }
         
         // Populate remaining English candidates.
@@ -278,10 +278,8 @@ class BilingualInputEngine: InputEngine {
         curEnglishCandidateIndex += 1
     }
     
-    private func addCurrentRimeCandidate(_ rimeCandidates: NSArray) {
-        if let candidateText = rimeCandidates[curRimeCandidateIndex] as? String {
-            addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
-        }
+    private func addCurrentRimeCandidate(_ candidateText: String) {
+        addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
         curRimeCandidateIndex += 1
     }
     

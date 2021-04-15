@@ -16,13 +16,15 @@
 #import "RKUtils.h"
 
 @implementation RKRimeSession {
-    RimeApi* _rimeApi;
+    RimeApi *_rimeApi;
     RimeSessionId _sessionId;
     bool _candidatesAllLoaded;
     int _compositionCaretBytePosition;
+    NSMutableArray<NSString *> *_candidates;
+    NSMutableArray<NSString *> *_comments;
 }
 
--(id)init:(RimeApi*)rimeApi sessionId:(RimeSessionId)sessionId {
+-(id)init:(RimeApi *)rimeApi sessionId:(RimeSessionId)sessionId {
     self = [super init];
     
     _rimeApi = rimeApi;
@@ -30,6 +32,9 @@
     _candidatesAllLoaded = false;
     _compositionCaretBytePosition = 0;
     _rawInputCaretBytePosition = 0;
+    
+    _candidates = [NSMutableArray array];
+    _comments = [NSMutableArray array];
     
     if (_sessionId == 0) {
         @throw [NSException exceptionWithName:@"SessionIdZeroException" reason:@"sessionId cannot be zero." userInfo:nil];
@@ -58,58 +63,60 @@
     // NSLog(@"Process key %p %c", (void*)_sessionId, (char)keycode);
     _rimeApi->process_key(_sessionId, keycode, modifier);
     _candidatesAllLoaded = false;
+    _candidates = [NSMutableArray array];
+    _comments = [NSMutableArray array];
+    _candidatesAllLoaded = false;
     [self updateContext];
 }
 
-// Return true when this call loaded data.
--(bool)getCandidates:(NSMutableArray<NSString*>*)output comments:(NSMutableArray<NSString*>*)comments {
+-(NSString *)getCandidate:(unsigned int) index {
+    if (index >= _candidates.count) return nil;
+    return _candidates[index];
+}
+
+-(NSString *)getComment:(unsigned int) index {
+    if (index >= _comments.count) return nil;
+    return _comments[index];
+}
+
+-(unsigned int)getLoadedCandidatesCount {
+    return (unsigned int)_candidates.count;
+}
+
+-(bool)loadMoreCandidates {
     if (_candidatesAllLoaded) return false;
     
     RIME_STRUCT(RimeContext, ctx);
-    if (!_rimeApi->get_context(_sessionId, &ctx)) {
-        NSLog(@"%p get_context() failed.", (void*)_sessionId);
-        // _candidates = nil;
-        _compositionText = @"";
-        _commitTextPreview = @"";
-        _rawInput = @"";
-        _candidatesAllLoaded = false;
-        _compositionCaretBytePosition = 0;
-        _rawInputCaretBytePosition = 0;
-        // TODO Should I throw?
-        _rimeApi->free_context(&ctx);
-        return false;
-    }
+    if (![self getContext:&ctx]) { return false; }
     
     bool hasLoadedData = false;
     for (int i = 0; i < ctx.menu.num_candidates; ++i) {
         RimeCandidate* c = ctx.menu.candidates + i;
-        if (!c->text) continue;
         
-        [output addObject:nullSafeToNSString(c->text)];
-        [comments addObject:nullSafeToNSString(c->comment)];
+        [_candidates addObject:nullSafeToNSString(c->text)];
+        [_comments addObject:nullSafeToNSString(c->comment)];
         
         hasLoadedData = true;
-        // if
-        // NSLog("%s %s %d %d", c->text, c->comment, ctx.composition.sel_start, ctx.composition.sel_end);
-        // [_candidateComments addObject:nullSafeToNSString(c->comment)];
     }
     
-    if (ctx.menu.is_last_page) {
+    if (ctx.menu.is_last_page || ctx.menu.num_candidates == 0) {
         _candidatesAllLoaded = true;
         // NSLog("Hit last page.");
     } else {
         _rimeApi->process_key(_sessionId, 0xff56, 0);
     }
     _rimeApi->free_context(&ctx);
-    return hasLoadedData;
+    
+    return !_candidatesAllLoaded;
 }
 
--(void)selectCandidate:(int)candidateIndex {
+-(bool)selectCandidate:(int)candidateIndex {
     [self validateSession];
     // NSLog(@"Selecting %p %d.", (void*)_sessionId, candidateIndex);
-    _rimeApi->select_candidate(_sessionId, candidateIndex);
+    bool ret = _rimeApi->select_candidate(_sessionId, candidateIndex);
     _candidatesAllLoaded = false;
     [self updateContext];
+    return ret;
 }
 
 -(NSString *)getCommitedText {
@@ -128,17 +135,7 @@
 -(void)updateContext {
     RIME_STRUCT(RimeContext, ctx);
     @try {
-        if (!_rimeApi->get_context(_sessionId, &ctx)) {
-            NSLog(@"%p get_context() failed.", (void*)_sessionId);
-            _compositionText = @"";
-            _commitTextPreview = @"";
-            _rawInput = @"";
-            _candidatesAllLoaded = false;
-            _compositionCaretBytePosition = 0;
-            _rawInputCaretBytePosition = 0;
-            // TODO Should I throw?
-            return;
-        }
+        if (![self getContext:&ctx]) { return; }
         
         _compositionText = nullSafeToNSString(ctx.composition.preedit);
         _commitTextPreview = nullSafeToNSString(ctx.commit_text_preview);
@@ -154,41 +151,35 @@
     }
 }
 
--(bool)getOption:(NSString*)name {
+-(bool)getOption:(NSString *)name {
     [self validateSession];
     return _rimeApi->get_option(_sessionId, name.UTF8String);
 }
 
--(void)setOption:(NSString*)name value:(bool)value {
+-(void)setOption:(NSString *)name value:(bool)value {
     [self validateSession];
     _rimeApi->set_option(_sessionId, name.UTF8String, value);
 }
 
--(NSString*)getCurrentSchemaId {
+-(NSString *)getCurrentSchemaId {
     char schemaId[1024];
     _rimeApi->get_current_schema(_sessionId, schemaId, sizeof(schemaId));
     return [NSString stringWithUTF8String:schemaId];
 }
 
--(void)setCurrentSchema:(NSString*)schemaId {
+-(void)setCurrentSchema:(NSString *)schemaId {
     _rimeApi->select_schema(_sessionId, [schemaId UTF8String]);
 }
 
 -(void)setCandidateMenuToFirstPage {
     RIME_STRUCT(RimeContext, ctx);
     bool isFirstPage = false;
+    
+    _candidates = [NSMutableArray array];
+    _comments = [NSMutableArray array];
+    
     do {
-        if (!_rimeApi->get_context(_sessionId, &ctx)) {
-            NSLog(@"%p get_context() failed.", (void*)_sessionId);
-            _compositionText = @"";
-            _commitTextPreview = @"";
-            _rawInput = @"";
-            _candidatesAllLoaded = false;
-            _compositionCaretBytePosition = 0;
-            _rawInputCaretBytePosition = 0;
-            _rimeApi->free_context(&ctx);
-            return;
-        }
+        if (![self getContext:&ctx]) { return; }
         
         _rimeApi->process_key(_sessionId, 0xff55, 0);
         
@@ -197,6 +188,21 @@
     } while (!isFirstPage);
 
     _candidatesAllLoaded = false;
+}
+
+-(bool)getContext:(RimeContext *)ctx {
+    if (!_rimeApi->get_context(_sessionId, ctx)) {
+        NSLog(@"%p get_context() failed.", (void*)_sessionId);
+        _compositionText = @"";
+        _commitTextPreview = @"";
+        _rawInput = @"";
+        _candidatesAllLoaded = false;
+        _compositionCaretBytePosition = 0;
+        _rawInputCaretBytePosition = 0;
+        _rimeApi->free_context(ctx);
+        return false;
+    }
+    return true;
 }
 
 @end

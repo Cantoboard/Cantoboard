@@ -39,7 +39,7 @@ protocol InputEngine {
 
     func clearInput()
     
-    func getCandidates() -> NSArray
+    func getCandidate(_ index: Int) -> String?
     func loadMoreCandidates() -> Bool // Return true if the call loaded any new candidates.
     func selectCandidate(_ index: Int) -> String?
     

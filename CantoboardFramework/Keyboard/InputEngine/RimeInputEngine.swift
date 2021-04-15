@@ -34,8 +34,6 @@ enum RimeSchemaId: String {
 
 class RimeInputEngine: NSObject, InputEngine {
     private weak var rimeSession: RimeSession?
-    private var candidates = NSMutableArray(), comments = NSMutableArray()
-    // private var activeSchemaId = "jyut6ping3"
     private var _activeSchemaId: RimeSchemaId = .jyutping
     
     var activeSchemaId: RimeSchemaId {
@@ -95,9 +93,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func refreshCandidates() {
-        candidates = NSMutableArray()
-        comments = []
-        // _ = requestMoreCandidates()
+        rimeSession?.setCandidateMenuToFirstPage()
     }
         
     func moveCaret(offset: Int) -> Bool {
@@ -133,27 +129,25 @@ class RimeInputEngine: NSObject, InputEngine {
         processKey(0xff1b)
     }
     
-    func getCandidates() -> NSArray {
-        return candidates
-    }
-    
     func getCandidate(_ index: Int) -> String? {
-        return candidates[safe: index] as? String
+        return rimeSession?.getCandidate(UInt32(index))
     }
     
     func getCandidateComment(_ index: Int) -> String? {
-        guard let comment = comments[safe: index] as? String else { return nil }
-        
-        return comment.isEmpty ? composition?.text : comment
+        return rimeSession?.getComment(UInt32(index))
     }
     
-    // Return true if it has loaded more candidates
+    // Return false if it loaded all candidates
     func loadMoreCandidates() -> Bool {
         guard let rimeSession = rimeSession else {
             NSLog("loadMoreCandidates RimeSession is nil.")
             return false
         }
-        return rimeSession.getCandidates(candidates, comments: comments)
+        return rimeSession.loadMoreCandidates()
+    }
+    
+    var loadedCandidatesCount: Int {
+        Int(rimeSession?.getLoadedCandidatesCount() ?? 0)
     }
     
     func selectCandidate(_ index: Int) -> String? {
@@ -162,13 +156,11 @@ class RimeInputEngine: NSObject, InputEngine {
             return nil
         }
         
-        guard index < candidates.count else {
-            NSLog("Bad index: %d. Count: %d", index, candidates.count)
+        if !rimeSession.selectCandidate(Int32(index)) {
+            NSLog("Bad index: %d. Count: %d", index, rimeSession.getLoadedCandidatesCount())
             return nil
         }
-        
-        rimeSession.selectCandidate(Int32(index))
-        refreshCandidates()
+        // refreshCandidates()
         return rimeSession.getCommitedText()
     }
     
