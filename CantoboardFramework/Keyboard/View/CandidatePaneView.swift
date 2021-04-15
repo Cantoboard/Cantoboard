@@ -403,9 +403,12 @@ extension CandidatePaneView: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.reuseId, for: indexPath) as! CandidateCell
         
         let candidateCount = self.collectionView.numberOfItems(inSection: 0)
-        if indexPath.section == 0 && indexPath.row == candidateCount - 1 {
+        if indexPath.section == 0 && indexPath.row >= candidateCount - 10 {
             DispatchQueue.main.async { [weak self] in
-                self?.candidateOrganizer?.requestMoreCandidates(section: 0)
+                guard let candidateOrganizer = self?.candidateOrganizer else { return }
+                if indexPath.row >= candidateOrganizer.getCandidates(section: 0).count - 10 {
+                    candidateOrganizer.requestMoreCandidates(section: 0)
+                }
             }
         }
         
