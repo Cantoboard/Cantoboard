@@ -76,6 +76,9 @@ class InputEngineCandidateSource: CandidateSource {
             addCurrentRimeCandidate(candidate)
         }
         
+        // Do not populate remaining English candidates until all best Rime candidates are populated.
+        if !hasLoadedAllBestRimeCandidates && inputController.inputMode != .english && !inputEngine.hasRimeLoadedAllCandidates { return }
+        
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishPrefectCandidatesStartIndex..<inputEngine.englishWorstCandidatesStartIndex {
@@ -84,9 +87,6 @@ class InputEngineCandidateSource: CandidateSource {
             hasPopulatedBestEnglishCandidates = true
         }
         
-        // Do not populate remaining English candidates until all best Rime candidates are populated.
-        if !hasLoadedAllBestRimeCandidates && inputController.inputMode != .english && !inputEngine.hasRimeLoadedAllCandidates { return }
-                
         // Populate remaining Rime candidates.
         while Settings.cached.lastInputMode != .english && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
             guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else { continue }

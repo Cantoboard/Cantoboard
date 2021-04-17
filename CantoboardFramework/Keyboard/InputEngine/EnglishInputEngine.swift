@@ -205,7 +205,6 @@ class EnglishInputEngine: InputEngine {
         if isInAppleDictionary && !candidateSets.contains(text) {
             candidates.append(text)
             candidateSets.insert(text)
-            prefectCandidatesStartIndex += 1
         }
         
         // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
