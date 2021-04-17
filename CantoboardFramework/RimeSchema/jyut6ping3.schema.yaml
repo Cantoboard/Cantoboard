@@ -103,6 +103,7 @@ speller:
 translator:
   dictionary: jyut6ping3
   spelling_hints: 8  # 將呢度改作 0，可以去除候選字後邊嘅粵拼提示
+  enable_correction: true
 
 variants_hk:
   option_name: variants_hk
