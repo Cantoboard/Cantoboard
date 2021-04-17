@@ -145,6 +145,10 @@ class BilingualInputEngine: InputEngine {
         englishInputEngine.candidates
     }
     
+    var englishPrefectCandidatesStartIndex: Int {
+        englishInputEngine.prefectCandidatesStartIndex
+    }
+    
     var englishWorstCandidatesStartIndex: Int {
         englishInputEngine.worstCandidatesStartIndex
     }

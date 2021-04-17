@@ -105,9 +105,9 @@ class InputController {
         showAutoSuggestCandidates()
     }
     
-    private func candidateSelected(_ choice: Int, isFromCandidateBar: Bool) {
+    private func candidateSelected(_ choice: Int, enableSmartSpace: Bool) {
         if let commitedText = candidateOrganizer.selectCandidate(indexPath: [0, choice]) {
-            insertText(commitedText, isFromCandidateBar: isFromCandidateBar)
+            insertText(commitedText, isFromCandidateBar: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
                 keyboardView?.candidatePaneView?.changeMode(.row)
             }
@@ -120,7 +120,7 @@ class InputController {
         let spaceOutputMode = Settings.cached.spaceOutputMode
         // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
         if spaceOutputMode == .bestCandidate && inputEngine.isComposing {
-            candidateSelected(0, isFromCandidateBar: false)
+            candidateSelected(0, enableSmartSpace: true)
         } else {
             if !insertComposingText() {
                 if !handleAutoSpace() {
@@ -228,7 +228,7 @@ class InputController {
             clearInput(needResetSchema: false)
             return
         case .selectCandidate(let choice):
-            candidateSelected(choice, isFromCandidateBar: true)
+            candidateSelected(choice, enableSmartSpace: true)
         default: ()
         }
         if needClearInput {
@@ -466,7 +466,7 @@ class InputController {
         let nextChar = textDocumentProxy.documentContextAfterInput?.first
         // Insert space after english letters and [.,;], and if the input is followed by an English letter.
         // If the input isnt from the candidate bar and there are chars following, do not insert space.
-        let isTextFromCandidateBarOrCommitingAtTheEnd = isFromCandidateBar || nextChar == nil
+        let isTextFromCandidateBarOrCommitingAtTheEnd = isFromCandidateBar && nextChar == nil
         let isInsertingEnglishWordBeforeEnglish = lastChar.isEnglishLetter && (nextChar?.isEnglishLetter ?? true)
         return isTextFromCandidateBarOrCommitingAtTheEnd && isInsertingEnglishWordBeforeEnglish
     }

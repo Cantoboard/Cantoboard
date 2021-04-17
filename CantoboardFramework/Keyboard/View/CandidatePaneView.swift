@@ -168,9 +168,7 @@ class CandidatePaneView: UIControl {
         return button
     }
     
-    private func setupButtons() {
-        guard let candidateOrganizer = candidateOrganizer else { return }
-        
+    private func setupButtons() {        
         let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(expandButtonImage, for: .normal)
         

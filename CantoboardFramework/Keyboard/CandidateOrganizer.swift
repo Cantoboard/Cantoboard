@@ -20,8 +20,7 @@ class InputEngineCandidateSource: CandidateSource {
     private var candidatePaths:[CandidatePath] = []
     private var curRimeCandidateIndex = 0
     private var hasLoadedAllBestRimeCandidates = false
-    private var hasPopulatedBestEnglishCandidates = false
-    private var hasPopulatedWorstEnglishCandidates = false
+    private var hasPopulatedPrefectEnglishCandidates = false, hasPopulatedBestEnglishCandidates = false, hasPopulatedWorstEnglishCandidates = false
     private weak var inputController: InputController?
 
     init(inputController: InputController) {
@@ -34,17 +33,9 @@ class InputEngineCandidateSource: CandidateSource {
         candidatePaths = []
         
         hasLoadedAllBestRimeCandidates = false
+        hasPopulatedPrefectEnglishCandidates = false
         hasPopulatedBestEnglishCandidates = false
         hasPopulatedWorstEnglishCandidates = false
-    }
-    
-    private func populateBestEnglishCandidates() {
-        guard let inputEngine = inputController?.inputEngine else { return }
-        
-        for i in 0..<inputEngine.englishWorstCandidatesStartIndex {
-            candidatePaths.append(CandidatePath(source: .english, index: i))
-        }
-        hasPopulatedBestEnglishCandidates = true
     }
     
     private func populateCandidates() {
@@ -58,8 +49,11 @@ class InputEngineCandidateSource: CandidateSource {
         let englishCandidates = inputEngine.englishCandidates
         
         // If input is an English word, insert best English candidates first.
-        if !hasPopulatedBestEnglishCandidates && inputEngine.isEnglishWord && isEnglishActive {
-            populateBestEnglishCandidates()
+        if !hasPopulatedPrefectEnglishCandidates && isEnglishActive {
+            for i in 0..<inputEngine.englishPrefectCandidatesStartIndex {
+                candidatePaths.append(CandidatePath(source: .english, index: i))
+            }
+            hasPopulatedPrefectEnglishCandidates = true
         }
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
@@ -84,7 +78,10 @@ class InputEngineCandidateSource: CandidateSource {
         
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
-            populateBestEnglishCandidates()
+            for i in inputEngine.englishPrefectCandidatesStartIndex..<inputEngine.englishWorstCandidatesStartIndex {
+                candidatePaths.append(CandidatePath(source: .english, index: i))
+            }
+            hasPopulatedBestEnglishCandidates = true
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
@@ -218,13 +215,6 @@ enum AutoSuggestionType {
 
 // This class filter, group by and sort the candidates.
 class CandidateOrganizer {
-    /*
-    struct State {
-        var isComposing: Bool = false
-        var autoSuggestionContextualType: ContextualType?
-        var inputMode: InputMode = Settings.cached.lastInputMode
-    }*/
-    
     private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"])
     private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "？", "！", ".", ",", "?", "!"])
     private static let halfWidthDigitCandidateSource = AutoSuggestionCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])

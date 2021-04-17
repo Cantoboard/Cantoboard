@@ -97,7 +97,7 @@ class EnglishInputEngine: InputEngine {
     
     private(set) var candidates: [String] = []
     private(set) var isWord: Bool = false
-    private(set) var worstCandidatesStartIndex = 0
+    private(set) var prefectCandidatesStartIndex = 0, worstCandidatesStartIndex = 0
     
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
@@ -171,6 +171,7 @@ class EnglishInputEngine: InputEngine {
         
         candidates = []
         var worstCandidates:[String] = []
+        prefectCandidatesStartIndex = 0
         worstCandidatesStartIndex = 0
         
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
@@ -197,12 +198,14 @@ class EnglishInputEngine: InputEngine {
                 candidates.append(word)
             }
             candidateSets.insert(word)
+            prefectCandidatesStartIndex += 1
         })
         
         // TODO This's a hack to rule out words like Liu,Jiu which Apple considers as words.
         if isInAppleDictionary && !candidateSets.contains(text) {
             candidates.append(text)
             candidateSets.insert(text)
+            prefectCandidatesStartIndex += 1
         }
         
         // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
@@ -218,6 +221,7 @@ class EnglishInputEngine: InputEngine {
                 // Special case for correcting patterns like cant -> can't. lets -> let's.
                 candidates.insert(word, at: 0)
                 candidateSets.insert(word)
+                prefectCandidatesStartIndex += 1
                 isWord = true
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
                 worstCandidates.append(word)
