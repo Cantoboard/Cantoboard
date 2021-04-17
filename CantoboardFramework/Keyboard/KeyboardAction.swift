@@ -73,7 +73,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     shiftRelax,
     rime(RimeChar),
     setCharForm(CharForm),
-    refreshMarkedText,
+    setCandidateMode(InputMode),
     reverseLookup(RimeSchemaId),
     selectCandidate(Int)
     

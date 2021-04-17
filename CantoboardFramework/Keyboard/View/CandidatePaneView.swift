@@ -92,9 +92,7 @@ class CandidatePaneView: UIControl {
                 guard let self = self else { return }
                 
                 let newIndiceStart = self.collectionView.numberOfItems(inSection: 0)
-                let candidates = candidateOrganizer.getCandidates(section: 0)
-                let newIndiceEnd = candidates.count
-                
+                let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
                 NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
                 
                 UIView.performWithoutAnimation {
@@ -114,7 +112,6 @@ class CandidatePaneView: UIControl {
                     }
                     self.collectionView.reloadData()
                 }
-                if self.candidateOrganizer?.candidateSource == nil { self.changeMode(.row) }
             }
         }
     }
@@ -182,7 +179,8 @@ class CandidatePaneView: UIControl {
             if currentRimeSchemaId != .jyutping {
                 title = currentRimeSchemaId.signChar
             } else {
-                switch candidateOrganizer.inputMode {
+                // Pass down from input controller
+                switch Settings.cached.lastInputMode {
                 case .mixed: title = "雙"
                 case .chinese: title = "中"
                 case .english: title = "英"
@@ -279,17 +277,14 @@ class CandidatePaneView: UIControl {
         AudioFeedbackProvider.play(keyboardAction: .none)
         
         if filterMode == .lang {
-            guard let candidateOrganizer = candidateOrganizer else { return }
-            
             var nextFilterMode: InputMode
-            switch candidateOrganizer.inputMode {
+            switch Settings.cached.lastInputMode {
             case .mixed: nextFilterMode = .english
             case .chinese: nextFilterMode = .english
             case .english: nextFilterMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
             }
             
-            candidateOrganizer.inputMode = nextFilterMode
-            delegate?.handleKey(.refreshMarkedText)
+            delegate?.handleKey(.setCandidateMode(nextFilterMode))
         } else {
             guard let symbolShape = delegate?.symbolShape else { return }
             switch symbolShape {
@@ -351,7 +346,7 @@ class CandidatePaneView: UIControl {
 }
 
 extension CandidatePaneView {
-    private func changeMode(_ newMode: Mode) {
+    func changeMode(_ newMode: Mode) {
         guard mode != newMode else { return }
         
         // NSLog("CandidatePaneView.changeMode start")
@@ -396,7 +391,7 @@ extension CandidatePaneView {
 
 extension CandidatePaneView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return candidateOrganizer?.getCandidates(section: section).count ?? 0
+        return candidateOrganizer?.getCandidateCount(section: section) ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -406,7 +401,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         if indexPath.section == 0 && indexPath.row >= candidateCount - 10 {
             DispatchQueue.main.async { [weak self] in
                 guard let candidateOrganizer = self?.candidateOrganizer else { return }
-                if indexPath.row >= candidateOrganizer.getCandidates(section: 0).count - 10 {
+                if indexPath.row >= candidateOrganizer.getCandidateCount(section: 0) - 10 {
                     candidateOrganizer.requestMoreCandidates(section: 0)
                 }
             }
@@ -439,21 +434,16 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     
     private func computeCellSize(_ indexPath: IndexPath) -> CGSize {
         guard let candidateOrganizer = candidateOrganizer else { return CGSize(width: 0, height: 0) }
-        let candidates = candidateOrganizer.getCandidates(section: indexPath.section)
         let layoutConstant = LayoutConstants.forMainScreen
         
-        guard indexPath.row < candidates.count else {
+        guard let text = candidateOrganizer.getCandidate(indexPath: indexPath) else {
             NSLog("Invalid IndexPath %@. Candidate does not exist.", indexPath.description)
             return CGSize(width: 0, height: 0)
         }
-        
-        let text = candidates[safe: indexPath.row] as? String ?? "⚠"
-        
+                
         var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         
-        let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
-            (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         if showComment {
             let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
             let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width
@@ -469,10 +459,8 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 
 extension CandidatePaneView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let candidateOrganizer = candidateOrganizer,
-              let index = candidateOrganizer.getCandidateIndex(indexPath: indexPath) else { return }
         AudioFeedbackProvider.play(keyboardAction: .none)
-        delegate?.candidatePaneViewCandidateSelected(index)
+        delegate?.candidatePaneViewCandidateSelected(indexPath.row)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -480,8 +468,6 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
-        let showComment = candidateOrganizer.candidateSource is InputEngineCandidateSource &&
-            (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && candidateOrganizer.inputMode != .english)
         cell.initLabel(candidate, comment, showComment: showComment)
     }
     
@@ -489,5 +475,9 @@ extension CandidatePaneView: UICollectionViewDelegate {
         if let cell = cell as? CandidateCell {
             cell.deinitLabel()
         }
+    }
+    
+    var showComment: Bool {
+        (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && Settings.cached.lastInputMode != .english)
     }
 }

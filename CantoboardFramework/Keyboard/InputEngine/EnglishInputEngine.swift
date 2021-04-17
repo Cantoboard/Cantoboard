@@ -86,14 +86,18 @@ class EnglishInputEngine: InputEngine {
             englishDictionary = DefaultDictionary(locale: language)
         }
     }
+    static var userDictionary = UserDictionary()
+    
+    private static let highFreqWords = ["i'm", "can't", "let's", "won't"]
+    private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
-    public static var userDictionary = UserDictionary()
-    private var textDocumentProxy: UITextDocumentProxy!
+    
     private var inputTextBuffer = InputTextBuffer()
-    private var candidates = NSMutableArray()
-    private static var textChecker = UITextChecker()
+    private var textDocumentProxy: UITextDocumentProxy!
+    
+    private(set) var candidates: [String] = []
     private(set) var isWord: Bool = false
-    private let highFreqWords = ["i'm", "can't", "let's", "won't"]
+    private(set) var worstCandidatesStartIndex = 0
     
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
@@ -112,12 +116,12 @@ class EnglishInputEngine: InputEngine {
     }
     
     func moveCaret(offset: Int) -> Bool {
-        isFirstLoad = inputTextBuffer.moveCaret(offset: offset)
+        _ = inputTextBuffer.moveCaret(offset: offset)
         return false
     }
     
     func setCaret(position: Int) -> Bool {
-        isFirstLoad = inputTextBuffer.setCaret(position: position)
+        _ = inputTextBuffer.setCaret(position: position)
         return false
     }
     
@@ -134,6 +138,17 @@ class EnglishInputEngine: InputEngine {
         return false
     }
     
+    private func lookupInDictionary(wordLowercased: String) -> Set<String> {
+        let englishDictionary = Self.englishDictionary
+        let userDictionary = Self.userDictionary
+        
+        let defaultEnglishDictionaryWords = englishDictionary.getWords(wordLowercased: wordLowercased)
+        let userDictionaryWords = userDictionary.getWords(wordLowercased: wordLowercased)
+        let englishDictionaryWords = defaultEnglishDictionaryWords + userDictionaryWords
+        let englishDictionaryWordsSet = englishDictionaryWords.mapToSet({ $0 })
+        return englishDictionaryWordsSet
+    }
+    
     private func updateCandidates() {
         var text = inputTextBuffer.text, textLowercased = text.lowercased()
         guard !text.isEmpty && text.count < 25 else {
@@ -145,22 +160,19 @@ class EnglishInputEngine: InputEngine {
         let combined = (documentContextBeforeInput ?? "") + text
         let wordRange = combined.index(combined.endIndex, offsetBy: -text.count)..<combined.endIndex
         let nsWordRange = NSRange(wordRange, in: combined)
-        var worstCandidates: [String] = []
-
+        
         let textChecker = Self.textChecker
-        let englishDictionary = Self.englishDictionary
-        let userDictionary = Self.userDictionary
         
         let isInAppleDictionary = textChecker.rangeOfMisspelledWord(in: combined, range: nsWordRange, startingAt: 0, wrap: false, language: Self.language).location == NSNotFound
-        let defaultEnglishDictionaryWords = englishDictionary.getWords(wordLowercased: textLowercased)
-        let userDictionaryWords = userDictionary.getWords(wordLowercased: textLowercased)
-        let englishDictionaryWords = defaultEnglishDictionaryWords + userDictionaryWords
-        let englishDictionaryWordsSet = englishDictionaryWords.mapToSet({ $0 })
+        let englishDictionaryWordsSet = lookupInDictionary(wordLowercased: textLowercased)
+        var candidateSets = Set<String>()
         
         isWord = text != "m" && (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
         
-        candidates.removeAllObjects()
-        isFirstLoad = true
+        candidates = []
+        var worstCandidates:[String] = []
+        worstCandidatesStartIndex = 0
+        
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
         // If the user is typing a word after an English word, run autocomplete.
@@ -178,64 +190,57 @@ class EnglishInputEngine: InputEngine {
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
             }
+            if candidateSets.contains(word) { return }
             if word == text {
                 candidates.insert(word, at: 0)
             } else {
-                candidates.add(word)
+                candidates.append(word)
             }
+            candidateSets.insert(word)
         })
         
         // TODO This's a hack to rule out words like Liu,Jiu which Apple considers as words.
-        if isInAppleDictionary {
-            candidates.add(text)
+        if isInAppleDictionary && !candidateSets.contains(text) {
+            candidates.append(text)
+            candidateSets.insert(text)
         }
         
         // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
-        if isInAppleDictionary && !isWord {
+        if isInAppleDictionary && !isWord && !candidateSets.contains(text) {
             worstCandidates.append(text)
+            candidateSets.insert(text)
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
-            if word.isEmpty || word == text {
+            if word.isEmpty || word == text || candidateSets.contains(word) {
                 continue // We added the word already. Ignore.
-            } else if highFreqWords.contains(word.lowercased()) && word.filter({ $0.isEnglishLetter }).caseInsensitiveCompare(text) == .orderedSame {
+            } else if Self.highFreqWords.contains(word.lowercased()) && word.filter({ $0.isEnglishLetter }).caseInsensitiveCompare(text) == .orderedSame {
                 // Special case for correcting patterns like cant -> can't. lets -> let's.
                 candidates.insert(word, at: 0)
+                candidateSets.insert(word)
                 isWord = true
             } else if word.contains(where: { $0 == " " || $0 == "-" }) {
                 worstCandidates.append(word)
+                candidateSets.insert(word)
             } else {
                 let caseCorrectedCandidate = text.first!.isUppercase && word.first!.isLowercase ? word.capitalized : word
-                if englishDictionaryWordsSet.contains(caseCorrectedCandidate) {
-                    candidates.add(caseCorrectedCandidate)
+                if candidateSets.contains(caseCorrectedCandidate) { continue }
+                if !lookupInDictionary(wordLowercased: word.lowercased()).isEmpty {
+                    candidates.append(caseCorrectedCandidate)
                 } else {
                     worstCandidates.append(caseCorrectedCandidate)
                 }
+                candidateSets.insert(caseCorrectedCandidate)
             }
         }
         
-        candidates.addObjects(from: worstCandidates)
-        // NSLog("English candidates \(candidates)")
-    }
-    
-    func getCandidates() -> NSArray {
-        return candidates
-    }
-    
-    func getCandidate(_ index: Int) -> String? {
-        return candidates[safe: index] as? String
-    }
-    
-    private var isFirstLoad = false
-    
-    func loadMoreCandidates() -> Bool {
-        let isFirstLoad = self.isFirstLoad
-        self.isFirstLoad = false
-        return isFirstLoad
+        worstCandidatesStartIndex = candidates.count
+        candidates.append(contentsOf: worstCandidates)
+        NSLog("English candidates \(candidates)")
     }
     
     func selectCandidate(_ index: Int) -> String? {
-        return candidates[index] as? String
+        return candidates[safe: index]
     }
     
     var composition: Composition? {

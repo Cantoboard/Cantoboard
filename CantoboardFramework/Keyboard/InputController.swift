@@ -14,7 +14,7 @@ enum ContextualType: Equatable {
 
 class InputController {
     private weak var keyboardViewController: KeyboardViewController?
-    private let inputEngine: BilingualInputEngine
+    let inputEngine: BilingualInputEngine
     
     private var lastKey: KeyboardAction?
     private var isHoldingShift = false
@@ -32,7 +32,21 @@ class InputController {
         }
     }
     
-    private(set) var candidateOrganizer = CandidateOrganizer()
+    private(set) var candidateOrganizer: CandidateOrganizer!
+
+    var inputMode: InputMode {
+        get {
+            let lastInputMode = Settings.cached.lastInputMode
+            if Settings.cached.isMixedModeEnabled && lastInputMode == .chinese { return .mixed }
+            if !Settings.cached.isMixedModeEnabled && lastInputMode == .mixed { return .chinese }
+            return lastInputMode
+        }
+        set {
+            var settings = Settings.cached
+            settings.lastInputMode = newValue
+            Settings.save(settings)
+        }
+    }
     
     private var _keyboardType = KeyboardType.alphabetic(.lowercased)
     private var keyboardType: KeyboardType {
@@ -63,6 +77,8 @@ class InputController {
     init(keyboardViewController: KeyboardViewController) {
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(textDocumentProxy: keyboardViewController.textDocumentProxy)
+        
+        candidateOrganizer = CandidateOrganizer(inputController: self)
     }
     
     func textWillChange(_ textInput: UITextInput?) {
@@ -80,8 +96,7 @@ class InputController {
         }
         
         shouldSkipNextTextDidChange = false
-        
-        updateContextualSuggestion()
+        updateInputState()
     }
     
     private func updateContextualSuggestion() {
@@ -91,12 +106,11 @@ class InputController {
     }
     
     private func candidateSelected(_ choice: Int, isFromCandidateBar: Bool) {
-        if let staticCandidateSource = candidateOrganizer.candidateSource as? AutoSuggestionCandidateSource {
-            if let candidate = staticCandidateSource.candidates[choice] as? String {
-                insertText(candidate, isFromCandidateBar: isFromCandidateBar)
-            }
-        } else if let commitedText = inputEngine.selectCandidate(choice) {
+        if let commitedText = candidateOrganizer.selectCandidate(indexPath: [0, choice]) {
             insertText(commitedText, isFromCandidateBar: isFromCandidateBar)
+            if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
+                keyboardView?.candidatePaneView?.changeMode(.row)
+            }
         }
     }
     
@@ -105,9 +119,8 @@ class InputController {
         
         let spaceOutputMode = Settings.cached.spaceOutputMode
         // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
-        if spaceOutputMode == .bestCandidate && candidateOrganizer.candidateSource is InputEngineCandidateSource,
-           let bestCandidateIndex = candidateOrganizer.getCandidateIndex(indexPath: [0, 0]) {
-            candidateSelected(bestCandidateIndex, isFromCandidateBar: false)
+        if spaceOutputMode == .bestCandidate && inputEngine.isComposing {
+            candidateSelected(0, isFromCandidateBar: false)
         } else {
             if !insertComposingText() {
                 if !handleAutoSpace() {
@@ -208,7 +221,8 @@ class InputController {
             Settings.save(settings)
             inputEngine.refreshChineseCharForm()
             return
-        case .refreshMarkedText: ()
+        case .setCandidateMode(let im):
+            inputMode = im
         case .reverseLookup(let schemaId):
             reverseLookupSchemaId = schemaId
             clearInput(needResetSchema: false)
@@ -314,28 +328,12 @@ class InputController {
     
     private func updateInputState() {
         updateMarkedText()
-        
-        if inputEngine.isComposing {
-            let candidates = self.inputEngine.getCandidates()
-            candidateOrganizer.candidateSource = InputEngineCandidateSource(
-                candidates: candidates,
-                requestMoreCandidate: { [weak self] in
-                    return self?.inputEngine.loadMoreCandidates() ?? false
-                },
-                getCandidateSource: { [weak self] index in
-                    return self?.inputEngine.getCandidateSource(index)
-                },
-                getCandidateComment: { [weak self] index in
-                    return self?.inputEngine.getCandidateComment(index)
-                })
-        } else {
-            candidateOrganizer.candidateSource = nil
-        }
         updateContextualSuggestion()
+        candidateOrganizer.updateCandidates(reload: true)
     }
     
     private func updateMarkedText() {
-        switch candidateOrganizer.inputMode {
+        switch inputMode {
         case .chinese: setMarkedText(inputEngine.rimeComposition)
         case .english: setMarkedText(inputEngine.englishComposition)
         case .mixed: setMarkedText(inputEngine.composition)
@@ -500,43 +498,40 @@ class InputController {
         }
     }
     
-    private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"])
-    private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "？", "！", ".", ",", "?", "!"])
-    
-    private static let halfWidthDigitCandidateSource = AutoSuggestionCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
-    private static let fullWidthArabicDigitCandidateSource = AutoSuggestionCandidateSource(["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"])
-    private static let fullWidthLowerDigitCandidateSource = AutoSuggestionCandidateSource(["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億"])
-    private static let fullWidthUpperDigitCandidateSource = AutoSuggestionCandidateSource(["零", "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟", "萬", "億"])
-    
     private func showAutoSuggestCandidates() {
-        guard let keyboardView = keyboardView, candidateOrganizer.candidateSource == nil else { return }
+        guard let keyboardView = keyboardView, !inputEngine.isComposing else { return }
         
         let textAfterInput = textDocumentProxy?.documentContextAfterInput ?? ""
         let textBeforeInput = textDocumentProxy?.documentContextBeforeInput ?? ""
         
+        var newAutoSuggestionType: AutoSuggestionType?
+        
+        defer {
+            candidateOrganizer.autoSuggestionType = newAutoSuggestionType
+        }
+        
         guard let lastCharBefore = textBeforeInput.last else {
-            candidateOrganizer.candidateSource = nil
             return
         }
         
         switch keyboardView.keyboardContextualType {
         case .english where !lastCharBefore.isNumber && textAfterInput.isEmpty:
-            candidateOrganizer.candidateSource = InputController.halfWidthPunctuationCandidateSource
+            newAutoSuggestionType = .halfWidthPunctuation
         case .chinese where !lastCharBefore.isNumber && textAfterInput.isEmpty:
-            candidateOrganizer.candidateSource = InputController.fullWidthPunctuationCandidateSource
+            newAutoSuggestionType = .fullWidthPunctuation
         default:
             if lastCharBefore.isNumber {
                 if lastCharBefore.isASCII {
-                    candidateOrganizer.candidateSource = InputController.halfWidthDigitCandidateSource
+                    newAutoSuggestionType = .halfWidthDigit
                 } else {
                     switch lastCharBefore {
                     case "０", "１", "２", "３", "４", "５", "６", "７", "８", "９":
-                        candidateOrganizer.candidateSource = InputController.fullWidthArabicDigitCandidateSource
+                        newAutoSuggestionType = .fullWidthArabicDigit
                     case "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億":
-                        candidateOrganizer.candidateSource = InputController.fullWidthLowerDigitCandidateSource
+                        newAutoSuggestionType = .fullWidthLowerDigit
                     case "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟":
-                        candidateOrganizer.candidateSource = InputController.fullWidthUpperDigitCandidateSource
-                    default: candidateOrganizer.candidateSource = nil
+                        newAutoSuggestionType = .fullWidthUpperDigit
+                    default: ()
                     }
                 }
             }

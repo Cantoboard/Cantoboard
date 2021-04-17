@@ -20,7 +20,7 @@ class KeyboardView: UIView {
     private var _keyboardContextualType: ContextualType = .english
     private var _needsInputModeSwitchKey = false
     
-    private var candidatePaneView: CandidatePaneView?
+    private(set) var candidatePaneView: CandidatePaneView?
     private var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
     private var touchHandler: TouchHandler!

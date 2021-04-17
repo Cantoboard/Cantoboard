@@ -8,14 +8,6 @@
 import Foundation
 import UIKit
 
-struct CandidatePath {
-    enum Source {
-        case english, rime
-    }
-    let source: Source
-    let index: Int
-}
-
 class BilingualInputEngine: InputEngine {
     private static let processCharQueue = DispatchQueue(label: "org.cantoboard.process-char.queue", attributes: .concurrent)
     
@@ -23,76 +15,37 @@ class BilingualInputEngine: InputEngine {
     private let englishInputEngine: EnglishInputEngine
     private let textDocumentProxy: UITextDocumentProxy
     
-    private var candidates = NSMutableArray()
-    private var candidatesSet = Set<String>()
-    private var candidatePaths:[CandidatePath] = []
-    private var curEnglishCandidateIndex = 0, curRimeCandidateIndex = 0
-    private var hasLoadedAllBestRimeCandidates = false
-    private var isForcingRimeMode = false
-    
-    var reverseLookupSchemaId: RimeSchemaId? {
-        didSet {
-            rimeInputEngine.activeSchemaId = reverseLookupSchemaId ?? RimeSchemaId.jyutping
-        }
-    }
+    private(set) var composition: Composition?
+    private(set) var candidatePaths:[CandidatePath] = []
+    private(set) var isForcingRimeMode = false
     
     init(textDocumentProxy: UITextDocumentProxy) {
         self.textDocumentProxy = textDocumentProxy
         rimeInputEngine = RimeInputEngine()
         englishInputEngine = EnglishInputEngine(textDocumentProxy: textDocumentProxy)
     }
+
+
+    var reverseLookupSchemaId: RimeSchemaId? {
+        didSet {
+            rimeInputEngine.activeSchemaId = reverseLookupSchemaId ?? RimeSchemaId.jyutping
+        }
+    }
     
     var isComposing: Bool {
-        get {
-            return !(rimeInputEngine.composition?.text.isEmpty ?? true)
-        }
+        !(rimeInputEngine.composition?.text.isEmpty ?? true)
     }
-    
-    func selectCandidate(_ index: Int) -> String? {
-        guard let candidatePath = candidatePaths[safe: index] else {
-            NSLog("Invalid candidate %d selected. Count: %d", index, candidatePaths.count)
-            return nil
-        }
-        
-        var commitedText: String? = nil
-        if candidatePath.source == .rime {
-            commitedText = rimeInputEngine.selectCandidate(candidatePath.index)
-        } else {
-            commitedText = englishInputEngine.selectCandidate(candidatePath.index)
-            if let commitedText = commitedText { EnglishInputEngine.userDictionary.learnWordIfNeeded(word: commitedText) }
-        }
-        // User has selected a candidate and partially complete the composing text.
-        if commitedText == nil {
-            isForcingRimeMode = true
-            _ = updateEnglishCaretPosFromRime()
-        }
-        updateInputState(true, true)
-        return commitedText
-    }
-    
+
     func moveCaret(offset: Int) -> Bool {
         if isComposing {
             let updateRimeEngineState = rimeInputEngine.moveCaret(offset: offset)
-            let updateEnglishEngineState = updateEnglishCaretPosFromRime()
-            updateInputState(updateEnglishEngineState, updateRimeEngineState)
+            _ = updateEnglishCaretPosFromRime()
+            updateComposition()
             return updateRimeEngineState
         } else {
             textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
             return false
         }
-    }
-    
-    private func updateEnglishCaretPosFromRime() -> Bool {
-        guard let rimeRawInput = rimeInputEngine.rawInput else { NSLog("Bug check. rimeRawInput shouldn't be nil"); return true }
-        // guard let englishComposition = englishComposition else { NSLog("Bug check. englishComposition shouldn't be nil"); return true }
-        let rimeRawInputBeforeCaret = rimeRawInput.text.prefix(rimeRawInput.caretIndex)
-        let rimeRawInputCaretWithoutSpecialChars = rimeRawInputBeforeCaret.reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
-        let updateEnglishEngineState = englishInputEngine.setCaret(position: rimeRawInputCaretWithoutSpecialChars)
-        
-        // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
-        // NSLog("English \(englishComposition.text) \(rimeRawInputCaretWithoutSpecialChars)")
-        
-        return updateEnglishEngineState
     }
     
     func processChar(_ char: Character) -> Bool {
@@ -108,8 +61,7 @@ class BilingualInputEngine: InputEngine {
                 updateEnglishEngineState = self.englishInputEngine.processChar(char)
             }
             group.wait()
-            
-            updateInputState(updateEnglishEngineState, updateRimeEngineState)
+            updateComposition()
             return updateEnglishEngineState || updateRimeEngineState
         } else {
             return false
@@ -118,11 +70,9 @@ class BilingualInputEngine: InputEngine {
     
     func processRimeChar(_ char: Character) -> Bool {
         if char.isASCII {
-            var updateRimeEngineState = rimeInputEngine.processChar(char)
-            updateRimeEngineState = true
-            isForcingRimeMode = true
-            updateInputState(false, updateRimeEngineState)
-            return updateRimeEngineState
+            isForcingRimeMode = rimeInputEngine.processChar(char)
+            updateComposition()
+            return isForcingRimeMode
         } else {
             return false
         }
@@ -144,11 +94,9 @@ class BilingualInputEngine: InputEngine {
             // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
             // NSLog("English \(englishComposition?.text ?? "") \(englishComposition?.caretIndex ?? 0)")
             // NSLog("\(charToBeDeleted), \(charToBeDeleted.isRimeSpecialChar), \(rimeInputEngine.composition?.text), \(englishComposition?.text)")
-            
-            updateInputState(updateEnglish, updateRime)
-            
+                        
             isForcingRimeMode = self.rimeComposition?.text.contains(where: { $0.isRimeSpecialChar }) ?? false
-            
+            updateComposition()
             return updateEnglish || updateRime
         } else {
             textDocumentProxy.deleteBackward()
@@ -156,31 +104,32 @@ class BilingualInputEngine: InputEngine {
         }
     }
     
-    private func stripComposingTextAndClearInput(append: Character? = nil) -> String? {
-        guard let text = composition?.text,
-              !text.isEmpty  else {
-            return nil
-        }
-        var textWithoutSpace = text.filter { $0 != " " }
-        if let appendChar = append { textWithoutSpace.append(appendChar) }
-        clearInput()
-        updateInputState(true, true)
-        return textWithoutSpace
+    func clearInput() {
+        NSLog("clearInput() called.")
+        composition = nil
+        rimeInputEngine.clearInput()
+        englishInputEngine.clearInput()
+        isForcingRimeMode = false
     }
     
-    var composition: Composition? {
-        get {
-            if !isForcingRimeMode && englishInputEngine.isWord && reverseLookupSchemaId == nil {
-                return englishComposition
-            } else {
-                guard let rimeComposition = rimeComposition else { return nil }
-                guard let englishComposition = englishComposition else { return rimeComposition }
-                
-                let casedMorphedText = rimeComposition.text.caseMorph(caseForm: englishComposition.text)
-
-                let casedMorphedComposition = Composition(text: casedMorphedText, caretIndex: rimeComposition.caretIndex)
-                return casedMorphedComposition
+    private func updateComposition() {
+        if !isComposing {
+            composition = nil
+        } else if !isForcingRimeMode && englishInputEngine.isWord && reverseLookupSchemaId == nil {
+            composition = englishComposition
+        } else {
+            guard let rimeComposition = rimeComposition else {
+                composition = nil
+                return
             }
+            guard let englishComposition = englishComposition else {
+                composition = rimeComposition
+                return
+            }
+            
+            let casedMorphedText = rimeComposition.text.caseMorph(caseForm: englishComposition.text)
+            let casedMorphedComposition = Composition(text: casedMorphedText, caretIndex: rimeComposition.caretIndex)
+            composition = casedMorphedComposition
         }
     }
     
@@ -188,139 +137,82 @@ class BilingualInputEngine: InputEngine {
         englishInputEngine.composition
     }
     
+    var isEnglishWord: Bool {
+        englishInputEngine.isWord
+    }
+    
+    var englishCandidates: [String] {
+        englishInputEngine.candidates
+    }
+    
+    var englishWorstCandidatesStartIndex: Int {
+        englishInputEngine.worstCandidatesStartIndex
+    }
+    
+    func selectEnglishCandidate(_ index: Int) -> String? {
+        let commitedText = englishInputEngine.selectCandidate(index)
+        if let commitedText = commitedText {
+            EnglishInputEngine.userDictionary.learnWordIfNeeded(word: commitedText)
+        } else {
+            rimeInputEngine.clearInput()
+        }
+        updateComposition()
+        return commitedText
+    }
+    
+    private func updateEnglishCaretPosFromRime() -> Bool {
+        guard let rimeRawInput = rimeInputEngine.rawInput else { NSLog("Bug check. rimeRawInput shouldn't be nil"); return true }
+        // guard let englishComposition = englishComposition else { NSLog("Bug check. englishComposition shouldn't be nil"); return true }
+        let rimeRawInputBeforeCaret = rimeRawInput.text.prefix(rimeRawInput.caretIndex)
+        let rimeRawInputCaretWithoutSpecialChars = rimeRawInputBeforeCaret.reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
+        let updateEnglishEngineState = englishInputEngine.setCaret(position: rimeRawInputCaretWithoutSpecialChars)
+        
+        // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
+        // NSLog("English \(englishComposition.text) \(rimeRawInputCaretWithoutSpecialChars)")
+        
+        return updateEnglishEngineState
+    }
+    
     var rimeComposition: Composition? {
         rimeInputEngine.composition
     }
     
-    private func resetCandidates() {
-        curEnglishCandidateIndex = 0
-        curRimeCandidateIndex = 0
-
-        candidates = NSMutableArray()
-        candidatePaths = []
-        candidatesSet = Set()
+    func getRimeCandidate(_ index: Int) -> String? {
+        return rimeInputEngine.getCandidate(index)
+    }
+    
+    func getRimeCandidateComment(_ index: Int) -> String? {
+        return rimeInputEngine.getCandidateComment(index)
+    }
+    
+    var rimeLoadedCandidatesCount: Int {
+        rimeInputEngine.loadedCandidatesCount
+    }
+    
+    var hasRimeLoadedAllCandidates: Bool {
+        rimeInputEngine.hasLoadedAllCandidates
+    }
+    
+    func loadMoreRimeCandidates() -> Bool {
+        return rimeInputEngine.loadMoreCandidates()
+    }
+    
+    func selectRimeCandidate(_ index: Int) -> String? {
+        let commitedText = rimeInputEngine.selectCandidate(index)
         
-        hasLoadedAllBestRimeCandidates = false
-    }
-    
-    private func updateInputState(_ updateEnglishInputState: Bool, _ updateRimeInputState: Bool) {
-        guard updateEnglishInputState || updateRimeInputState else { return }
-        
-        // NSLog("English: \(englishInputEngine.composition?.text ?? "") Rime: \(rimeInputEngine.composition?.text ?? "")")
-        resetCandidates()
-        // populateCandidates()
-    }
-    
-    private func populateCandidates() {
-        guard let rimeComposingText = rimeComposition?.text else { return }
-        let englishCandidates = Settings.cached.isMixedModeEnabled ? englishInputEngine.getCandidates() : []
-        let isReverseLookupMode = rimeInputEngine.activeSchemaId.rawValue != "jyut6ping3"
-        let isInRimeOnlyMode = isForcingRimeMode || isReverseLookupMode
-        
-        if !isInRimeOnlyMode && englishInputEngine.isWord && curEnglishCandidateIndex < englishCandidates.count {
-            addCurrentEnglishCandidate(englishCandidates)
+        // User has selected a candidate and partially complete the composing text.
+        if commitedText == nil {
+            isForcingRimeMode = true
+            _ = updateEnglishCaretPosFromRime()
+        } else {
+            englishInputEngine.clearInput()
         }
-        
-        // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
-        while !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < rimeInputEngine.loadedCandidatesCount {
-            guard let candidate = rimeInputEngine.getCandidate(curRimeCandidateIndex),
-                  let comment = rimeInputEngine.getCandidateComment(curRimeCandidateIndex) else {
-                hasLoadedAllBestRimeCandidates = true
-                break
-            }
-            
-            let composingTextWithOnlySyllables = rimeComposingText.filter { $0.isEnglishLetter }.lowercased()
-            let commentWithOnlySyllables = comment.filter { $0.isEnglishLetter }.lowercased()
-            // Rime doesn't return comment if the candidate's an exact match. If commentWithOnlySyllables's empty, treat it as a hit.
-            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) &&
-                candidate.count < composingTextWithOnlySyllables.count { // 聲母輸入 case
-                hasLoadedAllBestRimeCandidates = true
-                break
-            }
-            
-            addCurrentRimeCandidate(candidate)
-        }
-        
-        // Do not populate remaining English candidates until all best Rime candidates are populated.
-        if !hasLoadedAllBestRimeCandidates && rimeInputEngine.loadMoreCandidates() { return }
-        
-        // Populate all English candidates with vowels.
-        while !isInRimeOnlyMode && !isReverseLookupMode && curEnglishCandidateIndex < englishCandidates.count {
-            guard let englishCandidate = englishCandidates[curEnglishCandidateIndex] as? String,
-                  englishCandidate.contains(where: { $0.isVowel || $0.isSymbol }) else { curEnglishCandidateIndex += 1; break }
-            addCurrentEnglishCandidate(englishCandidates)
-        }
-        
-        // Populate remaining Rime candidates.
-        while curRimeCandidateIndex < rimeInputEngine.loadedCandidatesCount {
-            guard let candidate = rimeInputEngine.getCandidate(curRimeCandidateIndex) else { continue }
-            addCurrentRimeCandidate(candidate)
-        }
-        
-        // Populate remaining English candidates.
-        while !isInRimeOnlyMode && curEnglishCandidateIndex < englishCandidates.count {
-            addCurrentEnglishCandidate(englishCandidates)
-        }
-    }
-    
-    private func addCandidate(_ candidateText: String, source: CandidatePath.Source, index: Int) {
-        if !candidatesSet.contains(candidateText) {
-            candidatePaths.append(CandidatePath(source: source, index: index))
-            candidates.add(candidateText)
-            candidatesSet.insert(candidateText)
-        }
-    }
-    
-    private func addCurrentEnglishCandidate(_ englishCandidates: NSArray) {
-        if let englishCandidate = englishCandidates[curEnglishCandidateIndex] as? String {
-            addCandidate(englishCandidate, source: .english, index: curEnglishCandidateIndex)
-        }
-        curEnglishCandidateIndex += 1
-    }
-    
-    private func addCurrentRimeCandidate(_ candidateText: String) {
-        addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
-        curRimeCandidateIndex += 1
-    }
-    
-    func clearInput() {
-        NSLog("clearInput() called.")
-        rimeInputEngine.clearInput()
-        englishInputEngine.clearInput()
-        // print("clearInput resetCandidates. rimeInputEngine composition", rimeInputEngine.composition?.text, englishInputEngine.composition?.text)
-        resetCandidates()
-        isForcingRimeMode = false
-        // setComposingText(nil)
-    }
-    
-    func getCandidates() -> NSArray {
-        return candidates
-    }
-    
-    func getCandidate(_ index: Int) -> String? {
-        return candidates[index] as? String
-    }
-    
-    func getCandidateComment(_ index: Int) -> String? {
-        guard let path = candidatePaths[safe: index] else { return nil }
-        if path.source == .rime {
-            return rimeInputEngine.getCandidateComment(path.index)
-        }
-        return nil
-    }
-    
-    func getCandidateSource(_ index: Int) -> CandidatePath.Source? {
-        return candidatePaths[safe: index]?.source
-    }
-    
-    func loadMoreCandidates() -> Bool {
-        let hasLoadedNew = rimeInputEngine.loadMoreCandidates() || englishInputEngine.loadMoreCandidates()
-        if hasLoadedNew { populateCandidates() }
-        return hasLoadedNew
+        updateComposition()
+        return commitedText
     }
     
     func refreshChineseCharForm() {
         rimeInputEngine.refreshCharForm()
-        resetCandidates()
+        updateComposition()
     }
 }

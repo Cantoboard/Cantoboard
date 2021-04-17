@@ -39,9 +39,5 @@ protocol InputEngine {
 
     func clearInput()
     
-    func getCandidate(_ index: Int) -> String?
-    func loadMoreCandidates() -> Bool // Return true if the call loaded any new candidates.
-    func selectCandidate(_ index: Int) -> String?
-    
     var composition: Composition? { get }
 }

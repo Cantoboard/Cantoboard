@@ -35,6 +35,7 @@ enum RimeSchemaId: String {
 class RimeInputEngine: NSObject, InputEngine {
     private weak var rimeSession: RimeSession?
     private var _activeSchemaId: RimeSchemaId = .jyutping
+    private(set) var hasLoadedAllCandidates = false
     
     var activeSchemaId: RimeSchemaId {
         get { _activeSchemaId }
@@ -93,6 +94,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func refreshCandidates() {
+        hasLoadedAllCandidates = false
         rimeSession?.setCandidateMenuToFirstPage()
     }
         
@@ -141,9 +143,12 @@ class RimeInputEngine: NSObject, InputEngine {
     func loadMoreCandidates() -> Bool {
         guard let rimeSession = rimeSession else {
             NSLog("loadMoreCandidates RimeSession is nil.")
+            hasLoadedAllCandidates = true
             return false
         }
-        return rimeSession.loadMoreCandidates()
+        let hasRemainingCandidates = rimeSession.loadMoreCandidates()
+        hasLoadedAllCandidates = !hasRemainingCandidates
+        return hasRemainingCandidates
     }
     
     var loadedCandidatesCount: Int {
@@ -160,7 +165,7 @@ class RimeInputEngine: NSObject, InputEngine {
             NSLog("Bad index: %d. Count: %d", index, rimeSession.getLoadedCandidatesCount())
             return nil
         }
-        // refreshCandidates()
+        refreshCandidates()
         return rimeSession.getCommitedText()
     }
     
