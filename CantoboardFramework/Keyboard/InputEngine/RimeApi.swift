@@ -93,12 +93,30 @@ extension RimeApi {
             try! FileManager.default.createDirectory(atPath: userDataPath, withIntermediateDirectories: false)
         }
         
+        let userRimeDataVersionPath = "\(userDataPath)/version"
+        let userRimeDataVersion = (try? String(contentsOfFile: userRimeDataVersionPath)) ?? "missing"
+        let appVersion = Self.appVersion
+        if appVersion != userRimeDataVersion {
+            NSLog("Build upgraded from \(userRimeDataVersion) to \(appVersion). Invalidating Rime dicts.")
+            try? FileManager.default.removeItem(atPath: userDataPath + "/build")
+            try? appVersion.write(toFile: "\(userDataPath)/version", atomically: true, encoding: .utf8)
+        }
+        
         // Generate schema patch.
         RimeApi.generateSchemaPatchFromSettings(userDataPath: userDataPath)
         
         NSLog("Shared data path: %@ User data path: %@", schemaPath, userDataPath)
         
         self.init(RimeApi.listener, sharedDataPath: schemaPath, userDataPath: userDataPath)
+    }
+    
+    static private var appVersion: String {
+        if let dict = Bundle.main.infoDictionary,
+           let version = dict["CFBundleShortVersionString"] as? String,
+           let bundleVersion = dict["CFBundleVersion"] as? String {
+                return "\(version).\(bundleVersion)"
+        }
+        return "unknown"
     }
 }
 
