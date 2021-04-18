@@ -33,7 +33,7 @@ class InputController {
     }
     
     private(set) var candidateOrganizer: CandidateOrganizer!
-
+    
     var inputMode: InputMode {
         get {
             let lastInputMode = Settings.cached.lastInputMode

@@ -453,7 +453,6 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             cellWidth = max(cellWidth, commentWidth)
         }
         
-        NSLog("UFO computeCellSize \(indexPath) \(text)")
         // Min width
         cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width)
         
@@ -472,7 +471,6 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
-        NSLog("UFO forItemAt \(indexPath) \(candidate)")
         cell.initLabel(candidate, comment, showComment: showComment)
     }
     

@@ -128,7 +128,7 @@ class KeyboardView: UIView {
     var candidateOrganizer: CandidateOrganizer? {
         didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
     }
-        
+    
     var isEnabled: Bool {
         get { _isEnabled }
         set {
