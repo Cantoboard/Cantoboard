@@ -91,26 +91,31 @@ class CandidatePaneView: UIControl {
             candidateOrganizer?.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
                 guard let self = self else { return }
                 
-                let newIndiceStart = self.collectionView.numberOfItems(inSection: 0)
-                let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
-                NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
-                
-                UIView.performWithoutAnimation {
-                    self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
+                DispatchQueue.main.async {
+                    let newIndiceStart = self.collectionView.numberOfItems(inSection: 0)
+                    let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
+                    NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
+                    
+                    UIView.performWithoutAnimation {
+                        self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
+                    }
+                    self.delegate?.candidatePaneCandidateLoaded()
                 }
-                self.delegate?.candidatePaneCandidateLoaded()
             }
             
             candidateOrganizer?.onReloadCandidates = { [weak self] candidateOrganizer in
                 guard let self = self else { return }
-                
-                NSLog("Reloading candidates.")
-                
-                UIView.performWithoutAnimation {
-                    self.collectionView.scrollOnLayoutSubviews = {
-                        self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
+                                
+                DispatchQueue.main.async {
+                    NSLog("Reloading candidates.")
+                    
+                    UIView.performWithoutAnimation {
+                        self.collectionView.scrollOnLayoutSubviews = {
+                            self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
+                        }
+                        self.collectionView.reloadData()
+                        self.collectionView.collectionViewLayout.invalidateLayout()
                     }
-                    self.collectionView.reloadData()
                 }
             }
         }
@@ -441,13 +446,14 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
                 
         var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
-        
+                
         if showComment {
-            let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath) ?? "⚠"
-            let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width
+            let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
+            let commentWidth = comment?.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width ?? 0
             cellWidth = max(cellWidth, commentWidth)
         }
         
+        NSLog("UFO computeCellSize \(indexPath) \(text)")
         // Min width
         cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width)
         
@@ -466,6 +472,7 @@ extension CandidatePaneView: UICollectionViewDelegate {
               let candidate = candidateOrganizer.getCandidate(indexPath: indexPath),
               let cell = cell as? CandidateCell else { return }
         let comment = candidateOrganizer.getCandidateComment(indexPath: indexPath)
+        NSLog("UFO forItemAt \(indexPath) \(candidate)")
         cell.initLabel(candidate, comment, showComment: showComment)
     }
     

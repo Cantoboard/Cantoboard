@@ -249,7 +249,6 @@ class CandidateOrganizer {
     }*/
     
     func updateCandidates(reload: Bool) {
-        
         if let inputController = inputController,
            inputController.inputEngine.isComposing {
             candidateSource = InputEngineCandidateSource(inputController: inputController)
