@@ -97,7 +97,12 @@ class CandidatePaneView: UIControl {
                     NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
                     
                     UIView.performWithoutAnimation {
-                        self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
+                        if newIndiceStart > newIndiceEnd {
+                            self.collectionView.reloadData()
+                            self.collectionView.collectionViewLayout.invalidateLayout()
+                        } else {
+                            self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
+                        }
                     }
                     self.delegate?.candidatePaneCandidateLoaded()
                 }
