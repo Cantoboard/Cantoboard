@@ -55,6 +55,9 @@ typedef int Bool;
 //! Define a variable of Type
 #define RIME_STRUCT(Type, var)  Type var = {0}; RIME_STRUCT_INIT(Type, var);
 
+//! For passing pointer to capnproto builder as opaque pointer through C API.
+#define RIME_PROTO_BUILDER void
+
 //! Rime traits structure
 /*!
  *  Should be initialized by calling RIME_STRUCT_INIT(Type, var)
@@ -77,6 +80,20 @@ typedef struct rime_traits_t {
 
   //! A list of modules to load before initializing
   const char** modules;
+  // v1.6
+  /*! Minimal level of logged messages.
+   *  Value is passed to Glog library using FLAGS_minloglevel variable.
+   *  0 = INFO (default), 1 = WARNING, 2 = ERROR, 3 = FATAL
+   */
+  int min_log_level;
+  /*! Directory of log files.
+   *  Value is passed to Glog library using FLAGS_log_dir variable.
+   */
+  const char* log_dir;
+  //! prebuilt data directory. defaults to ${shared_data_dir}/build
+  const char* prebuilt_data_dir;
+  //! staging directory. defaults to ${user_data_dir}/build
+  const char* staging_dir;
 } RimeTraits;
 
 typedef struct {
@@ -512,17 +529,27 @@ typedef struct rime_api_t {
   //! select a candidate from current page.
   Bool (*select_candidate_on_current_page)(RimeSessionId session_id, size_t index);
 
-  // access candidate list.
+  //! access candidate list.
   Bool (*candidate_list_begin)(RimeSessionId session_id, RimeCandidateListIterator* iterator);
   Bool (*candidate_list_next)(RimeCandidateListIterator* iterator);
   void (*candidate_list_end)(RimeCandidateListIterator* iterator);
 
-  // access config files in user data directory, eg. user.yaml and installation.yaml
+  //! access config files in user data directory, eg. user.yaml and installation.yaml
   Bool (*user_config_open)(const char *config_id, RimeConfig* config);
 
   Bool (*candidate_list_from_index)(RimeSessionId session_id,
                                     RimeCandidateListIterator* iterator,
                                     int index);
+
+  //! prebuilt data directory.
+  const char* (*get_prebuilt_data_dir)();
+  //! staging directory, stores data files deployed to a Rime client.
+  const char* (*get_staging_dir)();
+
+  //! capnproto API.
+  void (*commit_proto)(RimeSessionId session_id, RIME_PROTO_BUILDER* commit_builder);
+  void (*context_proto)(RimeSessionId session_id, RIME_PROTO_BUILDER* context_builder);
+  void (*status_proto)(RimeSessionId session_id, RIME_PROTO_BUILDER* status_builder);
 } RimeApi;
 
 //! API entry

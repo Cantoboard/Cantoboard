@@ -1,6 +1,6 @@
 #!/bin/sh
 LIB_NAME=Rime
-DYLIBS="src/librime.1.5.3.dylib"
+DYLIBS="src/librime.1.7.3.dylib"
 SOURCE_INFO_PLIST="src/Info.plist"
 OUT_DIR="."
 
