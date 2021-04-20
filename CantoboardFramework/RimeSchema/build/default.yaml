@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1618891701
-    default.custom: 1618891701
+    default: 1618968514
+    default.custom: 1618968514
 ascii_composer:
   switch_key:
     Control_L: noop
@@ -38,7 +38,7 @@ key_binder:
     - {accept: "Shift+space", toggle: full_shape, when: always}
     - {accept: "Control+period", toggle: ascii_punct, when: always}
 menu:
-  page_size: 10
+  page_size: 50
 punctuator:
   full_shape:
     " ": {commit: "　"}

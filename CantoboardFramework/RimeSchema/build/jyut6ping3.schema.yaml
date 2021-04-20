@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1618891701
-    default.custom: 1618891701
+    default: 1618968514
+    default.custom: 1618968514
     jyut6ping3.custom: 0
-    jyut6ping3.schema: 1618891701
-    symbols: 1618891701
+    jyut6ping3.schema: 1618968514
+    symbols: 1618968514
     symbols.custom: 0
-    symbols_cantonese: 1618891701
+    symbols_cantonese: 1618968514
 emoji_suggestion:
   opencc_config: emoji.json
   option_name: emoji_suggestion
@@ -39,7 +39,7 @@ engine:
     - script_translator
 menu:
   alternative_select_keys: "          "
-  page_size: 10
+  page_size: 50
 punctuator:
   full_shape:
     " ": {commit: "　"}
@@ -353,7 +353,6 @@ speller:
     - "derive/oe(ng|k)$/eo$1/"
     - "derive/aa$/a/"
     - "abbrev/^([a-z]).+$/$1/"
-    - "abbrev/^([a-z]{2}).+$/$1/"
   alphabet: zyxwvutsrqponmlkjihgfedcba654321
   delimiter: " '"
 switches:
@@ -375,8 +374,8 @@ trad_tw:
 translator:
   always_show_comments: true
   dictionary: jyut6ping3
-  enable_correction: false
-  spelling_hints: 8
+  enable_correction: true
+  spelling_hints: 256
 variants_hk:
   opencc_config: t2hk.json
   option_name: variants_hk

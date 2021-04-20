@@ -6,4 +6,4 @@ patch:
     - {schema: luna_pinyin}
     - {schema: stroke}
     - {schema: loengfan}
-  "menu/page_size": 10
+  "menu/page_size": 50

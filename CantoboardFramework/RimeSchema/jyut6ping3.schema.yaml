@@ -98,12 +98,12 @@ speller:
     # - abbrev/^([a-z]).+([1-6])$/$1$2/      # 首字母聲調簡拼
     # - abbrev/^([a-z]{2}).+([1-6])$/$1$2/   # 首2字母聲調簡拼
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
-    - abbrev/^([a-z]{2}).+$/$1/   # 首2字母簡拼
+    # - abbrev/^([a-z]{2}).+$/$1/   # 首2字母簡拼
 
 translator:
   dictionary: jyut6ping3
-  spelling_hints: 8  # 將呢度改作 0，可以去除候選字後邊嘅粵拼提示
-  enable_correction: false # Require more work
+  spelling_hints: 256
+  enable_correction: true
   always_show_comments: true
 
 variants_hk:
