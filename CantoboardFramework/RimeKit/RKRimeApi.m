@@ -70,8 +70,10 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
 
 -(void)initRime:(NSString *)sharedDataPath userDataPath:(NSString *)userDataPath {
     NSLog(@"Initializing Rime API.");
-    RIME_STRUCT(RimeTraits, traits);
     
+    _rimeApi->set_notification_handler(&rimeNotificationHandler, (__bridge void *)self);
+    
+    RIME_STRUCT(RimeTraits, traits);
     if (!hasSetupRimeTrait) {
         traits.shared_data_dir = sharedDataPath.UTF8String;
         traits.user_data_dir = userDataPath.UTF8String;
@@ -83,7 +85,6 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
         hasSetupRimeTrait = true;
     }
     
-    _rimeApi->set_notification_handler(&rimeNotificationHandler, (__bridge void *)self);
     _rimeApi->initialize(NULL);
 
     if (_rimeApi->start_maintenance(true)) {
