@@ -42,35 +42,35 @@ class KeyboardView: UIView {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space], [.contexualSymbols(.english), .newLine]]
+        [[.keyboardType(.numeric), .nextKeyboard], [.space], [.contexualSymbols(.english), .newLine(.default)]]
     ]
     
     private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["-", "/", ":", ";", "(", ")", "$", "\"", "「", "」"]],
         [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["@", .newLine]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["@", .newLine(.default)]]
     ]
     
     private let symbolsHalfKeyCapRows: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
         [["_", "—", "\\", "|", "~", "<", ">", "《", "》", "•"]],
         [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine(.default)]]
     ]
     
     private let numbersFullKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["－", "／", "：", "；", "（", "）", "＄", "＂", "「", "」"]],
         [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["＠", .newLine]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["＠", .newLine(.default)]]
     ]
     
     private let symbolsFullKeyCapRows: [[[KeyCap]]] = [
         [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
         [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
         [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.newLine(.default)]]
     ]
     
     var keyboardType: KeyboardType {
@@ -138,6 +138,8 @@ class KeyboardView: UIView {
             _isEnabled = newValue
         }
     }
+    
+    var returnKeyType: UIReturnKeyType = .default
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -290,8 +292,8 @@ class KeyboardView: UIView {
                     }
                     return $0
                 case .contexualSymbols: return .contexualSymbols(keyboardContextualType)
-                default:
-                    return $0
+                case .newLine: return .newLine(returnKeyType)
+                default: return $0
                 }
             } }
             

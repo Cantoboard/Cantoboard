@@ -95,6 +95,8 @@ class InputController {
             self.updateMarkedText()
         }
         
+        keyboardView?.returnKeyType = textDocumentProxy?.returnKeyType ?? UIReturnKeyType.default
+        
         shouldSkipNextTextDidChange = false
         updateInputState()
     }
