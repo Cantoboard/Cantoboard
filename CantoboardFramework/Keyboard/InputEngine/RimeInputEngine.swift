@@ -48,6 +48,16 @@ class RimeInputEngine: NSObject, InputEngine {
         }
     }
     
+    private var _charForm: CharForm = Settings.cached.charForm
+    var charForm: CharForm {
+        get { _charForm }
+        set {
+            guard _charForm != newValue else { return }
+            _charForm = newValue
+            setCharForm(isSimplification: _charForm == .simplified)
+        }
+    }
+    
     override init() {
         super.init()
         tryCreateRimeSessionIfNeeded()
@@ -234,8 +244,12 @@ class RimeInputEngine: NSObject, InputEngine {
         refreshCharForm()
     }
     
-    func refreshCharForm() {
-        rimeSession?.setOption("simplification", value: Settings.cached.charForm == .simplified)
+    private func refreshCharForm() {
+        setCharForm(isSimplification: _charForm == .simplified)
+    }
+    
+    private func setCharForm(isSimplification: Bool) {
+        rimeSession?.setOption("simplification", value: isSimplification)
         rimeSession?.setCandidateMenuToFirstPage()
         refreshCandidates()
     }

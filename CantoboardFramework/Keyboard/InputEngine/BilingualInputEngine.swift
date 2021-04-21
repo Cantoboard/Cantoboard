@@ -25,6 +25,10 @@ class BilingualInputEngine: InputEngine {
         englishInputEngine = EnglishInputEngine(textDocumentProxy: textDocumentProxy)
     }
 
+    var charForm: CharForm {
+        get { rimeInputEngine.charForm }
+        set { rimeInputEngine.charForm = newValue }
+    }
 
     var reverseLookupSchemaId: RimeSchemaId? {
         didSet {
@@ -213,10 +217,5 @@ class BilingualInputEngine: InputEngine {
         }
         updateComposition()
         return commitedText
-    }
-    
-    func refreshChineseCharForm() {
-        rimeInputEngine.refreshCharForm()
-        updateComposition()
     }
 }

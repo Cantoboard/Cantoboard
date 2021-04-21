@@ -251,7 +251,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var hasPopup: Bool {
         switch self {
         case .character, .characterWithConditioanlPopup, .contexualSymbols, .cangjie: return true
-        case .keyboardType(.emojis): return true
         default: return false
         }
     }
@@ -273,12 +272,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]
         case .contexualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
-        case .keyboardType(.emojis):
-            if Settings.cached.charForm != .simplified {
-                return [.charForm(.traditionalHK), .charForm(.simplified)]
-            } else {
-                return [.charForm(.simplified), .charForm(.traditionalHK) ]
-            }
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]

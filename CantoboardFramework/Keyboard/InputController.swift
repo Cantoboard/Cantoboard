@@ -216,11 +216,12 @@ class InputController {
             self.checkAutoCap()
             return
         case .setCharForm(let cs):
+            inputEngine.charForm = cs
+            candidateOrganizer.updateCandidates(reload: true)
+            
             var settings = Settings.cached
             settings.charForm = cs
             Settings.save(settings)
-            inputEngine.refreshChineseCharForm()
-            candidateOrganizer.updateCandidates(reload: true)
             /*
             let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             let share = UIActivityViewController(activityItems: url, applicationActivities: nil)
