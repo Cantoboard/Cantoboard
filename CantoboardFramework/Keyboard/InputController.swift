@@ -220,6 +220,11 @@ class InputController {
             settings.charForm = cs
             Settings.save(settings)
             inputEngine.refreshChineseCharForm()
+            /*
+            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            let share = UIActivityViewController(activityItems: url, applicationActivities: nil)
+            keyboardViewController!.present(share, animated: true, completion: nil)
+            */
             return
         case .setCandidateMode(let im):
             inputMode = im
