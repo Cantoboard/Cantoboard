@@ -220,6 +220,7 @@ class InputController {
             settings.charForm = cs
             Settings.save(settings)
             inputEngine.refreshChineseCharForm()
+            candidateOrganizer.updateCandidates(reload: true)
             /*
             let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             let share = UIActivityViewController(activityItems: url, applicationActivities: nil)
