@@ -239,7 +239,7 @@ class EnglishInputEngine: InputEngine {
         
         worstCandidatesStartIndex = candidates.count
         candidates.append(contentsOf: worstCandidates)
-        NSLog("English candidates \(candidates)")
+        // NSLog("English candidates \(candidates)")
     }
     
     func selectCandidate(_ index: Int) -> String? {

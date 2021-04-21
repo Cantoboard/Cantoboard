@@ -94,13 +94,15 @@ class CandidatePaneView: UIControl {
                 DispatchQueue.main.async {
                     let newIndiceStart = self.collectionView.numberOfItems(inSection: 0)
                     let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
-                    NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
                     
                     UIView.performWithoutAnimation {
                         if newIndiceStart > newIndiceEnd {
+                            NSLog("Reloading candidates onMoreCandidatesLoaded().")
+                            
                             self.collectionView.reloadData()
                             self.collectionView.collectionViewLayout.invalidateLayout()
-                        } else {
+                        } else if newIndiceStart != newIndiceEnd {
+                            NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
                             self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: 0) })
                         }
                     }
