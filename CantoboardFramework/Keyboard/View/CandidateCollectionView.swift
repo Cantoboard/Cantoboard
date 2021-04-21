@@ -126,7 +126,7 @@ class CandidateCell: UICollectionViewCell {
         commentLayer?.font = UIFont.systemFont(ofSize: layoutConstants.candidateCommentFontSize)
         commentLayer?.fontSize = layoutConstants.candidateCommentFontSize
         
-        if showComment {
+        if showComment && commentLayer != nil {
             let margin = Self.margin
             let textFrame = CGRect(x: 0, y: margin.top, width: bounds.width, height: layoutConstants.candidateCharSize.height)
             
