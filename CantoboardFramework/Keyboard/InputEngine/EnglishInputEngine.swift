@@ -88,7 +88,7 @@ class EnglishInputEngine: InputEngine {
     }
     static var userDictionary = UserDictionary()
     
-    private static let highFreqWords = ["i'm", "can't", "let's", "won't"]
+    private static let highFreqWords = ["i'm", "can't", "let's", "won't", "this's", "that's", "these're", "didn't", "doesn't", "don't"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     

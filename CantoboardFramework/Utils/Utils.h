@@ -12,7 +12,7 @@
 - (id)init:(NSString*) dbPath createDbIfMissing:(bool) createDbIfMissing;
 - (NSString*)get:(NSString*) word;
 - (bool)put:(NSString*) key value:(NSString*) value;
-
+- (bool)delete:(NSString*) key;
 + (bool)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dbPath;
 @end
 

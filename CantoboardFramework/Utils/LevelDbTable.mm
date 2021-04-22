@@ -73,6 +73,17 @@ using namespace std;
     }
 }
 
+- (bool)delete:(NSString*) key {
+    leveldb::Status status;
+    status = db->Delete(leveldb::WriteOptions(), [key UTF8String]);
+    if (status.ok()) {
+        return true;
+    } else {
+        NSLog(@"Failed to delete from db. Error: %s", status.ToString().c_str());
+        return false;
+    }
+}
+
 + (bool)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dictDbPath {
     NSLog(@"createEnglishDictionary %@ -> %@", textFilePaths, dictDbPath);
     

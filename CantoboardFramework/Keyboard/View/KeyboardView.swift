@@ -373,7 +373,7 @@ class KeyboardView: UIView {
 }
 
 extension KeyboardView: CandidatePaneViewDelegate {
-    func candidatePaneViewCandidateSelected(_ choice: Int) {
+    func candidatePaneViewCandidateSelected(_ choice: IndexPath) {
         delegate?.handleKey(.selectCandidate(choice))
     }
     

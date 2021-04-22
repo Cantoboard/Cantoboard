@@ -13,6 +13,8 @@ enum ContextualType: Equatable {
 }
 
 class InputController {
+    private static let feedbackGenerator = UIImpactFeedbackGenerator()
+    
     private weak var keyboardViewController: KeyboardViewController?
     let inputEngine: BilingualInputEngine
     
@@ -107,11 +109,22 @@ class InputController {
         showAutoSuggestCandidates()
     }
     
-    private func candidateSelected(_ choice: Int, enableSmartSpace: Bool) {
-        if let commitedText = candidateOrganizer.selectCandidate(indexPath: [0, choice]) {
+    private func candidateSelected(choice: IndexPath, enableSmartSpace: Bool) {
+        if let commitedText = candidateOrganizer.selectCandidate(indexPath: choice) {
+            if commitedText.allSatisfy({ $0.isEnglishLetter }) {
+                EnglishInputEngine.userDictionary.learnWord(word: commitedText)
+            }
             insertText(commitedText, isFromCandidateBar: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
                 keyboardView?.candidatePaneView?.changeMode(.row)
+            }
+        }
+    }
+    
+    private func candidateLongPressed(choice: IndexPath) {
+        if let text = candidateOrganizer.getCandidate(indexPath: choice), text.allSatisfy({ $0.isEnglishLetter }) {
+            if EnglishInputEngine.userDictionary.unlearnWord(word: text) {
+                Self.feedbackGenerator.impactOccurred()
             }
         }
     }
@@ -122,7 +135,7 @@ class InputController {
         let spaceOutputMode = Settings.cached.spaceOutputMode
         // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
         if spaceOutputMode == .bestCandidate && inputEngine.isComposing {
-            candidateSelected(0, enableSmartSpace: true)
+            candidateSelected(choice: [0, 0], enableSmartSpace: true)
         } else {
             if !insertComposingText() {
                 if !handleAutoSpace() {
@@ -237,7 +250,9 @@ class InputController {
             clearInput(needResetSchema: false)
             return
         case .selectCandidate(let choice):
-            candidateSelected(choice, enableSmartSpace: true)
+            candidateSelected(choice: choice, enableSmartSpace: true)
+        case .longPressCandidate(let choice):
+            candidateLongPressed(choice: choice)
         default: ()
         }
         if needClearInput {

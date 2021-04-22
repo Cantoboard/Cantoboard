@@ -46,6 +46,25 @@ class UserDictionary {
         }
     }
     
+    func unlearnWord(word: String) -> Bool {
+        let key = word.lowercased()
+        let row = dict.get(key)?.split(separator: ",")
+        if let row = row {
+            var wordSet = row.suffix(row.count - 1).mapToSet({ String($0) })
+            let freq = Int64(row[0]) ?? 0
+            
+            if wordSet.remove(word) != nil ||
+               word.capitalized == word && wordSet.remove(word.lowercased()) != nil {
+                if wordSet.isEmpty {
+                    dict.delete(key)
+                } else {
+                    dict.put(key, value: "\(freq),\(wordSet.joined(separator: ","))")
+                }
+            }
+        }
+        return false
+    }
+    
     func learnWordIfNeeded(word: String) {
         if word.allSatisfy({ $0.isEnglishLetter }) &&
             !EnglishInputEngine.englishDictionary.getWords(wordLowercased: word.lowercased()).contains(word) {

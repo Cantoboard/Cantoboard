@@ -12,7 +12,7 @@ import UIKit
 protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewExpanded()
     func candidatePaneViewCollapsed()
-    func candidatePaneViewCandidateSelected(_ choice: Int)
+    func candidatePaneViewCandidateSelected(_ choice: IndexPath)
     func candidatePaneCandidateLoaded()
     func handleKey(_ action: KeyboardAction)
     var symbolShape: SymbolShape { get }
@@ -467,10 +467,14 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension CandidatePaneView: UICollectionViewDelegate {
+extension CandidatePaneView: CandidateCollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         AudioFeedbackProvider.play(keyboardAction: .none)
-        delegate?.candidatePaneViewCandidateSelected(indexPath.row)
+        delegate?.candidatePaneViewCandidateSelected(indexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didLongPressItemAt indexPath: IndexPath) {
+        delegate?.handleKey(.longPressCandidate(indexPath))
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
