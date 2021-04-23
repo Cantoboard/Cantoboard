@@ -13,7 +13,7 @@ class KeyRowView: UIView {
         case topRow, normalRow, shiftRow, bottomRow
     }
     
-    private var leftKeys, middleKeys, rightKeys: [KeyView]!
+    private(set) var leftKeys, middleKeys, rightKeys: [KeyView]!
     private var keyboardType: KeyboardType = .none
     var rowLayoutMode: RowLayoutMode = .normalRow
     var needsInputModeSwitchKey = false

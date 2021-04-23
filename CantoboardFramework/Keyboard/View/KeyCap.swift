@@ -34,7 +34,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     cangjie(String),
     emoji(String),
     keyboardType(KeyboardType),
-    newLine(UIReturnKeyType),
+    returnKey(UIReturnKeyType),
     nextKeyboard,
     space,
     shift(_ state: KeyboardShiftState),
@@ -59,7 +59,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .cangjie(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
-        case .newLine: return .newLine
+        case .returnKey: return .newLine
         case .nextKeyboard: return .nextKeyboard
         case .space: return .space
         case .shift(let shiftState): return .shift(shiftState)
@@ -101,7 +101,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .character, .characterWithConditioanlPopup, .cangjie, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
-        case .newLine(.go): return UIColor.systemBlue
+        case .returnKey(.go), .returnKey(.search): return UIColor.systemBlue
         default: return ButtonColor.systemKeyBackgroundColor
         }
     }
@@ -116,7 +116,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFgColor: UIColor {
         switch self {
-        case .newLine: return .white
+        case .returnKey: return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
         default: return ButtonColor.keyForegroundColor
         }
@@ -142,11 +142,11 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonText: String? {
         switch self {
         case .characterWithConditioanlPopup(let text): return text
-        case .newLine(.go): return "go"
-        case .newLine(.next): return "next"
-        case .newLine(.send): return "send"
-        case .newLine(.search), .newLine(.google): return "search"
-        case .newLine: return "return"
+        case .returnKey(.go): return "go"
+        case .returnKey(.next): return "next"
+        case .returnKey(.send): return "send"
+        case .returnKey(.search), .returnKey(.google): return "search"
+        case .returnKey: return "return"
         case .space: return "space"
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
@@ -245,7 +245,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
             return layoutConstants.shiftButtonWidth
-        case .newLine:
+        case .returnKey:
             return 1.5 * layoutConstants.systemButtonWidth
         case .character, .characterWithConditioanlPopup, .contexualSymbols:
             return layoutConstants.keyButtonWidth

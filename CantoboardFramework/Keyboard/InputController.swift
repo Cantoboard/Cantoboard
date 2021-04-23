@@ -96,9 +96,7 @@ class InputController {
         } else if inputEngine.composition != nil, !shouldApplyChromeSearchBarHack {
             self.updateMarkedText()
         }
-        
-        keyboardView?.returnKeyType = textDocumentProxy?.returnKeyType ?? UIReturnKeyType.default
-        
+                
         shouldSkipNextTextDidChange = false
         updateInputState()
     }
@@ -354,6 +352,8 @@ class InputController {
         updateMarkedText()
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: true)
+        
+        keyboardView?.returnKeyType = hasMarkedText ? .default : textDocumentProxy?.returnKeyType ?? .default
     }
     
     private func updateMarkedText() {
