@@ -13,6 +13,7 @@
 		7919A78825F3320F0075DD4D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78625F3320F0075DD4D /* Main.storyboard */; };
 		7919A78A25F332100075DD4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78925F332100075DD4D /* Assets.xcassets */; };
 		7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78B25F332100075DD4D /* LaunchScreen.storyboard */; };
+		791DE95B263250F500AFA033 /* SwiftLCS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 791DE95A263250F500AFA033 /* SwiftLCS.swift */; };
 		79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */; };
 		79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79305FF3260A6EF7002131EF /* DefaultDictionary.swift */; };
 		79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* LevelDbTable.mm */; };
@@ -236,6 +237,7 @@
 		7919A78925F332100075DD4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7919A78C25F332100075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7919A78E25F332100075DD4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		791DE95A263250F500AFA033 /* SwiftLCS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftLCS.swift; sourceTree = "<group>"; };
 		79305FF3260A6EF7002131EF /* DefaultDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDictionary.swift; sourceTree = "<group>"; };
 		79515A7D2609AA1500D29A5C /* LevelDbTable.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LevelDbTable.mm; sourceTree = "<group>"; };
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
@@ -449,6 +451,7 @@
 				79B9B58825F34A1200238E80 /* FileUnlocker.m */,
 				79515A7D2609AA1500D29A5C /* LevelDbTable.mm */,
 				79515AB82609AF5D00D29A5C /* Utils.h */,
+				791DE95A263250F500AFA033 /* SwiftLCS.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1087,6 +1090,7 @@
 				79B9B60025F34A1200238E80 /* Utils.swift in Sources */,
 				79B9B5F625F34A1200238E80 /* InputEngine.swift in Sources */,
 				79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */,
+				791DE95B263250F500AFA033 /* SwiftLCS.swift in Sources */,
 				79B9B60D25F34A1200238E80 /* InputController.swift in Sources */,
 				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,

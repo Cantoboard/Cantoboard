@@ -42,7 +42,6 @@ class InputEngineCandidateSource: CandidateSource {
         guard let inputController = inputController else { return }
         let inputEngine = inputController.inputEngine
         
-        guard let rimeComposingText = inputEngine.rimeComposition?.text else { return }
         let isReverseLookupMode = inputEngine.reverseLookupSchemaId != nil
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || isReverseLookupMode
         let isEnglishActive = Settings.cached.lastInputMode != .chinese && !isInRimeOnlyMode
@@ -56,19 +55,25 @@ class InputEngineCandidateSource: CandidateSource {
             hasPopulatedPrefectEnglishCandidates = true
         }
         
+        let rawInputWithoutDigits = inputEngine.englishComposition?.text.lowercased() ?? ""
+        let firstRimeCandidateLength = inputEngine.getRimeCandidate(0)?.count ?? 0
+        let firstRimeCode = (inputEngine.getRimeCandidateComment(0) ?? "").lowercased().filter({ !$0.isNumber && $0 != " " })
+        let composeTextFirstRimeCodeLCS = rawInputWithoutDigits.longestCommonSubsequence(firstRimeCode)
+        let isRimeExactMatch = composeTextFirstRimeCodeLCS.count == rawInputWithoutDigits.count
+
+        if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
+        
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
-        while Settings.cached.lastInputMode != .english && !hasLoadedAllBestRimeCandidates && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
-            guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex),
-                  let comment = inputEngine.getRimeCandidateComment(curRimeCandidateIndex) else {
+        while Settings.cached.lastInputMode != .english &&
+              isRimeExactMatch &&
+              !hasLoadedAllBestRimeCandidates &&
+              curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
+            guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else {
                 hasLoadedAllBestRimeCandidates = true
                 break
             }
             
-            let composingTextWithOnlySyllables = rimeComposingText.filter { $0.isEnglishLetter }.lowercased()
-            let commentWithOnlySyllables = comment.filter { $0.isEnglishLetter }.lowercased()
-            // Rime doesn't return comment if the candidate's an exact match. If commentWithOnlySyllables's empty, treat it as a hit.
-            if !commentWithOnlySyllables.isEmpty && !commentWithOnlySyllables.starts(with: composingTextWithOnlySyllables) &&
-                candidate.count < composingTextWithOnlySyllables.count { // 聲母輸入 case
+            if firstRimeCandidateLength - candidate.count > 0 {
                 hasLoadedAllBestRimeCandidates = true
                 break
             }
