@@ -88,7 +88,7 @@ class EnglishInputEngine: InputEngine {
     }
     static var userDictionary = UserDictionary()
     
-    private static let highFreqWords = ["i'm", "can't", "let's", "won't", "this's", "that's", "these're", "didn't", "doesn't", "don't"]
+    private static let highFreqSuffixes = ["'m", "'t", "let's", "'ve", "'re"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
@@ -214,9 +214,10 @@ class EnglishInputEngine: InputEngine {
         }
         
         for word in spellCorrectionCandidates + autoCompleteCandidates {
+            let wordLowercased = word.lowercased()
             if word.isEmpty || word == text || candidateSets.contains(word) {
                 continue // We added the word already. Ignore.
-            } else if Self.highFreqWords.contains(word.lowercased()) && word.filter({ $0.isEnglishLetter }).caseInsensitiveCompare(text) == .orderedSame {
+            } else if Self.highFreqSuffixes.contains(where: { wordLowercased.hasSuffix($0) }) && word.filter({ $0.isEnglishLetter }).caseInsensitiveCompare(text) == .orderedSame {
                 // Special case for correcting patterns like cant -> can't. lets -> let's.
                 candidates.insert(word, at: 0)
                 candidateSets.insert(word)
