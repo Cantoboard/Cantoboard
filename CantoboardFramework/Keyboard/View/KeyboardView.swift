@@ -292,7 +292,7 @@ class KeyboardView: UIView {
                     default:
                         return $0
                     }
-                case "X", "x":
+                case "D", "d":
                     if currentRimeSchemaId == .jyutping, case .character(let c) = $0 {
                         return .characterWithConditioanlPopup(c)
                     }

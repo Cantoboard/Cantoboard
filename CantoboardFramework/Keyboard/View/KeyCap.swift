@@ -212,7 +212,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
         
         switch self {
-        case .characterWithConditioanlPopup("X"), .characterWithConditioanlPopup("x"): return "反"
+        case .characterWithConditioanlPopup("D"), .characterWithConditioanlPopup("d"): return "反"
         case .reverseLookup: return "反"
         case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
@@ -271,7 +271,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
             case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
-            case "x", "X": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+            case "D", "d": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
             default: return [self]
             }
         case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
