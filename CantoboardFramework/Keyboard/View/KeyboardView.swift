@@ -80,9 +80,9 @@ class KeyboardView: UIView {
                 switch newValue {
                 case .alphabetic:
                     symbolShapeOverride = nil
-                    candidatePaneView?.filterMode = .lang
+                    candidatePaneView?.statusIndicatorMode = .lang
                 case .symbolic, .numeric:
-                    candidatePaneView?.filterMode = .shape
+                    candidatePaneView?.statusIndicatorMode = .shape
                 default: ()
                 }
                 _keyboardType = newValue

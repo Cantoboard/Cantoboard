@@ -12,12 +12,62 @@ protocol CandidateCollectionViewDelegate: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didLongPressItemAt indexPath: IndexPath)
 }
 
+class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    private weak var candidatePaneView: CandidatePaneView?
+    
+    init(candidatePaneView: CandidatePaneView) {
+        self.candidatePaneView = candidatePaneView
+        super.init()
+        sectionHeadersPinToVisibleBounds = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let allAttributes = super.layoutAttributesForElements(in: rect) ?? []
+        
+        for attributes in allAttributes {
+            if attributes.representedElementKind == UICollectionView.elementKindSectionHeader {
+                fixHeaderPosition(attributes)
+            }
+        }
+        
+        return allAttributes
+    }
+    
+    override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = super.layoutAttributesForSupplementaryView(ofKind: elementKind, at: indexPath)
+        if let attributes = attributes, elementKind == UICollectionView.elementKindSectionHeader {
+            fixHeaderPosition(attributes)
+        }
+        return attributes
+    }
+    
+    private func fixHeaderPosition(_ headerAttributes: UICollectionViewLayoutAttributes) {
+        guard let candidatePaneView = candidatePaneView else { return }
+        
+        var headerSize = CGSize(width: candidatePaneView.sectionHeaderWidth, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        let section = headerAttributes.indexPath.section
+        let numOfItemsInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+        var origin = headerAttributes.frame.origin
+        if numOfItemsInSection > 0,
+           let rectOfLastItemInSection = layoutAttributesForItem(at: [section, numOfItemsInSection - 1]) {
+            origin.y = min(origin.y, rectOfLastItemInSection.frame.maxY - headerSize.height)
+            // Expand the header to cover the whole section vertically.
+            headerSize.height = rectOfLastItemInSection.frame.maxY - origin.y
+        }
+        headerAttributes.frame = CGRect(origin: origin, size: headerSize)
+    }
+}
+
 // This is the UICollectionView inside CandidatePaneView.
 class CandidateCollectionView: UICollectionView {
     private static let longPressDelay: Double = 1
     private static let longPressMovement: CGFloat = 10
     
-    var scrollOnLayoutSubviews: (() -> Void)?
+    var scrollOnLayoutSubviews: (() -> Bool)?
     var didLayoutSubviews: ((UICollectionView) -> Void)?
     
     private var longPressTimer: Timer?
@@ -26,8 +76,9 @@ class CandidateCollectionView: UICollectionView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        scrollOnLayoutSubviews?()
-        scrollOnLayoutSubviews = nil
+        if scrollOnLayoutSubviews?() ?? false {
+            scrollOnLayoutSubviews = nil
+        }
         
         didLayoutSubviews?(self)
     }
@@ -103,7 +154,7 @@ class CandidateCell: UICollectionViewCell {
         super.init(frame: .zero)
     }
     
-    func initLabel(_ text: String, _ comment: String?, showComment: Bool) {
+    func setup(_ text: String, _ comment: String?, showComment: Bool) {
         let layoutConstants = LayoutConstants.forMainScreen
         self.showComment = showComment
         
@@ -151,10 +202,10 @@ class CandidateCell: UICollectionViewCell {
             commentLayer = nil
         }
         
-        layoutTextLayers(bounds)
+        layout(bounds)
     }
     
-    func deinitLabel() {
+    func free() {
         label?.text = nil
         label?.removeFromSuperview()
         label = nil
@@ -171,10 +222,15 @@ class CandidateCell: UICollectionViewCell {
     }
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
-        layoutTextLayers(layoutAttributes.bounds)
+        layout(layoutAttributes.bounds)
     }
     
-    private func layoutTextLayers(_ bounds: CGRect) {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        keyHintLayer?.layout(insets: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
+    }
+    
+    private func layout(_ bounds: CGRect) {
         let layoutConstants = LayoutConstants.forMainScreen
 
         label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize)
@@ -193,11 +249,6 @@ class CandidateCell: UICollectionViewCell {
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        keyHintLayer?.layout(insets: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
-    }
-    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
@@ -207,5 +258,122 @@ class CandidateCell: UICollectionViewCell {
         if let commentLayer = commentLayer {
             commentLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
         }
+    }
+}
+
+class CandidateSegmentControlCell: UICollectionViewCell {
+    static var reuseId: String = "CandidateGroupBySegmentControl"
+    
+    weak var segmentControl: UISegmentedControl?
+    var groupByModes: [GroupByMode]?
+    var onSelectionChanged: ((_ groupByMode: GroupByMode) -> Void)?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    func setup(groupByModes: [GroupByMode], selectedGroupByMode: GroupByMode, onSelectionChanged: ((_ groupByMode: GroupByMode) -> Void)?) {
+        self.onSelectionChanged = onSelectionChanged
+        
+        if segmentControl == nil {
+            let segmentControl = UISegmentedControl()
+            addSubview(segmentControl)
+            segmentControl.addTarget(self, action: #selector(onSegmentControlChange), for: .valueChanged)
+            self.segmentControl = segmentControl
+        }
+        
+        guard let segmentControl = segmentControl, segmentControl.numberOfSegments != groupByModes.count else { return }
+        
+        segmentControl.removeAllSegments()
+        self.groupByModes = groupByModes
+        for i in 0..<groupByModes.count {
+            segmentControl.insertSegment(withTitle: groupByModes[i].title, at: i, animated: false)
+            if groupByModes[i] == selectedGroupByMode {
+                segmentControl.selectedSegmentIndex = i
+            }
+        }
+    }
+    
+    func update(selectedGroupByMode: GroupByMode) {
+        guard let groupByModes = groupByModes else { return }
+        for i in 0..<groupByModes.count {
+            if groupByModes[i] == selectedGroupByMode {
+                segmentControl?.selectedSegmentIndex = i
+            }
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        layout(layoutAttributes.bounds)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layout(bounds)
+    }
+    
+    private func layout(_ bounds: CGRect) {
+        segmentControl?.frame = bounds.inset(by: UIEdgeInsets(top: 0, left: 4, bottom: 4, right: 4))
+    }
+    
+    @objc private func onSegmentControlChange() {
+        guard let segmentControl = segmentControl,
+              let selectedGroupByMode = groupByModes?[safe: segmentControl.selectedSegmentIndex]
+              else { return }
+        
+        onSelectionChanged?(selectedGroupByMode)
+    }
+}
+
+class CandidateSectionHeader: UICollectionReusableView {
+    static var reuseId: String = "CandidateSectionHeader"
+    weak var textLayer: UILabel?
+    
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
+        backgroundColor = ButtonColor.systemKeyBackgroundColor
+    }
+    
+    func setup(_ text: String) {
+        if textLayer == nil {
+            let textLayer = UILabel()
+            self.textLayer = textLayer
+            addSubview(textLayer)
+            textLayer.textAlignment = .center
+            textLayer.baselineAdjustment = .alignCenters
+            textLayer.adjustsFontSizeToFitWidth = true
+        }
+        
+        textLayer?.text = text
+        
+        layout(bounds)
+    }
+    
+    func free() {
+        textLayer?.removeFromSuperview()
+        textLayer = nil
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        layout(layoutAttributes.bounds)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layout(bounds)
+    }
+    
+    private func layout(_ bounds: CGRect) {
+        let layoutConstants = LayoutConstants.forMainScreen
+        let size = CGSize(width: bounds.width, height: layoutConstants.autoCompleteBarHeight)
+        textLayer?.frame = CGRect(origin: .zero, size: size).insetBy(dx: 4, dy: 0)
     }
 }

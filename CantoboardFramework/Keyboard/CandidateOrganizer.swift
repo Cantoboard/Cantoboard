@@ -7,6 +7,18 @@
 
 import Foundation
 
+enum GroupByMode {
+    case byFrequency
+    case byRomanization
+    
+    var title: String {
+        switch self {
+        case .byFrequency: return "頻率"
+        case .byRomanization: return "粵拼"
+        }
+    }
+}
+
 protocol CandidateSource: class {
     func updateCandidates(reload: Bool)
     func getNumberOfSections() -> Int
@@ -14,14 +26,19 @@ protocol CandidateSource: class {
     func selectCandidate(indexPath: IndexPath) -> String?
     func getCandidateComment(indexPath: IndexPath) -> String?
     func getCandidateCount(section: Int) -> Int
+    func getSectionHeader(section: Int) -> String?
+    var supportedGroupByModes: [GroupByMode] { get }
+    var groupByMode: GroupByMode { get set }
 }
 
 class InputEngineCandidateSource: CandidateSource {
-    private var candidatePaths:[CandidatePath] = []
+    private var candidatePaths: [[CandidatePath]] = []
+    private var sectionHeaders: [String] = []
     private var curRimeCandidateIndex = 0
     private var hasLoadedAllBestRimeCandidates = false
     private var hasPopulatedPrefectEnglishCandidates = false, hasPopulatedBestEnglishCandidates = false, hasPopulatedWorstEnglishCandidates = false
     private weak var inputController: InputController?
+    private var _groupByMode = GroupByMode.byFrequency
 
     init(inputController: InputController) {
         self.inputController = inputController
@@ -31,6 +48,7 @@ class InputEngineCandidateSource: CandidateSource {
         curRimeCandidateIndex = 0
         
         candidatePaths = []
+        sectionHeaders = []
         
         hasLoadedAllBestRimeCandidates = false
         hasPopulatedPrefectEnglishCandidates = false
@@ -39,18 +57,28 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     private func populateCandidates() {
+        switch groupByMode {
+        case .byFrequency: populateCandidatesByFreq()
+        case .byRomanization: populateCandidatesByRomanization()
+        }
+    }
+    
+    private func populateCandidatesByFreq() {
         guard let inputController = inputController else { return }
         let inputEngine = inputController.inputEngine
-        
         let isReverseLookupMode = inputEngine.reverseLookupSchemaId != nil
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || isReverseLookupMode
         let isEnglishActive = Settings.cached.lastInputMode != .chinese && !isInRimeOnlyMode
         let englishCandidates = inputEngine.englishCandidates
         
+        if candidatePaths.isEmpty {
+            candidatePaths.append([])
+        }
+        
         // If input is an English word, insert best English candidates first.
         if !hasPopulatedPrefectEnglishCandidates && isEnglishActive {
             for i in 0..<inputEngine.englishPrefectCandidatesStartIndex {
-                candidatePaths.append(CandidatePath(source: .english, index: i))
+                candidatePaths[0].append(CandidatePath(source: .english, index: i))
             }
             hasPopulatedPrefectEnglishCandidates = true
         }
@@ -78,7 +106,8 @@ class InputEngineCandidateSource: CandidateSource {
                 break
             }
             
-            addCurrentRimeCandidate(candidate)
+            candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
+            curRimeCandidateIndex += 1
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
@@ -87,37 +116,80 @@ class InputEngineCandidateSource: CandidateSource {
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishPrefectCandidatesStartIndex..<inputEngine.englishWorstCandidatesStartIndex {
-                candidatePaths.append(CandidatePath(source: .english, index: i))
+                candidatePaths[0].append(CandidatePath(source: .english, index: i))
             }
             hasPopulatedBestEnglishCandidates = true
         }
         
         // Populate remaining Rime candidates.
         while Settings.cached.lastInputMode != .english && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
-            guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else { continue }
-            addCurrentRimeCandidate(candidate)
+            candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
+            curRimeCandidateIndex += 1
         }
         
         // Populate worst English candidates.
         if (inputController.inputMode == .english || inputEngine.hasRimeLoadedAllCandidates) && !hasPopulatedWorstEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishWorstCandidatesStartIndex..<englishCandidates.count {
-                candidatePaths.append(CandidatePath(source: .english, index: i))
+                candidatePaths[0].append(CandidatePath(source: .english, index: i))
             }
             hasPopulatedWorstEnglishCandidates = true
         }
     }
     
-    private func addCandidate(_ candidateText: String, source: CandidatePath.Source, index: Int) {
-        candidatePaths.append(CandidatePath(source: source, index: index))
-    }
-    
-    private func addCurrentRimeCandidate(_ candidateText: String) {
-        addCandidate(candidateText, source: .rime, index: curRimeCandidateIndex)
-        curRimeCandidateIndex += 1
+    private func populateCandidatesByRomanization() {
+        guard let inputController = inputController, inputController.inputMode != .english else { return }
+        let inputEngine = inputController.inputEngine
+        
+        while inputEngine.loadMoreRimeCandidates() {}
+        
+        var sections: [String] = []
+        var candidateCount = Dictionary<String, Int>()
+        var candidateGroupByRomanization = Dictionary<String, [Int]>()
+        for i in 0..<inputEngine.rimeLoadedCandidatesCount {
+            guard let romanization = inputEngine.getRimeCandidateComment(i) else { continue }
+            let firstCharRomanization = String(romanization.prefix(while: { $0 != " " }))
+            
+            if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
+                candidateGroupByRomanization[firstCharRomanization] = []
+                candidateCount[firstCharRomanization] = 0
+                sections.append(firstCharRomanization)
+            }
+            candidateGroupByRomanization[firstCharRomanization]?.append(i)
+            candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
+        }
+        
+        sections.sort()
+        
+        // Merge single buckets.
+        var indicesOfHeadersToRemove = Set<Int>()
+        for i in 0..<sections.count {
+            let header = sections[i]
+            guard candidateCount[header] == 1 else { continue }
+            
+            indicesOfHeadersToRemove.insert(i)
+            let newHeader = String(header.first!)
+            if !candidateGroupByRomanization.keys.contains(newHeader) {
+                candidateGroupByRomanization[newHeader] = []
+                sections.append(newHeader)
+            }
+            if let candidateIndices = candidateGroupByRomanization[header] {
+                candidateGroupByRomanization[newHeader]?.append(contentsOf: candidateIndices)
+            }
+        }
+        
+        sectionHeaders = []
+        for i in 0..<sections.count {
+            let header = sections[i]
+            guard !indicesOfHeadersToRemove.contains(i),
+                  let candidates = candidateGroupByRomanization[header]?.map({ CandidatePath(source: .rime, index: $0) }) else { continue }
+            candidatePaths.append(candidates)
+            sectionHeaders.append(header)
+        }
     }
     
     func updateCandidates(reload: Bool) {
-        guard let inputEngine = inputController?.inputEngine else { return }
+        guard let inputEngine = inputController?.inputEngine,
+              reload || groupByMode == .byFrequency else { return }
         if reload { resetCandidates() }
         
         if inputController?.inputEngine.rimeLoadedCandidatesCount == 0 || !reload { _ = inputEngine.loadMoreRimeCandidates() }
@@ -125,11 +197,14 @@ class InputEngineCandidateSource: CandidateSource {
     }
 
     func getNumberOfSections() -> Int {
-        return 1
+        return candidatePaths.count
+    }
+    
+    func getSectionHeader(section: Int) -> String? {
+        return sectionHeaders[safe: section]
     }
     
     func getCandidate(indexPath: IndexPath) -> String? {
-        guard indexPath.section == 0 && indexPath.row < candidatePaths.count else { return nil }
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
         switch candidatePath.source {
@@ -139,11 +214,10 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     private func getCandidatePath(indexPath: IndexPath) -> CandidatePath? {
-        return candidatePaths[safe: indexPath.row]
+        return candidatePaths[safe: indexPath.section]?[safe: indexPath.row]
     }
     
     func selectCandidate(indexPath: IndexPath) -> String? {
-        guard indexPath.section == 0 && indexPath.row < candidatePaths.count else { return nil }
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
         switch candidatePath.source {
@@ -153,7 +227,6 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     func getCandidateComment(indexPath: IndexPath) -> String? {
-        guard indexPath.section == 0 && indexPath.row < candidatePaths.count else { return nil }
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
         switch candidatePath.source {
@@ -163,9 +236,20 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     func getCandidateCount(section: Int) -> Int {
-        guard section == 0 else { return 0 }
-        
-        return candidatePaths.count
+        return candidatePaths[safe: section]?.count ?? 0
+    }
+    
+    var supportedGroupByModes: [GroupByMode] {
+        [ GroupByMode.byFrequency, GroupByMode.byRomanization ]
+    }
+    
+    var groupByMode: GroupByMode {
+        get { _groupByMode }
+        set {
+            guard newValue != _groupByMode else { return }
+            _groupByMode = newValue
+            updateCandidates(reload: true)
+        }
     }
 }
 
@@ -181,6 +265,10 @@ class AutoSuggestionCandidateSource: CandidateSource {
     
     func getNumberOfSections() -> Int {
         return 1
+    }
+    
+    func getSectionHeader(section: Int) -> String? {
+        return nil
     }
     
     func getCandidate(indexPath: IndexPath) -> String? {
@@ -199,6 +287,10 @@ class AutoSuggestionCandidateSource: CandidateSource {
     func getCandidateCount(section: Int) -> Int {
         return candidates.count
     }
+    
+    var supportedGroupByModes: [GroupByMode] { [ .byFrequency ] }
+    
+    var groupByMode: GroupByMode = .byFrequency
 }
 
 struct CandidatePath {
@@ -243,7 +335,7 @@ class CandidateOrganizer {
     }
     
     func requestMoreCandidates(section: Int) {
-        guard section == 0 else { return }
+        guard section == 0, !(inputController?.inputEngine.hasRimeLoadedAllCandidates ?? false) else { return }
         updateCandidates(reload: false)
     }
     
@@ -299,10 +391,23 @@ class CandidateOrganizer {
         return candidateSource?.getCandidateCount(section: section) ?? 0
     }
     
+    func getSectionHeader(section: Int) -> String? {
+        return candidateSource?.getSectionHeader(section: section)
+    }
+    
     var shouldCloseCandidatePaneOnCommit: Bool {
         candidateSource === Self.fullWidthArabicDigitCandidateSource ||
         candidateSource === Self.fullWidthLowerDigitCandidateSource ||
         candidateSource === Self.fullWidthUpperDigitCandidateSource ||
         candidateSource === Self.halfWidthDigitCandidateSource
+    }
+    
+    var supportedGroupByModes: [GroupByMode] {
+        candidateSource?.supportedGroupByModes ?? [ .byFrequency ]
+    }
+    
+    var groupByMode: GroupByMode {
+        get { candidateSource?.groupByMode ?? .byFrequency }
+        set { candidateSource?.groupByMode = newValue }
     }
 }
