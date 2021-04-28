@@ -121,7 +121,7 @@ class CandidateCell: UICollectionViewCell {
         label?.text = text
         
         let keyCap = KeyCap(stringLiteral: text)
-        if let hintText = keyCap.buttonHint {
+        if let hintText = keyCap.barHint {
             if keyHintLayer == nil {
                 let keyHintLayer = KeyHintLayer()
                 self.keyHintLayer = keyHintLayer

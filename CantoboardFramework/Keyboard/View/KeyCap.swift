@@ -216,14 +216,20 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .reverseLookup: return "反"
         case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
+        case .charForm(let cs): return Settings.cached.charForm == cs ? "*" : nil
+        case .space: return "Cantoboard"
+        default: return barHint
+        }
+    }
+    
+    var barHint: String? {
+        switch self {
         case "，", "。", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
              "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉",
              "￠", "＄", "€", "￡", "￥", "￦", "₽", "＂", "＇": return "全"
-        case .charForm(let cs): return Settings.cached.charForm == cs ? "*" : nil
-        case .space: return "Cantoboard"
         default: return nil
         }
     }
