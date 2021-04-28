@@ -93,7 +93,7 @@ open class KeyboardViewController: UIInputViewController {
         
         reloadSettings()
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(onNSExtensionHostDidBecomeActive), name: NSNotification.Name.NSExtensionHostDidBecomeActive, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.onNSExtensionHostDidBecomeActive), name: NSNotification.Name.NSExtensionHostDidBecomeActive, object: nil)
         
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
