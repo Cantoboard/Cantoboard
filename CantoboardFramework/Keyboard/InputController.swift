@@ -158,6 +158,7 @@ class InputController {
         
         needClearInput = false
         let isComposing = inputEngine.isComposing
+        var needFileUnlock = false
         
         switch action {
         case .moveCursorForward, .moveCursorBackward:
@@ -182,6 +183,7 @@ class InputController {
             _ = inputEngine.processRimeChar(rc.rawValue)
         case .space:
             handleSpace()
+            needFileUnlock = true
         case .newLine:
             if !insertComposingText(shouldDisableSmartSpace: true) {
                 insertText("\n")
@@ -249,14 +251,22 @@ class InputController {
             return
         case .selectCandidate(let choice):
             candidateSelected(choice: choice, enableSmartSpace: true)
+            needFileUnlock = true
         case .longPressCandidate(let choice):
             candidateLongPressed(choice: choice)
+            needFileUnlock = true
         default: ()
         }
         if needClearInput {
             clearInput()
         } else {
             updateInputState()
+        }
+        
+        if needFileUnlock {
+            DispatchQueue.global(qos: .background).async {
+                FileUnlocker.unlockAllOpenedFiles()
+            }
         }
     }
     

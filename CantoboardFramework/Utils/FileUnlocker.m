@@ -14,7 +14,8 @@
 
 // Unlock all opened FDs to prevent iOS from killing us on suspension.
 + (void)unlockAllOpenedFiles {
-    NSLog(@"unlockAllOpenedFiles");
+    // NSLog(@"unlockAllOpenedFiles");
+    id activity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityIdleSystemSleepDisabled reason:@"unlockAllOpenedFiles"];
     for (int fd = 0; fd < (int) FD_SETSIZE; fd++) {        
         struct flock unlock;
         unlock.l_type = F_UNLCK;
@@ -25,6 +26,7 @@
         // int ret = fcntl(fd, F_SETLK, &unlock);
         // if (ret >= 0) NSLog(@"Unlocked fd %d", fd);
     }
+    [NSProcessInfo.processInfo endActivity:activity];
 }
 
 @end

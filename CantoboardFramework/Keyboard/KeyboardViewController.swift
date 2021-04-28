@@ -45,14 +45,24 @@ open class KeyboardViewController: UIInputViewController {
                     self.keyboardView?.isEnabled = true
                 }
             }
-            DispatchQueue.global(qos: .background).async {
-                FileUnlocker.unlockAllOpenedFiles()
-            }
+            FileUnlocker.unlockAllOpenedFiles()
             return false
         })
         
         inputController = InputController(keyboardViewController: self)
+        // unlockAllOpenedFiles()
     }
+    
+    /*
+    private func unlockAllOpenedFiles() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            FileUnlocker.unlockAllOpenedFiles()
+            // Run unlockAllOpenedFiles every minute to avoid iOS killing us for 0xdead10cc.
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 60, execute: self.unlockAllOpenedFiles)
+        }
+    }
+    */
     
     private func fetchLog() -> [String] {
         let appContainerPath = NSHomeDirectory()
@@ -177,7 +187,6 @@ open class KeyboardViewController: UIInputViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         DispatchQueue.global(qos: .background).async {
-            // NSLog("Unlocking all open files on viewDidAppear.")
             FileUnlocker.unlockAllOpenedFiles()
         }
     }
@@ -185,7 +194,9 @@ open class KeyboardViewController: UIInputViewController {
     public override func viewDidDisappear(_ animated: Bool) {
         inputController.clearState()
         super.viewDidDisappear(animated)
-        FileUnlocker.unlockAllOpenedFiles()
+        DispatchQueue.global(qos: .background).async {
+            FileUnlocker.unlockAllOpenedFiles()
+        }
     }
     
     private func showLogs(_ logs: [String]) {
