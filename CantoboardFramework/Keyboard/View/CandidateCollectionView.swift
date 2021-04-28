@@ -25,6 +25,18 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override var collectionViewContentSize: CGSize {
+        var contentSize = super.collectionViewContentSize
+        if let collectionView = collectionView,
+           let candidatePaneView = candidatePaneView,
+           candidatePaneView.mode == .table && candidatePaneView.groupByEnabled &&
+           contentSize.height <= collectionView.bounds.height {
+            // Expand the content size to let user to scroll upward to see the segment control.
+            contentSize.height = collectionView.bounds.height + 1
+        }
+        return contentSize
+    }
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let allAttributes = super.layoutAttributesForElements(in: rect) ?? []
         
@@ -46,11 +58,15 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     private func fixHeaderPosition(_ headerAttributes: UICollectionViewLayoutAttributes) {
-        guard let candidatePaneView = candidatePaneView else { return }
+        guard let candidatePaneView = candidatePaneView,
+              let collectionView = collectionView
+            else { return }
+        
+        let section = headerAttributes.indexPath.section
+        guard section < collectionView.numberOfSections else { return }
         
         var headerSize = CGSize(width: candidatePaneView.sectionHeaderWidth, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
-        let section = headerAttributes.indexPath.section
-        let numOfItemsInSection = collectionView?.numberOfItems(inSection: section) ?? 0
+        let numOfItemsInSection = collectionView.numberOfItems(inSection: section)
         var origin = headerAttributes.frame.origin
         if numOfItemsInSection > 0,
            let rectOfLastItemInSection = layoutAttributesForItem(at: [section, numOfItemsInSection - 1]) {
@@ -317,7 +333,7 @@ class CandidateSegmentControlCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
-        segmentControl?.frame = bounds.inset(by: UIEdgeInsets(top: 0, left: 4, bottom: 4, right: 4))
+        segmentControl?.frame = bounds.inset(by: UIEdgeInsets(top: 6, left: 8, bottom: 8, right: 6))
     }
     
     @objc private func onSegmentControlChange() {

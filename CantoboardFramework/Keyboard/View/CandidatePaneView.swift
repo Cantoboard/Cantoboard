@@ -92,6 +92,9 @@ class CandidatePaneView: UIControl {
                 DispatchQueue.main.async {
                     guard let self = self, candidateOrganizer.groupByMode == .byFrequency else { return }
                     let section = self.groupByEnabled ? 1 : 0
+                    
+                    guard section < self.collectionView.numberOfSections else { return }
+                    
                     let newIndiceStart = self.collectionView.numberOfItems(inSection: section)
                     let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
                     
@@ -118,7 +121,10 @@ class CandidatePaneView: UIControl {
                     
                     UIView.performWithoutAnimation {
                         self.collectionView.scrollOnLayoutSubviews = {
-                            self.collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
+                            let y = self.groupByEnabled ? LayoutConstants.forMainScreen.autoCompleteBarHeight : 0
+                            
+                            self.collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+                            
                             return true
                         }
                         self.collectionView.reloadData()
@@ -379,20 +385,32 @@ extension CandidatePaneView {
             } else {
                 sectionOffset = 0
             }
-            let scrollToIndexPathAfterTranslation = IndexPath(row: scrollToIndexPath.row, section: scrollToIndexPath.section + sectionOffset)
+            let scrollToSection = scrollToIndexPath.section + sectionOffset
+            let scrollToIndexPathAfterTranslation = IndexPath(row: scrollToIndexPath.row, section: scrollToSection)
             
-            collectionView.scrollOnLayoutSubviews = {
-                guard let collectionView = self.collectionView else { return false }
-                
-                let numberOfItems = collectionView.numberOfItems(inSection: scrollToIndexPathAfterTranslation.section)
-                guard numberOfItems > scrollToIndexPathAfterTranslation.row else { return false }
-                
-                collectionView.scrollToItem(
-                    at: scrollToIndexPathAfterTranslation,
-                    at: scrollToIndexPathDirection, animated: false)
-                
-                collectionView.showsVerticalScrollIndicator = scrollToIndexPathDirection == .top
-                return true
+            if mode == .table && groupByEnabled && scrollToSection == 1 && scrollToIndexPath.row == 0 {
+                collectionView.scrollOnLayoutSubviews = {
+                    let candindateBarHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
+                    
+                    self.collectionView.setContentOffset(CGPoint(x: 0, y: candindateBarHeight), animated: false)
+                    self.collectionView.showsVerticalScrollIndicator = true
+                    
+                    return true
+                }
+            } else {
+                collectionView.scrollOnLayoutSubviews = {
+                    guard let collectionView = self.collectionView else { return false }
+                    
+                    let numberOfItems = collectionView.numberOfItems(inSection: scrollToIndexPathAfterTranslation.section)
+                    guard numberOfItems > scrollToIndexPathAfterTranslation.row else { return false }
+                    
+                    collectionView.scrollToItem(
+                        at: scrollToIndexPathAfterTranslation,
+                        at: scrollToIndexPathDirection, animated: false)
+                    
+                    collectionView.showsVerticalScrollIndicator = scrollToIndexPathDirection == .top
+                    return true
+                }
             }
         }
         
@@ -488,7 +506,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         return cell
     }
     
-    private var groupByEnabled: Bool {
+    var groupByEnabled: Bool {
         mode == .table && (candidateOrganizer?.supportedGroupByModes.count ?? 0 > 1)
     }
     
@@ -506,7 +524,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
 extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if groupByEnabled && indexPath.section == 0 {
-            let height = CGFloat(35)
+            let height = LayoutConstants.forMainScreen.autoCompleteBarHeight
             let width = collectionView.bounds.width
             return CGSize(width: width, height: height)
         } else {
@@ -516,7 +534,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if hasNoHeader(section: section) {
-            return UIEdgeInsets.zero
+            return .zero
         } else {
             return UIEdgeInsets(top: 0, left: sectionHeaderWidth, bottom: 0, right: 0)
         }
@@ -528,7 +546,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         if hasNoHeader(section: section) {
-            return CGSize.zero
+            return .zero
         } else {
             // layoutAttributesForSupplementaryView() will move the section from the top to the left.
             return CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)
