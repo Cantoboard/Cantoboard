@@ -186,6 +186,12 @@ class EnglishInputEngine: InputEngine {
         
         if text == "i" { text = "I" }
         
+        if text.allSatisfy({ $0.isUppercase }) {
+            candidateSets.insert(text)
+            candidates.append(text)
+            prefectCandidatesStartIndex += 1
+        }
+        
         englishDictionaryWordsSet.forEach({ word in
             var word = word
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {

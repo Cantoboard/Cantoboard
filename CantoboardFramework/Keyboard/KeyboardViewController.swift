@@ -50,19 +50,17 @@ open class KeyboardViewController: UIInputViewController {
         })
         
         inputController = InputController(keyboardViewController: self)
-        // unlockAllOpenedFiles()
+        unlockAllOpenedFiles()
     }
     
-    /*
     private func unlockAllOpenedFiles() {
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self = self else { return }
             FileUnlocker.unlockAllOpenedFiles()
             // Run unlockAllOpenedFiles every minute to avoid iOS killing us for 0xdead10cc.
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 60, execute: self.unlockAllOpenedFiles)
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 10, execute: self.unlockAllOpenedFiles)
         }
     }
-    */
     
     private func fetchLog() -> [String] {
         let appContainerPath = NSHomeDirectory()
