@@ -28,7 +28,7 @@ xcuserdata/
 *.hmap
 *.ipa
 *.dSYM.zip
-*.dSYM
+#*.dSYM
 
 # Bundler
 .bundle
