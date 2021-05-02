@@ -45,21 +45,10 @@ open class KeyboardViewController: UIInputViewController {
                     self.keyboardView?.isEnabled = true
                 }
             }
-            FileUnlocker.unlockAllOpenedFiles()
             return false
         })
         
         inputController = InputController(keyboardViewController: self)
-        unlockAllOpenedFiles()
-    }
-    
-    private func unlockAllOpenedFiles() {
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self = self else { return }
-            FileUnlocker.unlockAllOpenedFiles()
-            // Run unlockAllOpenedFiles every minute to avoid iOS killing us for 0xdead10cc.
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 10, execute: self.unlockAllOpenedFiles)
-        }
     }
     
     private func fetchLog() -> [String] {
@@ -90,8 +79,8 @@ open class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         
         reloadSettings()
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.onNSExtensionHostDidBecomeActive), name: NSNotification.Name.NSExtensionHostDidBecomeActive, object: nil)
+        // let notificationCenter = NotificationCenter.default
+        // notificationCenter.addObserver(self, selector: #selector(self.onNSExtensionHostDidBecomeActive), name: NSNotification.Name.NSExtensionHostDidBecomeActive, object: nil)
         
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
@@ -182,19 +171,9 @@ open class KeyboardViewController: UIInputViewController {
         keyboardView = nil
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        DispatchQueue.global(qos: .background).async {
-            FileUnlocker.unlockAllOpenedFiles()
-        }
-    }
-    
     public override func viewDidDisappear(_ animated: Bool) {
         inputController.clearState()
         super.viewDidDisappear(animated)
-        DispatchQueue.global(qos: .background).async {
-            FileUnlocker.unlockAllOpenedFiles()
-        }
     }
     
     private func showLogs(_ logs: [String]) {

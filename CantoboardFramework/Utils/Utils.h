@@ -16,8 +16,4 @@
 + (bool)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dbPath;
 @end
 
-@interface FileUnlocker: NSObject
-+ (void)unlockAllOpenedFiles;
-@end
-
 #endif /* Utils_h */

@@ -46,7 +46,6 @@
 		79B9B5ED25F34A1200238E80 /* RimeKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58325F34A1200238E80 /* RimeKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58425F34A1200238E80 /* RKRimeApi.m */; };
 		79B9B5F125F34A1200238E80 /* RKUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B58725F34A1200238E80 /* RKUtils.h */; };
-		79B9B5F225F34A1200238E80 /* FileUnlocker.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58825F34A1200238E80 /* FileUnlocker.m */; };
 		79B9B5F325F34A1200238E80 /* RKRimeSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58925F34A1200238E80 /* RKRimeSession.m */; };
 		79B9B5F425F34A1200238E80 /* RimeApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58C25F34A1200238E80 /* RimeApi.swift */; };
 		79B9B5F525F34A1200238E80 /* EnglishInputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58D25F34A1200238E80 /* EnglishInputEngine.swift */; };
@@ -278,7 +277,6 @@
 		79B9B58325F34A1200238E80 /* RimeKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RimeKit.h; sourceTree = "<group>"; };
 		79B9B58425F34A1200238E80 /* RKRimeApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKRimeApi.m; sourceTree = "<group>"; };
 		79B9B58725F34A1200238E80 /* RKUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKUtils.h; sourceTree = "<group>"; };
-		79B9B58825F34A1200238E80 /* FileUnlocker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileUnlocker.m; sourceTree = "<group>"; };
 		79B9B58925F34A1200238E80 /* RKRimeSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKRimeSession.m; sourceTree = "<group>"; };
 		79B9B58C25F34A1200238E80 /* RimeApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RimeApi.swift; sourceTree = "<group>"; };
 		79B9B58D25F34A1200238E80 /* EnglishInputEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnglishInputEngine.swift; sourceTree = "<group>"; };
@@ -460,7 +458,6 @@
 		79515AB72609AF3F00D29A5C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				79B9B58825F34A1200238E80 /* FileUnlocker.m */,
 				79515A7D2609AA1500D29A5C /* LevelDbTable.mm */,
 				79515AB82609AF5D00D29A5C /* Utils.h */,
 				791DE95A263250F500AFA033 /* SwiftLCS.swift */,
@@ -1096,7 +1093,6 @@
 				79607A65260FF09200E23D33 /* String+Extension.swift in Sources */,
 				79B9B5FC25F34A1200238E80 /* Collection+Extension.swift in Sources */,
 				79B9B5FF25F34A1200238E80 /* UIEdgeInsets+Extension.swift in Sources */,
-				79B9B5F225F34A1200238E80 /* FileUnlocker.m in Sources */,
 				79B9B5F825F34A1200238E80 /* BilingualInputEngine.swift in Sources */,
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,

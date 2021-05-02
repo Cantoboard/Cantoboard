@@ -40,8 +40,6 @@ using namespace std;
     
     NSLog(@"Opened English dictionary at %@.", dbPath);
     
-    [FileUnlocker unlockAllOpenedFiles];
-    
     return self;
 }
 
