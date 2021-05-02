@@ -1,6 +1,12 @@
 #!/bin/sh
+
+if [ -z "$LIBRIME_ROOT" ]; then
+echo "Please set LIBRIME_ROOT to point to the librime dir."
+exit 0
+fi
+
 LIB_NAME=Rime
-DYLIBS="src/librime.1.7.3.dylib"
+DYLIBS="$LIBRIME_ROOT/dist/lib/librime.1.7.3.dylib"
 SOURCE_INFO_PLIST="src/Info.plist"
 OUT_DIR="."
 
@@ -16,8 +22,4 @@ lipo $DYLIBS -output "$OUT_DYLIB" -create
 install_name_tool -id @rpath/$LIB_NAME.framework/$LIB_NAME "$OUT_DYLIB"
 
 # set the DYLIBS and SOURCE_INFO_PLIST for DSYM
-OUT_DSYM_PATH="$FW_PATH.dSYM/Contents/Resources/DWARF"
-INFO_PLIST="$FW_PATH.dSYM/Contents/Info.plist"
-mkdir -p "$OUT_DSYM_PATH"
-cp "$SOURCE_INFO_PLIST" "$INFO_PLIST"
-lipo $DYLIBS -output "$OUT_DSYM_PATH/$LIB_NAME" -create
+dsymutil "$OUT_DYLIB" --out "$FW_PATH.dSYM"
