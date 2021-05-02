@@ -466,8 +466,7 @@ class InputController {
             hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Remove leading smart space if:
             // English" "(中/.)
-            if (last2CharsInDoc.first?.isEnglishLetter ?? false) && textBeingInserted.first!.isChineseChar ||
-               (last2CharsInDoc.first?.isLetter ?? false) && textBeingInserted.first!.isPunctuation ||
+            if (last2CharsInDoc.first?.isEnglishLetter ?? false) && !textBeingInserted.first!.isEnglishLetter ||
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 NSLog("Should remove smart space. last2CharsInDoc '\(last2CharsInDoc)'")
