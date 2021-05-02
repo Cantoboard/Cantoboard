@@ -88,7 +88,7 @@ class EnglishInputEngine: InputEngine {
     }
     static var userDictionary = UserDictionary()
     
-    private static let highFreqSuffixes = ["'m", "'t", "let's", "he's", "'ve", "'re"]
+    private static let highFreqSuffixes = ["'m", "'t", "let's", "he's", "'ve", "'re", "what's"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
