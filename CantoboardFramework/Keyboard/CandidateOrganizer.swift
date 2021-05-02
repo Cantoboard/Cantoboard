@@ -158,15 +158,17 @@ class InputEngineCandidateSource: CandidateSource {
             candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
         }
         
-        sections.sort()
-        
         // Merge single buckets.
-        var indicesOfHeadersToRemove = Set<Int>()
+        var headersToRemove = Set<String>()
         for i in 0..<sections.count {
             let header = sections[i]
             guard candidateCount[header] == 1 else { continue }
             
-            indicesOfHeadersToRemove.insert(i)
+            // If there are slibling romainization, do not merge the bucket.
+            let headerWithoutTone = header.prefix(header.count - 1)
+            guard sections.filter({ $0.starts(with: headerWithoutTone) }).count == 1 else { continue }
+            
+            headersToRemove.insert(header)
             let newHeader = String(header.first!)
             if !candidateGroupByRomanization.keys.contains(newHeader) {
                 candidateGroupByRomanization[newHeader] = []
@@ -177,10 +179,21 @@ class InputEngineCandidateSource: CandidateSource {
             }
         }
         
+        // Show exact match (without tones) first. The rest in alphabetical order.
+        let composingTextEnglishSuffix = inputEngine.rimeComposition?.text.filter({ $0.isEnglishLetter }).lowercased() ?? ""
+        let bestSections = sections.filter({ composingTextEnglishSuffix.starts(with: $0.withoutTailingDigit) }).sorted(by: { a, b in
+            if a.count == b.count {
+                return a.compare(b) == .orderedAscending
+            } else {
+                return a.count > b.count
+            }
+        })
+        sections = bestSections + sections.filter({ !composingTextEnglishSuffix.starts(with: $0.withoutTailingDigit) }).sorted()
+        
         sectionHeaders = []
         for i in 0..<sections.count {
             let header = sections[i]
-            guard !indicesOfHeadersToRemove.contains(i),
+            guard !headersToRemove.contains(header),
                   let candidates = candidateGroupByRomanization[header]?.map({ CandidatePath(source: .rime, index: $0) }) else { continue }
             candidatePaths.append(candidates)
             sectionHeaders.append(header)
@@ -338,12 +351,6 @@ class CandidateOrganizer {
         guard section == 0, !(inputController?.inputEngine.hasRimeLoadedAllCandidates ?? false) else { return }
         updateCandidates(reload: false)
     }
-    
-    /*var groupBy: GroupBy = .frequency {
-        didSet {
-            
-        }
-    }*/
     
     func updateCandidates(reload: Bool) {
         if let inputController = inputController,

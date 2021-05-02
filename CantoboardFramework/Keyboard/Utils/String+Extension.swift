@@ -45,4 +45,13 @@ extension String {
         }
         return casedMorphedText
     }
+    
+    var withoutTailingDigit: String {
+        if self.isEmpty { return "" }
+        if self.last!.isNumber && self.last!.isASCII {
+            return String(self.prefix(count - 1))
+        } else {
+            return self
+        }
+    }
 }
