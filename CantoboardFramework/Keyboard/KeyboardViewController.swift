@@ -8,7 +8,41 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
+private class LogFormatter: NSObject, DDLogFormatter {
+    let dateFormatter: DateFormatter
+
+    override init() {
+        dateFormatter = DateFormatter()
+        dateFormatter.formatterBehavior = .behavior10_4
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss:SSS"
+
+        super.init()
+    }
+    func format(message logMessage: DDLogMessage) -> String? {
+        let dateAndTime = dateFormatter.string(from: logMessage.timestamp)
+        return "\(dateAndTime) [\(logMessage.fileName):\(logMessage.line)]: \(logMessage.message)"
+    }
+}
+
 open class KeyboardViewController: UIInputViewController {
+    private static let isLoggerInited = initLogger()
+        
+    private static func initLogger() -> Bool {
+        DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
+
+        let fileLogger: DDFileLogger = DDFileLogger() // File Logger
+        fileLogger.rollingFrequency = 60 * 60 * 24 // 24 hours
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        fileLogger.logFormatter = LogFormatter()
+        DDLog.add(fileLogger)
+        
+        DDASLLogCapture.start()
+        
+        return true
+    }
+    
     private var inputController: InputController!
     private(set) weak var keyboardView: KeyboardView?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
@@ -29,6 +63,8 @@ open class KeyboardViewController: UIInputViewController {
     }
 
     public override init(nibName: String?, bundle: Bundle?) {
+        _ = Self.isLoggerInited
+
         super.init(nibName: nibName, bundle: bundle)
         
         RimeApi.stateChangeCallbacks.append({ [weak self] rimeApi, newState in
@@ -37,11 +73,11 @@ open class KeyboardViewController: UIInputViewController {
             DispatchQueue.main.async {
                 if newState == .failure /*|| newState == .succeeded*/ {
                     let logs = self.fetchLog()
-                    NSLog("Rime Engine deployment failed. Log: \(logs)")
+                    DDLogInfo("Rime Engine deployment failed. Log: \(logs)")
                     self.showLogs(logs)
                 } else if let keyboardView = self.keyboardView,
                           newState == .succeeded && !keyboardView.isEnabled {
-                    NSLog("Enabling keyboard")
+                    DDLogInfo("Enabling keyboard")
                     self.keyboardView?.isEnabled = true
                 }
             }
@@ -61,10 +97,10 @@ open class KeyboardViewController: UIInputViewController {
         let warnLog = try? String(contentsOfFile: warnLogPath)
         let infoLog = try? String(contentsOfFile: infoLogPath)
         
-        NSLog("=== Rime logs ===")
-        NSLog("Error log:\n%@", errorLog ?? "")
-        NSLog("Warn log:\n%@", warnLog ?? "")
-        NSLog("Info log:\n%@", infoLog ?? "")
+        DDLogInfo("=== Rime logs ===")
+        DDLogInfo("Error log: \(errorLog ?? "")")
+        DDLogInfo("Warn log: \(warnLog ?? "")")
+        DDLogInfo("Info log: \(infoLog ?? "")")
         
         let log = ["=== Rime logs ===\n", "Error log:\n", errorLog ?? "", "Warn log:\n", warnLog ?? "", "Info log:\n", infoLog ?? ""]
         UIPasteboard.general.string = log.joined()
@@ -85,7 +121,7 @@ open class KeyboardViewController: UIInputViewController {
         heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
         heightConstraint?.priority = .defaultHigh
         heightConstraint?.isActive = true
-        // NSLog("viewDidLoad screen size \(UIScreen.main.bounds.size)")
+        // DDLogInfo("viewDidLoad screen size \(UIScreen.main.bounds.size)")
 
         createKeyboard()
         
@@ -113,7 +149,7 @@ open class KeyboardViewController: UIInputViewController {
         let newSize = toInterfaceOrientation.isPortrait ? CGSize(width: shortEdge, height: longEdge) : CGSize(width: longEdge, height: shortEdge)
         let nextKeyboardSize = LayoutConstants.getContants(screenSize: newSize).keyboardSize
         
-        // NSLog("willRotate New screen size \(newSize)")
+        // DDLogInfo("willRotate New screen size \(newSize)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
@@ -123,7 +159,7 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
-        // NSLog("didRotate New screen size \(UIScreen.main.bounds)")
+        // DDLogInfo("didRotate New screen size \(UIScreen.main.bounds)")
         
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
@@ -197,22 +233,22 @@ open class KeyboardViewController: UIInputViewController {
         if prevSettings.rimeSettings != settings.rimeSettings {
             RimeApi.generateSchemaPatchFromSettings()
             RimeApi.closeShared()
-            NSLog("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
+            DDLogInfo("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
         }
         
         if prevSettings.englishLocale != settings.englishLocale {
             EnglishInputEngine.language = settings.englishLocale.rawValue
-            NSLog("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
+            DDLogInfo("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
         }
         
         if prevSettings.charForm != settings.charForm {
             inputController.keyPressed(.setCharForm(settings.charForm))
-            NSLog("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
+            DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }
     }
     
     @objc private func onNSExtensionHostDidBecomeActive(_ notification: NSNotification) {
-        NSLog("Reloading settings onNSExtensionHostDidBecomeActive.")
+        DDLogInfo("Reloading settings onNSExtensionHostDidBecomeActive.")
         reloadSettings()
     }
 }

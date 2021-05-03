@@ -2,6 +2,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 class TouchHandler {
     enum InputMode: Equatable {
         case typing, backspacing, nextKeyboard, cursorMoving
@@ -49,7 +51,7 @@ class TouchHandler {
 
         let touchTuple = (touch, key, key.selectedAction)
         
-        // NSLog("touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
+        // DDLogInfo("touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
         
         keyRepeatCounter = 0
         
@@ -99,13 +101,13 @@ class TouchHandler {
     func touchMoved(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
         if keyRepeatTimer == nil { setupKeyRepeatTimer() }
         
-        // NSLog("touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
+        // DDLogInfo("touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         switch inputMode {
         case .backspacing:
             // Swipe left to delete word.
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
-                NSLog("TouchHandler is backspacing in but cursorMoveStartPosition is nil.")
+                DDLogInfo("TouchHandler is backspacing in but cursorMoveStartPosition is nil.")
                 return
             }
             let point = touch.location(in: keyboardView)
@@ -118,7 +120,7 @@ class TouchHandler {
             }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
-                NSLog("TouchHandler is cursorMoving in but cursorMoveStartPosition is nil.")
+                DDLogInfo("TouchHandler is cursorMoving in but cursorMoveStartPosition is nil.")
                 return
             }
             let point = touch.location(in: keyboardView)
@@ -183,7 +185,7 @@ class TouchHandler {
         let isCurrentTouch = currentTouch?.0 == touch
         let isShiftTouch = shiftTouch?.0 == touch
                
-        // NSLog("touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
+        // DDLogInfo("touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         guard isCurrentTouch || isShiftTouch else { return }
         defer {
@@ -248,7 +250,7 @@ class TouchHandler {
     }
     
     func touchCancelled(_ touch: UITouch, with event: UIEvent?) {
-        // NSLog("touchCancelled \(currentTouch?.0) \(touch)")
+        // DDLogInfo("touchCancelled \(currentTouch?.0) \(touch)")
         
         cancelKeyRepeatTimer()
         

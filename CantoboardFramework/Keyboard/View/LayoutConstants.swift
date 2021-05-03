@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 struct LayoutConstants {
     private static let portraitCandidateFontSize = CGFloat(22), landscapeCandidateFontSize = CGFloat(20.5)
     private static let portraitCandidateCommentFontSize = CGFloat(12), landscapeCandidateCommentFontSize = CGFloat(10)
@@ -250,7 +252,7 @@ extension LayoutConstants {
     static func getContants(screenSize: CGSize) -> LayoutConstants {
         // TODO instead of returning an exact match, return the nearest (floorKey?) match.
         guard let ret = layoutConstantsList[IntDuplet(Int(screenSize.width), Int(screenSize.height))] else {
-            NSLog("Cannot find constants for (%f, %f). Defaulting to (375, 812)", screenSize.width, screenSize.height)
+            DDLogInfo("Cannot find constants for (\(screenSize.width), \(screenSize.height)). Defaulting to (375, 812)")
             return layoutConstantsList.first!.value
         }
         

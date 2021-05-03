@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -129,6 +129,8 @@
 		79B9B6DA25F34B2D00238E80 /* CategoriesBottomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A625F34B2D00238E80 /* CategoriesBottomView.xib */; };
 		79B9B6DB25F34B2D00238E80 /* ISEmojiList_iOS11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A725F34B2D00238E80 /* ISEmojiList_iOS11.plist */; };
 		79B9B6E525F34BC100238E80 /* RimeSchema in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6E425F34BC100238E80 /* RimeSchema */; };
+		79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AAF263F95F600993949 /* CocoaLumberjackSwift */; };
+		79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AB4263F961800993949 /* CocoaLumberjack */; };
 		79FFBCFF25F7516900860D63 /* Rime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; };
 		79FFBD0025F7516900860D63 /* Rime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79FFBD0125F7516D00860D63 /* Rime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; };
@@ -400,8 +402,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */,
 				799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */,
 				79FFBD0625F7517D00860D63 /* Rime.framework in Frameworks */,
+				79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -816,6 +820,8 @@
 				799F2E8125F46BC600C53416 /* PBXTargetDependency */,
 			);
 			name = Cantoboard;
+			packageProductDependencies = (
+			);
 			productName = Cantoboard;
 			productReference = 7919A77D25F3320F0075DD4D /* Cantoboard.app */;
 			productType = "com.apple.product-type.application";
@@ -873,6 +879,10 @@
 				799F2E3C25F45B4300C53416 /* PBXTargetDependency */,
 			);
 			name = CantoboardFramework;
+			packageProductDependencies = (
+				79D31AAF263F95F600993949 /* CocoaLumberjackSwift */,
+				79D31AB4263F961800993949 /* CocoaLumberjack */,
+			);
 			productName = CantoboardFramework;
 			productReference = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */;
 			productType = "com.apple.product-type.framework";
@@ -930,6 +940,9 @@
 				Base,
 			);
 			mainGroup = 7919A77425F3320F0075DD4D;
+			packageReferences = (
+				79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+			);
 			productRefGroup = 7919A77E25F3320F0075DD4D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1692,6 +1705,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.7.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		79D31AAF263F95F600993949 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		79D31AB4263F961800993949 /* CocoaLumberjack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7919A77525F3320F0075DD4D /* Project object */;
 }

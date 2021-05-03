@@ -69,7 +69,7 @@ class ViewController: UIViewController, UITextViewDelegate {
         EnglishDictionary.createDb(locale: "en_CA")
         EnglishDictionary.createDb(locale: "en_GB")
         EnglishDictionary.createDb(locale: "en_AU")
-        NSLog("EnglishDictionary Created.") */
+        DDLogInfo("EnglishDictionary Created.") */
         
         textbox = UITextView()
         textbox.translatesAutoresizingMaskIntoConstraints = false

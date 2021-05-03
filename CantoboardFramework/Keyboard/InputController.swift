@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 enum ContextualType: Equatable {
     case english, chinese, rime, url(isRimeComposing: Bool)
 }
@@ -85,11 +87,11 @@ class InputController {
     
     func textWillChange(_ textInput: UITextInput?) {
         prevTextBefore = textDocumentProxy?.documentContextBeforeInput
-        // NSLog("textWillChange \(prevTextBefore)")
+        // DDLogInfo("textWillChange \(prevTextBefore)")
     }
     
     func textDidChange(_ textInput: UITextInput?) {
-        // NSLog("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
+        // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
         if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
             // clearState()
@@ -147,7 +149,7 @@ class InputController {
         guard let textDocumentProxy = textDocumentProxy else { return }
         guard RimeApi.shared.state == .succeeded else {
             // If RimeEngine isn't ready, disable the keyboard.
-            NSLog("Disabling keyboard")
+            DDLogInfo("Disabling keyboard")
             keyboardView?.isEnabled = false
             return
         }
@@ -235,11 +237,6 @@ class InputController {
             var settings = Settings.cached
             settings.charForm = cs
             Settings.save(settings)
-            /*
-            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            let share = UIActivityViewController(activityItems: url, applicationActivities: nil)
-            keyboardViewController!.present(share, animated: true, completion: nil)
-            */
             return
         case .setCandidateMode(let im):
             inputMode = im
@@ -251,6 +248,9 @@ class InputController {
             candidateSelected(choice: choice, enableSmartSpace: true)
         case .longPressCandidate(let choice):
             candidateLongPressed(choice: choice)
+        case .exportFile(let path):
+            let share = UIActivityViewController(activityItems: [path], applicationActivities: nil)
+            keyboardViewController!.present(share, animated: true, completion: nil)
         default: ()
         }
         if needClearInput {
@@ -278,7 +278,7 @@ class InputController {
         // - Full shaped: e.g. "。" -> "<sym>"
         let lastChar = textDocumentProxy.documentContextBeforeInput?.last
         let lastSymbol = textDocumentProxy.documentContextBeforeInput?.last(where: { $0 != " " })
-        // NSLog("documentContextBeforeInput \(textDocumentProxy.documentContextBeforeInput) \(lastChar)")
+        // DDLogInfo("documentContextBeforeInput \(textDocumentProxy.documentContextBeforeInput) \(lastChar)")
         let isFirstCharInDoc = lastChar == nil || lastChar == "\n"
         let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isHalfShapeTerminalPunctuation ?? false)
         let isFullShapedCase = lastChar?.isFullShapeTerminalPunctuation ?? false
@@ -345,7 +345,7 @@ class InputController {
         
         needClearInput = true
         
-        // NSLog("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
+        // DDLogInfo("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
     }
     
     private func updateInputState() {
@@ -423,7 +423,7 @@ class InputController {
     private func handleAutoSpace() -> Bool {
         guard let textDocumentProxy = textDocumentProxy else { return false }
         
-        // NSLog("handleAutoSpace() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
+        // DDLogInfo("handleAutoSpace() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
         
         if hasInsertedAutoSpace, case .selectCandidate = lastKey {
             // Mimic iOS stock behaviour. Swallow the space tap.
@@ -459,7 +459,7 @@ class InputController {
             if (last2CharsInDoc.first?.isEnglishLetter ?? false) && !textBeingInserted.first!.isEnglishLetter ||
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
-                NSLog("Should remove smart space. last2CharsInDoc '\(last2CharsInDoc)'")
+                DDLogInfo("Should remove smart space. last2CharsInDoc '\(last2CharsInDoc)'")
                 return true
             }
         }
@@ -481,7 +481,7 @@ class InputController {
         guard lastDotIndex == nil ||
               // Scan the text before input from the end, if we hit a dot before hitting a space, do not insert smart space.
               lastSpaceIndex != nil && textDocumentProxy.documentContextBeforeInput?.distance(from: lastDotIndex!, to: lastSpaceIndex!) ?? 0 >= 0 else {
-            // NSLog("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
+            // DDLogInfo("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
             return false
         }
         

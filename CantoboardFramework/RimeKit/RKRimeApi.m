@@ -32,7 +32,7 @@
 static bool hasSetupRimeTrait = false;
 
 static void rimeNotificationHandler(void *context_object, RimeSessionId session_id, const char *message_type, const char *message_value) {
-    NSLog(@"Event type: %s value: %s.\n", message_type, message_value);
+    DDLogInfo(@"Event type: %s value: %s.\n", message_type, message_value);
     RKRimeApi *zelf = (__bridge RKRimeApi *) context_object;
     
     if (zelf->_rimeEventListener) {
@@ -45,10 +45,10 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
             } else if (0 == strcmp(message_value, "failure")) {
                 newState = RKRimeApiStateFailure;
             } else {
-                NSLog("Ignoring unknown Rime deploy state: %s.", message_value);
+                DDLogInfo(@"Ignoring unknown Rime deploy state: %s.", message_value);
                 return;
             }
-            // NSLog("Rime state: %ld -> %ld.", zelf->_state, newState);
+            // DDLogInfo("Rime state: %ld -> %ld.", zelf->_state, newState);
             [zelf->_rimeEventListener onStateChange:zelf newState:newState];
             zelf->_state = newState;
         } else {
@@ -69,7 +69,7 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
 }
 
 -(void)initRime:(NSString *)sharedDataPath userDataPath:(NSString *)userDataPath {
-    NSLog(@"Initializing Rime API.");
+    DDLogInfo(@"Initializing Rime API.");
     
     _rimeApi->set_notification_handler(&rimeNotificationHandler, (__bridge void *)self);
     
@@ -90,12 +90,12 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
     if (_rimeApi->start_maintenance(true)) {
         // _rimeApi->join_maintenance_thread();
     } else {
-        NSLog(@"Failed to initialize Rime API.");
+        DDLogInfo(@"Failed to initialize Rime API.");
     }
 }
 
 -(void)close {
-    NSLog(@"Closing Rime API...");
+    DDLogInfo(@"Closing Rime API...");
     _sessions = nil;
     if (_rimeApi) {
         _rimeApi->set_notification_handler(NULL, NULL);
@@ -103,7 +103,7 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
         _rimeApi = NULL;
     }
     _state = RKRimeApiStateUninitialized;
-    NSLog(@"Closed Rime API.");
+    DDLogInfo(@"Closed Rime API.");
 }
 
 -(NSString *)getVersion {

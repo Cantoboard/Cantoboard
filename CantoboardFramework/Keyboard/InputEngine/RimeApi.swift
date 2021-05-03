@@ -7,6 +7,8 @@
 
 import Foundation
 
+import CocoaLumberjackSwift
+
 private let vxqToneConfig: String = """
 patch:
   "speller/algebra/+":
@@ -46,7 +48,7 @@ extension RimeApi {
     }
     
     static func closeShared() {
-        NSLog("Deinitializing RimeApi.")
+        DDLogInfo("Deinitializing RimeApi.")
         RimeApi._shared = nil
     }
 }
@@ -75,7 +77,7 @@ extension RimeApi {
             do {
                 try customPatch.write(toFile: schemaCustomPath, atomically: true, encoding: .utf8)
             } catch {
-                NSLog("Failed to generate custom schema patch at \(schemaCustomPath).")
+                DDLogInfo("Failed to generate custom schema patch at \(schemaCustomPath).")
             }
         }
     }
@@ -97,7 +99,7 @@ extension RimeApi {
         let userRimeDataVersion = (try? String(contentsOfFile: userRimeDataVersionPath)) ?? "missing"
         let appVersion = Self.appVersion
         if appVersion != userRimeDataVersion {
-            NSLog("Build upgraded from \(userRimeDataVersion) to \(appVersion). Invalidating Rime dicts.")
+            DDLogInfo("Build upgraded from \(userRimeDataVersion) to \(appVersion). Invalidating Rime dicts.")
             try? FileManager.default.removeItem(atPath: userDataPath + "/build")
             try? appVersion.write(toFile: "\(userDataPath)/version", atomically: true, encoding: .utf8)
         }
@@ -105,7 +107,7 @@ extension RimeApi {
         // Generate schema patch.
         RimeApi.generateSchemaPatchFromSettings(userDataPath: userDataPath)
         
-        NSLog("Shared data path: %@ User data path: %@", schemaPath, userDataPath)
+        DDLogInfo("Shared data path: \(schemaPath) User data path: \(userDataPath)")
         
         self.init(RimeApi.listener, sharedDataPath: schemaPath, userDataPath: userDataPath)
     }

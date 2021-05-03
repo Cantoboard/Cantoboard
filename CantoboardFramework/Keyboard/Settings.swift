@@ -7,6 +7,8 @@
 
 import Foundation
 
+import CocoaLumberjackSwift
+
 public enum CharForm: String, Codable {
     case traditionalHK = "zh-HK"
     case traditionalTW = "zh-TW"
@@ -130,7 +132,7 @@ public struct Settings: Codable, Equatable {
                 _cached = setting
                 return setting
             } catch {
-                NSLog("Failed to load \(saved). Falling back to default settings. Error: \(error)")
+                DDLogInfo("Failed to load \(saved). Falling back to default settings. Error: \(error)")
             }
         }
         
@@ -144,7 +146,7 @@ public struct Settings: Codable, Equatable {
         if let encoded = try? encoder.encode(settings) {
             userDefaults.set(encoded, forKey: settingsKeyName)
         } else {
-            NSLog("Failed to save \(settings)")
+            DDLogInfo("Failed to save \(settings)")
         }
     }
     
@@ -154,10 +156,10 @@ public struct Settings: Codable, Equatable {
         let suiteName = "group.org.cantoboard"
         let appGroupDefaults = UserDefaults(suiteName: suiteName)
         if let appGroupDefaults = appGroupDefaults {
-            NSLog("Using UserDefaults \(suiteName).")
+            DDLogInfo("Using UserDefaults \(suiteName).")
             return appGroupDefaults
         } else {
-            NSLog("Cannot open app group UserDefaults. Falling back to UserDefaults.standard.")
+            DDLogInfo("Cannot open app group UserDefaults. Falling back to UserDefaults.standard.")
             return UserDefaults.standard
         }
     }

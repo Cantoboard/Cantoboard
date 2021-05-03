@@ -178,7 +178,7 @@ class KeyboardView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // NSLog("layoutSubviews screen size \(UIScreen.main.bounds.size)")
+        // DDLogInfo("layoutSubviews screen size \(UIScreen.main.bounds.size)")
         let layoutConstants = LayoutConstants.forMainScreen
         
         layoutKeyboardSubviews(layoutConstants)

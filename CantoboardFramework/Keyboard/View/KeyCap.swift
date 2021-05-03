@@ -41,7 +41,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     rime(RimeChar),
     contexualSymbols(ContextualType),
     charForm(CharForm),
-    reverseLookup(RimeSchemaId)
+    reverseLookup(RimeSchemaId),
+    exportFile(URL)
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
@@ -70,6 +71,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.url): return "."
         case .charForm(let cs): return .setCharForm(cs)
         case .reverseLookup(let s): return .reverseLookup(s)
+        case .exportFile(let path): return .exportFile(path)
         }
     }
     
@@ -83,7 +85,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var popupFont: UIFont {
         switch self {
         case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(26)
-        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu":
+        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu", .exportFile:
             return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
         }
@@ -181,6 +183,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
+        case .exportFile(Self.docPath): return "Doc"
+        case .exportFile(Self.logPath): return "Log"
         default: return nil
         }
     }
@@ -263,9 +267,14 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var hasPopup: Bool {
         switch self {
         case .character, .characterWithConditioanlPopup, .contexualSymbols, .cangjie: return true
+        // For debugging
+        case .keyboardType(.emojis): return true
         default: return false
         }
     }
+    
+    private static var logPath: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("Logs", isDirectory: true)
+    private static let docPath: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     
     var childrenKeyCaps: [KeyCap] {
         switch self {
@@ -284,6 +293,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]
         case .contexualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
+        case .keyboardType(.emojis): return [.exportFile(Self.docPath), .exportFile(Self.logPath)]
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]

@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 class InputTextBuffer {
     private(set) var _text: String
     private(set) var caretIndex: String.Index
@@ -27,7 +29,7 @@ class InputTextBuffer {
         
     func moveCaret(offset: Int) -> Bool {
         guard abs(offset) == 1 else {
-            NSLog("moveCaret offset \(offset) not supproted.")
+            DDLogInfo("moveCaret offset \(offset) not supproted.")
             return false
         }
         
@@ -45,7 +47,7 @@ class InputTextBuffer {
     
     func setCaret(position: Int) -> Bool {
         guard 0 <= position && position <= _text.count else {
-            NSLog("setCaret position \(position) is OOB. Text length: \(_text.count)")
+            DDLogInfo("setCaret position \(position) is OOB. Text length: \(_text.count)")
             return false
         }
         
@@ -246,7 +248,7 @@ class EnglishInputEngine: InputEngine {
         
         worstCandidatesStartIndex = candidates.count
         candidates.append(contentsOf: worstCandidates)
-        // NSLog("English candidates \(candidates)")
+        // DDLogInfo("English candidates \(candidates)")
     }
     
     func selectCandidate(_ index: Int) -> String? {

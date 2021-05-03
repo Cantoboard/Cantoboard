@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 enum RimeSchemaId: String {
     case jyutping = "jyut6ping3"
     case cangjie = "cangjie5"
@@ -41,7 +43,7 @@ class RimeInputEngine: NSObject, InputEngine {
         get { _activeSchemaId }
         set {
             guard newValue != _activeSchemaId else { return }
-            NSLog("Switching scheam of session \(rimeSession?.debugDescription ?? "") from \(activeSchemaId) to \(newValue)")
+            DDLogInfo("Switching scheam of session \(rimeSession?.debugDescription ?? "") from \(activeSchemaId) to \(newValue)")
             _activeSchemaId = newValue
             rimeSession?.setCurrentSchema(_activeSchemaId.rawValue)
             refreshCharForm()
@@ -95,7 +97,7 @@ class RimeInputEngine: NSObject, InputEngine {
         tryCreateRimeSessionIfNeeded()
 
         guard let rimeSession = rimeSession else {
-            NSLog("processKey RimeSession is nil.")
+            DDLogInfo("processKey RimeSession is nil.")
             return
         }
         
@@ -110,17 +112,17 @@ class RimeInputEngine: NSObject, InputEngine {
         
     func moveCaret(offset: Int) -> Bool {
         guard abs(offset) == 1 else {
-            NSLog("moveCaret offset=\(offset) not supproted.")
+            DDLogInfo("moveCaret offset=\(offset) not supproted.")
             return false
         }
         
         guard let rimeSession = rimeSession else {
-            NSLog("moveCaret RimeSession is nil.")
+            DDLogInfo("moveCaret RimeSession is nil.")
             return false
         }
         
         guard let preedit = rimeSession.compositionText else {
-            NSLog("moveCaret() is called while compositionText is nil.")
+            DDLogInfo("moveCaret() is called while compositionText is nil.")
             return false
         }
         
@@ -152,7 +154,7 @@ class RimeInputEngine: NSObject, InputEngine {
     // Return false if it loaded all candidates
     func loadMoreCandidates() -> Bool {
         guard let rimeSession = rimeSession else {
-            NSLog("loadMoreCandidates RimeSession is nil.")
+            DDLogInfo("loadMoreCandidates RimeSession is nil.")
             hasLoadedAllCandidates = true
             return false
         }
@@ -167,12 +169,12 @@ class RimeInputEngine: NSObject, InputEngine {
     
     func selectCandidate(_ index: Int) -> String? {
         guard let rimeSession = rimeSession else {
-            NSLog("selectCandidate RimeSession is nil.")
+            DDLogInfo("selectCandidate RimeSession is nil.")
             return nil
         }
         
         if !rimeSession.selectCandidate(Int32(index)) {
-            NSLog("Bad index: %d. Count: %d", index, rimeSession.getLoadedCandidatesCount())
+            DDLogInfo("Bad index: \(index). Count: \(rimeSession.getLoadedCandidatesCount())")
             return nil
         }
         refreshCandidates()
@@ -225,13 +227,13 @@ class RimeInputEngine: NSObject, InputEngine {
             if self.rimeSession == nil {
                 self.createRimeSession()
                 if let rimeSession = self.rimeSession {
-                    NSLog("Created RimeSession \(rimeSession) in callback.")
+                    DDLogInfo("Created RimeSession \(rimeSession) in callback.")
                 } else {
                     if retryCount < 10 {
-                        NSLog("Retrying to create rime session.")
+                        DDLogInfo("Retrying to create rime session.")
                         self.tryCreateRimeSessionIfNeededAsyncWithRetry(delay: delay * 1.1, retryCount: retryCount + 1)
                     } else {
-                        NSLog("Gave up creating rime session after \(retryCount) attempts.")
+                        DDLogInfo("Gave up creating rime session after \(retryCount) attempts.")
                     }
                 }
             }
@@ -265,17 +267,17 @@ class RimeApiListener: NSObject, RimeNotificationHandler {
         switch newState {
         case .deploying:
             let version = rimeApi.getVersion() ?? "version unknown"
-            NSLog("Rime \(version) is starting...")
-        case .succeeded: NSLog("Rime started.")
-        case .failure: NSLog("Rime failed to start.")
-        case .uninitialized: NSLog("Rime deinitialized.")
-        @unknown default: NSLog("Unknown rime state \(newState).")
+            DDLogInfo("Rime \(version) is starting...")
+        case .succeeded: DDLogInfo("Rime started.")
+        case .failure: DDLogInfo("Rime failed to start.")
+        case .uninitialized: DDLogInfo("Rime deinitialized.")
+        @unknown default: DDLogInfo("Unknown rime state \(newState).")
         }
         
         stateChangeCallbacks.removeAll(where: { $0(rimeApi, newState) })
     }
     
     func onNotification(_ messageType: String!, messageValue: String!) {
-        NSLog("Rime notification \(messageType!) \(messageValue!).")
+        DDLogInfo("Rime notification \(messageType!) \(messageValue!).")
     }
 }

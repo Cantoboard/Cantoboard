@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 class BilingualInputEngine: InputEngine {
     private static let processCharQueue = DispatchQueue(label: "org.cantoboard.process-char.queue", attributes: .concurrent)
     
@@ -85,7 +87,7 @@ class BilingualInputEngine: InputEngine {
     func processBackspace() -> Bool {
         if let rimeRawInput = rimeInputEngine.rawInput {
             guard rimeRawInput.caretIndex > 0 && rimeRawInput.caretIndex <= rimeRawInput.text.count else {
-                NSLog("processBackspace skipped. caretIndex is out of range. 0 < \(rimeRawInput.caretIndex) <= \(rimeRawInput.text.count)")
+                DDLogInfo("processBackspace skipped. caretIndex is out of range. 0 < \(rimeRawInput.caretIndex) <= \(rimeRawInput.text.count)")
                 return false
             }
             let rimeRawInputCaretPosBefore = rimeRawInput.caretIndex
@@ -95,9 +97,9 @@ class BilingualInputEngine: InputEngine {
             let rimeHasDeleted = rimeRawInputCaretPosBefore > rimeRawInputCaretPosAfter
             let updateEnglish = !charToBeDeleted.isRimeSpecialChar && rimeHasDeleted ? englishInputEngine.processBackspace() : false
             
-            // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
-            // NSLog("English \(englishComposition?.text ?? "") \(englishComposition?.caretIndex ?? 0)")
-            // NSLog("\(charToBeDeleted), \(charToBeDeleted.isRimeSpecialChar), \(rimeInputEngine.composition?.text), \(englishComposition?.text)")
+            // DDLogInfo("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
+            // DDLogInfo("English \(englishComposition?.text ?? "") \(englishComposition?.caretIndex ?? 0)")
+            // DDLogInfo("\(charToBeDeleted), \(charToBeDeleted.isRimeSpecialChar), \(rimeInputEngine.composition?.text), \(englishComposition?.text)")
                         
             isForcingRimeMode = self.rimeComposition?.text.contains(where: { $0.isRimeSpecialChar }) ?? false
             updateComposition()
@@ -109,7 +111,7 @@ class BilingualInputEngine: InputEngine {
     }
     
     func clearInput() {
-        NSLog("clearInput() called.")
+        DDLogInfo("clearInput() called.")
         composition = nil
         rimeInputEngine.clearInput()
         englishInputEngine.clearInput()
@@ -169,14 +171,14 @@ class BilingualInputEngine: InputEngine {
     }
     
     private func updateEnglishCaretPosFromRime() -> Bool {
-        guard let rimeRawInput = rimeInputEngine.rawInput else { NSLog("Bug check. rimeRawInput shouldn't be nil"); return true }
-        // guard let englishComposition = englishComposition else { NSLog("Bug check. englishComposition shouldn't be nil"); return true }
+        guard let rimeRawInput = rimeInputEngine.rawInput else { DDLogInfo("Bug check. rimeRawInput shouldn't be nil"); return true }
+        // guard let englishComposition = englishComposition else { DDLogInfo("Bug check. englishComposition shouldn't be nil"); return true }
         let rimeRawInputBeforeCaret = rimeRawInput.text.prefix(rimeRawInput.caretIndex)
         let rimeRawInputCaretWithoutSpecialChars = rimeRawInputBeforeCaret.reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
         let updateEnglishEngineState = englishInputEngine.setCaret(position: rimeRawInputCaretWithoutSpecialChars)
         
-        // NSLog("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
-        // NSLog("English \(englishComposition.text) \(rimeRawInputCaretWithoutSpecialChars)")
+        // DDLogInfo("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
+        // DDLogInfo("English \(englishComposition.text) \(rimeRawInputCaretWithoutSpecialChars)")
         
         return updateEnglishEngineState
     }

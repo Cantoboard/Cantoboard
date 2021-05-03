@@ -7,6 +7,8 @@
 
 import Foundation
 
+import CocoaLumberjackSwift
+
 class DefaultDictionary {
     private static let dictionaryDirName = "Dictionary"
     private let dict: LevelDbTable
@@ -31,16 +33,16 @@ class DefaultDictionary {
         
         let srcDictionariesPath = resourcePath + "/\(dictionaryDirName)"
         if isDstFileOutdated(srcPath: srcDictionariesPath + "/generated", dstPath: dstPath + "/generated") {
-            NSLog("English Dictionary is outdated. Reinstalling...")
+            DDLogInfo("English Dictionary is outdated. Reinstalling...")
             try? FileManager.default.removeItem(atPath: dstPath)
         } else {
-            NSLog("English Dictionary is up to date.")
+            DDLogInfo("English Dictionary is up to date.")
         }
         
         let dictsImportedPath = dstPath + "/imported"
         if !FileManager.default.fileExists(atPath: dictsImportedPath) {
             try? FileManager.default.removeItem(atPath: dstPath)
-            NSLog("Installing English Dictionary from \(srcDictionariesPath) -> \(dstPath)")
+            DDLogInfo("Installing English Dictionary from \(srcDictionariesPath) -> \(dstPath)")
             try! FileManager.default.copyItem(atPath: srcDictionariesPath, toPath: dstPath)
             FileManager.default.createFile(atPath: dictsImportedPath, contents: nil, attributes: nil)
         }

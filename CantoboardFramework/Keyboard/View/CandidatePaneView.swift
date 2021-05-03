@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewExpanded()
     func candidatePaneViewCollapsed()
@@ -100,12 +102,12 @@ class CandidatePaneView: UIControl {
                     
                     UIView.performWithoutAnimation {
                         if newIndiceStart > newIndiceEnd {
-                            NSLog("Reloading candidates onMoreCandidatesLoaded().")
+                            DDLogInfo("Reloading candidates onMoreCandidatesLoaded().")
                             
                             self.collectionView.reloadData()
                             self.collectionView.collectionViewLayout.invalidateLayout()
                         } else if newIndiceStart != newIndiceEnd {
-                            NSLog("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
+                            DDLogInfo("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
                             self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: section) })
                         }
                     }
@@ -117,7 +119,7 @@ class CandidatePaneView: UIControl {
                 guard let self = self else { return }
                                 
                 DispatchQueue.main.async {
-                    NSLog("Reloading candidates.")
+                    DDLogInfo("Reloading candidates.")
                     
                     UIView.performWithoutAnimation {
                         self.collectionView.scrollOnLayoutSubviews = {
@@ -368,7 +370,7 @@ extension CandidatePaneView {
     func changeMode(_ newMode: Mode) {
         guard mode != newMode else { return }
         
-        // NSLog("CandidatePaneView.changeMode start")
+        // DDLogInfo("CandidatePaneView.changeMode start")
         let firstVisibleIndexPath = getFirstVisibleIndexPath()
         let oldGroupByEnabled = groupByEnabled
                 
@@ -429,7 +431,7 @@ extension CandidatePaneView {
         } else {
             delegate?.candidatePaneViewExpanded()
         }
-        // NSLog("CandidatePaneView.changeMode end")
+        // DDLogInfo("CandidatePaneView.changeMode end")
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
@@ -475,7 +477,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
                 selectedGroupByMode: candidateOrganizer.groupByMode,
                 onSelectionChanged: onGroupBySegmentControlSelectionChanged)
         } else {
-            NSLog("Bug check. candidateOrganizer shouldn't be null.")
+            DDLogInfo("Bug check. candidateOrganizer shouldn't be null.")
         }
         
         return cell
@@ -570,7 +572,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         let layoutConstant = LayoutConstants.forMainScreen
         
         guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
-            NSLog("Invalid IndexPath %@. Candidate does not exist.", candidateIndexPath.description)
+            DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
             return CGSize(width: 0, height: 0)
         }
                 

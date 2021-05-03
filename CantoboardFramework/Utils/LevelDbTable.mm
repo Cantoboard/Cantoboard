@@ -12,6 +12,9 @@
 
 #import <Foundation/Foundation.h>
 
+#import <CocoaLumberjack/DDLogMacros.h>
+static const DDLogLevel ddLogLevel = DDLogLevelDebug;
+
 #include <leveldb/db.h>
 #include <leveldb/cache.h>
 #include <leveldb/write_batch.h>
@@ -34,11 +37,11 @@ using namespace std;
     leveldb::Status status = leveldb::DB::Open(options, [dbPath UTF8String], &db);
     
     if (!status.ok()) {
-        NSLog(@"Failed to open DB %@. Error: %s", dbPath, status.ToString().c_str());
+        DDLogInfo(@"Failed to open DB %@. Error: %s", dbPath, status.ToString().c_str());
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
     
-    NSLog(@"Opened English dictionary at %@.", dbPath);
+    DDLogInfo(@"Opened English dictionary at %@.", dbPath);
     
     return self;
 }
@@ -66,7 +69,7 @@ using namespace std;
     if (status.ok()) {
         return true;
     } else {
-        NSLog(@"Failed to put to db. Error: %s", status.ToString().c_str());
+        DDLogInfo(@"Failed to put to db. Error: %s", status.ToString().c_str());
         return false;
     }
 }
@@ -77,13 +80,13 @@ using namespace std;
     if (status.ok()) {
         return true;
     } else {
-        NSLog(@"Failed to delete from db. Error: %s", status.ToString().c_str());
+        DDLogInfo(@"Failed to delete from db. Error: %s", status.ToString().c_str());
         return false;
     }
 }
 
 + (bool)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dictDbPath {
-    NSLog(@"createEnglishDictionary %@ -> %@", textFilePaths, dictDbPath);
+    DDLogInfo(@"createEnglishDictionary %@ -> %@", textFilePaths, dictDbPath);
     
     leveldb::DB* db;
     leveldb::Options options;
@@ -91,7 +94,7 @@ using namespace std;
     
     leveldb::Status status = leveldb::DB::Open(options, [dictDbPath UTF8String], &db);
     if (!status.ok()) {
-        NSLog(@"Failed to open DB %@. Error: %s", dictDbPath, status.ToString().c_str());
+        DDLogInfo(@"Failed to open DB %@. Error: %s", dictDbPath, status.ToString().c_str());
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to open DB." userInfo:nil];
     }
     
@@ -99,7 +102,7 @@ using namespace std;
     unordered_map<string, string> wordCasesMap;
     string line;
     for (NSString* textFilePath in textFilePaths) {
-        NSLog(@"Loading %@...", textFilePath);
+        DDLogInfo(@"Loading %@...", textFilePath);
         ifstream dictFile([textFilePath UTF8String]);
         
         [[NSFileManager defaultManager] createDirectoryAtPath:dictDbPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -123,12 +126,12 @@ using namespace std;
     
     leveldb::WriteBatch batch;
     for (auto it = wordCasesMap.begin(); it != wordCasesMap.end(); it++) {
-        // NSLog(@"%s -> %s\n", it->first.c_str(), it->second.c_str());
+        // DDLogInfo(@"%s -> %s\n", it->first.c_str(), it->second.c_str());
         batch.Put(it->first, it->second);
     }
     leveldb::Status writeStatus = db->Write(leveldb::WriteOptions(), &batch);
     if (!writeStatus.ok()) {
-        NSLog(@"Failed to insert into DB. Error: %s", status.ToString().c_str());
+        DDLogInfo(@"Failed to insert into DB. Error: %s", status.ToString().c_str());
         @throw [NSException exceptionWithName:@"EnglishDictionaryException" reason:@"Failed to insert into DB." userInfo:nil];
     }
     
