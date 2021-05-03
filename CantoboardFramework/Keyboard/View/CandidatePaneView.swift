@@ -388,7 +388,7 @@ extension CandidatePaneView {
                 sectionOffset = 0
             }
             let scrollToSection = scrollToIndexPath.section + sectionOffset
-            let scrollToIndexPathAfterTranslation = IndexPath(row: scrollToIndexPath.row, section: scrollToSection)
+            let scrollToIndexPathAfterTranslation = IndexPath(row: max(scrollToIndexPath.row, 0), section: scrollToSection)
             
             if mode == .table && groupByEnabled && scrollToSection == 1 && scrollToIndexPath.row == 0 {
                 collectionView.scrollOnLayoutSubviews = {
