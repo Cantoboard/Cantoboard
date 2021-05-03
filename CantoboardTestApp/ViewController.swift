@@ -18,7 +18,7 @@ class ViewController: UIViewController, UITextViewDelegate {
     func recreateKeyboard() {
         if let keyboard = keyboardController {
             if self.createKeyboard {
-                keyboard.createKeyboard()
+                keyboard.createKeyboardIfNeeded()
             } else {
                 keyboard.destroyKeyboard()
             }
@@ -54,8 +54,7 @@ class ViewController: UIViewController, UITextViewDelegate {
         
         NSLayoutConstraint.activate([
             keyboard.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            keyboard.view.leftAnchor.constraint(equalTo: view.leftAnchor),
-            keyboard.view.rightAnchor.constraint(equalTo: view.rightAnchor),
+            keyboard.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             keyboard.view.bottomAnchor.constraint(equalTo: textbox.topAnchor),
         ])
     }

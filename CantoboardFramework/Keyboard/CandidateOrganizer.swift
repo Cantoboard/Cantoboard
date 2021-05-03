@@ -64,8 +64,8 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     private func populateCandidatesByFreq() {
-        guard let inputController = inputController else { return }
-        let inputEngine = inputController.inputEngine
+        guard let inputController = inputController,
+              let inputEngine = inputController.inputEngine else { return }
         let isReverseLookupMode = inputEngine.reverseLookupSchemaId != nil
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || isReverseLookupMode
         let isEnglishActive = Settings.cached.lastInputMode != .chinese && !isInRimeOnlyMode
@@ -137,8 +137,9 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     private func populateCandidatesByRomanization() {
-        guard let inputController = inputController, inputController.inputMode != .english else { return }
-        let inputEngine = inputController.inputEngine
+        guard let inputController = inputController,
+              let inputEngine = inputController.inputEngine,
+              inputController.inputMode != .english else { return }
         
         while inputEngine.loadMoreRimeCandidates() {}
         

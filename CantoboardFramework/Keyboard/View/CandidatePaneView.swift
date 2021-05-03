@@ -390,7 +390,7 @@ extension CandidatePaneView {
             let scrollToSection = scrollToIndexPath.section + sectionOffset
             let scrollToIndexPathAfterTranslation = IndexPath(row: max(scrollToIndexPath.row, 0), section: scrollToSection)
             
-            if mode == .table && groupByEnabled && scrollToSection == 1 && scrollToIndexPath.row == 0 {
+            if mode == .table && groupByEnabled && scrollToSection <= 1 && scrollToIndexPath.row == 0 {
                 collectionView.scrollOnLayoutSubviews = {
                     let candindateBarHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
                     
@@ -427,6 +427,10 @@ extension CandidatePaneView {
         setNeedsLayout()
         
         if newMode == .row {
+            if candidateOrganizer?.groupByMode != .byFrequency {
+                candidateOrganizer?.groupByMode = .byFrequency
+                collectionView.reloadData()
+            }
             delegate?.candidatePaneViewCollapsed()
         } else {
             delegate?.candidatePaneViewExpanded()

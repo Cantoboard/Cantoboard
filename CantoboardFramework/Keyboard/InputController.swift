@@ -18,7 +18,7 @@ class InputController {
     private static let feedbackGenerator = UIImpactFeedbackGenerator()
     
     private weak var keyboardViewController: KeyboardViewController?
-    let inputEngine: BilingualInputEngine
+    private(set) var inputEngine: BilingualInputEngine!
     
     private var lastKey: KeyboardAction?
     private var isHoldingShift = false
@@ -70,7 +70,7 @@ class InputController {
         }
     }
     
-    private var textDocumentProxy: UITextDocumentProxy? {
+    var textDocumentProxy: UITextDocumentProxy? {
         keyboardViewController?.textDocumentProxy
     }
     
@@ -80,8 +80,7 @@ class InputController {
     
     init(keyboardViewController: KeyboardViewController) {
         self.keyboardViewController = keyboardViewController
-        inputEngine = BilingualInputEngine(textDocumentProxy: keyboardViewController.textDocumentProxy)
-        
+        inputEngine = BilingualInputEngine(inputController: self)
         candidateOrganizer = CandidateOrganizer(inputController: self)
     }
     
@@ -250,7 +249,7 @@ class InputController {
             candidateLongPressed(choice: choice)
         case .exportFile(let path):
             let share = UIActivityViewController(activityItems: [path], applicationActivities: nil)
-            keyboardViewController!.present(share, animated: true, completion: nil)
+            keyboardViewController?.present(share, animated: true, completion: nil)
         default: ()
         }
         if needClearInput {

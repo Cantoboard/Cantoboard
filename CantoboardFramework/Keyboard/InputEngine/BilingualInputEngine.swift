@@ -15,16 +15,16 @@ class BilingualInputEngine: InputEngine {
     
     private let rimeInputEngine: RimeInputEngine
     private let englishInputEngine: EnglishInputEngine
-    private let textDocumentProxy: UITextDocumentProxy
+    private weak var inputController: InputController?
     
     private(set) var composition: Composition?
     private(set) var candidatePaths:[CandidatePath] = []
     private(set) var isForcingRimeMode = false
     
-    init(textDocumentProxy: UITextDocumentProxy) {
-        self.textDocumentProxy = textDocumentProxy
+    init(inputController: InputController) {
+        self.inputController = inputController
         rimeInputEngine = RimeInputEngine()
-        englishInputEngine = EnglishInputEngine(textDocumentProxy: textDocumentProxy)
+        englishInputEngine = EnglishInputEngine()
     }
 
     var charForm: CharForm {
@@ -49,7 +49,7 @@ class BilingualInputEngine: InputEngine {
             updateComposition()
             return updateRimeEngineState
         } else {
-            textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
+            inputController?.textDocumentProxy?.adjustTextPosition(byCharacterOffset: offset)
             return false
         }
     }
@@ -63,6 +63,7 @@ class BilingualInputEngine: InputEngine {
             queue.async(group: group) {
                 updateRimeEngineState = self.rimeInputEngine.processChar(char.lowercasedChar)
             }
+            englishInputEngine.textBeforeInput = inputController?.textDocumentProxy?.documentContextBeforeInput
             queue.async(group: group) {
                 updateEnglishEngineState = self.englishInputEngine.processChar(char)
             }
@@ -105,7 +106,7 @@ class BilingualInputEngine: InputEngine {
             updateComposition()
             return updateEnglish || updateRime
         } else {
-            textDocumentProxy.deleteBackward()
+            inputController?.textDocumentProxy?.deleteBackward()
             return false
         }
     }

@@ -16,6 +16,8 @@ protocol KeyboardViewDelegate: NSObject {
 }
 
 class KeyboardView: UIView {
+    private let c = InstanceCounter<KeyboardView>()
+    
     private var _keyboardType = KeyboardType.alphabetic(.lowercased)
     private var _keyboardContextualType: ContextualType = .english
     private var _needsInputModeSwitchKey = false

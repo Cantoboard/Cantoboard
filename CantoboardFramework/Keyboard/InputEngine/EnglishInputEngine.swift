@@ -95,19 +95,18 @@ class EnglishInputEngine: InputEngine {
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
     private var inputTextBuffer = InputTextBuffer()
-    private var textDocumentProxy: UITextDocumentProxy!
+    var textBeforeInput: String?
     
     private(set) var candidates: [String] = []
     private(set) var isWord: Bool = false
     private(set) var prefectCandidatesStartIndex = 0, worstCandidatesStartIndex = 0
     
-    init(textDocumentProxy: UITextDocumentProxy) {
-        self.textDocumentProxy = textDocumentProxy
+    init() {
         DispatchQueue.global(qos: .background).async {
             _ = Self.englishDictionary
         }
     }
-
+    
     func processChar(_ char: Character) -> Bool {
         if char.isASCII {
             inputTextBuffer.insert(char: char)
@@ -158,7 +157,7 @@ class EnglishInputEngine: InputEngine {
             return
         }
         
-        let documentContextBeforeInput = textDocumentProxy.documentContextBeforeInput
+        let documentContextBeforeInput = textBeforeInput
         let combined = (documentContextBeforeInput ?? "") + text
         let wordRange = combined.index(combined.endIndex, offsetBy: -text.count)..<combined.endIndex
         let nsWordRange = NSRange(wordRange, in: combined)

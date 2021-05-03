@@ -20,6 +20,7 @@ private class LogFormatter: NSObject, DDLogFormatter {
 
         super.init()
     }
+    
     func format(message logMessage: DDLogMessage) -> String? {
         let dateAndTime = dateFormatter.string(from: logMessage.timestamp)
         return "\(dateAndTime) [\(logMessage.fileName):\(logMessage.line)]: \(logMessage.message)"
@@ -28,6 +29,8 @@ private class LogFormatter: NSObject, DDLogFormatter {
 
 open class KeyboardViewController: UIInputViewController {
     private static let isLoggerInited = initLogger()
+    
+    private let c = InstanceCounter<KeyboardViewController>()
         
     private static func initLogger() -> Bool {
         DDLog.add(DDOSLogger.sharedInstance) // Uses os_log
@@ -43,10 +46,10 @@ open class KeyboardViewController: UIInputViewController {
         return true
     }
     
-    private var inputController: InputController!
+    private var inputController: InputController?
     private(set) weak var keyboardView: KeyboardView?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
-    private var logView: UITextView?
+    private weak var logView: UITextView?
     
     // Touch event near the screen edge are delayed.
     // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
@@ -83,8 +86,6 @@ open class KeyboardViewController: UIInputViewController {
             }
             return false
         })
-        
-        inputController = InputController(keyboardViewController: self)
     }
     
     private func fetchLog() -> [String] {
@@ -113,103 +114,104 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        let keyboardSize = LayoutConstants.forMainScreen.keyboardSize
+        if heightConstraint == nil {
+            let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardSize.height)
+            heightConstraint.priority = .required
+            heightConstraint.isActive = true
+            self.heightConstraint = heightConstraint
+        }
+        
+        if widthConstraint == nil {
+            let widthConstraint = view.widthAnchor.constraint(equalToConstant: keyboardSize.width)
+            widthConstraint.priority = .required
+            widthConstraint.isActive = true
+            self.widthConstraint = widthConstraint
+        }
         
         reloadSettings()
-        // let notificationCenter = NotificationCenter.default
-        // notificationCenter.addObserver(self, selector: #selector(self.onNSExtensionHostDidBecomeActive), name: NSNotification.Name.NSExtensionHostDidBecomeActive, object: nil)
+        createKeyboardIfNeeded()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        heightConstraint = view.heightAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.height)
-        heightConstraint?.priority = .defaultHigh
-        heightConstraint?.isActive = true
-        // DDLogInfo("viewDidLoad screen size \(UIScreen.main.bounds.size)")
-
-        createKeyboard()
-        
-        longPressGestureRecognizer = UILongPressGestureRecognizer()
-        longPressGestureRecognizer.minimumPressDuration = 0
-        longPressGestureRecognizer.delegate = self
-        view.addGestureRecognizer(longPressGestureRecognizer)
+        reloadSettings()
+        createKeyboardIfNeeded()
+    }
+    
+    public override func didReceiveMemoryWarning() {
+        let isVisible = isViewLoaded && view.window != nil
+        if !isVisible {
+            DDLogInfo("Under memory pressure. Unloading invisible KeyboardView. \(self)")
+            destroyKeyboard()
+        }
     }
     
     public override func textWillChange(_ textInput: UITextInput?) {
         super.textWillChange(textInput)
-        inputController.textWillChange(textInput)
+        inputController?.textWillChange(textInput)
     }
     
     public override func textDidChange(_ textInput: UITextInput?) {
         super.textDidChange(textInput)
-        inputController.textDidChange(textInput)
+        inputController?.textDidChange(textInput)
         keyboardView?.needsInputModeSwitchKey = needsInputModeSwitchKey
     }
     
-    public override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
-        let oldSize = UIScreen.main.bounds.size
-        let shortEdge = min(oldSize.width, oldSize.height)
-        let longEdge = max(oldSize.width, oldSize.height)
-        let newSize = toInterfaceOrientation.isPortrait ? CGSize(width: shortEdge, height: longEdge) : CGSize(width: longEdge, height: shortEdge)
-        let nextKeyboardSize = LayoutConstants.getContants(screenSize: newSize).keyboardSize
-        
-        // DDLogInfo("willRotate New screen size \(newSize)")
-        
-        widthConstraint?.constant = nextKeyboardSize.width
-        heightConstraint?.constant = nextKeyboardSize.height
-        
-        super.willRotate(to: toInterfaceOrientation, duration: duration)
-    }
-    
-    public override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
-        let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
-        // DDLogInfo("didRotate New screen size \(UIScreen.main.bounds)")
-        
-        widthConstraint?.constant = nextKeyboardSize.width
-        heightConstraint?.constant = nextKeyboardSize.height
-        
-        super.didRotate(from: fromInterfaceOrientation)
-    }
-    
     public override func viewWillLayoutSubviews() {
-        // On rare occasions, viewDidLoad could pick up the wrong screen size and willRotate/didRotate are not fired.
-        // Reset the size constraints here.
+        // Reset the size constraints to handle screen rotation.
         let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
         widthConstraint?.constant = nextKeyboardSize.width
         heightConstraint?.constant = nextKeyboardSize.height
+        
+        // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
+        logView?.frame = CGRect(origin: .zero, size: nextKeyboardSize)
         
         super.viewWillLayoutSubviews()
     }
     
-    public func createKeyboard() {
+    public func createKeyboardIfNeeded() {
         if keyboardView == nil {
             let keyboardView = KeyboardView()
             keyboardView.delegate = self
-            keyboardView.candidateOrganizer = inputController.candidateOrganizer
             keyboardView.translatesAutoresizingMaskIntoConstraints = false
-            view.autoresizingMask = []
             view.addSubview(keyboardView)
             
+            // EmojiView inside KeyboardView requires AutoLayout.
             NSLayoutConstraint.activate([
-                keyboardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                keyboardView.leftAnchor.constraint(equalTo: view.leftAnchor),
+                keyboardView.rightAnchor.constraint(equalTo: view.rightAnchor),
                 keyboardView.topAnchor.constraint(equalTo: view.topAnchor),
                 keyboardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
             
-            let keyboardSize = LayoutConstants.forMainScreen.keyboardSize
-            widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: keyboardSize.width)
-            widthConstraint?.isActive = true
-            
-            keyboardView.currentRimeSchemaId = inputController.reverseLookupSchemaId ?? .jyutping
+            keyboardView.currentRimeSchemaId = inputController?.reverseLookupSchemaId ?? .jyutping
             
             self.keyboardView = keyboardView
+            
+            inputController = InputController(keyboardViewController: self)
+            keyboardView.candidateOrganizer = inputController?.candidateOrganizer
+            textWillChange(nil)
+            textDidChange(nil)
+            
+            longPressGestureRecognizer = UILongPressGestureRecognizer()
+            longPressGestureRecognizer.minimumPressDuration = 0
+            longPressGestureRecognizer.delegate = self
+            view.addGestureRecognizer(longPressGestureRecognizer)
         }
     }
     
     public func destroyKeyboard() {
+        inputController = nil
+        
         keyboardView?.removeFromSuperview()
         keyboardView = nil
-    }
-    
-    public override func viewDidDisappear(_ animated: Bool) {
-        inputController.clearState()
-        super.viewDidDisappear(animated)
+        
+        view.subviews.forEach({ $0.removeFromSuperview() })
+        view.gestureRecognizers?.forEach({ view.removeGestureRecognizer($0) })
     }
     
     private func showLogs(_ logs: [String]) {
@@ -218,12 +220,8 @@ open class KeyboardViewController: UIInputViewController {
         logView.isEditable = false
         logView.text = logs.joined()
         
-        self.logView = logView
         view.addSubview(logView)
-    }
-    
-    public override func viewDidLayoutSubviews() {
-        logView?.frame = view.bounds
+        self.logView = logView
     }
     
     private func reloadSettings() {
@@ -242,20 +240,15 @@ open class KeyboardViewController: UIInputViewController {
         }
         
         if prevSettings.charForm != settings.charForm {
-            inputController.keyPressed(.setCharForm(settings.charForm))
+            inputController?.keyPressed(.setCharForm(settings.charForm))
             DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }
-    }
-    
-    @objc private func onNSExtensionHostDidBecomeActive(_ notification: NSNotification) {
-        DDLogInfo("Reloading settings onNSExtensionHostDidBecomeActive.")
-        reloadSettings()
     }
 }
 
 extension KeyboardViewController: KeyboardViewDelegate {
     func handleKey(_ action: KeyboardAction) {
-        inputController.keyPressed(action)
+        inputController?.keyPressed(action)
     }
 }
 
