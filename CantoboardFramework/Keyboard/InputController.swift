@@ -541,6 +541,7 @@ class InputController {
             newAutoSuggestionType = .halfWidthPunctuation
         case .chinese where !lastCharBefore.isNumber && textAfterInput.isEmpty:
             newAutoSuggestionType = .fullWidthPunctuation
+        case .url: ()
         default:
             if lastCharBefore.isNumber {
                 if lastCharBefore.isASCII {
