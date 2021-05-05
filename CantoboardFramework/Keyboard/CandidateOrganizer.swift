@@ -12,7 +12,7 @@ enum GroupByMode {
     
     var title: String {
         switch self {
-        case .byFrequency: return "頻率"
+        case .byFrequency: return "詞頻"
         case .byRomanization: return "粵拼"
         case .byRadical: return "部首"
         case .byTotalStroke: return "筆畫"

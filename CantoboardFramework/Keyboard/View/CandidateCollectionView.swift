@@ -279,6 +279,7 @@ class CandidateCell: UICollectionViewCell {
 
 class CandidateSegmentControlCell: UICollectionViewCell {
     static var reuseId: String = "CandidateGroupBySegmentControl"
+    private static let inset = UIEdgeInsets(top: 6, left: 8, bottom: 8, right: 12)
     
     weak var segmentControl: UISegmentedControl?
     var groupByModes: [GroupByMode]?
@@ -337,7 +338,7 @@ class CandidateSegmentControlCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
-        segmentControl?.frame = bounds.inset(by: UIEdgeInsets(top: 6, left: 8, bottom: 8, right: 6))
+        segmentControl?.frame = bounds.inset(by: Self.inset)
     }
     
     @objc private func onSegmentControlChange() {
