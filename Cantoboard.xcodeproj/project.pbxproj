@@ -133,6 +133,7 @@
 		79D4E1BF26422C6E00857D7D /* DataFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D4E1BE26422C6E00857D7D /* DataFileManager.swift */; };
 		79D4E1D42642372600857D7D /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* Data */; };
 		79D4E23B264251C600857D7D /* EnglishDictSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E23A264251C600857D7D /* EnglishDictSource */; };
+		79D4E244264262D200857D7D /* UnihanSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E243264262D200857D7D /* UnihanSource */; };
 		79FFBCFF25F7516900860D63 /* Rime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; };
 		79FFBD0025F7516900860D63 /* Rime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79FFBD0125F7516D00860D63 /* Rime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; };
@@ -369,6 +370,7 @@
 		79D31ACC263FAC1300993949 /* InstanceCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstanceCounter.swift; sourceTree = "<group>"; };
 		79D4E1BE26422C6E00857D7D /* DataFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFileManager.swift; sourceTree = "<group>"; };
 		79D4E23A264251C600857D7D /* EnglishDictSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EnglishDictSource; sourceTree = "<group>"; };
+		79D4E243264262D200857D7D /* UnihanSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UnihanSource; sourceTree = "<group>"; };
 		79D7180525FDA0C400A25AC3 /* CantoboardTestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardTestApp.entitlements; sourceTree = "<group>"; };
 		79FFBCFC25F7516300860D63 /* Rime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rime.framework; path = RimeFramework/Rime.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -479,14 +481,15 @@
 			isa = PBXGroup;
 			children = (
 				79D4E23A264251C600857D7D /* EnglishDictSource */,
+				79D4E243264262D200857D7D /* UnihanSource */,
 				79D7180525FDA0C400A25AC3 /* CantoboardTestApp.entitlements */,
+				799F2E5C25F46B0900C53416 /* Info.plist */,
 				799F2E4E25F46B0800C53416 /* AppDelegate.swift */,
 				799F2E5025F46B0800C53416 /* SceneDelegate.swift */,
 				799F2E5225F46B0800C53416 /* ViewController.swift */,
-				799F2E5425F46B0800C53416 /* Main.storyboard */,
 				799F2E5725F46B0900C53416 /* Assets.xcassets */,
 				799F2E5925F46B0900C53416 /* LaunchScreen.storyboard */,
-				799F2E5C25F46B0900C53416 /* Info.plist */,
+				799F2E5425F46B0800C53416 /* Main.storyboard */,
 			);
 			path = CantoboardTestApp;
 			sourceTree = "<group>";
@@ -981,6 +984,7 @@
 				799F2E5B25F46B0900C53416 /* LaunchScreen.storyboard in Resources */,
 				799F2E5825F46B0900C53416 /* Assets.xcassets in Resources */,
 				799F2E5625F46B0800C53416 /* Main.storyboard in Resources */,
+				79D4E244264262D200857D7D /* UnihanSource in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
