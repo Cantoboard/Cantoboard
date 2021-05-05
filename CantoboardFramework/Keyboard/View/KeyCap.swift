@@ -118,7 +118,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFgColor: UIColor {
         switch self {
-        case .returnKey: return .white
+        case .returnKey(.go), .returnKey(.search): return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
         default: return ButtonColor.keyForegroundColor
         }
