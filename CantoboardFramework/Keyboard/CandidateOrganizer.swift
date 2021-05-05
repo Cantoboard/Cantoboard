@@ -153,16 +153,18 @@ class InputEngineCandidateSource: CandidateSource {
         var candidateCount = Dictionary<String, Int>()
         var candidateGroupByRomanization = Dictionary<String, [Int]>()
         for i in 0..<inputEngine.rimeLoadedCandidatesCount {
-            guard let romanization = inputEngine.getRimeCandidateComment(i) else { continue }
-            let firstCharRomanization = String(romanization.prefix(while: { $0 != " " }))
+            guard let romanization = inputEngine.getRimeCandidateComment(i), !romanization.isEmpty else { continue }
+            let firstCharRomanizations = String(romanization.prefix(while: { $0 != " " })).split(separator: "/").map({ String($0) })
             
-            if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
-                candidateGroupByRomanization[firstCharRomanization] = []
-                candidateCount[firstCharRomanization] = 0
-                sections.append(firstCharRomanization)
+            for firstCharRomanization in firstCharRomanizations {
+                if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
+                    candidateGroupByRomanization[firstCharRomanization] = []
+                    candidateCount[firstCharRomanization] = 0
+                    sections.append(firstCharRomanization)
+                }
+                candidateGroupByRomanization[firstCharRomanization]?.append(i)
+                candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
             }
-            candidateGroupByRomanization[firstCharRomanization]?.append(i)
-            candidateCount[firstCharRomanization] = (candidateCount[firstCharRomanization] ?? 0) + 1
         }
         
         // Merge single buckets.
