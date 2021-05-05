@@ -83,25 +83,11 @@ extension RimeApi {
     }
     
     convenience init(bundle: Bundle) {
-        guard let resourcePath = bundle.resourcePath else {
-            fatalError("Bundle.main.resourcePath is nil.")
-        }
-        let schemaPath = resourcePath + "/RimeSchema"
+        let schemaPath = DataFileManager.rimeSharedDirectory
+        let userDataPath = DataFileManager.rimeUserDirectory
         
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let userDataPath = documentsDirectory.appendingPathComponent("RimeUserData", isDirectory: true).path
-        
-        if !FileManager.default.fileExists(atPath: userDataPath) {
-            try! FileManager.default.createDirectory(atPath: userDataPath, withIntermediateDirectories: false)
-        }
-        
-        let userRimeDataVersionPath = "\(userDataPath)/version"
-        let userRimeDataVersion = (try? String(contentsOfFile: userRimeDataVersionPath)) ?? "missing"
-        let appVersion = Self.appVersion
-        if appVersion != userRimeDataVersion {
-            DDLogInfo("Build upgraded from \(userRimeDataVersion) to \(appVersion). Invalidating Rime dicts.")
-            try? FileManager.default.removeItem(atPath: userDataPath + "/build")
-            try? appVersion.write(toFile: "\(userDataPath)/version", atomically: true, encoding: .utf8)
+        if !DataFileManager.hasInstalled {
+            fatalError("Data files not installed.")
         }
         
         // Generate schema patch.
@@ -112,7 +98,7 @@ extension RimeApi {
         self.init(RimeApi.listener, sharedDataPath: schemaPath, userDataPath: userDataPath)
     }
     
-    static private var appVersion: String {
+    private static var appVersion: String {
         if let dict = Bundle.main.infoDictionary,
            let version = dict["CFBundleShortVersionString"] as? String,
            let bundleVersion = dict["CFBundleVersion"] as? String {

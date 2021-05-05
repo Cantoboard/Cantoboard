@@ -64,11 +64,12 @@ class ViewController: UIViewController, UITextViewDelegate {
         
         /*
         // Uncomment to generate English Dictionaries.
-        EnglishDictionary.createDb(locale: "en_US")
-        EnglishDictionary.createDb(locale: "en_CA")
-        EnglishDictionary.createDb(locale: "en_GB")
-        EnglishDictionary.createDb(locale: "en_AU")
-        DDLogInfo("EnglishDictionary Created.") */
+        DefaultDictionary.createDb(locale: "en_US")
+        DefaultDictionary.createDb(locale: "en_CA")
+        DefaultDictionary.createDb(locale: "en_GB")
+        DefaultDictionary.createDb(locale: "en_AU")
+        NSLog("EnglishDictionary Created.")
+         */
         
         textbox = UITextView()
         textbox.translatesAutoresizingMaskIntoConstraints = false

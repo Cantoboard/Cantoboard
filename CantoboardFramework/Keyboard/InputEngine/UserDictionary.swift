@@ -12,9 +12,7 @@ class UserDictionary {
     private let dict: LevelDbTable
     
     public init() {
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let userDataPath = documentsDirectory.appendingPathComponent("RimeUserData/\(Self.userDictName)", isDirectory: true).path
-        
+        let userDataPath = DataFileManager.englishUserDictPath
         dict = LevelDbTable(userDataPath, createDbIfMissing: true)
     }
     

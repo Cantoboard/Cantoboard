@@ -77,7 +77,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     reverseLookup(RimeSchemaId),
     selectCandidate(IndexPath),
     longPressCandidate(IndexPath),
-    exportFile(URL)
+    exportFile(String)
     
     public init(stringLiteral value: String) {
         self = .character(value)
