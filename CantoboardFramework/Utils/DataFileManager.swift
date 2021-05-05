@@ -21,6 +21,7 @@ class DataFileManager {
     static let cacheDataDirectory = "\(cacheDirectory)/Data"
     static let logsDirectory = "\(cacheDirectory)/Logs"
     static let builtInEnglishDictDirectory = "\(cacheDataDirectory)/EnglishDict"
+    static let builtInUnihanDictDirectory = "\(cacheDataDirectory)/Unihan"
     static let versionFilePath = "\(cacheDataDirectory)/version"
     
     static let documentDirectory = getDocumentDirectoryPath()

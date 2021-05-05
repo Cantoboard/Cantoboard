@@ -8,13 +8,14 @@
 import Foundation
 
 enum GroupByMode {
-    case byFrequency
-    case byRomanization
+    case byFrequency, byRomanization, byRadical, byTotalStroke
     
     var title: String {
         switch self {
         case .byFrequency: return "頻率"
         case .byRomanization: return "粵拼"
+        case .byRadical: return "部首"
+        case .byTotalStroke: return "筆畫"
         }
     }
 }
@@ -32,6 +33,9 @@ protocol CandidateSource: class {
 }
 
 class InputEngineCandidateSource: CandidateSource {
+    private static let unihanDict: LevelDbTable = LevelDbTable(DataFileManager.builtInUnihanDictDirectory, createDbIfMissing: false)
+    private static let radicalChars = [Int](0..<214).map({ String(Character(Unicode.Scalar(0x2F00 + $0)!)) })
+    
     private var candidatePaths: [[CandidatePath]] = []
     private var sectionHeaders: [String] = []
     private var curRimeCandidateIndex = 0
@@ -60,6 +64,8 @@ class InputEngineCandidateSource: CandidateSource {
         switch groupByMode {
         case .byFrequency: populateCandidatesByFreq()
         case .byRomanization: populateCandidatesByRomanization()
+        case .byRadical: populateCandidatesByRadical()
+        case .byTotalStroke: populateCandidatesByTotalStroke()
         }
     }
     
@@ -201,6 +207,74 @@ class InputEngineCandidateSource: CandidateSource {
         }
     }
     
+    private func populateCandidatesByRadical() {
+        guard let inputController = inputController,
+              let inputEngine = inputController.inputEngine,
+              inputController.inputMode != .english else { return }
+        
+        while inputEngine.loadMoreRimeCandidates() {}
+                
+        var candidateGroupByRadical = Dictionary<UInt8, [Int]>()
+        var radicalStrokes = Dictionary<Int, UInt8>()
+        for i in 0..<inputEngine.rimeLoadedCandidatesCount {
+            guard let candidate = inputEngine.getRimeCandidate(i),
+                  let candidateFirstCharInUtf32 = candidate.first?.unicodeScalars.first?.value else { continue }
+            
+            let unihanEntry = Self.unihanDict.getUnihanEntry(candidateFirstCharInUtf32)
+            let radical = unihanEntry.radical
+            guard radical != 0 else { continue }
+            if !candidateGroupByRadical.keys.contains(radical) {
+                candidateGroupByRadical[radical] = []
+            }
+            candidateGroupByRadical[radical]?.append(i)
+            radicalStrokes[i] = unihanEntry.radicalStroke
+        }
+        
+        let candidateGroupByKeysSorted = candidateGroupByRadical.keys.sorted()
+        sectionHeaders = []
+        for i in 0..<candidateGroupByKeysSorted.count {
+            let header = candidateGroupByKeysSorted[i]
+            guard let candidates = candidateGroupByRadical[header]?
+                    .sorted(by: { radicalStrokes[$0] ?? 0 < radicalStrokes[$1] ?? 0 })
+                    .map({ CandidatePath(source: .rime, index: $0) }) else { continue }
+            candidatePaths.append(candidates)
+            if let radicalChar = Self.radicalChars[safe: Int(header) - 1] {
+                sectionHeaders.append(radicalChar)
+            }
+        }
+    }
+    
+    private func populateCandidatesByTotalStroke() {
+        guard let inputController = inputController,
+              let inputEngine = inputController.inputEngine,
+              inputController.inputMode != .english else { return }
+        
+        while inputEngine.loadMoreRimeCandidates() {}
+        
+        var candidateGroupByTotalStroke = Dictionary<UInt8, [Int]>()
+        for i in 0..<inputEngine.rimeLoadedCandidatesCount {
+            guard let candidate = inputEngine.getRimeCandidate(i),
+                  let candidateFirstCharInUtf32 = candidate.first?.unicodeScalars.first?.value else { continue }
+            
+            let unihanEntry = Self.unihanDict.getUnihanEntry(candidateFirstCharInUtf32)
+            let totalStroke = unihanEntry.totalStroke
+            guard totalStroke != 0 else { continue }
+            if !candidateGroupByTotalStroke.keys.contains(totalStroke) {
+                candidateGroupByTotalStroke[totalStroke] = []
+            }
+            candidateGroupByTotalStroke[totalStroke]?.append(i)
+        }
+        
+        let candidateGroupByKeysSorted = candidateGroupByTotalStroke.keys.sorted()
+        sectionHeaders = []
+        for i in 0..<candidateGroupByKeysSorted.count {
+            let header = candidateGroupByKeysSorted[i]
+            guard let candidates = candidateGroupByTotalStroke[header]?.map({ CandidatePath(source: .rime, index: $0) }) else { continue }
+            candidatePaths.append(candidates)
+            sectionHeaders.append(String(header))
+        }
+    }
+    
     func updateCandidates(reload: Bool) {
         guard let inputEngine = inputController?.inputEngine,
               reload || groupByMode == .byFrequency else { return }
@@ -254,7 +328,7 @@ class InputEngineCandidateSource: CandidateSource {
     }
     
     var supportedGroupByModes: [GroupByMode] {
-        [ GroupByMode.byFrequency, GroupByMode.byRomanization ]
+        [ .byFrequency, .byRomanization, .byRadical, .byTotalStroke ]
     }
     
     var groupByMode: GroupByMode {

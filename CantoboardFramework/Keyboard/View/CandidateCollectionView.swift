@@ -300,12 +300,14 @@ class CandidateSegmentControlCell: UICollectionViewCell {
         
         guard let segmentControl = segmentControl, segmentControl.numberOfSegments != groupByModes.count else { return }
         
-        segmentControl.removeAllSegments()
-        self.groupByModes = groupByModes
-        for i in 0..<groupByModes.count {
-            segmentControl.insertSegment(withTitle: groupByModes[i].title, at: i, animated: false)
-            if groupByModes[i] == selectedGroupByMode {
-                segmentControl.selectedSegmentIndex = i
+        UIView.performWithoutAnimation {
+            segmentControl.removeAllSegments()
+            self.groupByModes = groupByModes
+            for i in 0..<groupByModes.count {
+                segmentControl.insertSegment(withTitle: groupByModes[i].title, at: i, animated: false)
+                if groupByModes[i] == selectedGroupByMode {
+                    segmentControl.selectedSegmentIndex = i
+                }
             }
         }
     }
@@ -314,7 +316,9 @@ class CandidateSegmentControlCell: UICollectionViewCell {
         guard let groupByModes = groupByModes else { return }
         for i in 0..<groupByModes.count {
             if groupByModes[i] == selectedGroupByMode {
-                segmentControl?.selectedSegmentIndex = i
+                UIView.performWithoutAnimation {
+                    segmentControl?.selectedSegmentIndex = i
+                }
             }
         }
     }
@@ -354,14 +358,15 @@ class CandidateSectionHeader: UICollectionReusableView {
         backgroundColor = ButtonColor.systemKeyBackgroundColor
     }
     
-    func setup(_ text: String) {
+    func setup(_ text: String, autoSize: Bool) {
         if textLayer == nil {
             let textLayer = UILabel()
             self.textLayer = textLayer
             addSubview(textLayer)
             textLayer.textAlignment = .center
             textLayer.baselineAdjustment = .alignCenters
-            textLayer.adjustsFontSizeToFitWidth = true
+            textLayer.adjustsFontSizeToFitWidth = autoSize
+            textLayer.font = UIFont.systemFont(ofSize: autoSize ? UIFont.labelFontSize : LayoutConstants.forMainScreen.candidateFontSize + 2)
         }
         
         textLayer?.text = text

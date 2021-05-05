@@ -521,7 +521,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         
         let section = translateCollectionViewSectionToCandidateSection(indexPath.section)
         let text = candidateOrganizer?.getSectionHeader(section: section) ?? ""
-        header.setup(text)
+        header.setup(text, autoSize: candidateOrganizer?.groupByMode == .byRomanization)
         
         return header
     }

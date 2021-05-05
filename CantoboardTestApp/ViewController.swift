@@ -71,6 +71,12 @@ class ViewController: UIViewController, UITextViewDelegate {
         NSLog("EnglishDictionary Created.")
          */
         
+        /*
+        let unihanCsvPath = "\(Bundle.main.resourcePath!)/UnihanSource/Unihan12.csv"
+        let path = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).path
+        LevelDbTable.createUnihanDictionary(unihanCsvPath, dictDbPath: "\(path)/Unihan")
+         */
+        
         textbox = UITextView()
         textbox.translatesAutoresizingMaskIntoConstraints = false
         textbox.font = UIFont.systemFont(ofSize: 16)
