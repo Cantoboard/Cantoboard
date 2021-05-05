@@ -196,6 +196,9 @@ class InputController {
                 } else {
                     _ = inputEngine.processBackspace()
                 }
+                if !inputEngine.isComposing {
+                    keyboardView?.candidatePaneView?.changeMode(.row)
+                }
             } else {
                 switch action {
                 case .backspace: textDocumentProxy.deleteBackward()
