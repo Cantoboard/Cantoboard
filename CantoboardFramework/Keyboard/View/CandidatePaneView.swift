@@ -612,6 +612,8 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 
 extension CandidatePaneView: CandidateCollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard !groupByEnabled || indexPath.section > 0 else { return }
+        
         AudioFeedbackProvider.play(keyboardAction: .none)
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
     }
