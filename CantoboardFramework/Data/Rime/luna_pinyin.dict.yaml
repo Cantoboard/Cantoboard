@@ -33,30 +33,6 @@ sort: by_weight
 use_preset_vocabulary: true
 ...
 
-〇	ling
-ㄓ	zhi
-ㄔ	chi
-ㄕ	shi
-ㄖ	ri
-ㄗ	zi
-ㄘ	ci
-ㄙ	si
-ㄚ	a
-ㄛ	o
-ㄜ	e
-ㄝ	eh
-ㄞ	ai
-ㄟ	ei
-ㄠ	ao
-ㄡ	ou
-ㄢ	an
-ㄣ	en
-ㄤ	ang
-ㄥ	eng
-ㄦ	er
-ㄧ	yi
-ㄨ	wu
-ㄩ	yu
 㐀	qiu
 㐁	tian
 㐄	kua
@@ -3953,17 +3929,6 @@ use_preset_vocabulary: true
 䌳	shi
 䌴	luo
 䌵	zhu
-䌷	chou
-䌸	juan
-䌹	jiong
-䌺	er
-䌻	yi
-䌼	rui
-䌽	cai
-䌾	ren
-䌿	fu
-䍀	lan
-䍁	sui
 䍂	yu
 䍃	you
 䍄	dian
@@ -5023,9 +4988,6 @@ use_preset_vocabulary: true
 䜠	che
 䜡	yu
 䜢	xian
-䜣	xin
-䜧	nao
-䜩	yan
 䜪	qiu
 䜫	hong
 䜫	jiang
@@ -5126,9 +5088,6 @@ use_preset_vocabulary: true
 䞉	sheng
 䞊	xun
 䞋	chen
-䞌	she
-䞍	qing
-䞐	chun
 䞑	hong
 䞒	dong
 䞓	cheng
@@ -5406,8 +5365,6 @@ use_preset_vocabulary: true
 䡾	ye
 䡾	yi
 䡿	ling
-䢀	qi
-䢁	yue
 䢃	yi
 䢄	xi
 䢅	chen
@@ -5661,13 +5618,6 @@ use_preset_vocabulary: true
 䥶	li
 䥷	zha
 䥸	mi
-䥺	ye
-䥽	po
-䥾	xie
-䦂	shan
-䦃	zhuo
-䦅	shan
-䦆	jue
 䦇	ji
 䦈	jie
 䦈	zuo
@@ -5725,8 +5675,6 @@ use_preset_vocabulary: true
 䦳	xiang
 䦴	yi
 䦵	ni
-䦶	zheng
-䦷	chuai
 䦹	shi
 䦺	ding
 䦻	zi
@@ -6204,7 +6152,6 @@ use_preset_vocabulary: true
 䭧	mi
 䭨	shui
 䭩	mo
-䭪	liang
 䭫	qi
 䭬	qi
 䭭	shou
@@ -6296,8 +6243,6 @@ use_preset_vocabulary: true
 䯁	luo
 䯂	ji
 䯂	shen
-䯄	gua
-䯅	nie
 䯆	yi
 䯇	ku
 䯈	wan
@@ -6536,12 +6481,6 @@ use_preset_vocabulary: true
 䲚	lai
 䲛	meng
 䲜	ye
-䲞	li
-䲟	yin
-䲠	chun
-䲡	qiu
-䲢	teng
-䲣	yu
 䲦	dai
 䲧	du
 䲨	hong
@@ -6662,13 +6601,6 @@ use_preset_vocabulary: true
 䴐	bao
 䴑	die
 䴒	ling
-䴓	shi
-䴔	jiao
-䴕	lie
-䴖	jing
-䴗	ju
-䴘	ti
-䴙	pi
 䴚	gang
 䴛	xiao
 䴜	wai
@@ -6838,7 +6770,6 @@ use_preset_vocabulary: true
 䶪	cha
 䶫	yan
 䶬	jian
-䶮	yan
 䶰	jiao
 䶱	tong
 䶲	nan
@@ -6900,7 +6831,6 @@ use_preset_vocabulary: true
 丩	jiu
 个	ge
 丫	ya
-丬	qiang
 中	zhong
 丮	ji
 丮	xun
@@ -8582,8 +8512,6 @@ use_preset_vocabulary: true
 卡	qia	5%
 卢	lu
 卣	you
-卤	lu	100%
-卤	xi	0%
 卥	xi
 卦	gua
 卧	wo
@@ -22453,169 +22381,6 @@ use_preset_vocabulary: true
 纝	lei
 纝	luo
 纞	lian
-纟	si
-纠	jiu
-纡	yu
-红	hong	99.98%
-纣	zhou
-纤	qian	53.05%
-纤	xian	46.95%
-纥	ge	50%
-纥	he	50%
-约	yao	0.02%
-约	yue	99.98%
-级	ji
-纨	wan
-纩	kuang
-纪	ji
-纫	ren
-纬	wei
-纭	yun
-纮	hong
-纯	chun
-纰	pi
-纱	sha
-纲	gang
-纳	na
-纴	ren
-纵	zong
-纶	lun	94.02%
-纷	fen
-纸	zhi
-纹	wen
-纺	fang
-纻	zhu
-纼	zhen
-纽	niu
-纾	shu
-线	xian
-绀	gan
-绁	xie
-绂	fu
-练	lian
-组	zu
-绅	shen
-细	xi
-织	zhi
-终	zhong
-绉	zhou
-绊	ban
-绋	fu
-绌	chu
-绍	shao
-绎	yi
-经	jing
-绐	dai
-绑	bang
-绒	rong
-结	jie
-绔	ku
-绕	rao
-绖	die
-绗	hang
-绘	hui
-给	gei	99.99%
-给	ji	0.01%
-绚	xuan
-绛	jiang
-络	lao	0.97%
-络	luo	99.03%
-绝	jue
-绞	jiao
-统	tong
-绠	geng
-绡	xiao
-绢	juan
-绣	xiu
-绤	xi
-绥	sui
-绦	di
-绦	tao
-继	ji
-绨	ti
-绩	ji
-绪	xu
-绫	ling
-绬	ying
-续	xu
-绮	qi
-绯	fei
-绰	chao	50%
-绰	chuo	50%
-绱	shang
-绲	gun
-绳	sheng
-维	wei
-绵	mian
-绶	shou
-绷	beng
-绸	chou
-绹	tao
-绺	liu
-绻	quan
-综	zeng	50%
-综	zong	50%
-绽	zhan
-绾	wan
-绿	lv	99.26%
-缀	chuo
-缀	zhui
-缁	zi
-缂	ke
-缃	xiang
-缄	jian
-缅	mian
-缆	lan
-缇	ti
-缈	miao
-缉	ji	97.83%
-缉	qi	2.17%
-缊	yun
-缋	hui
-缌	si
-缍	duo
-缎	duan
-缏	bian
-缐	xian
-缑	gou
-缒	zhui
-缓	huan
-缔	di
-缕	lv
-编	bian
-缗	min
-缘	yuan
-缙	jin
-缚	fu
-缛	ru
-缜	zhen
-缝	feng
-缞	cui
-缟	gao
-缠	chan
-缡	li
-缢	yi
-缣	jian
-缤	bin
-缥	piao
-缦	man
-缧	lei
-缨	ying
-缩	suo	99.38%
-缪	miao	32.77%
-缪	mou	0.84%
-缫	sao
-缬	xie
-缭	liao
-缮	shan
-缯	zeng
-缰	jiang
-缱	qian
-缲	qiao	50%
-缲	sao	50%
-缳	huan
-缴	jiao	99.48%
-缵	zuan
 缶	fou
 缶	gang
 缷	xie
@@ -26017,25 +25782,7 @@ use_preset_vocabulary: true
 覿	di
 覿	du
 觀	guan
-见	jian	99.05%
-见	xian	0.95%
-观	guan
-觃	yan
-规	gui
-觅	mi
 视	shi
-觇	zhan
-览	lan
-觉	jiao	21.83%
-觉	jue	78.17%
-觊	ji
-觋	xi
-觌	di
-觍	tian
-觎	yu
-觏	gou
-觐	jin
-觑	qu
 角	jiao	80.82%
 角	jue	19.18%
 角	lu	0%
@@ -26647,162 +26394,6 @@ use_preset_vocabulary: true
 讞	xian
 讞	yan
 讟	du
-讠	yan
-计	ji
-订	ding
-讣	fu
-认	ren
-讥	ji
-讦	jie
-讧	hong
-讨	tao
-让	rang
-讪	shan
-讫	qi
-讬	tuo
-训	xun
-议	yi
-讯	xun
-记	ji
-讱	ren
-讲	jiang
-讳	hui
-讴	ou
-讵	ju
-讶	ya
-讷	ne
-许	xu	99.29%
-讹	e
-论	lun
-讻	xiong
-讼	song
-讽	feng
-设	she
-访	fang
-诀	jue
-证	zheng
-诂	gu
-诃	he
-评	ping
-诅	zu
-识	shi	99.94%
-识	zhi	0.06%
-诇	xiong
-诈	zha
-诉	su
-诊	zhen
-诋	di
-诌	zhou
-词	ci
-诎	qu
-诏	zhao
-诐	bi
-译	yi
-诒	yi
-诓	kuang
-诔	lei
-试	shi
-诖	gua
-诗	shi
-诘	jie	92.45%
-诙	hui
-诚	cheng
-诛	zhu
-诜	shen
-话	hua
-诞	dan
-诟	gou
-诠	quan
-诡	gui
-询	xun
-诣	yi
-诤	zheng
-该	gai
-详	xiang
-诧	cha
-诨	hun
-诩	xu
-诪	zhou
-诫	jie
-诬	wu
-语	yu
-诮	qiao
-误	wu
-诰	gao
-诱	you
-诲	hui
-诳	kuang
-说	shui	0.06%
-说	shuo	99.87%
-诵	song
-诶	ei	50%
-请	qing
-诸	zhu
-诹	zou
-诺	nuo
-读	dou	0.01%
-读	du	99.99%
-诼	zhuo
-诽	fei
-课	ke
-诿	wei
-谀	yu
-谁	shei	22.31%
-谁	shui	77.69%
-谂	shen
-调	diao	30.33%
-调	tiao	69.67%
-谄	chan
-谅	liang
-谆	zhun
-谇	sui
-谈	tan
-谉	shen
-谊	yi
-谋	mou
-谌	chen
-谍	die
-谎	huang
-谏	jian
-谐	xie
-谑	xue
-谒	ye
-谓	wei
-谔	e
-谕	yu
-谖	xuan
-谗	chan
-谘	zi
-谙	an
-谚	yan
-谛	di
-谜	mi
-谝	pian
-谞	xu
-谟	mo
-谠	dang
-谡	su
-谢	xie
-谣	yao
-谤	bang
-谥	shi
-谦	qian
-谧	mi
-谨	jin
-谩	man
-谪	zhe
-谫	jian
-谬	miu
-谭	tan
-谮	zen
-谯	qiao
-谰	lan
-谱	pu
-谲	jue
-谳	yan
-谴	qian
-谵	zhan
-谶	chen
 谷	gu	99.93%
 谷	yu	0.07%
 谸	qian
@@ -27105,80 +26696,6 @@ use_preset_vocabulary: true
 贛	gan	100%
 贛	gong	0%
 贜	zang
-贝	bei
-贞	zhen
-负	fu
-贠	yuan
-贡	gong
-财	cai
-责	ze
-贤	xian
-败	bai
-账	zhang
-货	huo
-质	zhi
-贩	fan
-贪	tan
-贫	pin
-贬	bian
-购	gou
-贮	zhu
-贯	guan
-贰	er
-贱	jian
-贲	ben	94.83%
-贲	bi	5.17%
-贳	shi
-贴	tie
-贵	gui
-贶	kuang
-贷	dai
-贸	mao
-费	fei
-贺	he
-贻	yi
-贼	zei
-贽	zhi
-贾	gu	0.27%
-贾	jia	99.73%
-贿	hui
-赀	zi
-赁	lin
-赂	lu
-赃	zang
-资	zi
-赅	gai
-赆	jin
-赇	qiu
-赈	zhen
-赉	lai
-赊	she
-赋	fu
-赌	du
-赍	ji
-赎	shu
-赏	shang
-赐	ci
-赑	bi
-赒	zhou
-赓	geng
-赔	pei
-赕	dan
-赖	lai
-赗	feng
-赘	zhui
-赙	fu
-赚	zhuan	94.68%
-赚	zuan	5.32%
-赛	sai
-赜	ze
-赝	yan
-赞	zan
-赟	yun
-赠	zeng
-赡	shan
-赢	ying
-赣	gan
 赤	chi
 赥	xi
 赦	she
@@ -27829,63 +27346,6 @@ use_preset_vocabulary: true
 轣	li
 轤	lu
 轥	lin
-车	che	99.99%
-车	ju	0.01%
-轧	ga	22.32%
-轧	ya	27.90%
-轧	zha	49.79%
-轨	gui
-轩	xuan
-轪	dai
-轫	ren
-转	zhuan
-轭	e
-轮	lun
-软	ruan
-轰	hong
-轱	gu
-轲	ke
-轳	lu
-轴	zhou
-轵	zhi
-轶	yi
-轷	hu
-轸	zhen
-轹	li
-轺	yao
-轻	qing
-轼	shi
-载	zai
-轾	zhi
-轿	jiao
-辀	zhou
-辁	quan
-辂	lu
-较	jiao
-辄	zhe
-辅	fu
-辆	liang
-辇	nian
-辈	bei
-辉	hui
-辊	gun
-辋	wang
-辌	liang
-辍	chuo
-辎	zi
-辏	cou
-辐	fu
-辑	ji
-辒	wen
-输	shu
-辔	pei
-辕	yuan
-辖	xia
-辗	zhan	56.52%
-辘	lu
-辙	che
-辙	zhe
-辚	lin
 辛	xin
 辜	gu
 辝	ci
@@ -27915,7 +27375,6 @@ use_preset_vocabulary: true
 辴	zhan
 辴	zhen
 辵	chuo
-辶	chuo
 辸	reng
 边	bian
 辺	bian
@@ -29419,256 +28878,6 @@ use_preset_vocabulary: true
 钂	tang
 钃	shu
 钄	lan
-钅	jin
-钆	ga
-钇	yi
-针	zhen
-钉	ding
-钊	zhao
-钋	po
-钌	liao
-钍	tu
-钎	qian
-钏	chuan
-钐	shan
-钑	ji
-钒	fan
-钓	diao
-钔	men
-钕	nv
-钖	yang
-钗	chai
-钘	xing
-钙	gai
-钚	bu
-钛	tai
-钜	ju
-钝	dun
-钞	chao
-钟	zhong
-钠	na
-钡	bei
-钢	gang
-钣	ban
-钤	qian
-钥	yao	91.40%
-钥	yue	8.60%
-钦	qin
-钧	jun
-钨	wu
-钩	gou
-钪	kang
-钫	fang
-钬	huo
-钭	tou	48%
-钮	niu
-钯	ba	90.38%
-钯	pa	9.62%
-钰	yu
-钱	qian
-钲	zheng
-钳	qian
-钴	gu
-钵	bo
-钶	ke
-钷	po
-钸	bu
-钹	bo
-钺	yue
-钻	zuan
-钼	mu
-钽	tan
-钾	jia
-钿	dian	31.03%
-钿	tian	68.97%
-铀	you
-铁	tie
-铂	bo
-铃	ling
-铄	shuo
-铅	qian	99.33%
-铆	mao
-铇	bao
-铈	shi
-铉	xuan
-铊	ta	61.97%
-铋	bi
-铌	ni
-铍	pi
-铎	duo
-铏	xing
-铐	kao
-铑	lao
-铒	er
-铓	mang
-铔	ya
-铕	you
-铖	cheng
-铗	jia
-铘	ye
-铙	nao
-铚	zhi
-铛	cheng	1.90%
-铛	dang	98.10%
-铜	tong
-铝	lv
-铞	diao
-铟	yin
-铠	kai
-铡	zha
-铢	zhu
-铣	xi	77.92%
-铣	xian	22.09%
-铤	ding
-铤	ting
-铥	diu
-铦	xian
-铧	hua
-铨	quan
-铩	sha
-铪	ha
-铫	diao	50%
-铫	yao	50%
-铬	ge
-铭	ming
-铮	zheng
-铯	se
-铰	jiao
-铱	yi
-铲	chan
-铳	chong
-铴	tang
-铵	an
-银	yin
-铷	ru
-铸	zhu
-铹	lao
-铺	pu
-铻	wu
-铼	lai
-铽	te
-链	lian
-铿	keng
-销	xiao
-锁	suo
-锂	li
-锃	zeng
-锄	chu
-锅	guo
-锆	gao
-锇	e
-锈	xiu
-锉	cuo
-锊	lve
-锋	feng
-锌	xin
-锍	liu
-锎	kai
-锏	jian
-锐	rui
-锑	ti
-锒	lang
-锓	qin
-锔	ju
-锕	a
-锖	qiang
-锗	zhe
-锘	nuo
-错	cuo
-锚	mao
-锛	ben
-锜	qi
-锝	de
-锞	ke
-锟	kun
-锠	chang
-锡	xi
-锢	gu
-锣	luo
-锤	chui
-锥	zhui
-锦	jin
-锧	zhi
-锨	xian
-锩	juan
-锪	huo
-锫	pei
-锬	tan
-锭	ding
-键	jian
-锯	ju
-锰	meng
-锱	zi
-锲	qie
-锳	ying
-锴	kai
-锵	qiang
-锶	si
-锷	e
-锸	cha
-锹	qiao
-锺	zhong
-锻	duan
-锼	sou
-锽	huang
-锾	huan
-锿	ai
-镀	du
-镁	mei
-镂	lou
-镃	zi
-镄	fei
-镅	mei
-镆	mo
-镇	zhen
-镈	bo
-镉	ge
-镊	nie
-镋	tang
-镌	juan
-镍	nie
-镎	na
-镏	liu
-镐	gao	69.31%
-镐	hao	30.69%
-镑	bang
-镒	yi
-镓	jia
-镔	bin
-镕	rong
-镖	biao
-镗	tang
-镘	man
-镙	luo
-镚	beng
-镛	yong
-镜	jing
-镝	di
-镞	zu
-镟	xuan
-镠	liu
-镡	tan
-镢	jue
-镣	liao
-镤	pu
-镥	lu
-镦	dun	9.09%
-镧	lan
-镨	pu
-镩	cuan
-镪	qiang
-镫	deng
-镬	huo
-镭	lei
-镮	huan
-镯	zhuo
-镰	lian
-镱	yi
-镲	cha
-镳	biao
-镴	la
-镵	chan
-镶	xiang
 長	chang	60.26%
 長	zhang	39.74%
 镸	chang
@@ -29679,8 +28888,6 @@ use_preset_vocabulary: true
 镼	qu
 镽	liao
 镾	mi
-长	chang	60.26%
-长	zhang	39.74%
 門	men
 閁	ma
 閂	shuan
@@ -29806,59 +29013,6 @@ use_preset_vocabulary: true
 闥	ta
 闦	wen
 闧	ta
-门	men
-闩	shuan
-闪	shan
-闫	yan
-闬	han
-闭	bi
-问	wen
-闯	chuang
-闰	run
-闱	wei
-闲	xian
-闳	hong
-间	jian
-闵	min
-闶	kang
-闷	men
-闸	zha
-闹	nao
-闺	gui
-闻	wen
-闼	ta
-闽	min
-闾	lv
-闿	kai
-阀	fa
-阁	ge
-阂	he	96.55%
-阃	kun
-阄	jiu
-阅	yue
-阆	lang
-阇	du
-阇	she
-阈	yu
-阉	yan
-阊	chang
-阋	xi
-阌	wen
-阍	hun
-阎	yan
-阏	e
-阐	chan
-阑	lan
-阒	qu
-阓	hui
-阔	kuo
-阕	que
-阖	he
-阗	tian
-阘	da
-阙	que
-阚	kan	97.73%
-阛	huan
 阜	bu
 阜	fu
 阝	yi
@@ -30446,13 +29600,6 @@ use_preset_vocabulary: true
 韣	du
 韤	wa
 韥	du
-韦	wei
-韧	ren
-韨	fu
-韩	han
-韪	wei
-韫	yun
-韬	tao
 韭	jiu
 韮	jiu
 韯	qian
@@ -30630,57 +29777,6 @@ use_preset_vocabulary: true
 顲	lin
 顳	nie
 顴	quan
-页	ye
-顶	ding
-顷	qing
-顸	han
-项	xiang
-顺	shun
-须	xu
-顼	xu
-顽	wan
-顾	gu
-顿	dun	98.64%
-颀	qi
-颁	ban
-颂	song
-颃	hang
-预	yu
-颅	lu
-领	ling
-颇	po
-颈	jing	97.34%
-颉	xie	4.48%
-颊	jia
-颋	ting
-颌	he	91.01%
-颍	ying
-颎	jiong
-颏	ke
-颐	yi
-频	pin
-颒	hui
-颓	tui
-颔	han
-颕	ying
-颖	ying
-颗	ke
-题	ti
-颙	yong
-颚	e
-颛	zhuan
-颜	yan
-额	e
-颞	nie
-颟	man
-颠	dian
-颡	sang
-颢	hao
-颣	lei
-颤	chan	90.89%
-颥	ru
-颦	pin
-颧	quan
 風	feng
 颩	biao
 颫	fu
@@ -30727,23 +29823,9 @@ use_preset_vocabulary: true
 飌	feng
 飍	biao
 飍	xiu
-风	feng
-飏	yang
-飐	zhan
-飑	biao
-飒	sa
-飓	ju
-飔	si
-飕	sou
-飖	yao
-飗	liu
-飘	piao
-飙	biao
-飚	biao
 飛	fei
 飜	fan
 飝	fei
-飞	fei
 食	shi	96.65%
 食	si	3.35%
 食	yi	0%
@@ -30904,57 +29986,6 @@ use_preset_vocabulary: true
 饠	luo
 饡	zai
 饢	nang
-饣	shi
-饤	ding
-饥	ji
-饦	tuo
-饧	xing
-饨	tun
-饩	xi
-饪	ren
-饫	yu
-饬	chi
-饭	fan
-饮	yin
-饯	jian
-饰	shi
-饱	bao
-饲	si
-饳	duo
-饴	yi
-饵	er
-饶	rao
-饷	xiang
-饸	he
-饹	le
-饺	jiao
-饻	xi
-饼	bing
-饽	bo
-饾	dou
-饿	e
-馀	yu
-馁	nei
-馂	jun
-馃	guo
-馄	hun
-馅	xian
-馆	guan
-馇	cha
-馈	kui
-馉	gu
-馊	sou
-馋	chan
-馌	ye
-馍	mo
-馎	bo
-馏	liu
-馐	xiu
-馑	jin
-馒	man
-馓	san
-馔	zhuan
-馕	nang
 首	shou
 馗	kui
 馘	guo
@@ -31215,67 +30246,6 @@ use_preset_vocabulary: true
 驩	huan
 驪	li
 驫	biao
-马	ma
-驭	yu
-驮	duo	3.27%
-驮	tuo	96.73%
-驯	xun
-驰	chi
-驱	qu
-驲	ri
-驳	bo
-驴	lv
-驵	zang
-驶	shi
-驷	si
-驸	fu
-驹	ju
-驺	zou
-驻	zhu
-驼	tuo
-驽	nu
-驾	jia
-驿	yi
-骀	tai
-骁	xiao
-骂	ma
-骃	yin
-骄	jiao
-骅	hua
-骆	luo
-骇	hai
-骈	pian
-骉	biao
-骊	li
-骋	cheng
-验	yan
-骍	xing
-骎	qin
-骏	jun
-骐	qi
-骑	qi	99.18%
-骒	ke
-骓	zhui
-骔	zong
-骕	su
-骖	can
-骗	pian
-骘	zhi
-骙	kui
-骚	sao
-骛	wu
-骜	ao
-骝	liu
-骞	qian
-骟	shan
-骠	piao	15.56%
-骡	luo
-骢	cong
-骣	chan
-骤	zhou
-骥	ji
-骦	shuang
-骧	xiang
 骨	gu
 骩	wei
 骪	wei
@@ -31824,113 +30794,6 @@ use_preset_vocabulary: true
 鱹	huan
 鱺	li
 鱻	xian
-鱼	yu
-鱽	dao
-鱾	ji
-鱿	you
-鲀	tun
-鲁	lu
-鲂	fang
-鲃	ba
-鲄	he
-鲅	ba
-鲅	bo
-鲆	ping
-鲇	nian
-鲈	lu
-鲉	you
-鲊	zha
-鲋	fu
-鲌	ba
-鲍	bao
-鲎	hou
-鲏	pi
-鲐	tai
-鲑	gui
-鲒	jie
-鲓	kao
-鲔	wei
-鲕	er
-鲖	tong
-鲗	zei
-鲗	ze
-鲘	hou
-鲙	kuai
-鲚	ji
-鲛	jiao
-鲜	xian
-鲝	zha
-鲞	xiang
-鲟	xun
-鲠	geng
-鲡	li
-鲢	lian
-鲣	jian
-鲤	li
-鲥	shi
-鲦	tiao
-鲧	gun
-鲨	sha
-鲩	huan
-鲪	jun
-鲫	ji
-鲬	yong
-鲭	qing
-鲮	ling
-鲯	qi
-鲰	zou
-鲱	fei
-鲲	kun
-鲳	chang
-鲴	gu
-鲵	ni
-鲶	nian
-鲷	diao
-鲸	jing
-鲹	shen
-鲺	shi
-鲻	zi
-鲼	fen
-鲽	die
-鲾	bi
-鲿	chang
-鳀	ti
-鳁	wen
-鳂	wei
-鳃	sai
-鳄	e
-鳅	qiu
-鳆	fu
-鳇	huang
-鳈	quan
-鳉	jiang
-鳊	bian
-鳋	sao
-鳌	ao
-鳍	qi
-鳎	ta
-鳏	guan
-鳐	yao
-鳑	pang
-鳒	jian
-鳓	le
-鳔	biao
-鳕	xue
-鳖	bie
-鳗	man
-鳘	min
-鳙	yong
-鳚	wei
-鳛	xi
-鳜	gui
-鳝	shan
-鳞	lin
-鳟	zun
-鳠	hu
-鳡	gan
-鳢	li
-鳣	zhan
-鳤	guan
 鳥	diao	0.14%
 鳥	niao	99.86%
 鳦	yi
@@ -32301,93 +31164,6 @@ use_preset_vocabulary: true
 鸜	qu
 鸝	li
 鸞	luan
-鸟	niao	99.86%
-鸠	jiu
-鸡	ji
-鸢	yuan
-鸣	ming
-鸤	shi
-鸥	ou
-鸦	ya
-鸧	cang
-鸨	bao
-鸩	zhen
-鸪	gu
-鸫	dong
-鸬	lu
-鸭	ya
-鸮	xiao
-鸯	yang
-鸰	ling
-鸱	chi
-鸲	qu
-鸳	yuan
-鸴	xue
-鸵	tuo
-鸶	si
-鸷	zhi
-鸸	er
-鸹	gua
-鸺	xiu
-鸻	heng
-鸼	zhou
-鸽	ge
-鸾	luan
-鸿	hong
-鹀	wu
-鹁	bo
-鹂	li
-鹃	juan
-鹄	gu	50%
-鹄	hu	50%
-鹅	e
-鹆	yu
-鹇	xian
-鹈	ti
-鹉	wu
-鹊	que
-鹋	miao
-鹌	an
-鹍	kun
-鹎	bei
-鹏	peng
-鹐	qian
-鹑	chun
-鹒	geng
-鹓	yuan
-鹔	su
-鹕	hu
-鹖	he
-鹗	e
-鹘	hu	50%
-鹙	qiu
-鹚	ci
-鹛	mei
-鹜	wu
-鹝	yi
-鹞	yao
-鹟	weng
-鹠	liu
-鹡	ji
-鹢	yi
-鹣	jian
-鹤	he
-鹥	yi
-鹦	ying
-鹧	zhe
-鹨	liu
-鹩	liao
-鹪	jiao
-鹫	jiu
-鹬	yu
-鹭	lu
-鹮	huan
-鹯	zhan
-鹰	ying
-鹱	hu
-鹲	meng
-鹳	guan
-鹴	shuang
 鹵	lu
 鹶	jing
 鹷	ling
@@ -32397,7 +31173,6 @@ use_preset_vocabulary: true
 鹻	jian
 鹼	jian
 鹽	yan
-鹾	cuo
 鹿	lu
 麀	you
 麁	cu
@@ -32450,8 +31225,6 @@ use_preset_vocabulary: true
 麤	cu
 麥	mai	100%
 麥	mo	0%
-麦	mai	100%
-麦	mo	0%
 麧	ge
 麧	hu
 麧	qi
@@ -32474,9 +31247,6 @@ use_preset_vocabulary: true
 麶	chi
 麶	li
 麷	feng
-麸	fu
-麹	qu
-麺	mian
 麻	ma
 麼	ma	0.04%
 麼	me	99.93%
@@ -32493,7 +31263,6 @@ use_preset_vocabulary: true
 黂	fei
 黂	fen
 黃	huang
-黄	huang
 黅	jin
 黆	guang
 黇	tian
@@ -32564,7 +31333,6 @@ use_preset_vocabulary: true
 黻	fu
 黼	fu
 黽	min
-黾	min
 黿	yuan
 鼀	cu
 鼁	qu
@@ -32577,9 +31345,6 @@ use_preset_vocabulary: true
 鼈	bie
 鼉	tuo
 鼊	bi
-鼋	yuan
-鼌	chao
-鼍	tuo
 鼎	ding
 鼏	ding
 鼏	mi
@@ -32670,11 +31435,6 @@ use_preset_vocabulary: true
 齎	ji
 齏	ji
 齏	jiu
-齐	ji	0%
-齐	qi	100%
-齐	zhai	0%
-齐	zi	0%
-齑	ji
 齒	chi
 齓	chen
 齔	chen
@@ -32741,21 +31501,6 @@ use_preset_vocabulary: true
 齼	chu
 齽	jin
 齾	ya
-齿	chi
-龀	chen
-龁	he
-龂	yin
-龃	ju
-龄	ling
-龅	bao
-龆	tiao
-龇	zi
-龈	ken	11.11%
-龈	yin	88.89%
-龉	yu
-龊	chuo
-龋	qu
-龌	wo
 龍	long
 龎	pang
 龏	gong
@@ -32770,15 +31515,11 @@ use_preset_vocabulary: true
 龗	ling
 龘	da
 龘	ta
-龙	long
-龚	gong
-龛	kan
 龜	gui	99.25%
 龜	jun	0.75%
 龜	qiu	0%
 龝	qiu
 龞	bie
-龟	gui	99.25%
 龠	yue
 龡	chui
 龢	he
@@ -33364,7 +32105,6 @@ use_preset_vocabulary: true
 𦄌	nie
 𦄓	dou
 𦆟	meng
-𦈡	xu
 𦊂	hu
 𦍋	yang
 𦍌	ren
@@ -33529,7 +32269,6 @@ use_preset_vocabulary: true
 𧭈	ning
 𧭥	luo
 𧮞	xue
-𧮪	zhan
 𧮳	han
 𧯯	qi
 𧰒	guo
@@ -33589,7 +32328,6 @@ use_preset_vocabulary: true
 𨍏	duo
 𨍭	bo
 𨍭	po
-𨐈	guang
 𨑜	pi
 𨑨	zhi
 𨑬	shi
@@ -33627,10 +32365,6 @@ use_preset_vocabulary: true
 𨰜	jue
 𨰦	bao
 𨰻	bao
-𨱇	qiu
-𨱏	da
-𨱑	huang
-𨱔	zun
 𨳊	jiu
 𨳝	run
 𨳝	ting
@@ -33690,7 +32424,6 @@ use_preset_vocabulary: true
 𩝐	ci
 𩟂	guo
 𩟔	cha
-𩠌	song
 𩣱	lu
 𩣺	ben
 𩥅	tao
@@ -33730,9 +32463,6 @@ use_preset_vocabulary: true
 𩼈	ao
 𩼈	you
 𩼨	yi
-𩽾	an
-𩾃	mian
-𩾌	kang
 𩾷	ge
 𩿠	yue
 𩿤	zha
@@ -33773,20 +32503,7 @@ use_preset_vocabulary: true
 𪙊	yan
 𪙛	ni
 𪾢	xian
-𫄨	chi
-𫄸	xun
 𫌀	ji
-𫍲	xiao
-𫐄	yue
-𫐐	ni
-𫐓	bu
-𫓧	fu
-𫔎	jue
-𫗧	su
-𫗴	zhan
-𫘝	jue
-𫘨	ti
-𫚕	shi
 
 #Unicode 7.0
 璴	chu
