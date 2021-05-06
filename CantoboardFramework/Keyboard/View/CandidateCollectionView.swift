@@ -27,12 +27,13 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     override var collectionViewContentSize: CGSize {
         var contentSize = super.collectionViewContentSize
+        let segmentControlHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         if let collectionView = collectionView,
            let candidatePaneView = candidatePaneView,
            candidatePaneView.mode == .table && candidatePaneView.groupByEnabled &&
-           contentSize.height <= collectionView.bounds.height {
+           contentSize.height <= collectionView.bounds.height + segmentControlHeight {
             // Expand the content size to let user to scroll upward to see the segment control.
-            contentSize.height = collectionView.bounds.height + 1
+            contentSize.height = collectionView.bounds.height + segmentControlHeight
         }
         return contentSize
     }
