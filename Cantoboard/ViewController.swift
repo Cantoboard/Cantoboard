@@ -20,7 +20,7 @@ class ViewController: UITableViewController {
     @IBOutlet private var englishLocaleInputControl: UISegmentedControl!
     @IBOutlet private var showRomanizationControl: UISwitch!
     @IBOutlet private var audioFeedbackControl: UISwitch!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -82,6 +82,27 @@ class ViewController: UITableViewController {
     
     @objc func appMovedToBackground(_ notification: NSNotification) {
         populateSettings()
+        tableView.reloadData()
+    }
+    
+    @IBAction func openAppSetting(_ sender: Any) {
+        UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let orgValue = super.tableView(tableView, titleForHeaderInSection: section)
+        switch section {
+        case 0: return orgValue
+        default: return isKeyboardEnabled() ? orgValue : nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let orgValue = super.tableView(tableView, numberOfRowsInSection: section)
+        switch section {
+        case 0: return orgValue
+        default: return isKeyboardEnabled() ? orgValue : 0
+        }
     }
     
     private func populateSetting(toSegmentedControl: UISegmentedControl, settingToIndexMapper: ((Settings) -> Int)) {
@@ -151,5 +172,13 @@ class ViewController: UITableViewController {
             case .longPress: return 1
             }
         })
+    }
+    
+    private func isKeyboardEnabled() -> Bool {
+        guard let keyboards = UserDefaults.standard.object(forKey: "AppleKeyboards") as? [String] else {
+            return false
+        }
+        let extensionBundleIdentifier = "\(Bundle.main.bundleIdentifier ?? "").CantoboardExtension"
+        return keyboards.contains(extensionBundleIdentifier)
     }
 }
