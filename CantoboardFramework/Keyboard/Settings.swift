@@ -46,34 +46,32 @@ public enum EnglishLocale: String, Codable {
 
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
-    public var toneInputMode: ToneInputMode
     public var enableCorrector: Bool
     
     public init() {
-        toneInputMode = .longPress
         enableCorrector = false
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? .longPress
         self.enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
     }
 }
 
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
-    private static let DefaultCharForm: CharForm = .traditionalTW
-    private static let DefaultMixedModeEnabled: Bool = true
-    private static let DefaultInputMode: InputMode = .mixed
-    private static let DefaultAutoCapEnabled: Bool = true
-    private static let DefaultSmartFullStopEnabled: Bool = true
-    private static let DefaultSymbolShape: SymbolShape = .smart
-    private static let DefaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
-    private static let DefaultRimeSettings: RimeSettings = RimeSettings()
-    private static let DefaultEnglishLocale: EnglishLocale = .us
-    private static let DefaultShowRomanization: Bool = true
-    private static let DefaultAudioFeedbackEnabled: Bool = true
+    private static let defaultCharForm: CharForm = .traditionalTW
+    private static let defaultMixedModeEnabled: Bool = true
+    private static let defaultInputMode: InputMode = .mixed
+    private static let defaultAutoCapEnabled: Bool = true
+    private static let defaultSmartFullStopEnabled: Bool = true
+    private static let defaultSymbolShape: SymbolShape = .smart
+    private static let defaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
+    private static let defaultToneInputMode: ToneInputMode = .longPress
+    private static let defaultRimeSettings: RimeSettings = RimeSettings()
+    private static let defaultEnglishLocale: EnglishLocale = .us
+    private static let defaultShowRomanization: Bool = true
+    private static let defaultAudioFeedbackEnabled: Bool = true
 
     public var charForm: CharForm
     public var isMixedModeEnabled: Bool
@@ -82,38 +80,41 @@ public struct Settings: Codable, Equatable {
     public var isSmartFullStopEnabled: Bool
     public var symbolShape: SymbolShape
     public var spaceOutputMode: SpaceOutputMode
+    public var toneInputMode: ToneInputMode
     public var rimeSettings: RimeSettings
     public var englishLocale: EnglishLocale
     public var shouldShowRomanization: Bool
     public var isAudioFeedbackEnabled: Bool
     
     public init() {
-        charForm = Settings.DefaultCharForm
-        lastInputMode = Settings.DefaultInputMode
-        isMixedModeEnabled = Settings.DefaultMixedModeEnabled
-        isAutoCapEnabled = Settings.DefaultAutoCapEnabled
-        isSmartFullStopEnabled = Settings.DefaultSmartFullStopEnabled
-        symbolShape = Settings.DefaultSymbolShape
-        spaceOutputMode = Settings.DefaultSpaceOutputMode
-        rimeSettings = Settings.DefaultRimeSettings
-        englishLocale = Settings.DefaultEnglishLocale
-        shouldShowRomanization = Settings.DefaultShowRomanization
-        isAudioFeedbackEnabled = Settings.DefaultAudioFeedbackEnabled
+        charForm = Settings.defaultCharForm
+        lastInputMode = Settings.defaultInputMode
+        isMixedModeEnabled = Settings.defaultMixedModeEnabled
+        isAutoCapEnabled = Settings.defaultAutoCapEnabled
+        isSmartFullStopEnabled = Settings.defaultSmartFullStopEnabled
+        symbolShape = Settings.defaultSymbolShape
+        spaceOutputMode = Settings.defaultSpaceOutputMode
+        toneInputMode = Settings.defaultToneInputMode
+        rimeSettings = Settings.defaultRimeSettings
+        englishLocale = Settings.defaultEnglishLocale
+        shouldShowRomanization = Settings.defaultShowRomanization
+        isAudioFeedbackEnabled = Settings.defaultAudioFeedbackEnabled
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.DefaultCharForm
-        self.lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Settings.DefaultInputMode
-        self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.DefaultMixedModeEnabled
-        self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.DefaultAutoCapEnabled
-        self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.DefaultSmartFullStopEnabled
-        self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.DefaultSymbolShape
-        self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.DefaultSpaceOutputMode
-        self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.DefaultRimeSettings
-        self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.DefaultEnglishLocale
-        self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.DefaultShowRomanization
-        self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.DefaultAudioFeedbackEnabled
+        self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.defaultCharForm
+        self.lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Settings.defaultInputMode
+        self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
+        self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
+        self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
+        self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
+        self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.defaultSpaceOutputMode
+        self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode
+        self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings
+        self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale
+        self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.defaultShowRomanization
+        self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
     }
     
     private static var _cached: Settings?

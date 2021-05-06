@@ -29,7 +29,7 @@ class InputController {
     
     private var prevTextBefore: String?
     
-    private(set) var reverseLookupSchemaId: RimeSchemaId? {
+    private(set) var reverseLookupSchemaId: RimeSchema? {
         didSet {
             inputEngine.reverseLookupSchemaId = reverseLookupSchemaId
             keyboardView?.currentRimeSchemaId = reverseLookupSchemaId ?? .jyutping
@@ -144,14 +144,19 @@ class InputController {
     
     private var cachedActions: [KeyboardAction] = []
     
-    func processCachedActions() {
-        guard RimeApi.shared.state == .succeeded else { return }
-        cachedActions.forEach({ keyPressed($0) })
-        cachedActions = []
+    func reenableKeyboard() {
+        DispatchQueue.main.async {
+            guard RimeApi.shared.state == .succeeded else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: self.reenableKeyboard)
+                return
+            }
+            self.cachedActions.forEach({ self.keyPressed($0) })
+            self.cachedActions = []
+            self.keyboardView?.isEnabled = true
+        }
     }
     
     func keyPressed(_ action: KeyboardAction) {
-        guard let textDocumentProxy = textDocumentProxy else { return }
         guard RimeApi.shared.state == .succeeded else {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
@@ -159,6 +164,8 @@ class InputController {
             cachedActions.append(action)
             return
         }
+        
+        guard let textDocumentProxy = textDocumentProxy else { return }
         
         defer {
             lastKey = action

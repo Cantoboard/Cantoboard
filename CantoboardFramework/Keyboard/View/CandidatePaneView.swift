@@ -82,7 +82,7 @@ class CandidatePaneView: UIControl {
     
     let rowPadding = CGFloat(0)
     
-    var currentRimeSchemaId: RimeSchemaId = .jyutping {
+    var currentRimeSchemaId: RimeSchema = .jyutping {
         didSet {
             setupButtons()
         }

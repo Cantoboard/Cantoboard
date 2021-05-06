@@ -43,7 +43,7 @@ extension Character {
     
     var isRimeSpecialChar: Bool {
         let isFixedRimeSpecialChar = self == "'" || self == "/"
-        let isModeDependentRimeSpecialChar = Settings.cached.rimeSettings.toneInputMode == .longPress ? isNumber : false
+        let isModeDependentRimeSpecialChar = Settings.cached.toneInputMode == .longPress ? isNumber : false
         return isFixedRimeSpecialChar || isModeDependentRimeSpecialChar
     }
     

@@ -10,7 +10,7 @@ import UIKit
 
 import CocoaLumberjackSwift
 
-enum RimeSchemaId: String {
+enum RimeSchema: String {
     case jyutping = "jyut6ping3"
     case cangjie = "cangjie5"
     case quick = "quick5"
@@ -40,16 +40,16 @@ enum RimeSchemaId: String {
 
 class RimeInputEngine: NSObject, InputEngine {
     private weak var rimeSession: RimeSession?
-    private var _activeSchemaId: RimeSchemaId = .jyutping
+    private var _activeSchemaId: RimeSchema = .jyutping
     private(set) var hasLoadedAllCandidates = false
     
-    var activeSchemaId: RimeSchemaId {
+    var activeSchemaId: RimeSchema {
         get { _activeSchemaId }
         set {
             guard newValue != _activeSchemaId else { return }
             DDLogInfo("Switching scheam of session \(rimeSession?.debugDescription ?? "") from \(activeSchemaId) to \(newValue)")
             _activeSchemaId = newValue
-            rimeSession?.setCurrentSchema(_activeSchemaId.rawValue)
+            setCurrentSchema(_activeSchemaId)
             refreshCharForm()
         }
     }
@@ -246,8 +246,16 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func createRimeSession() {
         rimeSession = RimeApi.shared.createSession()
-        rimeSession?.setCurrentSchema(activeSchemaId.rawValue)
+        setCurrentSchema(activeSchemaId)
         refreshCharForm()
+    }
+    
+    private func setCurrentSchema(_ schemaId: RimeSchema) {
+        var rimeSchemaId = schemaId.rawValue
+        if schemaId == .jyutping && Settings.cached.toneInputMode == .vxq {
+            rimeSchemaId = "jyut6ping3vxq"
+        }
+        rimeSession?.setCurrentSchema(rimeSchemaId)
     }
     
     private func refreshCharForm() {

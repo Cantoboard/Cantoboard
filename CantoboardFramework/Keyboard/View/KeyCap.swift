@@ -41,7 +41,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     rime(RimeChar),
     contexualSymbols(ContextualType),
     charForm(CharForm),
-    reverseLookup(RimeSchemaId),
+    reverseLookup(RimeSchema),
     exportFile(String)
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
@@ -190,7 +190,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHint: String? {
-        if Settings.cached.rimeSettings.toneInputMode == .longPress {
+        if Settings.cached.toneInputMode == .longPress {
             switch self {
             case .characterWithConditioanlPopup("F"), .characterWithConditioanlPopup("f"): return "4"
             case .characterWithConditioanlPopup("G"), .characterWithConditioanlPopup("g"): return "5"
@@ -239,7 +239,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHintFontSize: CGFloat {
-        if Settings.cached.rimeSettings.toneInputMode == .vxq {
+        if Settings.cached.toneInputMode == .vxq {
             switch self {
             case .character("V"), .character("v"): return 7
             case .character("X"), .character("x"): return 7

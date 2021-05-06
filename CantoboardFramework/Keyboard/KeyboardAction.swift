@@ -74,7 +74,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     rime(RimeChar),
     setCharForm(CharForm),
     setCandidateMode(InputMode),
-    reverseLookup(RimeSchemaId),
+    reverseLookup(RimeSchema),
     selectCandidate(IndexPath),
     longPressCandidate(IndexPath),
     exportFile(String)

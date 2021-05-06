@@ -29,8 +29,8 @@ class KeyboardView: UIView {
     private var _isEnabled = true
     weak var delegate: KeyboardViewDelegate?
     
-    private var _currentRimeSchemaId: RimeSchemaId = .jyutping
-    var currentRimeSchemaId: RimeSchemaId {
+    private var _currentRimeSchemaId: RimeSchema = .jyutping
+    var currentRimeSchemaId: RimeSchema {
         get { _currentRimeSchemaId }
         set {
             guard _currentRimeSchemaId != newValue else { return }
@@ -285,7 +285,7 @@ class KeyboardView: UIView {
                     switch keyboardContextualType {
                     case .rime, .url(true):
                         if case .character(let c) = $0,
-                           currentRimeSchemaId == .jyutping && Settings.cached.rimeSettings.toneInputMode == .longPress {
+                           currentRimeSchemaId == .jyutping && Settings.cached.toneInputMode == .longPress {
                             // Show tone keys.
                             return .characterWithConditioanlPopup(c)
                         } else {

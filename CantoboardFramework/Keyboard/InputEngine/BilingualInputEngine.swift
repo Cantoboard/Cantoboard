@@ -32,9 +32,9 @@ class BilingualInputEngine: InputEngine {
         set { rimeInputEngine.charForm = newValue }
     }
 
-    var reverseLookupSchemaId: RimeSchemaId? {
+    var reverseLookupSchemaId: RimeSchema? {
         didSet {
-            rimeInputEngine.activeSchemaId = reverseLookupSchemaId ?? RimeSchemaId.jyutping
+            rimeInputEngine.activeSchemaId = reverseLookupSchemaId ?? RimeSchema.jyutping
         }
     }
     

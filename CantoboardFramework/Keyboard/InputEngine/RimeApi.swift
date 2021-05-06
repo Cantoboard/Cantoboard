@@ -10,24 +10,6 @@ import Foundation
 import CocoaLumberjackSwift
 
 private let patchHeader = "patch:\n"
-private let vxqToneConfig: String = """
-  "speller/algebra/+":
-    - xform/1/v/                  # 陰平
-    - xform/4/vv/                 # 陽平
-    - xform/2/x/                  # 陰上
-    - xform/5/xx/                 # 陽上
-    - xform/3/q/                  # 陰去
-    - xform/6/qq/                 # 陽去
-  
-  translator/preedit_format:
-    - xform/([aeioumngptk])vv/${1}4/
-    - xform/([aeioumngptk])xx/${1}5/
-    - xform/([aeioumngptk])qq/${1}6/
-    - xform/([aeioumngptk])v/${1}1/
-    - xform/([aeioumngptk])x/${1}2/
-    - xform/([aeioumngptk])q/${1}3/
-"""
-
 private var correctorConfig = """
   translator/enable_correction: true
 """
@@ -60,13 +42,7 @@ extension RimeApi {
 // Proivde an app level initializer.
 extension RimeApi {
     static func generateSchemaPatchFromSettings() {
-        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        let userDataPath = documentsDirectory.appendingPathComponent("RimeUserData", isDirectory: true).path
-        
-        generateSchemaPatchFromSettings(userDataPath: userDataPath)
-    }
-    
-    private static func generateSchemaPatchFromSettings(userDataPath: String) {
+        let userDataPath = DataFileManager.rimeUserDirectory
         let settings = Settings.cached
         var jyutPingCustomPatch = "", commonCustomPatch = ""
         
@@ -75,14 +51,16 @@ extension RimeApi {
         try? FileManager.default.removeItem(atPath: jyutPingSchemaCustomPath)
         try? FileManager.default.removeItem(atPath: commonSchemaCustomPath)
 
+        /*
         if settings.rimeSettings.toneInputMode == .vxq {
             jyutPingCustomPatch += vxqToneConfig
-        }
+        }*/
         
         if settings.rimeSettings.enableCorrector {
             commonCustomPatch += correctorConfig
         }
         
+        /*
         if jyutPingCustomPatch.count > 0 {
             DDLogInfo("jyutPingCustomPatch: \(jyutPingCustomPatch)")
             jyutPingCustomPatch = patchHeader + jyutPingCustomPatch
@@ -91,7 +69,7 @@ extension RimeApi {
             } catch {
                 DDLogInfo("Failed to generate custom schema patch at \(jyutPingSchemaCustomPath).")
             }
-        }
+        }*/
         
         if commonCustomPatch.count > 0 {
             DDLogInfo("commonCustomPatch: \(commonCustomPatch)")
@@ -114,7 +92,7 @@ extension RimeApi {
         }
         
         // Generate schema patch.
-        RimeApi.generateSchemaPatchFromSettings(userDataPath: userDataPath)
+        RimeApi.generateSchemaPatchFromSettings()
         
         DDLogInfo("Shared data path: \(schemaPath) User data path: \(userDataPath)")
         

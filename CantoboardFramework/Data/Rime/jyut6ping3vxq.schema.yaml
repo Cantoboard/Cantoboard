@@ -1,0 +1,145 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: jyut6ping3vxq
+  name: 粵語拼音vxq
+  version: "2020.11.26"
+  author:
+    - sgalal <sgalal.me@outlook.com>
+    - LeiMaau <leimaau@qq.com>
+    - chaaklau <chaakming@gmail.com>
+    - laubonghaudoi <laubonghaudoi@icloud.com>
+    - tanxpyox <tanxpyox@gmail.com>
+    - William915 <William915@gmail.com>
+    - szc126 (@szc126)
+    - Bing Jeung <bing@ososo.io>
+    - Ayaka Mikazuki <ayaka@mail.shn.hk>
+
+  description: |-
+    採用香港語言學學會粵語拼音方案
+    https://www.lshk.org/jyutping
+    支援聲調顯示同輸入
+    Telegram 用户交流組 https://t.me/rime_cantonese
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - options: [ noop, variants_hk, trad_tw, simplification ]
+    states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
+    # 修改下行，改變預設用字 [0, 1, 2, 3 --> 對應上表]
+    reset: 1
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+  - name: emoji_suggestion
+    # 取消下行註釋，預設啓動 emoji
+    #reset: 1
+    states: [ 冇 Emoji, 有 Emoji ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+  filters:
+    - simplifier@variants_hk
+    - simplifier@trad_tw
+    - simplifier
+    - simplifier@emoji_suggestion
+    - uniquifier
+
+menu:
+  alternative_select_keys: "          " # Change select key to 0x7f to allow us to type number keys for tone input.
+  
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba654321
+  delimiter: " '"
+  algebra:
+    # 取消下兩行註釋，支援疑影交替： ng- 通 Ø-，Ø- 通 ng-
+    #- derive/^ng([aeiou])/$1/
+    #- derive/^([aeiou])/ng$1/
+
+    # 取消下行註釋，支援泥來合流： n- 併入 l- ，如「你」讀若「理」
+    #- derive/^n(?!g)/l/
+
+    # 取消下行註釋，支援圓唇輔音合口韻缺位： gw-, kw- 併入 g-, k- ，如「國」讀若「各」、「廓」讀若「確」
+    #- derive/^(g|k)w/$1/
+
+    # 取消下行註釋，支援獨立鼻音韻 ng 併入 m，如「吳」讀若「唔」
+    #- derive/^ng([123456])$/m$1/
+
+    - derive/[123456]//           # 忽略聲調
+    - derive/^([aeiou])/q$1/      # 增加 q 表示喉塞
+    - derive/^jy?([aeiou])/y$1/   # 容錯 je -> ye, jyu -> yu
+    - derive/^jyu/ju/             # 容錯 jyu -> ju
+    - derive/yu/y/                # 容錯 jyu -> jy
+    - derive/eoi$/oey/            # 容錯
+    - derive/eoi$/eoy/            # 容錯
+    - derive/eo/oe/               # 容錯 eo/oe 不分
+    - derive/oe(ng|k)$/eo$1/      # 容錯
+    - derive/aa$/a/               # 容錯
+    # - abbrev/^([a-z]).+([1-6])$/$1$2/      # 首字母聲調簡拼
+    # - abbrev/^([a-z]{2}).+([1-6])$/$1$2/   # 首2字母聲調簡拼
+    - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
+    # - abbrev/^([a-z]{2}).+$/$1/   # 首2字母簡拼
+    - xform/1/v/                  # 陰平
+    - xform/4/vv/                 # 陽平
+    - xform/2/x/                  # 陰上
+    - xform/5/xx/                 # 陽上
+    - xform/3/q/                  # 陰去
+    - xform/6/qq/                 # 陽去
+
+translator:
+  dictionary: jyut6ping3
+  spelling_hints: 256
+  always_show_comments: true
+  prism: jyut6ping3vxq
+  preedit_format:
+    - xform/([aeioumngptk])vv/${1}4/
+    - xform/([aeioumngptk])xx/${1}5/
+    - xform/([aeioumngptk])qq/${1}6/
+    - xform/([aeioumngptk])v/${1}1/
+    - xform/([aeioumngptk])x/${1}2/
+    - xform/([aeioumngptk])q/${1}3/
+
+variants_hk:
+  option_name: variants_hk
+  opencc_config: t2hk.json
+
+trad_tw:
+  option_name: trad_tw
+  opencc_config: t2tw.json
+
+emoji_suggestion:
+  opencc_config: emoji.json
+  option_name: emoji_suggestion
+  tips: all
+
+punctuator:
+  import_preset: symbols_cantonese
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/([0-9]0?|[a-z]+)$"
+
+__patch:
+  - grammar:/hant?
+  - common.custom:/patch?

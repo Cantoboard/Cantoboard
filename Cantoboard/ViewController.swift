@@ -72,7 +72,7 @@ class ViewController: UITableViewController {
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
         settings.spaceOutputMode = spaceOutputMode
-        settings.rimeSettings.toneInputMode = toneInputMode
+        settings.toneInputMode = toneInputMode
         settings.rimeSettings.enableCorrector = rimeEnableCorrector.isOn
         settings.englishLocale = englishLocale
         settings.shouldShowRomanization = showRomanizationControl.isOn
@@ -146,7 +146,7 @@ class ViewController: UITableViewController {
     
     private func populateToneInput(_ settings: Settings) {
         populateSetting(toSegmentedControl: toneInputControl, settingToIndexMapper: {
-            switch $0.rimeSettings.toneInputMode {
+            switch $0.toneInputMode {
             case .vxq: return 0
             case .longPress: return 1
             }
