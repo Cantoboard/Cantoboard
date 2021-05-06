@@ -403,6 +403,7 @@ extension CandidatePaneView {
                 collectionView.scrollOnLayoutSubviews = {
                     guard let collectionView = self.collectionView else { return false }
                     
+                    guard scrollToIndexPathAfterTranslation.section < collectionView.numberOfSections else { return false }
                     let numberOfItems = collectionView.numberOfItems(inSection: scrollToIndexPathAfterTranslation.section)
                     guard numberOfItems > scrollToIndexPathAfterTranslation.row else { return false }
                     
