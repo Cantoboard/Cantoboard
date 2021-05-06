@@ -1,16 +1,17 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1618968514
-    default.custom: 1618968514
+    common.custom: 1620283471
+    default: 1620283455
+    default.custom: 1620283455
     grammar: 0
     luna_pinyin.custom: 0
-    luna_pinyin.schema: 1618968514
-    pinyin: 1618968514
+    luna_pinyin.schema: 1620283455
+    pinyin: 1620283455
     pinyin.custom: 0
-    symbols: 1618968514
+    symbols: 1620283455
     symbols.custom: 0
-    symbols_cantonese: 1618968514
+    symbols_cantonese: 1620283455
 custom_phrase:
   db_class: stabledb
   dictionary: ""
@@ -78,7 +79,7 @@ key_binder:
     - {accept: "Control+period", toggle: ascii_punct, when: always}
   import_preset: default
 menu:
-  page_size: 50
+  page_size: 10
 punctuator:
   full_shape:
     " ": {commit: "　"}
@@ -408,6 +409,7 @@ trad_tw:
   option_name: trad_tw
 translator:
   dictionary: luna_pinyin
+  enable_correction: true
   preedit_format:
     - "xform/([nl])v/$1ü/"
     - "xform/([nl])ue/$1üe/"

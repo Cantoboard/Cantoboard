@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1618968514
-    default.custom: 1618968514
+    default: 1620283455
+    default.custom: 1620283455
 ascii_composer:
   switch_key:
     Control_L: noop
@@ -38,7 +38,7 @@ key_binder:
     - {accept: "Shift+space", toggle: full_shape, when: always}
     - {accept: "Control+period", toggle: ascii_punct, when: always}
 menu:
-  page_size: 50
+  page_size: 10
 punctuator:
   full_shape:
     " ": {commit: "　"}
@@ -114,6 +114,7 @@ recognizer:
     url: "^(www[.]|https?:|ftp:|mailto:).*$|^[a-z]+[.].+$"
 schema_list:
   - schema: jyut6ping3
+  - schema: jyut6ping3vxq
   - schema: cangjie5
   - schema: quick5
   - schema: luna_pinyin

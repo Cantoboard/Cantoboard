@@ -1,18 +1,15 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    cangjie5.custom: 0
-    cangjie5.schema: 1618968514
-    default: 1618968514
-    default.custom: 1618968514
-    symbols: 1618968514
+    cangjie5.schema: 1620283455
+    common.custom: 1620283471
+    default: 1620283455
+    default.custom: 1620283455
+    symbols: 1620283455
     symbols.custom: 0
-    symbols_cantonese: 1618968514
+    symbols_cantonese: 1620283455
 engine:
   filters:
-    - "simplifier@variants_hk"
-    - "simplifier@trad_tw"
-    - simplifier
     - uniquifier
     - "reverse_lookup_filter@jyut6ping3_reverse_lookup"
   processors:
@@ -67,7 +64,7 @@ key_binder:
     - {accept: "Control+period", toggle: ascii_punct, when: always}
   import_preset: default
 menu:
-  page_size: 50
+  page_size: 10
 punctuator:
   full_shape:
     " ": {commit: "　"}
@@ -371,14 +368,8 @@ switches:
     states: ["中文", "西文"]
   - name: full_shape
     states: ["半角", "全角"]
-  - options: [noop, variants_hk, trad_tw, simplification]
-    reset: 1
-    states: ["傳統漢字", "香港傳統漢字", "臺灣傳統漢字", "大陆简化汉字"]
   - name: ascii_punct
     states: ["。，", "．，"]
-trad_tw:
-  opencc_config: t2tw.json
-  option_name: trad_tw
 translator:
   comment_format:
     - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
@@ -387,6 +378,7 @@ translator:
     - "^z.*$"
     - "^yyy.*$"
   enable_charset_filter: true
+  enable_correction: true
   enable_encoder: true
   enable_sentence: true
   encode_commit_history: true
@@ -394,6 +386,3 @@ translator:
   preedit_format:
     - "xform/^([a-z ]*)$/\\U$1\\E/"
     - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
-variants_hk:
-  opencc_config: t2hk.json
-  option_name: variants_hk
