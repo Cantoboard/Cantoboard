@@ -142,12 +142,21 @@ class InputController {
         }
     }
     
+    private var cachedActions: [KeyboardAction] = []
+    
+    func processCachedActions() {
+        guard RimeApi.shared.state == .succeeded else { return }
+        cachedActions.forEach({ keyPressed($0) })
+        cachedActions = []
+    }
+    
     func keyPressed(_ action: KeyboardAction) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         guard RimeApi.shared.state == .succeeded else {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
             keyboardView?.isEnabled = false
+            cachedActions.append(action)
             return
         }
         

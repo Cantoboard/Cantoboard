@@ -81,6 +81,7 @@ open class KeyboardViewController: UIInputViewController {
                 } else if let keyboardView = self.keyboardView,
                           newState == .succeeded && !keyboardView.isEnabled {
                     DDLogInfo("Enabling keyboard")
+                    self.inputController?.processCachedActions()
                     self.keyboardView?.isEnabled = true
                 }
             }
