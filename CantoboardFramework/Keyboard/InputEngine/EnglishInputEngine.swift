@@ -247,6 +247,11 @@ class EnglishInputEngine: InputEngine {
         
         worstCandidatesStartIndex = candidates.count
         candidates.append(contentsOf: worstCandidates)
+        
+        if Settings.cached.spaceOutputMode == .bestEnglishCandidate && prefectCandidatesStartIndex == 0 && candidates.count > 0 {
+            prefectCandidatesStartIndex = 1
+            worstCandidatesStartIndex = max(prefectCandidatesStartIndex, worstCandidatesStartIndex)
+        }
         // DDLogInfo("English candidates \(candidates)")
     }
     

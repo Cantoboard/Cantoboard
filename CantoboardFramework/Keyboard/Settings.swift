@@ -28,7 +28,7 @@ public enum SymbolShape: String, Codable {
 }
 
 public enum SpaceOutputMode: String, Codable {
-    case input = "input"
+    case bestEnglishCandidate = "bestEnglishCandidate"
     case bestCandidate = "bestCandidate"
 }
 

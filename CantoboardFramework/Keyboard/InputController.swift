@@ -131,9 +131,7 @@ class InputController {
     private func handleSpace() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        let spaceOutputMode = Settings.cached.spaceOutputMode
-        // If spaceOutputMode is input or there's no candidates, insert the raw English input string.
-        if spaceOutputMode == .bestCandidate && inputEngine.isComposing {
+        if inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
             candidateSelected(choice: [0, 0], enableSmartSpace: true)
         } else {
             if !insertComposingText() {

@@ -148,10 +148,10 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="7Sx-ho-3Vf">
-                                                    <rect key="frame" x="201" y="6" width="188" height="32"/>
+                                                    <rect key="frame" x="174" y="6" width="215" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
-                                                        <segment title="原始英文字串"/>
+                                                        <segment title="最佳英文候選字"/>
                                                         <segment title="最佳候選字"/>
                                                     </segments>
                                                 </segmentedControl>

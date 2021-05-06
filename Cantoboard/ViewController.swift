@@ -51,7 +51,7 @@ class ViewController: UITableViewController {
         default: selectedSymbolShape = .smart
         }
         
-        let spaceOutputMode: SpaceOutputMode = spaceOutputControl.selectedSegmentIndex == 0 ? .input : .bestCandidate
+        let spaceOutputMode: SpaceOutputMode = spaceOutputControl.selectedSegmentIndex == 0 ? .bestEnglishCandidate : .bestCandidate
         let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
         let englishLocale: EnglishLocale
@@ -134,7 +134,7 @@ class ViewController: UITableViewController {
     private func populateSpaceOutputMode(_ settings: Settings) {
         populateSetting(toSegmentedControl: spaceOutputControl, settingToIndexMapper: {
             switch $0.spaceOutputMode {
-            case .input: return 0
+            case .bestEnglishCandidate: return 0
             case .bestCandidate: return 1
             }
         })
