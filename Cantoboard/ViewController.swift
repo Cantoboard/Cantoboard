@@ -16,6 +16,7 @@ class ViewController: UITableViewController {
     @IBOutlet private var symbolShapeControl: UISegmentedControl!
     @IBOutlet private var spaceOutputControl: UISegmentedControl!
     @IBOutlet private var toneInputControl: UISegmentedControl!
+    @IBOutlet private var rimeEnableCorrector: UISwitch!
     @IBOutlet private var englishLocaleInputControl: UISegmentedControl!
     @IBOutlet private var showRomanizationControl: UISwitch!
     @IBOutlet private var audioFeedbackControl: UISwitch!
@@ -32,6 +33,7 @@ class ViewController: UITableViewController {
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         spaceOutputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        rimeEnableCorrector.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         englishLocaleInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         showRomanizationControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         audioFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -71,6 +73,7 @@ class ViewController: UITableViewController {
         settings.symbolShape = selectedSymbolShape
         settings.spaceOutputMode = spaceOutputMode
         settings.rimeSettings.toneInputMode = toneInputMode
+        settings.rimeSettings.enableCorrector = rimeEnableCorrector.isOn
         settings.englishLocale = englishLocale
         settings.shouldShowRomanization = showRomanizationControl.isOn
         settings.isAudioFeedbackEnabled = audioFeedbackControl.isOn
@@ -110,6 +113,7 @@ class ViewController: UITableViewController {
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
         showRomanizationControl.isOn = settings.shouldShowRomanization
         audioFeedbackControl.isOn = settings.isAudioFeedbackEnabled 
+        rimeEnableCorrector.isOn = settings.rimeSettings.enableCorrector
         
         populateSetting(toSegmentedControl: englishLocaleInputControl, settingToIndexMapper: {
             switch $0.englishLocale {

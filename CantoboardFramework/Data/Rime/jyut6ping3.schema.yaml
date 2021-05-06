@@ -103,7 +103,6 @@ speller:
 translator:
   dictionary: jyut6ping3
   spelling_hints: 256
-  enable_correction: true
   always_show_comments: true
 
 variants_hk:
@@ -126,3 +125,7 @@ recognizer:
   import_preset: default
   patterns:
     punct: "^/([0-9]0?|[a-z]+)$"
+
+__patch:
+  - grammar:/hant?
+  - common.custom:/patch?

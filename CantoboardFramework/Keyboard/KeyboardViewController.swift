@@ -228,6 +228,8 @@ open class KeyboardViewController: UIInputViewController {
         let prevSettings = Settings.cached
         let settings = Settings.reload()
         
+        DDLogInfo("Reloaded Settings. prevSettings: \(prevSettings) newSettings: \(settings)")
+        
         if prevSettings.rimeSettings != settings.rimeSettings {
             RimeApi.generateSchemaPatchFromSettings()
             RimeApi.closeShared()

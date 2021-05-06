@@ -47,14 +47,17 @@ public enum EnglishLocale: String, Codable {
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var toneInputMode: ToneInputMode
+    public var enableCorrector: Bool
     
     public init() {
         toneInputMode = .longPress
+        enableCorrector = false
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? .longPress
+        self.enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
     }
 }
 

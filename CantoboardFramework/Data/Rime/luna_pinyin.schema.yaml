@@ -110,3 +110,4 @@ __patch:
   - grammar:/hant?
   # 用家自選配置
   - luna_pinyin.custom:/patch?
+  - common.custom:/patch?

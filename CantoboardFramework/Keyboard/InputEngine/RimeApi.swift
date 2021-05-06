@@ -9,8 +9,8 @@ import Foundation
 
 import CocoaLumberjackSwift
 
+private let patchHeader = "patch:\n"
 private let vxqToneConfig: String = """
-patch:
   "speller/algebra/+":
     - xform/1/v/                  # 陰平
     - xform/4/vv/                 # 陽平
@@ -26,6 +26,10 @@ patch:
     - xform/([aeioumngptk])v/${1}1/
     - xform/([aeioumngptk])x/${1}2/
     - xform/([aeioumngptk])q/${1}3/
+"""
+
+private var correctorConfig = """
+  translator/enable_correction: true
 """
 
 // Make RimeApi a singleton with listener.
@@ -64,22 +68,41 @@ extension RimeApi {
     
     private static func generateSchemaPatchFromSettings(userDataPath: String) {
         let settings = Settings.cached
-        var customPatch = ""
+        var jyutPingCustomPatch = "", commonCustomPatch = ""
         
-        let schemaCustomPath = userDataPath + "/jyut6ping3.custom.yaml"
-        try? FileManager.default.removeItem(atPath: schemaCustomPath)
-        
+        let jyutPingSchemaCustomPath = userDataPath + "/jyut6ping3.custom.yaml"
+        let commonSchemaCustomPath = userDataPath + "/common.custom.yaml"
+        try? FileManager.default.removeItem(atPath: jyutPingSchemaCustomPath)
+        try? FileManager.default.removeItem(atPath: commonSchemaCustomPath)
+
         if settings.rimeSettings.toneInputMode == .vxq {
-            customPatch = vxqToneConfig
+            jyutPingCustomPatch += vxqToneConfig
         }
         
-        if customPatch.count > 0 {
+        if settings.rimeSettings.enableCorrector {
+            commonCustomPatch += correctorConfig
+        }
+        
+        if jyutPingCustomPatch.count > 0 {
+            DDLogInfo("jyutPingCustomPatch: \(jyutPingCustomPatch)")
+            jyutPingCustomPatch = patchHeader + jyutPingCustomPatch
             do {
-                try customPatch.write(toFile: schemaCustomPath, atomically: true, encoding: .utf8)
+                try jyutPingCustomPatch.write(toFile: jyutPingSchemaCustomPath, atomically: true, encoding: .utf8)
             } catch {
-                DDLogInfo("Failed to generate custom schema patch at \(schemaCustomPath).")
+                DDLogInfo("Failed to generate custom schema patch at \(jyutPingSchemaCustomPath).")
             }
         }
+        
+        if commonCustomPatch.count > 0 {
+            DDLogInfo("commonCustomPatch: \(commonCustomPatch)")
+            commonCustomPatch = patchHeader + commonCustomPatch
+            do {
+                try commonCustomPatch.write(toFile: commonSchemaCustomPath, atomically: true, encoding: .utf8)
+            } catch {
+                DDLogInfo("Failed to generate custom schema patch at \(commonSchemaCustomPath).")
+            }
+        }
+        DDLogInfo("Rime patches generated.")
     }
     
     convenience init(bundle: Bundle) {
