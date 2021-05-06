@@ -20,9 +20,6 @@ switches:
     states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - options: [ noop, variants_hk, trad_tw, simplification ]
-    states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
-    reset: 1
   - name: ascii_punct
     states: [ 。，, ．， ]
 
@@ -46,9 +43,6 @@ engine:
     - punct_translator
     - table_translator
   filters:
-    - simplifier@variants_hk
-    - simplifier@trad_tw
-    - simplifier
     - uniquifier
     - reverse_lookup_filter@jyut6ping3_reverse_lookup
 
@@ -83,14 +77,6 @@ recognizer:
   import_preset: default
   patterns:
     punct: '^/([0-9]0?|[A-Za-z]+)$'
-
-variants_hk:
-  option_name: variants_hk
-  opencc_config: t2hk.json
-
-trad_tw:
-  option_name: trad_tw
-  opencc_config: t2tw.json
 
 jyut6ping3_reverse_lookup:
   overwrite_comment: true

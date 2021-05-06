@@ -233,7 +233,7 @@ class CandidatePaneView: UIControl {
             inputModeButton.isMini = false
             inputModeButton.isUserInteractionEnabled = true
             backspaceButton.isHidden = false
-            charFormButton.isHidden = false
+            charFormButton.isHidden = currentRimeSchemaId.isShapeBased
         } else {
             let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
             

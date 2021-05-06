@@ -32,6 +32,10 @@ enum RimeSchemaId: String {
     var isCangjieFamily: Bool {
         self == .cangjie || self == .quick
     }
+    
+    var isShapeBased: Bool {
+        self == .cangjie || self == .quick || self == .stroke
+    }
 }
 
 class RimeInputEngine: NSObject, InputEngine {
