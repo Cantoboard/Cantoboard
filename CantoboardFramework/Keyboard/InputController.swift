@@ -349,6 +349,7 @@ class InputController {
             hasInsertedAutoSpace = true
         } else {
             textToBeInserted = text
+            hasInsertedAutoSpace = false
         }
         
         if hasMarkedText {
