@@ -419,8 +419,21 @@ class InputController {
     }
     
     private func insertComposingText(appendBy: String? = nil, shouldDisableSmartSpace: Bool = false) -> Bool {
-        if var composingText = inputEngine.composition?.text.filter({ $0 != " " && !$0.isRimeSpecialChar }),
+        if let englishText = inputEngine.englishComposition?.text,
+           var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
+            if Settings.cached.toneInputMode == .vxq {
+                var englishTailLength = 0
+                for c in composingText.reversed() {
+                    switch c {
+                    case "4", "5", "6": englishTailLength += 2
+                    case c where !c.isASCII: break
+                    default: englishTailLength += 1
+                    }
+                }
+                let composingTextWithTonesReplaced = String(composingText.prefix(while: { !$0.isASCII }) + englishText.suffix(englishTailLength))
+                composingText = composingTextWithTonesReplaced
+            }
             EnglishInputEngine.userDictionary.learnWordIfNeeded(word: composingText)
             if let c = appendBy { composingText.append(c) }
             insertText(composingText)
