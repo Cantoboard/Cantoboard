@@ -591,7 +591,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         }
         
         // Min width
-        cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.2)
+        cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.1)
         
         return CandidateCell.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
     }
