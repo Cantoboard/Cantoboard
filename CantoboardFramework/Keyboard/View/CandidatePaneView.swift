@@ -93,7 +93,7 @@ class CandidatePaneView: UIControl {
             candidateOrganizer?.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
                 DispatchQueue.main.async {
                     guard let self = self, candidateOrganizer.groupByMode == .byFrequency else { return }
-                    let section = self.groupByEnabled ? 1 : 0
+                    let section = 1
                     
                     guard section < self.collectionView.numberOfSections else { return }
                     
@@ -372,25 +372,14 @@ extension CandidatePaneView {
         
         // DDLogInfo("CandidatePaneView.changeMode start")
         let firstVisibleIndexPath = getFirstVisibleIndexPath()
-        let oldGroupByEnabled = groupByEnabled
-                
+        
         mode = newMode
+        
         setupButtons()
         
         if let scrollToIndexPath = firstVisibleIndexPath {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top
-            let sectionOffset: Int
-            if !oldGroupByEnabled && groupByEnabled {
-                sectionOffset = 1
-            } else if oldGroupByEnabled && !groupByEnabled {
-                sectionOffset = -1
-            } else {
-                sectionOffset = 0
-            }
-            let scrollToSection = scrollToIndexPath.section + sectionOffset
-            let scrollToIndexPathAfterTranslation = IndexPath(row: max(scrollToIndexPath.row, 0), section: scrollToSection)
-            
-            if mode == .table && groupByEnabled && scrollToSection <= 1 && scrollToIndexPath.row == 0 {
+            if mode == .table && groupByEnabled && scrollToIndexPath.section <= 1 && scrollToIndexPath.row == 0 {
                 collectionView.scrollOnLayoutSubviews = {
                     let candindateBarHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
                     
@@ -403,12 +392,12 @@ extension CandidatePaneView {
                 collectionView.scrollOnLayoutSubviews = {
                     guard let collectionView = self.collectionView else { return false }
                     
-                    guard scrollToIndexPathAfterTranslation.section < collectionView.numberOfSections else { return false }
-                    let numberOfItems = collectionView.numberOfItems(inSection: scrollToIndexPathAfterTranslation.section)
-                    guard numberOfItems > scrollToIndexPathAfterTranslation.row else { return false }
+                    guard scrollToIndexPath.section < collectionView.numberOfSections else { return false }
+                    let numberOfItems = collectionView.numberOfItems(inSection: scrollToIndexPath.section)
+                    guard numberOfItems > scrollToIndexPath.row else { return false }
                     
                     collectionView.scrollToItem(
-                        at: scrollToIndexPathAfterTranslation,
+                        at: scrollToIndexPath,
                         at: scrollToIndexPathDirection, animated: false)
                     
                     collectionView.showsVerticalScrollIndicator = scrollToIndexPathDirection == .top
@@ -418,20 +407,24 @@ extension CandidatePaneView {
         }
         
         if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            flowLayout.scrollDirection = mode == .row ? .horizontal : .vertical
+            flowLayout.scrollDirection = newMode == .row ? .horizontal : .vertical
             flowLayout.minimumLineSpacing = rowPadding
         }
         
-        // We have to reload collection view to add/remove the segment control.
-        collectionView.reloadData()
-        
-        setNeedsLayout()
-        
-        if newMode == .row {
-            if candidateOrganizer?.groupByMode != .byFrequency {
+        UIView.performWithoutAnimation { [self] in
+            if newMode == .row && candidateOrganizer?.groupByMode != .byFrequency {
                 candidateOrganizer?.groupByMode = .byFrequency
                 collectionView.reloadData()
+            } else {
+                // We have to reload collection view to add/remove the segment control.
+                collectionView.reloadSections([0])
             }
+        }
+        
+        collectionView.collectionViewLayout.invalidateLayout()
+        layoutSubviews()
+        
+        if newMode == .row {
             delegate?.candidatePaneViewCollapsed()
         } else {
             delegate?.candidatePaneViewExpanded()
@@ -455,13 +448,12 @@ extension CandidatePaneView {
 extension CandidatePaneView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         guard let candidateOrganizer = candidateOrganizer else { return 0 }
-        let countOfSegmentControlSection = groupByEnabled ? 1 : 0
-        return countOfSegmentControlSection + candidateOrganizer.getNumberOfSections()
+        return 1 + candidateOrganizer.getNumberOfSections()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let candidateOrganizer = candidateOrganizer else { return 0 }
-        if section == 0 && groupByEnabled { return 1 }
+        if section == 0 { return groupByEnabled ? 1 : 0 }
         return candidateOrganizer.getCandidateCount(section: translateCollectionViewSectionToCandidateSection(section))
     }
     
@@ -530,10 +522,15 @@ extension CandidatePaneView: UICollectionViewDataSource {
 
 extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if groupByEnabled && indexPath.section == 0 {
-            let height = LayoutConstants.forMainScreen.autoCompleteBarHeight
-            let width = collectionView.bounds.width
-            return CGSize(width: width, height: height)
+        if indexPath.section == 0 {
+            if groupByEnabled {
+                let height = LayoutConstants.forMainScreen.autoCompleteBarHeight
+                let width = collectionView.bounds.width
+                return CGSize(width: width, height: height)
+            } else {
+                return .zero
+            }
+
         } else {
             return computeCellSize(candidateIndexPath: translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
         }
@@ -561,7 +558,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private func hasNoHeader(section: Int) -> Bool {
-        return mode == .row || candidateOrganizer?.groupByMode == .byFrequency || groupByEnabled && section == 0
+        return mode == .row || candidateOrganizer?.groupByMode == .byFrequency || section == 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -573,12 +570,12 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private func computeCellSize(candidateIndexPath: IndexPath) -> CGSize {
-        guard let candidateOrganizer = candidateOrganizer else { return CGSize(width: 0, height: 0) }
+        guard let candidateOrganizer = candidateOrganizer else { return .zero }
         let layoutConstant = LayoutConstants.forMainScreen
         
         guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
-            return CGSize(width: 0, height: 0)
+            return .zero
         }
                 
         var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
@@ -601,19 +598,17 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private func translateCollectionViewIndexPathToCandidateIndexPath(_ collectionViewIndexPath: IndexPath) -> IndexPath {
-        let sectionOffset = groupByEnabled ? 1 : 0
-        return IndexPath(row: collectionViewIndexPath.row, section: collectionViewIndexPath.section - sectionOffset)
+        return IndexPath(row: collectionViewIndexPath.row, section: collectionViewIndexPath.section - 1)
     }
     
     private func translateCollectionViewSectionToCandidateSection(_ collectionViewSection: Int) -> Int {
-        let sectionOffset = groupByEnabled ? 1 : 0
-        return collectionViewSection - sectionOffset
+        return collectionViewSection - 1
     }
 }
 
 extension CandidatePaneView: CandidateCollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard !groupByEnabled || indexPath.section > 0 else { return }
+        guard indexPath.section > 0 else { return }
         
         AudioFeedbackProvider.play(keyboardAction: .none)
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
