@@ -345,9 +345,11 @@ class InputEngineCandidateSource: CandidateSource {
 
 class AutoSuggestionCandidateSource: CandidateSource {
     private let candidates: [String]
+    let cannotExpand: Bool
     
-    init(_ candidates: [String]) {
+    init(_ candidates: [String], cannotExpand: Bool = false) {
         self.candidates = candidates
+        self.cannotExpand = cannotExpand
     }
     
     func updateCandidates(reload: Bool) {
@@ -402,8 +404,8 @@ enum AutoSuggestionType {
 
 // This class filter, group by and sort the candidates.
 class CandidateOrganizer {
-    private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"])
-    private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "？", "！", ".", ",", "?", "!"])
+    private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"], cannotExpand: true)
+    private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "？", "！", ".", ",", "?", "!"], cannotExpand: true)
     private static let halfWidthDigitCandidateSource = AutoSuggestionCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
     private static let fullWidthArabicDigitCandidateSource = AutoSuggestionCandidateSource(["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"])
     private static let fullWidthLowerDigitCandidateSource = AutoSuggestionCandidateSource(["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億"])
@@ -493,5 +495,9 @@ class CandidateOrganizer {
     var groupByMode: GroupByMode {
         get { candidateSource?.groupByMode ?? .byFrequency }
         set { candidateSource?.groupByMode = newValue }
+    }
+    
+    var cannotExpand: Bool {
+        (candidateSource as? AutoSuggestionCandidateSource)?.cannotExpand ?? false
     }
 }

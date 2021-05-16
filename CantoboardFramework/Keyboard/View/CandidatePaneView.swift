@@ -237,7 +237,10 @@ class CandidatePaneView: UIControl {
             backspaceButton.isHidden = false
             charFormButton.isHidden = currentRimeSchemaId.isShapeBased
         } else {
-            let cannotExpand = collectionView.contentSize.width <= 1 || collectionView.contentSize.width < collectionView.bounds.width
+            let cannotExpand =
+                collectionView.contentSize.width <= 1 ||
+                collectionView.contentSize.width < collectionView.bounds.width ||
+                candidateOrganizer?.cannotExpand ?? false
             
             expandButton.isHidden = cannotExpand
             inputModeButton.isHidden = title == nil
@@ -594,7 +597,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         }
         
         // Min width
-        cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.1)
+        cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.25)
         
         return CandidateCell.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
     }
