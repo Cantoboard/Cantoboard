@@ -106,6 +106,7 @@ class CandidatePaneView: UIControl {
                             
                             self.collectionView.reloadData()
                             self.collectionView.collectionViewLayout.invalidateLayout()
+                            self.collectionView.layoutIfNeeded()
                         } else if newIndiceStart != newIndiceEnd {
                             DDLogInfo("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
                             self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: section) })
@@ -131,6 +132,7 @@ class CandidatePaneView: UIControl {
                         }
                         self.collectionView.reloadData()
                         self.collectionView.collectionViewLayout.invalidateLayout()
+                        self.collectionView.layoutIfNeeded()
                     }
                 }
             }
@@ -415,6 +417,8 @@ extension CandidatePaneView {
             if newMode == .row && candidateOrganizer?.groupByMode != .byFrequency {
                 candidateOrganizer?.groupByMode = .byFrequency
                 collectionView.reloadData()
+                collectionView.collectionViewLayout.invalidateLayout()
+                collectionView.layoutIfNeeded()
             } else {
                 // We have to reload collection view to add/remove the segment control.
                 collectionView.reloadSections([0])
@@ -486,6 +490,8 @@ extension CandidatePaneView: UICollectionViewDataSource {
         candidateOrganizer.groupByMode = groupByMode
         
         collectionView.reloadData()
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.layoutIfNeeded()
     }
     
     private func dequeueCandidateCell(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
