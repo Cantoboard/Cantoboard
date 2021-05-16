@@ -8,10 +8,13 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
+
 extension UITextDocumentProxy {
     func deleteBackwardWord() {
         guard let documentContextBeforeInput = documentContextBeforeInput,
               var lastChar = documentContextBeforeInput.last else { return }
+        DDLogInfo("deleteBackwardWord documentContextBeforeInput \(documentContextBeforeInput)")
         let secondLastCharIdx = documentContextBeforeInput.index(documentContextBeforeInput.endIndex, offsetBy: -2, limitedBy: documentContextBeforeInput.startIndex) ?? documentContextBeforeInput.startIndex
         let secondLastChar = documentContextBeforeInput[safe: secondLastCharIdx]
         var deleteCount = 0
