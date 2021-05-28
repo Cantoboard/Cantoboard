@@ -9,7 +9,7 @@ import UIKit
 
 import CantoboardFramework
 
-class ViewController: UIViewController, UITextViewDelegate {
+class TestAppViewController: UIViewController, UITextViewDelegate {
     var textbox: UITextView!
     var keyboardController: KeyboardViewController?
     var createKeyboard: Bool = false
@@ -83,6 +83,11 @@ class ViewController: UIViewController, UITextViewDelegate {
         view.addSubview(textbox)
         textbox.becomeFirstResponder()
         textbox.delegate = self
+        textbox.text = """
+The Microsoft Open Source Blog takes a look at implementing eBPF support in Windows. "Although support for eBPF was first implemented in the Linux kernel, there has been increasing interest in allowing eBPF to be used on other operating systems and also to extend user-mode services and daemons in addition to just the kernel. Today we are excited to announce a new Microsoft open source project to make eBPF work on Windows 10 and Windows Server 2016 and later. The ebpf-for-windows project aims to allow developers to use familiar eBPF toolchains and application programming interfaces (APIs) on top of existing versions of Windows. Building on the work of others, this project takes several existing eBPF open source projects and adds the “glue” to make them run on Windows."
+
+Python in the browser has long been an item on the wish list of many in the Python community. At this point, though, JavaScript has well-cemented its role as the language embedded into the web and its browsers. The Pyodide project provides a way to run Python in the browser by compiling the existing CPython interpreter to WebAssembly and running that binary within the browser's JavaScript environment. Pyodide came about as part of Mozilla's Iodide project, which has fallen by the wayside, but Pyodide is now being spun out as a community-driven project.
+"""
         
         NSLayoutConstraint.activate([
             textbox.leftAnchor.constraint(equalTo: view.leftAnchor),

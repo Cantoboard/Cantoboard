@@ -8,7 +8,7 @@ import UIKit
 
 import CantoboardFramework
 
-class ViewController: UITableViewController {
+class ConfigTableViewController: UITableViewController {
     @IBOutlet private var charFormControl: UISegmentedControl!
     @IBOutlet private var enableMixedModeControl: UISwitch!
     @IBOutlet private var autoCapControl: UISwitch!
