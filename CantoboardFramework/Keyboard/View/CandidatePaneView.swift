@@ -17,6 +17,7 @@ protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath)
     func candidatePaneCandidateLoaded()
     func handleKey(_ action: KeyboardAction)
+    var inputMode: InputMode { get }
     var symbolShape: SymbolShape { get }
     var symbolShapeOverride: SymbolShape? { get set }
 }
@@ -192,7 +193,7 @@ class CandidatePaneView: UIControl {
         return button
     }
     
-    private func setupButtons() {        
+    func setupButtons() {
         let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(expandButtonImage, for: .normal)
         
@@ -200,9 +201,8 @@ class CandidatePaneView: UIControl {
         if statusIndicatorMode == .lang {
             if currentRimeSchemaId != .jyutping {
                 title = currentRimeSchemaId.signChar
-            } else {
-                // Pass down from input controller
-                switch Settings.cached.lastInputMode {
+            } else if let inputMode = delegate?.inputMode {
+                switch inputMode {
                 case .mixed: title = "雙"
                 case .chinese: title = "中"
                 case .english: title = "英"
@@ -303,8 +303,9 @@ class CandidatePaneView: UIControl {
         AudioFeedbackProvider.play(keyboardAction: .none)
         
         if statusIndicatorMode == .lang {
+            guard let inputMode = delegate?.inputMode else { return }
             var nextFilterMode: InputMode
-            switch Settings.cached.lastInputMode {
+            switch inputMode {
             case .mixed: nextFilterMode = .english
             case .chinese: nextFilterMode = .english
             case .english: nextFilterMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
@@ -604,7 +605,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private var showComment: Bool {
-        (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && Settings.cached.lastInputMode != .english)
+        (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && currentRimeSchemaId == .jyutping)
     }
     
     private func translateCollectionViewIndexPathToCandidateIndexPath(_ collectionViewIndexPath: IndexPath) -> IndexPath {

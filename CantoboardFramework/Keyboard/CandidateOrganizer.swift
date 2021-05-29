@@ -72,9 +72,10 @@ class InputEngineCandidateSource: CandidateSource {
     private func populateCandidatesByFreq() {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine else { return }
+        let inputMode = inputController.inputMode
         let isReverseLookupMode = inputEngine.reverseLookupSchemaId != nil
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || isReverseLookupMode
-        let isEnglishActive = Settings.cached.lastInputMode != .chinese && !isInRimeOnlyMode
+        let isEnglishActive = inputMode != .chinese && !isInRimeOnlyMode
         let englishCandidates = inputEngine.englishCandidates
         
         if candidatePaths.isEmpty {
@@ -98,7 +99,7 @@ class InputEngineCandidateSource: CandidateSource {
         if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
-        while Settings.cached.lastInputMode != .english &&
+        while inputMode != .english &&
               isRimeExactMatch &&
               !hasLoadedAllBestRimeCandidates &&
               curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
@@ -117,7 +118,7 @@ class InputEngineCandidateSource: CandidateSource {
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
-        if !hasLoadedAllBestRimeCandidates && inputController.inputMode != .english && !inputEngine.hasRimeLoadedAllCandidates { return }
+        if !hasLoadedAllBestRimeCandidates && inputMode != .english && !inputEngine.hasRimeLoadedAllCandidates { return }
         
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
@@ -128,13 +129,13 @@ class InputEngineCandidateSource: CandidateSource {
         }
         
         // Populate remaining Rime candidates.
-        while Settings.cached.lastInputMode != .english && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
+        while inputMode != .english && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
         }
         
         // Populate worst English candidates.
-        if (inputController.inputMode == .english || inputEngine.hasRimeLoadedAllCandidates) && !hasPopulatedWorstEnglishCandidates && isEnglishActive {
+        if (inputMode == .english || inputEngine.hasRimeLoadedAllCandidates) && !hasPopulatedWorstEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishWorstCandidatesStartIndex..<englishCandidates.count {
                 candidatePaths[0].append(CandidatePath(source: .english, index: i))
             }

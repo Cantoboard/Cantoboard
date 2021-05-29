@@ -38,17 +38,9 @@ class InputController {
     
     private(set) var candidateOrganizer: CandidateOrganizer!
     
-    var inputMode: InputMode {
-        get {
-            let lastInputMode = Settings.cached.lastInputMode
-            if Settings.cached.isMixedModeEnabled && lastInputMode == .chinese { return .mixed }
-            if !Settings.cached.isMixedModeEnabled && lastInputMode == .mixed { return .chinese }
-            return lastInputMode
-        }
-        set {
-            var settings = Settings.cached
-            settings.lastInputMode = newValue
-            Settings.save(settings)
+    var inputMode: InputMode = Settings.cached.lastInputMode {
+        didSet {
+            keyboardView?.inputMode = inputMode
         }
     }
     
@@ -82,6 +74,8 @@ class InputController {
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self)
         candidateOrganizer = CandidateOrganizer(inputController: self)
+        
+        refreshInputMode()
     }
     
     func textWillChange(_ textInput: UITextInput?) {
@@ -254,8 +248,16 @@ class InputController {
             settings.charForm = cs
             Settings.save(settings)
             return
-        case .setCandidateMode(let im):
-            inputMode = im
+        case .setCandidateMode(let newInputMode):
+            if inputMode != newInputMode {
+                inputMode = newInputMode
+                
+                var settings = Settings.cached
+                settings.lastInputMode = inputMode
+                Settings.save(settings)
+                
+                refreshInputMode()
+            }
         case .reverseLookup(let schemaId):
             reverseLookupSchemaId = schemaId
             clearInput(needResetSchema: false)
@@ -274,6 +276,14 @@ class InputController {
         } else {
             updateInputState()
         }
+    }
+    
+    func refreshInputMode() {
+        if Settings.cached.isMixedModeEnabled && inputMode == .chinese { inputMode = .mixed }
+        if !Settings.cached.isMixedModeEnabled && inputMode == .mixed { inputMode = .chinese }
+        
+        keyboardView?.candidatePaneView?.setupButtons()
+        updateMarkedText()
     }
     
     private func isTextChromeSearchBar() -> Bool {

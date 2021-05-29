@@ -214,6 +214,11 @@ open class KeyboardViewController: UIInputViewController {
             inputController?.keyPressed(.setCharForm(settings.charForm))
             DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }
+        
+        if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled {
+            inputController?.refreshInputMode()
+            DDLogInfo("Detected change in isMixedModeEnabled from \(prevSettings.isMixedModeEnabled) to \(settings.isMixedModeEnabled).")
+        }
     }
 }
 
