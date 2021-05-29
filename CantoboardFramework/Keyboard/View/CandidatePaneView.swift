@@ -586,10 +586,10 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
             return .zero
         }
-                
+        
         var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
         let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
-                
+        
         if showComment {
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
             let commentWidth = comment?.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width ?? 0
@@ -635,6 +635,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
             let candidateIndexPath = translateCollectionViewIndexPathToCandidateIndexPath(indexPath)
             guard let candidate = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else { return }
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
+            cell.frame = CGRect(origin: cell.frame.origin, size: computeCellSize(candidateIndexPath: candidateIndexPath))
             cell.setup(candidate, comment, showComment: showComment)
         }
     }
