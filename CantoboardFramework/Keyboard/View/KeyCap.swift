@@ -403,16 +403,16 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
 let FrameworkBundle = Bundle(for: KeyView.self)
 
 class ButtonImage {
-    static let globe = UIImage(systemName: "globe")
-    static let backspace = UIImage(systemName: "delete.left")
-    static let shift = UIImage(systemName: "shift")
-    static let shiftFilled = UIImage(systemName: "shift.fill")
-    static let capLockFilled = UIImage(systemName: "capslock.fill")
-    static let emojiKeyboardLight = UIImage(systemName: "face.smiling", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18))
-    static let emojiKeyboardDark = UIImage(systemName: "face.smiling.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18))
-    static let paneCollapseButtonImage = UIImage(systemName: "chevron.up")
-    static let paneExpandButtonImage = UIImage(systemName: "chevron.down")
-    // static let oneTwoThree = UIImage(systemName: "textformat.123")
+    static let globe = UIImage(named: "globe", in: Bundle(for: ButtonImage.self), with: nil)
+    static let backspace = UIImage(named: "delete.left", in: Bundle(for: ButtonImage.self), with: nil)
+    static let shift = UIImage(named: "shift", in: Bundle(for: ButtonImage.self), with: nil)
+    static let shiftFilled = UIImage(named: "shift.fill", in: Bundle(for: ButtonImage.self), with: nil)
+    static let capLockFilled = UIImage(named: "capslock.fill", in: Bundle(for: ButtonImage.self), with: nil)
+    static let emojiKeyboardLight = UIImage(named: "face.smiling", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))
+    static let emojiKeyboardDark = UIImage(named: "face.smiling.fill", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))
+    static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)
+    static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)
+    // static let oneTwoThree = UIImage(systemName: "textformat.123", in: Bundle(for: ButtonImage.self), with: nil)
 }
 
 class ButtonColor {
