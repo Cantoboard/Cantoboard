@@ -59,6 +59,8 @@ class TestAppViewController: UIViewController, UITextViewDelegate {
         ])
     }
     
+    private var textboxBottomAnchor: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -88,12 +90,16 @@ The Microsoft Open Source Blog takes a look at implementing eBPF support in Wind
 
 Python in the browser has long been an item on the wish list of many in the Python community. At this point, though, JavaScript has well-cemented its role as the language embedded into the web and its browsers. The Pyodide project provides a way to run Python in the browser by compiling the existing CPython interpreter to WebAssembly and running that binary within the browser's JavaScript environment. Pyodide came about as part of Mozilla's Iodide project, which has fallen by the wayside, but Pyodide is now being spun out as a community-driven project.
 """
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         NSLayoutConstraint.activate([
             textbox.leftAnchor.constraint(equalTo: view.leftAnchor),
             textbox.rightAnchor.constraint(equalTo: view.rightAnchor),
-            textbox.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+        
+        textboxBottomAnchor = textbox.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        textboxBottomAnchor.isActive = true
         
         createKeyboardController()
         
@@ -110,6 +116,26 @@ Python in the browser has long been an item on the wish list of many in the Pyth
          */
     }
     
+    @objc
+    func keyboardWillAppear(notification: NSNotification?) {
+        guard let keyboardFrame = notification?.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+
+        let keyboardHeight: CGFloat
+        if #available(iOS 11.0, *) {
+            keyboardHeight = keyboardFrame.cgRectValue.height - self.view.safeAreaInsets.bottom
+        } else {
+            keyboardHeight = keyboardFrame.cgRectValue.height
+        }
+
+        textboxBottomAnchor.constant = -keyboardHeight
+    }
+
+    @objc
+    func keyboardWillDisappear(notification: NSNotification?) {
+        textboxBottomAnchor.constant = 0.0
+    }
     /*
     func textViewDidChange(_ textView: UITextView) {
         guard let markedTextRange = textView.markedTextRange else { return }

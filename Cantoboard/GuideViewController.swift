@@ -15,7 +15,7 @@ class GuideViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let request = URLRequest(url: Bundle.main.url(forResource: "Guide", withExtension: "html")!)
+        let request = URLRequest(url: Bundle.main.url(forResource: "Guide/Guide", withExtension: "html")!)
         webView.navigationDelegate = self
         webView.load(request)
     }
