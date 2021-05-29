@@ -221,6 +221,116 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         autoCompleteBarHeight: 36,
         edgeHorizontalInset: 2),
     
+    // iPad 1024x1366
+    // Portrait:
+    IntDuplet(1024, 1366): LayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 1024, height: (50 + 7) * 4 + 55),
+        buttonGap: 7,
+        systemKeyWidth: 100,
+        shiftKeyWidth: 147,
+        keyHeight: 50, // 66,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(1366, 1024): LayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 1366, height: (50 + 9) * 4 + 55),
+        buttonGap: 9,
+        systemKeyWidth: 132,
+        shiftKeyWidth: 194,
+        keyHeight: 50,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 7),
+    
+    // iPad 834×1194
+    // Portrait:
+    IntDuplet(834, 1194): LayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 834, height: (55 + 11) * 4 + 55),
+        buttonGap: 11,
+        systemKeyWidth: 59,
+        shiftKeyWidth: 115,
+        keyHeight: 55,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(1194, 834): LayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 1194, height: (40 + 8) * 4 + 55),
+        buttonGap: 8,
+        systemKeyWidth: 81.5,
+        shiftKeyWidth: 165,
+        keyHeight: 40,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 7),
+    
+    // iPad 820×1180
+    // Portrait:
+    IntDuplet(820, 1180): LayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 820, height: (55 + 11) * 4 + 55),
+        buttonGap: 11,
+        systemKeyWidth: 59,
+        shiftKeyWidth: 115,
+        keyHeight: 55,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(1180, 820): LayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 1180, height: (55 + 14) * 4 + 55),
+        buttonGap: 14,
+        systemKeyWidth: 81.5,
+        shiftKeyWidth: 165,
+        keyHeight: 55,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 7),
+    
+    // iPad 810×1080
+    // Portrait:
+    IntDuplet(810, 1080): LayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 810, height: (55 + 11) * 4 + 55),
+        buttonGap: 11,
+        systemKeyWidth: 59,
+        shiftKeyWidth: 110,
+        keyHeight: 55,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(1080, 810): LayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 1080, height: (48 + 8) * 4 + 55),
+        buttonGap: 8,
+        systemKeyWidth: 81.5,
+        shiftKeyWidth: 155,
+        keyHeight: 48,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 7),
+    
+    // iPad 834×1194
+    // Portrait:
+    IntDuplet(834, 1112): LayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 834, height: (55 + 11) * 4 + 55),
+        buttonGap: 11,
+        systemKeyWidth: 59,
+        shiftKeyWidth: 115,
+        keyHeight: 55,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 3),
+    // Landscape:
+    IntDuplet(1112, 834): LayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 1112, height: (40 + 8) * 4 + 55),
+        buttonGap: 8,
+        systemKeyWidth: 81.5,
+        shiftKeyWidth: 165,
+        keyHeight: 40,
+        autoCompleteBarHeight: 55,
+        edgeHorizontalInset: 7),
+    
     // iPad 768x1024
     // Portrait:
     IntDuplet(768, 1024): LayoutConstants(
@@ -228,7 +338,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardSize: CGSize(width: 768, height: 258+55),
         buttonGap: 12,
         systemKeyWidth: 56,
-        shiftKeyWidth: 56,
+        shiftKeyWidth: 100,
         keyHeight: 57,
         autoCompleteBarHeight: 55,
         edgeHorizontalInset: 3),
@@ -238,7 +348,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardSize: CGSize(width: 1024, height: 353+55),
         buttonGap: 14,
         systemKeyWidth: 77,
-        shiftKeyWidth: 77,
+        shiftKeyWidth: 140,
         keyHeight: 74,
         autoCompleteBarHeight: 55,
         edgeHorizontalInset: 7),
