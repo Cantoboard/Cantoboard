@@ -17,7 +17,20 @@ class GuideViewController: UIViewController {
         
         let request = URLRequest(url: Bundle.main.url(forResource: "Guide/Guide", withExtension: "html")!)
         webView.navigationDelegate = self
+        webView.configuration.suppressesIncrementalRendering = true
         webView.load(request)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Restart all mp4 playbacks.
+        webView.evaluateJavaScript("""
+            var images = document.images;
+            for (var i=0; i<images.length; i++) {
+                images[i].src = images[i].src + "?" + new Date().getTime();
+            }
+            """, completionHandler: nil)
     }
 }
 
@@ -30,5 +43,12 @@ extension GuideViewController: WKNavigationDelegate {
         }
         UIApplication.shared.open(url)
         decisionHandler(.cancel)
+    }
+}
+
+class TabBarController: UITabBarController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        viewControllers?.forEach({ _ = $0.view })
     }
 }
