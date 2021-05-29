@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Settings-->
+        <!--設定-->
         <scene sceneID="lCT-bi-dgD">
             <objects>
                 <tableViewController id="5pj-Dh-GcA" customClass="ConfigTableViewController" customModule="Cantoboard" customModuleProvider="target" sceneMemberID="viewController">
@@ -350,7 +350,7 @@
                             <outlet property="delegate" destination="5pj-Dh-GcA" id="BYV-Kz-cFo"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Settings" selectedImage="gearshape.2.fill" catalog="system" id="xT8-Jm-9fO">
+                    <tabBarItem key="tabBarItem" title="設定" selectedImage="gearshape.2.fill" catalog="system" id="xT8-Jm-9fO">
                         <imageReference key="image" image="gearshape.2" catalog="system" renderingMode="template"/>
                     </tabBarItem>
                     <connections>
@@ -371,7 +371,7 @@
             </objects>
             <point key="canvasLocation" x="-439" y="64"/>
         </scene>
-        <!--Guide-->
+        <!--簡介-->
         <scene sceneID="MMe-n1-yYL">
             <objects>
                 <viewController id="kHq-m6-ZV0" customClass="GuideViewController" customModule="Cantoboard" customModuleProvider="target" sceneMemberID="viewController">
@@ -392,7 +392,7 @@
                         <viewLayoutGuide key="safeArea" id="ACr-z4-GMn"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Guide" image="book" catalog="system" selectedImage="book.fill" id="Lm1-9J-P40"/>
+                    <tabBarItem key="tabBarItem" title="簡介" image="book" catalog="system" selectedImage="book.fill" id="Lm1-9J-P40"/>
                     <connections>
                         <outlet property="webView" destination="CM3-b0-FTi" id="A7B-oA-qsb"/>
                     </connections>
@@ -404,7 +404,7 @@
         <!--Cantoboard-->
         <scene sceneID="1Cw-df-caD">
             <objects>
-                <tabBarController id="zLu-8E-DvE" sceneMemberID="viewController">
+                <tabBarController id="zLu-8E-DvE" customClass="TabBarController" customModule="Cantoboard" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" title="Cantoboard" id="kJa-ND-EC3"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oMi-LA-TT0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
@@ -425,7 +425,7 @@
             <objects>
                 <navigationController id="ihW-bd-Kpl" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="jIB-k4-muF">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
