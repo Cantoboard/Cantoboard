@@ -70,7 +70,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
     private static let defaultEnglishLocale: EnglishLocale = .us
-    private static let defaultShowRomanization: Bool = true
+    private static let defaultShowRomanization: Bool = false
     private static let defaultAudioFeedbackEnabled: Bool = true
 
     public var charForm: CharForm
