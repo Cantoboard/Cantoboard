@@ -578,9 +578,9 @@ class InputController {
         }
         
         switch keyboardView.keyboardContextualType {
-        case .english where !lastCharBefore.isNumber && textAfterInput.isEmpty:
+        case .english where !lastCharBefore.isNumber && !lastCharBefore.isPunctuation && textAfterInput.isEmpty:
             newAutoSuggestionType = .halfWidthPunctuation
-        case .chinese where !lastCharBefore.isNumber && textAfterInput.isEmpty:
+        case .chinese where !lastCharBefore.isNumber && !lastCharBefore.isPunctuation && textAfterInput.isEmpty:
             newAutoSuggestionType = .fullWidthPunctuation
         case .url: ()
         default:
