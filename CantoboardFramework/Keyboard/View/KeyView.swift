@@ -231,7 +231,7 @@ class KeyView: UIButton {
         
         let popupViewSize = popupView.bounds.size
         let layoutOffsetX = popupView.leftAnchorX
-        let popupViewFrame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height), size: popupViewSize)
+        let popupViewFrame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height + 1), size: popupViewSize)
         popupView.frame = popupViewFrame
     }
 }

@@ -130,6 +130,11 @@ open class KeyboardViewController: UIInputViewController {
         keyboardView?.needsInputModeSwitchKey = needsInputModeSwitchKey
     }
     
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        view.setNeedsLayout()
+    }
+    
     public override func viewWillLayoutSubviews() {
         // Reset the size constraints to handle screen rotation.
         let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize

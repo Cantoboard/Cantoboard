@@ -241,14 +241,15 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonHintFontSize: CGFloat {
         if Settings.cached.toneInputMode == .vxq {
             switch self {
-            case .character("V"), .character("v"): return 7
-            case .character("X"), .character("x"): return 7
-            case .character("Q"), .character("q"): return 7
+            case .character("V"), .character("v"),
+                 .character("X"), .character("x"),
+                 .character("Q"), .character("q"):
+                return DeviceLayoutConstants.forCurrentDevice.smallKeyHintFontSize
             default: ()
             }
         }
         
-        return 9
+        return DeviceLayoutConstants.forCurrentDevice.mediumKeyHintFontSize
     }
     
     func buttonWidth(_ layoutConstants: LayoutConstants) -> CGFloat {
@@ -257,7 +258,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             return layoutConstants.shiftButtonWidth
         case .returnKey:
             return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .characterWithConditioanlPopup, .contexualSymbols:
+        case .character, .characterWithConditioanlPopup, .cangjie, .contexualSymbols:
             return layoutConstants.keyButtonWidth
         default:
             return layoutConstants.systemButtonWidth
