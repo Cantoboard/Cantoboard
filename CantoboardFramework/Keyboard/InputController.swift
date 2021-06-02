@@ -84,6 +84,15 @@ class InputController {
     }
     
     func textDidChange(_ textInput: UITextInput?) {
+        if let keyboardViewController = keyboardViewController,
+           let keyboardAppearance = keyboardViewController.textDocumentProxy.keyboardAppearance {
+            switch keyboardAppearance {
+            case .dark: keyboardViewController.overrideUserInterfaceStyle = .dark
+            case .light: keyboardViewController.overrideUserInterfaceStyle = .light
+            default: keyboardViewController.overrideUserInterfaceStyle = .unspecified
+            }
+        }
+        
         // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
         if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
