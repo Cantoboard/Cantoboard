@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7913D968266752FC00DB78C2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7913D967266752FC00DB78C2 /* main.swift */; };
 		7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7917DDA32660A41F00D0010D /* GuideViewController.swift */; };
 		7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78025F3320F0075DD4D /* AppDelegate.swift */; };
 		7919A78325F3320F0075DD4D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78225F3320F0075DD4D /* SceneDelegate.swift */; };
@@ -197,6 +198,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		7913D963266752FC00DB78C2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		796D9564263EA5FD006D9370 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -247,6 +257,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
+		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		7917DDA32660A41F00D0010D /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
 		7919A77D25F3320F0075DD4D /* Cantoboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cantoboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7919A78025F3320F0075DD4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -382,6 +394,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7913D962266752FC00DB78C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7919A77A25F3320F0075DD4D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -431,6 +450,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7913D966266752FC00DB78C2 /* MissingGlyphRemover */ = {
+			isa = PBXGroup;
+			children = (
+				7913D967266752FC00DB78C2 /* main.swift */,
+			);
+			path = MissingGlyphRemover;
+			sourceTree = "<group>";
+		};
 		7919A77425F3320F0075DD4D = {
 			isa = PBXGroup;
 			children = (
@@ -439,6 +466,7 @@
 				79B9B65825F34AF100238E80 /* ISEmojiView */,
 				799F2E4D25F46B0800C53416 /* CantoboardTestApp */,
 				799F2E7C25F46BC600C53416 /* CantoboardExtension */,
+				7913D966266752FC00DB78C2 /* MissingGlyphRemover */,
 				7919A77E25F3320F0075DD4D /* Products */,
 				79B9B6F625F4398C00238E80 /* Frameworks */,
 			);
@@ -452,6 +480,7 @@
 				79B9B65725F34AF100238E80 /* ISEmojiView.framework */,
 				799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */,
 				799F2E7B25F46BC600C53416 /* CantoboardExtension.appex */,
+				7913D965266752FC00DB78C2 /* MissingGlyphRemover */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -818,6 +847,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		7913D964266752FC00DB78C2 /* MissingGlyphRemover */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7913D96B266752FC00DB78C2 /* Build configuration list for PBXNativeTarget "MissingGlyphRemover" */;
+			buildPhases = (
+				7913D961266752FC00DB78C2 /* Sources */,
+				7913D962266752FC00DB78C2 /* Frameworks */,
+				7913D963266752FC00DB78C2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MissingGlyphRemover;
+			productName = MissingGlyphRemover;
+			productReference = 7913D965266752FC00DB78C2 /* MissingGlyphRemover */;
+			productType = "com.apple.product-type.tool";
+		};
 		7919A77C25F3320F0075DD4D /* Cantoboard */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7919A79125F332100075DD4D /* Build configuration list for PBXNativeTarget "Cantoboard" */;
@@ -932,6 +978,9 @@
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
+					7913D964266752FC00DB78C2 = {
+						CreatedOnToolsVersion = 12.4;
+					};
 					7919A77C25F3320F0075DD4D = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -970,6 +1019,7 @@
 				799F2E4B25F46B0800C53416 /* CantoboardTestApp */,
 				79B9B57225F3496800238E80 /* CantoboardFramework */,
 				79B9B65625F34AF100238E80 /* ISEmojiView */,
+				7913D964266752FC00DB78C2 /* MissingGlyphRemover */,
 			);
 		};
 /* End PBXProject section */
@@ -1082,6 +1132,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7913D961266752FC00DB78C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7913D968266752FC00DB78C2 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7919A77925F3320F0075DD4D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1256,6 +1314,34 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		7913D969266752FC00DB78C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = M6QD9W76V2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7913D96A266752FC00DB78C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = M6QD9W76V2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		7919A78F25F332100075DD4D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1678,6 +1764,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7913D96B266752FC00DB78C2 /* Build configuration list for PBXNativeTarget "MissingGlyphRemover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7913D969266752FC00DB78C2 /* Debug */,
+				7913D96A266752FC00DB78C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7919A77825F3320F0075DD4D /* Build configuration list for PBXProject "Cantoboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
