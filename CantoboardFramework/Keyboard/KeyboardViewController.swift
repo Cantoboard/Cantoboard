@@ -43,7 +43,7 @@ open class KeyboardViewController: UIInputViewController {
             guard let self = self else { return true }
             
             DispatchQueue.main.async {
-                if newState == .failure /*|| newState == .succeeded*/ {
+                if newState == .failure {
                     let logs = self.fetchLog()
                     DDLogInfo("Rime Engine deployment failed. Log: \(logs)")
                     self.showLogs(logs)

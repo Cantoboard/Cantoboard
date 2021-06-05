@@ -25,6 +25,7 @@
 		79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */; };
 		79607A65260FF09200E23D33 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79607A64260FF09200E23D33 /* String+Extension.swift */; };
 		796D9566263EA649006D9370 /* Rime.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 796D9565263EA63E006D9370 /* Rime.framework.dSYM */; };
+		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -437,6 +438,7 @@
 				799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */,
 				79FFBD0625F7517D00860D63 /* Rime.framework in Frameworks */,
 				79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */,
+				797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -946,6 +948,7 @@
 			packageProductDependencies = (
 				79D31AAF263F95F600993949 /* CocoaLumberjackSwift */,
 				79D31AB4263F961800993949 /* CocoaLumberjack */,
+				797DEB04266B3AA8008BAB23 /* ZIPFoundation */,
 			);
 			productName = CantoboardFramework;
 			productReference = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */;
@@ -1009,6 +1012,7 @@
 			mainGroup = 7919A77425F3320F0075DD4D;
 			packageReferences = (
 				79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+				797DEAFD266B386C008BAB23 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = 7919A77E25F3320F0075DD4D /* Products */;
 			projectDirPath = "";
@@ -1830,6 +1834,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		797DEAFD266B386C008BAB23 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.12;
+			};
+		};
 		79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack.git";
@@ -1841,6 +1853,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		797DEB04266B3AA8008BAB23 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 797DEAFD266B386C008BAB23 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
 		79D31AAF263F95F600993949 /* CocoaLumberjackSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 79D31AA7263F957D00993949 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;

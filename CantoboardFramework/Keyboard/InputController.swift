@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 import CocoaLumberjackSwift
+import ZIPFoundation
 
 enum ContextualType: Equatable {
     case english, chinese, rime, url(isRimeComposing: Bool)
@@ -277,9 +278,24 @@ class InputController {
             candidateSelected(choice: choice, enableSmartSpace: true)
         case .longPressCandidate(let choice):
             candidateLongPressed(choice: choice)
-        case .exportFile(let path):
-            let share = UIActivityViewController(activityItems: [path], applicationActivities: nil)
-            keyboardViewController?.present(share, animated: true, completion: nil)
+        case .exportFile(let namePrefix, let path):
+            keyboardView?.isEnabled = false
+            keyboardView?.isLoading = true
+            
+            let zipFilePath = FileManager.default.temporaryDirectory.appendingPathComponent("\(namePrefix)-\(NSDate().timeIntervalSince1970).zip")
+            DispatchQueue.global(qos: .userInitiated).async { [self] in
+                do {
+                    try FileManager.default.zipItem(at: URL(fileURLWithPath: path, isDirectory: true), to: zipFilePath)
+                    let share = UIActivityViewController(activityItems: [zipFilePath], applicationActivities: nil)
+                    DispatchQueue.main.async { keyboardViewController?.present(share, animated: true, completion: nil) }
+                } catch {
+                    DDLogError("Failed to export \(namePrefix) at \(path).")
+                }
+                DispatchQueue.main.async {
+                    keyboardView?.isEnabled = true
+                    keyboardView?.isLoading = false
+                }
+            }
         default: ()
         }
         if needClearInput {
