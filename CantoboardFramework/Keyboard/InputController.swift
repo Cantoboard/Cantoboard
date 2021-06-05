@@ -156,6 +156,7 @@ class InputController {
             self.cachedActions.forEach({ self.keyPressed($0) })
             self.cachedActions = []
             self.keyboardView?.isEnabled = true
+            self.keyboardView?.isLoading = false
         }
     }
     
@@ -164,6 +165,7 @@ class InputController {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
             keyboardView?.isEnabled = false
+            self.keyboardView?.isLoading = true
             cachedActions.append(action)
             return
         }

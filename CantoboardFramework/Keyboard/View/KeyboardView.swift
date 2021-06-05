@@ -145,6 +145,36 @@ class KeyboardView: UIView {
         }
     }
     
+    private var _isLoading: Bool = false
+    private weak var loadingIndicatorView: UIActivityIndicatorView?
+    
+    private func createLoadingIndicatorView() -> UIActivityIndicatorView {
+        let size: CGFloat = 20
+        
+        let loadingIndicatorView = UIActivityIndicatorView(style: .large)
+        loadingIndicatorView.frame = CGRect(x: frame.midX - size / 2, y: frame.midY - size / 2, width: size, height: size)
+        loadingIndicatorView.startAnimating()
+        addSubview(loadingIndicatorView)
+        
+        return loadingIndicatorView
+    }
+    
+    var isLoading: Bool {
+        get { _isLoading }
+        set {
+            if _isLoading != newValue {
+                if newValue && loadingIndicatorView == nil {
+                    self.loadingIndicatorView = createLoadingIndicatorView()
+                } else if !newValue && loadingIndicatorView != nil {
+                    loadingIndicatorView?.stopAnimating()
+                    loadingIndicatorView?.removeFromSuperview()
+                    loadingIndicatorView = nil
+                }
+                _isLoading = newValue
+            }
+        }
+    }
+    
     var returnKeyType: UIReturnKeyType = .default {
         didSet {
             newLineKey?.setKeyCap(.returnKey(returnKeyType))
