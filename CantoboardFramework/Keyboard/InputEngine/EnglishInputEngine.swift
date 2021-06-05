@@ -152,8 +152,14 @@ class EnglishInputEngine: InputEngine {
     
     private func updateCandidates() {
         var text = inputTextBuffer.text, textLowercased = text.lowercased()
-        guard !text.isEmpty && text.count < 25 else {
+        guard !text.isEmpty && text.count < 25 && textLowercased != "m" else {
             isWord = false
+            candidates = [text]
+            if text == "m" {
+                candidates.append("M")
+            }
+            prefectCandidatesStartIndex = 0
+            worstCandidatesStartIndex = 0
             return
         }
         
@@ -168,7 +174,7 @@ class EnglishInputEngine: InputEngine {
         let englishDictionaryWordsSet = lookupInDictionary(wordLowercased: textLowercased)
         var candidateSets = Set<String>()
         
-        isWord = text != "m" && (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
+        isWord = (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
         
         candidates = []
         var worstCandidates:[String] = []
