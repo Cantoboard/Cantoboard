@@ -131,10 +131,15 @@ public struct Settings: Codable, Equatable {
     
     public static func reload() -> Settings {
         if let saved = userDefaults.object(forKey: settingsKeyName) as? Data {
+            let prevSetting = _cached
             let decoder = JSONDecoder()
             do {
                 let setting = try decoder.decode(Settings.self, from: saved)
                 _cached = setting
+                if let prevSetting = prevSetting, !hasFullAccess {
+                    // If the app doesn't have full acesss, overwrite lastInputMode from memory.
+                    _cached!.lastInputMode = prevSetting.lastInputMode
+                }
                 return setting
             } catch {
                 DDLogInfo("Failed to load \(saved). Falling back to default settings. Error: \(error)")
@@ -147,6 +152,10 @@ public struct Settings: Codable, Equatable {
     
     public static func save(_ settings: Settings) {
         _cached = settings
+        guard hasFullAccess else {
+            DDLogInfo("Skip updating UserDefaults as we don't have full access.")
+            return
+        }
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(settings) {
             userDefaults.set(encoded, forKey: settingsKeyName)
@@ -154,6 +163,8 @@ public struct Settings: Codable, Equatable {
             DDLogInfo("Failed to save \(settings)")
         }
     }
+    
+    public static var hasFullAccess = true
     
     private static var userDefaults: UserDefaults = initUserDefaults()
     

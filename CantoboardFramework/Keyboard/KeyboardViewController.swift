@@ -85,6 +85,8 @@ open class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
         
+        Settings.hasFullAccess = hasFullAccess
+        
         let keyboardSize = LayoutConstants.forMainScreen.keyboardSize
         if heightConstraint == nil {
             let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardSize.height)
