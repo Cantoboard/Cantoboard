@@ -106,11 +106,11 @@ class InputController {
         // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
         if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
-            // clearState()
+            clearInput(needResetSchema: false)
         } else if inputEngine.composition != nil, !shouldApplyChromeSearchBarHack {
             self.updateMarkedText()
         }
-                
+        
         shouldSkipNextTextDidChange = false
         updateInputState()
     }
