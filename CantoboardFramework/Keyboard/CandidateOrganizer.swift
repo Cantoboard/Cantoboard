@@ -311,10 +311,13 @@ class InputEngineCandidateSource: CandidateSource {
     func selectCandidate(indexPath: IndexPath) -> String? {
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
+        let selectedCandidate: String?
         switch candidatePath.source {
-        case .rime: return inputController?.inputEngine.selectRimeCandidate(candidatePath.index)
-        case .english: return inputController?.inputEngine.selectEnglishCandidate(candidatePath.index)
+        case .rime: selectedCandidate = inputController?.inputEngine.selectRimeCandidate(candidatePath.index)
+        case .english: selectedCandidate = inputController?.inputEngine.selectEnglishCandidate(candidatePath.index)
         }
+        resetCandidates()
+        return selectedCandidate
     }
     
     func getCandidateComment(indexPath: IndexPath) -> String? {
@@ -467,7 +470,9 @@ class CandidateOrganizer {
     }
     
     func selectCandidate(indexPath: IndexPath) -> String? {
-        return candidateSource?.selectCandidate(indexPath: indexPath)
+        let candidate = candidateSource?.selectCandidate(indexPath: indexPath)
+        updateCandidates(reload: true)
+        return candidate
     }
     
     func getCandidateComment(indexPath: IndexPath) -> String? {

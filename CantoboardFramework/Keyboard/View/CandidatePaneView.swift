@@ -92,49 +92,44 @@ class CandidatePaneView: UIControl {
     weak var candidateOrganizer: CandidateOrganizer? {
         didSet {
             candidateOrganizer?.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
-                DispatchQueue.main.async {
-                    guard let self = self, candidateOrganizer.groupByMode == .byFrequency else { return }
-                    let section = 1
-                    
-                    guard section < self.collectionView.numberOfSections else { return }
-                    
-                    let newIndiceStart = self.collectionView.numberOfItems(inSection: section)
-                    let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
-                    
-                    UIView.performWithoutAnimation {
-                        if newIndiceStart > newIndiceEnd {
-                            DDLogInfo("Reloading candidates onMoreCandidatesLoaded().")
-                            
-                            self.collectionView.reloadData()
-                            self.collectionView.collectionViewLayout.invalidateLayout()
-                            self.collectionView.layoutIfNeeded()
-                        } else if newIndiceStart != newIndiceEnd {
-                            DDLogInfo("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
-                            self.collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: section) })
-                        }
+                guard let self = self,
+                      let collectionView = self.collectionView,
+                      candidateOrganizer.groupByMode == .byFrequency else { return }
+                let section = 1
+                
+                guard section < collectionView.numberOfSections else { return }
+                
+                let newIndiceStart = collectionView.numberOfItems(inSection: section)
+                let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
+                
+                UIView.performWithoutAnimation {
+                    if newIndiceStart > newIndiceEnd {
+                        DDLogInfo("Reloading candidates onMoreCandidatesLoaded().")
+                        
+                        collectionView.reloadCandidates()
+                    } else if newIndiceStart != newIndiceEnd {
+                        DDLogInfo("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
+                        collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: section) })
                     }
-                    self.delegate?.candidatePaneCandidateLoaded()
                 }
+                self.delegate?.candidatePaneCandidateLoaded()
             }
             
             candidateOrganizer?.onReloadCandidates = { [weak self] candidateOrganizer in
-                guard let self = self else { return }
-                                
-                DispatchQueue.main.async {
-                    DDLogInfo("Reloading candidates.")
-                    
-                    UIView.performWithoutAnimation {
-                        self.collectionView.scrollOnLayoutSubviews = {
-                            let y = self.groupByEnabled ? LayoutConstants.forMainScreen.autoCompleteBarHeight : 0
-                            
-                            self.collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
-                            
-                            return true
-                        }
-                        self.collectionView.reloadData()
-                        self.collectionView.collectionViewLayout.invalidateLayout()
-                        self.collectionView.layoutIfNeeded()
+                guard let self = self,
+                      let collectionView = self.collectionView else { return }
+                
+                DDLogInfo("Reloading candidates.")
+                
+                UIView.performWithoutAnimation {
+                    collectionView.scrollOnLayoutSubviews = {
+                        let y = self.groupByEnabled ? LayoutConstants.forMainScreen.autoCompleteBarHeight : 0
+                        
+                        collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+                        
+                        return true
                     }
+                    collectionView.reloadCandidates()
                 }
             }
         }

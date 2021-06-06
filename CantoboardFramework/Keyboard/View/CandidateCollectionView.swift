@@ -155,6 +155,17 @@ class CandidateCollectionView: UICollectionView {
         longPressTimer?.invalidate()
         longPressTimer = nil
     }
+    
+    func reloadCandidates() {
+        reloadData()
+        
+        guard numberOfSections > 1 else { return }
+        
+        let visibleCellCounts = min(indexPathsForVisibleItems.count, dataSource?.collectionView(self, numberOfItemsInSection: 1) ?? 0)
+        // For some reason, sometimes willDisplayCell isn't called for the first few visible cells.
+        // Manually refreshing them to workaround the bug.
+        reloadItems(at: (0..<visibleCellCounts).map({ [1, $0] }))
+    }
 }
 
 class CandidateCell: UICollectionViewCell {
