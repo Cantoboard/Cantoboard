@@ -21,9 +21,9 @@ class BilingualInputEngine: InputEngine {
     private(set) var candidatePaths:[CandidatePath] = []
     private(set) var isForcingRimeMode = false
     
-    init(inputController: InputController) {
+    init(inputController: InputController, rimeSchema: RimeSchema) {
         self.inputController = inputController
-        rimeInputEngine = RimeInputEngine()
+        rimeInputEngine = RimeInputEngine(schema: rimeSchema)
         englishInputEngine = EnglishInputEngine()
     }
 
@@ -32,10 +32,9 @@ class BilingualInputEngine: InputEngine {
         set { rimeInputEngine.charForm = newValue }
     }
 
-    var reverseLookupSchemaId: RimeSchema? {
-        didSet {
-            rimeInputEngine.activeSchemaId = reverseLookupSchemaId ?? RimeSchema.jyutping
-        }
+    var rimeSchema: RimeSchema {
+        get { rimeInputEngine.schema }
+        set { rimeInputEngine.schema = newValue }
     }
     
     var isComposing: Bool {
@@ -122,7 +121,7 @@ class BilingualInputEngine: InputEngine {
     private func updateComposition() {
         if !isComposing {
             composition = nil
-        } else if !isForcingRimeMode && englishInputEngine.isWord && reverseLookupSchemaId == nil {
+        } else if !isForcingRimeMode && englishInputEngine.isWord && rimeSchema.supportMixedMode {
             composition = englishComposition
         } else {
             guard let rimeComposition = rimeComposition else {

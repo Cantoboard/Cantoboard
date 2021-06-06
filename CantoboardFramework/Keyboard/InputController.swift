@@ -30,10 +30,19 @@ class InputController {
     
     private var prevTextBefore: String?
     
-    private(set) var reverseLookupSchemaId: RimeSchema? {
+    var mainSchema: RimeSchema = .jyutping {
         didSet {
-            inputEngine.reverseLookupSchemaId = reverseLookupSchemaId
-            keyboardView?.currentRimeSchemaId = reverseLookupSchemaId ?? .jyutping
+            reverseLookupSchema = nil
+            inputEngine.rimeSchema = mainSchema
+            keyboardView?.rimeSchema = mainSchema
+        }
+    }
+    
+    private(set) var reverseLookupSchema: RimeSchema? {
+        didSet {
+            let activeSchema = reverseLookupSchema ?? mainSchema
+            inputEngine.rimeSchema = activeSchema
+            keyboardView?.rimeSchema = activeSchema
         }
     }
     
@@ -73,7 +82,7 @@ class InputController {
     
     init(keyboardViewController: KeyboardViewController) {
         self.keyboardViewController = keyboardViewController
-        inputEngine = BilingualInputEngine(inputController: self)
+        inputEngine = BilingualInputEngine(inputController: self, rimeSchema: mainSchema)
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
         refreshInputMode()
@@ -166,7 +175,7 @@ class InputController {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
             keyboardView?.isEnabled = false
-            self.keyboardView?.isLoading = true
+            keyboardView?.isLoading = true
             cachedActions.append(action)
             return
         }
@@ -208,8 +217,8 @@ class InputController {
                 insertText("\n")
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
-            if reverseLookupSchemaId != nil && !isComposing {
-                reverseLookupSchemaId = nil
+            if reverseLookupSchema != nil && !isComposing {
+                reverseLookupSchema = nil
             } else if isComposing {
                 if action == .deleteWordSwipe {
                     needClearInput = true
@@ -270,8 +279,16 @@ class InputController {
                 
                 refreshInputMode()
             }
-        case .reverseLookup(let schemaId):
-            reverseLookupSchemaId = schemaId
+        case .reverseLookup(let schema):
+            reverseLookupSchema = schema
+            clearInput(needResetSchema: false)
+            return
+        case .quitReverseLookup:
+            reverseLookupSchema = nil
+            clearInput(needResetSchema: false)
+            return
+        case .changeSchema(let schema):
+            mainSchema = schema
             clearInput(needResetSchema: false)
             return
         case .selectCandidate(let choice):
@@ -296,6 +313,7 @@ class InputController {
                     keyboardView?.isLoading = false
                 }
             }
+        case .exit: exit(0)
         default: ()
         }
         if needClearInput {
@@ -339,7 +357,7 @@ class InputController {
     }
     
     private func checkAutoCap() {
-        guard Settings.cached.isAutoCapEnabled && !isHoldingShift && reverseLookupSchemaId == nil &&
+        guard Settings.cached.isAutoCapEnabled && !isHoldingShift && reverseLookupSchema == nil &&
               (keyboardType == .alphabetic(.lowercased) || keyboardType == .alphabetic(.uppercased))
             else { return }
         keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
@@ -348,7 +366,7 @@ class InputController {
     private func clearInput(needResetSchema: Bool = true) {
         inputEngine.clearInput()
         updateInputState()
-        if needResetSchema { reverseLookupSchemaId = nil }
+        if needResetSchema { reverseLookupSchema = nil }
     }
     
     func clearState() {

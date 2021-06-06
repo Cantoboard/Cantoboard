@@ -36,20 +36,27 @@ enum RimeSchema: String {
     var isShapeBased: Bool {
         self == .cangjie || self == .quick || self == .stroke
     }
+    
+    var supportMixedMode: Bool {
+        switch self {
+        case .jyutping, .stroke: return true
+        default: return false
+        }
+    }
 }
 
 class RimeInputEngine: NSObject, InputEngine {
     private weak var rimeSession: RimeSession?
-    private var _activeSchemaId: RimeSchema = .jyutping
+    private var _schema: RimeSchema
     private(set) var hasLoadedAllCandidates = false
     
-    var activeSchemaId: RimeSchema {
-        get { _activeSchemaId }
+    var schema: RimeSchema {
+        get { _schema }
         set {
-            guard newValue != _activeSchemaId else { return }
-            DDLogInfo("Switching scheam of session \(rimeSession?.debugDescription ?? "") from \(activeSchemaId) to \(newValue)")
-            _activeSchemaId = newValue
-            setCurrentSchema(_activeSchemaId)
+            guard newValue != _schema else { return }
+            DDLogInfo("Switching scheam of session \(rimeSession?.debugDescription ?? "") from \(schema) to \(newValue)")
+            _schema = newValue
+            setCurrentSchema(_schema)
             refreshCharForm()
         }
     }
@@ -64,7 +71,8 @@ class RimeInputEngine: NSObject, InputEngine {
         }
     }
     
-    override init() {
+    init(schema: RimeSchema) {
+        _schema = schema
         super.init()
         tryCreateRimeSessionIfNeeded()
     }
@@ -246,7 +254,7 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func createRimeSession() {
         rimeSession = RimeApi.shared.createSession()
-        setCurrentSchema(activeSchemaId)
+        setCurrentSchema(schema)
         refreshCharForm()
     }
     

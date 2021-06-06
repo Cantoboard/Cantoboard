@@ -249,7 +249,29 @@ class CandidatePaneView: UIControl {
             backspaceButton.isHidden = true
             charFormButton.isHidden = true
         }
+        
+        setupContextMenu()
         setNeedsLayout()
+    }
+    
+    private func setupContextMenu() {
+        if #available(iOS 14.0, *) {
+            expandButton.menu = nil
+            inputModeButton.menu = nil
+            
+            let items = UIMenu(options: .displayInline, children: [
+                UIAction(title: "粵拼", state: currentRimeSchemaId == .jyutping ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.jyutping)) }),
+                UIAction(title: "倉頡", state: currentRimeSchemaId == .cangjie ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.cangjie)) }),
+                UIAction(title: "速成", state: currentRimeSchemaId == .quick ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.quick)) }),
+                UIAction(title: "普通話", state: currentRimeSchemaId == .mandarin ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.mandarin)) }),
+            ])
+            
+            if expandButton.isHidden {
+                inputModeButton.menu = items
+            } else {
+                expandButton.menu = items
+            }
+        }
     }
     
     private func initCollectionView() {
@@ -296,7 +318,7 @@ class CandidatePaneView: UIControl {
         
         guard currentRimeSchemaId == .jyutping else {
             // Disable reverse look up mode on tap.
-            delegate?.handleKey(.reverseLookup(.jyutping))
+            delegate?.handleKey(.quitReverseLookup)
             return
         }
         

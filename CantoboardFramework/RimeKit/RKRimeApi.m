@@ -32,7 +32,7 @@
 static bool hasSetupRimeTrait = false;
 
 static void rimeNotificationHandler(void *context_object, RimeSessionId session_id, const char *message_type, const char *message_value) {
-    DDLogInfo(@"Event type: %s value: %s.\n", message_type, message_value);
+    DDLogInfo(@"Event type: %@ value: %@.\n", [NSString stringWithUTF8String: message_type] , [NSString stringWithUTF8String: message_value]);
     RKRimeApi *zelf = (__bridge RKRimeApi *) context_object;
     
     if (zelf->_rimeEventListener) {

@@ -42,7 +42,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     contexualSymbols(ContextualType),
     charForm(CharForm),
     reverseLookup(RimeSchema),
-    exportFile(String, String)
+    exportFile(String, String),
+    exit
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
@@ -72,6 +73,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .charForm(let cs): return .setCharForm(cs)
         case .reverseLookup(let s): return .reverseLookup(s)
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
+        case .exit: return .exit
         }
     }
     
@@ -85,7 +87,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var popupFont: UIFont {
         switch self {
         case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(26)
-        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu", .exportFile:
+        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu", .exportFile, .exit:
             return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
         }
@@ -184,6 +186,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
+        case .exit: return "Exit"
         default: return nil
         }
     }
@@ -293,7 +296,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]
         case .contexualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
-        case .keyboardType(.emojis): return [.exportFile("user", Self.userDataPath), .exportFile("logs", Self.logsPath)]
+        case .keyboardType(.emojis): return [.exportFile("user", Self.userDataPath), .exportFile("logs", Self.logsPath), .exit]
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]

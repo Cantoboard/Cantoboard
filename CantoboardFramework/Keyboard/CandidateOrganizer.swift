@@ -73,8 +73,8 @@ class InputEngineCandidateSource: CandidateSource {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine else { return }
         let inputMode = inputController.inputMode
-        let isReverseLookupMode = inputEngine.reverseLookupSchemaId != nil
-        let isInRimeOnlyMode = inputEngine.isForcingRimeMode || isReverseLookupMode
+        let doesSchemaSupportMixedMode = inputEngine.rimeSchema.supportMixedMode
+        let isInRimeOnlyMode = inputEngine.isForcingRimeMode || !doesSchemaSupportMixedMode
         let isEnglishActive = inputMode != .chinese && !isInRimeOnlyMode
         let englishCandidates = inputEngine.englishCandidates
         

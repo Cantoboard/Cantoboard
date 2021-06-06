@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+import CocoaLumberjackSwift
 import ISEmojiView
 
 protocol KeyboardViewDelegate: NSObject {
@@ -30,12 +31,12 @@ class KeyboardView: UIView {
     weak var delegate: KeyboardViewDelegate?
     
     private var _currentRimeSchemaId: RimeSchema = .jyutping
-    var currentRimeSchemaId: RimeSchema {
+    var rimeSchema: RimeSchema {
         get { _currentRimeSchemaId }
         set {
             guard _currentRimeSchemaId != newValue else { return }
             _currentRimeSchemaId = newValue
-            candidatePaneView?.currentRimeSchemaId = currentRimeSchemaId
+            candidatePaneView?.currentRimeSchemaId = rimeSchema
             setupView()
         }
     }
@@ -162,16 +163,15 @@ class KeyboardView: UIView {
     var isLoading: Bool {
         get { _isLoading }
         set {
-            if _isLoading != newValue {
-                if newValue && loadingIndicatorView == nil {
-                    self.loadingIndicatorView = createLoadingIndicatorView()
-                } else if !newValue && loadingIndicatorView != nil {
-                    loadingIndicatorView?.stopAnimating()
-                    loadingIndicatorView?.removeFromSuperview()
-                    loadingIndicatorView = nil
-                }
-                _isLoading = newValue
+            DDLogInfo("UFO \(_isLoading) -> \(newValue) \(loadingIndicatorView)")
+            if newValue && loadingIndicatorView == nil {
+                self.loadingIndicatorView = createLoadingIndicatorView()
+            } else if !newValue {
+                loadingIndicatorView?.stopAnimating()
+                loadingIndicatorView?.removeFromSuperview()
+                loadingIndicatorView = nil
             }
+            _isLoading = newValue
         }
     }
     
@@ -308,7 +308,7 @@ class KeyboardView: UIView {
             
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character(let c) where currentRimeSchemaId.isCangjieFamily && c.first?.isEnglishLetter ?? false:
+                case .character(let c) where rimeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false:
                     return .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),
@@ -317,7 +317,7 @@ class KeyboardView: UIView {
                     switch keyboardContextualType {
                     case .rime, .url(true):
                         if case .character(let c) = $0,
-                           currentRimeSchemaId == .jyutping && Settings.cached.toneInputMode == .longPress {
+                           rimeSchema == .jyutping && Settings.cached.toneInputMode == .longPress {
                             // Show tone keys.
                             return .characterWithConditioanlPopup(c)
                         } else {
@@ -327,7 +327,7 @@ class KeyboardView: UIView {
                         return $0
                     }
                 case "D", "d":
-                    if currentRimeSchemaId == .jyutping, case .character(let c) = $0 {
+                    if rimeSchema == .jyutping, case .character(let c) = $0 {
                         return .characterWithConditioanlPopup(c)
                     }
                     return $0
@@ -370,7 +370,7 @@ class KeyboardView: UIView {
         let candidatePaneView = CandidatePaneView()
         candidatePaneView.delegate = self
         candidatePaneView.candidateOrganizer = candidateOrganizer
-        candidatePaneView.currentRimeSchemaId = currentRimeSchemaId
+        candidatePaneView.currentRimeSchemaId = rimeSchema
         
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)

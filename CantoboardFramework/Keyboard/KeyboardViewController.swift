@@ -163,13 +163,12 @@ open class KeyboardViewController: UIInputViewController {
                 keyboardView.topAnchor.constraint(equalTo: view.topAnchor),
                 keyboardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
-            
-            keyboardView.currentRimeSchemaId = inputController?.reverseLookupSchemaId ?? .jyutping
-            
+                        
             self.keyboardView = keyboardView
             
             inputController = InputController(keyboardViewController: self)
-            keyboardView.candidateOrganizer = inputController?.candidateOrganizer
+            keyboardView.candidateOrganizer = inputController!.candidateOrganizer
+            keyboardView.rimeSchema = inputController!.mainSchema
             textWillChange(nil)
             textDidChange(nil)
             
