@@ -539,7 +539,6 @@ class InputController {
             // Remove leading smart space if:
             // English" "(中/.)
             if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit ||
-                last2CharsInDoc.lowercased() == "on" && textBeingInserted == "9" || // Special case :)
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 // TODO Remove this.
@@ -573,7 +572,7 @@ class InputController {
         let nextChar = textDocumentProxy.documentContextAfterInput?.first
         // Insert space after english letters and [.,;], and if the input is followed by an English letter.
         // If the input isnt from the candidate bar and there are chars following, do not insert space.
-        let isTextFromCandidateBarOrCommitingAtTheEnd = isFromCandidateBar && nextChar == nil
+        let isTextFromCandidateBarOrCommitingAtTheEnd = isFromCandidateBar && (nextChar == nil || nextChar?.isEnglishLetter ?? false)
         let isInsertingEnglishWordBeforeEnglish = lastChar.isEnglishLetter && (nextChar?.isEnglishLetter ?? true)
         return isTextFromCandidateBarOrCommitingAtTheEnd && isInsertingEnglishWordBeforeEnglish
     }
