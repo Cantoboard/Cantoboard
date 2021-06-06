@@ -136,7 +136,7 @@ class KeyboardView: UIView {
         didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
     }
     
-    var isEnabled: Bool {
+    private(set) var isEnabled: Bool {
         get { _isEnabled }
         set {
             if _isEnabled != newValue {
@@ -149,30 +149,13 @@ class KeyboardView: UIView {
     private var _isLoading: Bool = false
     private weak var loadingIndicatorView: UIActivityIndicatorView?
     
-    private func createLoadingIndicatorView() -> UIActivityIndicatorView {
-        let size: CGFloat = 20
-        
+    private func createLoadingIndicatorView() {
         let loadingIndicatorView = UIActivityIndicatorView(style: .large)
-        loadingIndicatorView.frame = CGRect(x: frame.midX - size / 2, y: frame.midY - size / 2, width: size, height: size)
         loadingIndicatorView.startAnimating()
+        layoutLoadingIndicatorView()
         addSubview(loadingIndicatorView)
         
-        return loadingIndicatorView
-    }
-    
-    var isLoading: Bool {
-        get { _isLoading }
-        set {
-            DDLogInfo("UFO \(_isLoading) -> \(newValue) \(loadingIndicatorView)")
-            if newValue && loadingIndicatorView == nil {
-                self.loadingIndicatorView = createLoadingIndicatorView()
-            } else if !newValue {
-                loadingIndicatorView?.stopAnimating()
-                loadingIndicatorView?.removeFromSuperview()
-                loadingIndicatorView = nil
-            }
-            _isLoading = newValue
-        }
+        self.loadingIndicatorView = loadingIndicatorView
     }
     
     var returnKeyType: UIReturnKeyType = .default {
@@ -217,6 +200,7 @@ class KeyboardView: UIView {
         
         layoutKeyboardSubviews(layoutConstants)
         layoutCandidateSubviews(layoutConstants)
+        layoutLoadingIndicatorView()
     }
     
     private func layoutKeyboardSubviews(_ layoutConstants: LayoutConstants) {
@@ -253,12 +237,18 @@ class KeyboardView: UIView {
         candidatePaneView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: bounds.width, height: height))
     }
     
+    private func layoutLoadingIndicatorView() {
+        let size: CGFloat = 20
+        
+        guard let loadingIndicatorView = loadingIndicatorView else { return }
+        loadingIndicatorView.frame = CGRect(x: frame.midX - size / 2, y: frame.midY - size / 2, width: size, height: size)
+    }
+    
     private func refreshCandidatePaneViewVisibility() {
         if _keyboardType == .emojis {
             destroyCandidatePaneView()
         } else {
             createCandidatePaneView()
-            // self.candidatePaneView?.isHidden = (candidateSource?.candidates.count ?? 0) == 0
         }
     }
     
@@ -410,8 +400,17 @@ class KeyboardView: UIView {
         self.emojiView = nil
     }
     
-    func handleModeChange(isDisabled: Bool) {
-        isEnabled = !isDisabled
+    func setEnable(isEnabled: Bool, isLoading: Bool = false) {
+        if isLoading && loadingIndicatorView == nil {
+            createLoadingIndicatorView()
+            candidatePaneView?.isHidden = true
+        } else if !isLoading {
+            loadingIndicatorView?.stopAnimating()
+            loadingIndicatorView?.removeFromSuperview()
+            loadingIndicatorView = nil
+            candidatePaneView?.isHidden = false
+        }
+        self.isEnabled = isEnabled
     }
 }
 

@@ -163,10 +163,10 @@ class InputController {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: self.reenableKeyboard)
                 return
             }
+            DDLogInfo("Enabling keyboard.")
             self.cachedActions.forEach({ self.keyPressed($0) })
             self.cachedActions = []
-            self.keyboardView?.isEnabled = true
-            self.keyboardView?.isLoading = false
+            self.keyboardView?.setEnable(isEnabled: true, isLoading: false)
         }
     }
     
@@ -174,8 +174,7 @@ class InputController {
         guard RimeApi.shared.state == .succeeded else {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
-            keyboardView?.isEnabled = false
-            keyboardView?.isLoading = true
+            self.keyboardView?.setEnable(isEnabled: false, isLoading: true)
             cachedActions.append(action)
             return
         }
@@ -296,8 +295,7 @@ class InputController {
         case .longPressCandidate(let choice):
             candidateLongPressed(choice: choice)
         case .exportFile(let namePrefix, let path):
-            keyboardView?.isEnabled = false
-            keyboardView?.isLoading = true
+            keyboardView?.setEnable(isEnabled: false, isLoading: true)
             
             let zipFilePath = FileManager.default.temporaryDirectory.appendingPathComponent("\(namePrefix)-\(NSDate().timeIntervalSince1970).zip")
             DispatchQueue.global(qos: .userInitiated).async { [self] in
@@ -309,8 +307,7 @@ class InputController {
                     DDLogError("Failed to export \(namePrefix) at \(path).")
                 }
                 DispatchQueue.main.async {
-                    keyboardView?.isEnabled = true
-                    keyboardView?.isLoading = false
+                    self.keyboardView?.setEnable(isEnabled: true, isLoading: false)
                 }
             }
         case .exit: exit(0)
