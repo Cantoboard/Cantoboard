@@ -298,7 +298,7 @@ class InputController {
             keyboardView?.setEnable(isEnabled: false, isLoading: true)
             
             let zipFilePath = FileManager.default.temporaryDirectory.appendingPathComponent("\(namePrefix)-\(NSDate().timeIntervalSince1970).zip")
-            DispatchQueue.global(qos: .userInitiated).async { [self] in
+            DispatchQueue.global(qos: .userInteractive).async { [self] in
                 do {
                     try FileManager.default.zipItem(at: URL(fileURLWithPath: path, isDirectory: true), to: zipFilePath)
                     let share = UIActivityViewController(activityItems: [zipFilePath], applicationActivities: nil)

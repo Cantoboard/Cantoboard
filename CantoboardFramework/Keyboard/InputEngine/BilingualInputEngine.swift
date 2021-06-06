@@ -11,7 +11,10 @@ import UIKit
 import CocoaLumberjackSwift
 
 class BilingualInputEngine: InputEngine {
-    private static let processCharQueue = DispatchQueue(label: "org.cantoboard.process-char.queue", attributes: .concurrent)
+    private static let processCharQueue = DispatchQueue(
+        label: "org.cantoboard.process-char.queue",
+        qos: .userInteractive,
+        attributes: .concurrent)
     
     private let rimeInputEngine: RimeInputEngine
     private let englishInputEngine: EnglishInputEngine
