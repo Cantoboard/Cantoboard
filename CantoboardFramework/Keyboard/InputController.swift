@@ -542,6 +542,7 @@ class InputController {
                 last2CharsInDoc.lowercased() == "on" && textBeingInserted == "9" || // Special case :)
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
+                // TODO Remove this.
                 DDLogInfo("Should remove smart space. last2CharsInDoc '\(last2CharsInDoc)'")
                 return true
             }

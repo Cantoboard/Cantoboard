@@ -15,6 +15,7 @@ extension UITextDocumentProxy {
         DispatchQueue.main.async { [self] in
             guard let documentContextBeforeInput = documentContextBeforeInput,
                   var lastChar = documentContextBeforeInput.last else { return }
+            // TODO Remove this.
             DDLogInfo("deleteBackwardWord documentContextBeforeInput \(documentContextBeforeInput)")
             let secondLastCharIdx = documentContextBeforeInput.index(documentContextBeforeInput.endIndex, offsetBy: -2, limitedBy: documentContextBeforeInput.startIndex) ?? documentContextBeforeInput.startIndex
             let secondLastChar = documentContextBeforeInput[safe: secondLastCharIdx]
