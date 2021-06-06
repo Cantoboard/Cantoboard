@@ -538,7 +538,8 @@ class InputController {
             hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Remove leading smart space if:
             // English" "(中/.)
-            if (last2CharsInDoc.first?.isEnglishLetter ?? false) && !textBeingInserted.first!.isEnglishLetter ||
+            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit ||
+                last2CharsInDoc.lowercased() == "on" && textBeingInserted == "9" || // Special case :)
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 DDLogInfo("Should remove smart space. last2CharsInDoc '\(last2CharsInDoc)'")

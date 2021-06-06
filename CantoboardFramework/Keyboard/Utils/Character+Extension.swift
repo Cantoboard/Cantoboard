@@ -12,6 +12,10 @@ extension Character {
         isASCII && isLetter
     }
     
+    var isEnglishLetterOrDigit: Bool {
+        isASCII && (isLetter || isNumber)
+    }
+    
     var isPunctuation: Bool {
         // TODO Distingish apostrophe & single quote.
         self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self ==  "\n" ||
