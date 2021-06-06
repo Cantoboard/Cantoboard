@@ -17,7 +17,8 @@ protocol KeyboardViewDelegate: NSObject {
 }
 
 class KeyboardView: UIView {
-    private let c = InstanceCounter<KeyboardView>()
+    // Uncomment this to debug memory leak.
+    // private let c = InstanceCounter<KeyboardView>()
     
     private var _keyboardType = KeyboardType.alphabetic(.lowercased)
     private var _keyboardContextualType: ContextualType = .english

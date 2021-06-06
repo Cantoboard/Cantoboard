@@ -13,7 +13,8 @@ import CocoaLumberjackSwift
 open class KeyboardViewController: UIInputViewController {
     private static let isLoggerInited = initLogger()
     
-    private let c = InstanceCounter<KeyboardViewController>()
+    // Uncomment this to debug memory leak.
+    // private let c = InstanceCounter<KeyboardViewController>()
     
     private var inputController: InputController?
     private(set) weak var keyboardView: KeyboardView?
@@ -33,7 +34,7 @@ open class KeyboardViewController: UIInputViewController {
             keyboardView?.candidateOrganizer = newValue
         }
     }
-
+    
     public override init(nibName: String?, bundle: Bundle?) {
         _ = Self.isLoggerInited
 
