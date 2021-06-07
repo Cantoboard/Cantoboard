@@ -20,9 +20,37 @@ class KeyboardView: UIView {
     // Uncomment this to debug memory leak.
     // private let c = InstanceCounter<KeyboardView>()
     
-    private var _keyboardType = KeyboardType.alphabetic(.lowercased)
-    private var _keyboardContextualType: ContextualType = .english
-    private var _needsInputModeSwitchKey = false
+    private var _state: KeyboardState
+    
+    var state: KeyboardState {
+        get { _state }
+        set { changeState(prevState: _state, newState: newValue) }
+    }
+    
+    private func changeState(prevState: KeyboardState, newState: KeyboardState) {
+        var isViewDirty = prevState.keyboardType != newState.keyboardType ||
+            prevState.keyboardContextualType != newState.keyboardContextualType ||
+            prevState.symbolShape != newState.symbolShape ||
+            prevState.activeSchema != newState.activeSchema
+        
+        if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
+            keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
+            isViewDirty = true
+        }
+        
+        if prevState.activeSchema != newState.activeSchema {
+            isViewDirty = true
+        }
+        
+        if prevState.returnKeyType != newState.returnKeyType {
+            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType))
+        }
+        
+        _state = newState
+        if isViewDirty { setupView() }
+        
+        candidatePaneView?.keyboardState = state
+    }
     
     private(set) var candidatePaneView: CandidatePaneView?
     private var emojiView: EmojiView?
@@ -30,17 +58,6 @@ class KeyboardView: UIView {
     private var touchHandler: TouchHandler!
     private var _isEnabled = true
     weak var delegate: KeyboardViewDelegate?
-    
-    private var _currentRimeSchemaId: RimeSchema = .jyutping
-    var rimeSchema: RimeSchema {
-        get { _currentRimeSchemaId }
-        set {
-            guard _currentRimeSchemaId != newValue else { return }
-            _currentRimeSchemaId = newValue
-            candidatePaneView?.currentRimeSchemaId = rimeSchema
-            setupView()
-        }
-    }
     
     private let englishLettersKeyCapRows: [[[KeyCap]]] = [
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
@@ -77,61 +94,7 @@ class KeyboardView: UIView {
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.returnKey(.default)]]
     ]
     
-    var keyboardType: KeyboardType {
-        get { _keyboardType }
-        set {
-            if _keyboardType != newValue {
-                switch newValue {
-                case .alphabetic:
-                    symbolShapeOverride = nil
-                    candidatePaneView?.statusIndicatorMode = .lang
-                case .symbolic, .numeric:
-                    candidatePaneView?.statusIndicatorMode = .shape
-                default: ()
-                }
-                _keyboardType = newValue
-                setupView()
-            }
-        }
-    }
-    
-    private var newLineKey: KeyView?
-    
-    var keyboardContextualType: ContextualType {
-        get { _keyboardContextualType }
-        set {
-            if _keyboardContextualType != newValue {
-                _keyboardContextualType = newValue
-                setupView()
-            }
-        }
-    }
-    
-    var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode
-    
-    var symbolShapeOverride: SymbolShape? {
-        didSet {
-            setupView()
-        }
-    }
-    
-    var symbolShape: SymbolShape {
-        if let symbolShapeOverride = symbolShapeOverride {
-            return symbolShapeOverride
-        } else {
-            return _keyboardContextualType == .chinese ? .full : .half
-        }
-    }
-    
-    var needsInputModeSwitchKey: Bool {
-        get { _needsInputModeSwitchKey }
-        set {
-            if _needsInputModeSwitchKey != newValue {
-                _needsInputModeSwitchKey = newValue
-                setupView()
-            }
-        }
-    }
+    private weak var newLineKey: KeyView?
     
     var candidateOrganizer: CandidateOrganizer? {
         didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
@@ -158,14 +121,10 @@ class KeyboardView: UIView {
         self.loadingIndicatorView = loadingIndicatorView
     }
     
-    var returnKeyType: UIReturnKeyType = .default {
-        didSet {
-            newLineKey?.setKeyCap(.returnKey(returnKeyType))
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(state: KeyboardState) {
+        self._state = state
+
+        super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
         insetsLayoutMarginsFromSafeArea = false
@@ -245,7 +204,7 @@ class KeyboardView: UIView {
     }
     
     private func refreshCandidatePaneViewVisibility() {
-        if _keyboardType == .emojis {
+        if state.keyboardType == .emojis {
             destroyCandidatePaneView()
         } else {
             createCandidatePaneView()
@@ -253,7 +212,7 @@ class KeyboardView: UIView {
     }
     
     private func refreshKeyRowsVisibility() {
-        if _keyboardType == .emojis || candidatePaneView?.mode ?? .row == .table {
+        if state.keyboardType == .emojis || candidatePaneView?.mode ?? .row == .table {
             keyRows.forEach { $0.isHidden = true }
         } else {
             keyRows.forEach { $0.isHidden = false }
@@ -261,20 +220,18 @@ class KeyboardView: UIView {
     }
     
     private func refreshKeys() {
-        keyRows.forEach { $0.needsInputModeSwitchKey = needsInputModeSwitchKey }
-        
-        switch _keyboardType {
+        switch state.keyboardType {
         case let .alphabetic(shiftState):
             refreshAlphabeticKeys(shiftState)
         case .numeric:
-            let rows = symbolShape == .full ? numbersFullKeyCapRows : numbersHalfKeyCapRows
+            let rows = state.symbolShape == .full ? numbersFullKeyCapRows : numbersHalfKeyCapRows
             for (index, keyCaps) in rows.enumerated() {
-                keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
+                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
         case .symbolic:
-            let rows = symbolShape == .full ? symbolsFullKeyCapRows : symbolsHalfKeyCapRows
+            let rows = state.symbolShape == .full ? symbolsFullKeyCapRows : symbolsHalfKeyCapRows
             for (index, keyCaps) in rows.enumerated() {
-                keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
+                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
         default:
             ()
@@ -296,18 +253,19 @@ class KeyboardView: UIView {
                 } }
             }
             
+            // let rimeSchema = state.rimeSchema
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character(let c) where rimeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false:
+                case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false:
                     return .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),
                      .character("f"), .character("g"), .character("h"),
                      .character("c"), .character("v"), .character("b"):
-                    switch keyboardContextualType {
+                    switch state.keyboardContextualType {
                     case .rime, .url(true):
                         if case .character(let c) = $0,
-                           rimeSchema == .jyutping && Settings.cached.toneInputMode == .longPress {
+                           state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress {
                             // Show tone keys.
                             return .characterWithConditioanlPopup(c)
                         } else {
@@ -317,12 +275,12 @@ class KeyboardView: UIView {
                         return $0
                     }
                 case "D", "d":
-                    if rimeSchema == .jyutping, case .character(let c) = $0 {
+                    if state.activeSchema == .jyutping, case .character(let c) = $0 {
                         return .characterWithConditioanlPopup(c)
                     }
                     return $0
-                case .contexualSymbols: return .contexualSymbols(keyboardContextualType)
-                case .returnKey: return .returnKey(returnKeyType)
+                case .contexualSymbols: return .contexualSymbols(state.keyboardContextualType)
+                case .returnKey: return .returnKey(state.returnKeyType)
                 default: return $0
                 }
             } }
@@ -332,7 +290,7 @@ class KeyboardView: UIView {
             if index == 2 && (currentRimeSchemaId != .jyutping || currentRimeSchemaId == .jyutping && Settings.cached.lastInputMode == .chinese) {
                 
             }*/
-            keyRows[index].setupRow(keyboardType: _keyboardType, keyCaps)
+            keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
         }
         if let lastRowRightKeys = keyRows[safe: 3]?.rightKeys {
             newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1]
@@ -341,13 +299,14 @@ class KeyboardView: UIView {
     
     private func setupView() {
         refreshCandidatePaneViewVisibility()
+        candidatePaneView?.setupButtons()
         refreshKeyRowsVisibility()
         refreshKeys()
         refreshEmojiView()
     }
     
     private func refreshEmojiView() {
-        if _keyboardType == .emojis {
+        if state.keyboardType == .emojis {
             createAndShowEmojiView()
         } else {
             destroyEmojiView()
@@ -357,10 +316,9 @@ class KeyboardView: UIView {
     private func createCandidatePaneView() {
         guard candidatePaneView == nil else { return }
         
-        let candidatePaneView = CandidatePaneView()
+        let candidatePaneView = CandidatePaneView(keyboardState: state)
         candidatePaneView.delegate = self
         candidatePaneView.candidateOrganizer = candidateOrganizer
-        candidatePaneView.currentRimeSchemaId = rimeSchema
         
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)

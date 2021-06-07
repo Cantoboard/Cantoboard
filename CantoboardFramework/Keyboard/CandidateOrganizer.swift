@@ -72,7 +72,7 @@ class InputEngineCandidateSource: CandidateSource {
     private func populateCandidatesByFreq() {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine else { return }
-        let inputMode = inputController.inputMode
+        let inputMode = inputController.state.inputMode
         let doesSchemaSupportMixedMode = inputEngine.rimeSchema.supportMixedMode
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || !doesSchemaSupportMixedMode
         let isEnglishActive = inputMode != .chinese && !isInRimeOnlyMode
@@ -146,7 +146,7 @@ class InputEngineCandidateSource: CandidateSource {
     private func populateCandidatesByRomanization() {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine,
-              inputController.inputMode != .english else { return }
+              inputController.state.inputMode != .english else { return }
         
         while inputEngine.loadMoreRimeCandidates() {}
         
@@ -213,7 +213,7 @@ class InputEngineCandidateSource: CandidateSource {
     private func populateCandidatesByRadical() {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine,
-              inputController.inputMode != .english else { return }
+              inputController.state.inputMode != .english else { return }
         
         while inputEngine.loadMoreRimeCandidates() {}
                 
@@ -250,7 +250,7 @@ class InputEngineCandidateSource: CandidateSource {
     private func populateCandidatesByTotalStroke() {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine,
-              inputController.inputMode != .english else { return }
+              inputController.state.inputMode != .english else { return }
         
         while inputEngine.loadMoreRimeCandidates() {}
         

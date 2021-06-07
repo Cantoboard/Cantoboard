@@ -130,7 +130,6 @@ open class KeyboardViewController: UIInputViewController {
     public override func textDidChange(_ textInput: UITextInput?) {
         super.textDidChange(textInput)
         inputController?.textDidChange(textInput)
-        keyboardView?.needsInputModeSwitchKey = needsInputModeSwitchKey
     }
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -152,9 +151,12 @@ open class KeyboardViewController: UIInputViewController {
     
     public func createKeyboardIfNeeded() {
         if keyboardView == nil {
-            let keyboardView = KeyboardView()
+            inputController = InputController(keyboardViewController: self)
+            
+            let keyboardView = KeyboardView(state: inputController!.state)
             keyboardView.delegate = self
             keyboardView.translatesAutoresizingMaskIntoConstraints = false
+            keyboardView.candidateOrganizer = inputController!.candidateOrganizer
             view.addSubview(keyboardView)
             
             // EmojiView inside KeyboardView requires AutoLayout.
@@ -167,9 +169,6 @@ open class KeyboardViewController: UIInputViewController {
                         
             self.keyboardView = keyboardView
             
-            inputController = InputController(keyboardViewController: self)
-            keyboardView.candidateOrganizer = inputController!.candidateOrganizer
-            keyboardView.rimeSchema = inputController!.mainSchema
             textWillChange(nil)
             textDidChange(nil)
             
@@ -223,7 +222,7 @@ open class KeyboardViewController: UIInputViewController {
         }
         
         if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled {
-            inputController?.refreshInputMode()
+            inputController?.enforceInputMode()
             DDLogInfo("Detected change in isMixedModeEnabled from \(prevSettings.isMixedModeEnabled) to \(settings.isMixedModeEnabled).")
         }
     }

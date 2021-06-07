@@ -17,9 +17,6 @@ protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath)
     func candidatePaneCandidateLoaded()
     func handleKey(_ action: KeyboardAction)
-    var inputMode: InputMode { get }
-    var symbolShape: SymbolShape { get }
-    var symbolShapeOverride: SymbolShape? { get set }
 }
 
 class StatusButton: UIButton {
@@ -82,10 +79,25 @@ class CandidatePaneView: UIControl {
     }
     
     let rowPadding = CGFloat(0)
+        
+    private var _keyboardState: KeyboardState
     
-    var currentRimeSchemaId: RimeSchema = .jyutping {
-        didSet {
-            setupButtons()
+    var keyboardState: KeyboardState {
+        get { _keyboardState }
+        set {
+            let prevState = _keyboardState
+            let newState = newValue
+            
+            let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType ||
+                prevState.keyboardType != newValue.keyboardType ||
+                prevState.inputMode != newState.inputMode ||
+                prevState.activeSchema != newState.activeSchema
+            
+            _keyboardState = newValue
+            
+            if isViewDirty {
+                setupButtons()
+            }
         }
     }
     
@@ -141,15 +153,20 @@ class CandidatePaneView: UIControl {
     private(set) var sectionHeaderWidth: CGFloat = LayoutConstants.forMainScreen.candidateCharSize.width * 2
     
     private(set) var mode: Mode = .row
-    var statusIndicatorMode: StatusIndicatorMode = .lang {
-        didSet {
-            // TODO dedup
-            setupButtons()
+    var statusIndicatorMode: StatusIndicatorMode {
+        get {
+            if keyboardState.keyboardType == .numeric ||
+                keyboardState.keyboardType == .symbolic {
+                return .shape
+            } else {
+                return .lang
+            }
         }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(keyboardState: KeyboardState) {
+        _keyboardState = keyboardState
+        super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         
         initCollectionView()
@@ -194,22 +211,17 @@ class CandidatePaneView: UIControl {
         
         var title: String?
         if statusIndicatorMode == .lang {
-            if currentRimeSchemaId != .jyutping {
-                title = currentRimeSchemaId.signChar
-            } else if let inputMode = delegate?.inputMode {
-                switch inputMode {
-                case .mixed: title = "雙"
-                case .chinese: title = "中"
-                case .english: title = "英"
-                }
+            switch keyboardState.inputMode {
+            // TODO What to show in non jyut mixed mode???
+            case .mixed: title = keyboardState.activeSchema.signChar // = "雙"
+            case .chinese: title = keyboardState.activeSchema.signChar
+            case .english: title = "英"
             }
         } else {
-            if let symbolShape = delegate?.symbolShape {
-                switch symbolShape {
-                case .full: title = "全"
-                case .half: title = "半"
-                default: title = nil
-                }
+            switch keyboardState.symbolShape {
+            case .full: title = "全"
+            case .half: title = "半"
+            default: title = nil
             }
         }
         inputModeButton.setTitle(title, for: .normal)
@@ -230,7 +242,7 @@ class CandidatePaneView: UIControl {
             inputModeButton.isMini = false
             inputModeButton.isUserInteractionEnabled = true
             backspaceButton.isHidden = false
-            charFormButton.isHidden = currentRimeSchemaId.isShapeBased
+            charFormButton.isHidden = keyboardState.activeSchema.isShapeBased
         } else {
             let cannotExpand =
                 collectionView.contentSize.width <= 1 ||
@@ -254,11 +266,12 @@ class CandidatePaneView: UIControl {
             expandButton.menu = nil
             inputModeButton.menu = nil
             
+            let activeSchema = keyboardState.activeSchema
             let items = UIMenu(options: .displayInline, children: [
-                UIAction(title: "粵拼", state: currentRimeSchemaId == .jyutping ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.jyutping)) }),
-                UIAction(title: "倉頡", state: currentRimeSchemaId == .cangjie ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.cangjie)) }),
-                UIAction(title: "速成", state: currentRimeSchemaId == .quick ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.quick)) }),
-                UIAction(title: "普通話", state: currentRimeSchemaId == .mandarin ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.mandarin)) }),
+                UIAction(title: "粵拼", state: activeSchema == .jyutping ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.jyutping)) }),
+                UIAction(title: "倉頡", state: activeSchema == .cangjie ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.cangjie)) }),
+                UIAction(title: "速成", state: activeSchema == .quick ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.quick)) }),
+                UIAction(title: "普通話", state: activeSchema == .mandarin ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.mandarin)) }),
             ])
             
             if expandButton.isHidden {
@@ -310,33 +323,12 @@ class CandidatePaneView: UIControl {
     
     @objc private func filterButtonClick() {
         Self.hapticsGenerator.impactOccurred(intensity: 1)
-        
-        guard currentRimeSchemaId == .jyutping else {
-            // Disable reverse look up mode on tap.
-            delegate?.handleKey(.quitReverseLookup)
-            return
-        }
-        
         AudioFeedbackProvider.play(keyboardAction: .none)
         
         if statusIndicatorMode == .lang {
-            guard let inputMode = delegate?.inputMode else { return }
-            var nextFilterMode: InputMode
-            switch inputMode {
-            case .mixed: nextFilterMode = .english
-            case .chinese: nextFilterMode = .english
-            case .english: nextFilterMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
-            }
-            
-            delegate?.handleKey(.setCandidateMode(nextFilterMode))
+            delegate?.handleKey(.toggleInputMode)
         } else {
-            guard let symbolShape = delegate?.symbolShape else { return }
-            switch symbolShape {
-            case .full: delegate?.symbolShapeOverride = .half
-            case .half: delegate?.symbolShapeOverride = .full
-            default: ()
-            }
-            setupButtons()
+            delegate?.handleKey(.toggleSymbolShape)
         }
     }
     
@@ -622,7 +614,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private var showComment: Bool {
-        (currentRimeSchemaId != .jyutping || Settings.cached.shouldShowRomanization && currentRimeSchemaId == .jyutping)
+        keyboardState.activeSchema != .jyutping || Settings.cached.shouldShowRomanization
     }
     
     private func translateCollectionViewIndexPathToCandidateIndexPath(_ collectionViewIndexPath: IndexPath) -> IndexPath {

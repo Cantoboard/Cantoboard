@@ -15,62 +15,65 @@ enum ContextualType: Equatable {
     case english, chinese, rime, url(isRimeComposing: Bool)
 }
 
+struct KeyboardState: Equatable {
+    var keyboardType: KeyboardType {
+        didSet {
+            symbolShapeOverride = nil
+        }
+    }
+    var keyboardContextualType: ContextualType
+    var symbolShapeOverride: SymbolShape?
+    
+    // var isEnabled: Bool
+    // var isLoading: Bool
+    
+    var returnKeyType: UIReturnKeyType
+    var needsInputModeSwitchKey: Bool
+    
+    var mainSchema: RimeSchema, reverseLookupSchema: RimeSchema?
+    var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode
+    
+    var activeSchema: RimeSchema {
+        get { reverseLookupSchema ?? mainSchema }
+    }
+    
+    var symbolShape: SymbolShape {
+        symbolShapeOverride ?? (keyboardContextualType == .chinese ? .full : .half)
+    }
+    
+    init() {
+        keyboardType = KeyboardType.alphabetic(.lowercased)
+        keyboardContextualType = .english
+        
+        // isEnabled = true
+        // isLoading = false
+        
+        returnKeyType = .default
+        needsInputModeSwitchKey = false
+        
+        mainSchema = Settings.cached.lastSessionSettings.lastPrimarySchema
+        inputMode = Settings.cached.lastSessionSettings.lastInputMode
+    }
+}
+
 class InputController {
     private static let feedbackGenerator = UIImpactFeedbackGenerator()
     
     private weak var keyboardViewController: KeyboardViewController?
     private(set) var inputEngine: BilingualInputEngine!
     
+    private(set) var state: KeyboardState = KeyboardState()
+    
     private var lastKey: KeyboardAction?
     private var isHoldingShift = false
-    
+        
     private var hasInsertedAutoSpace = false
     private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
     private var needClearInput = false
     
     private var prevTextBefore: String?
     
-    var mainSchema: RimeSchema = Settings.cached.lastSessionSettings.lastPrimarySchema {
-        didSet {
-            reverseLookupSchema = nil
-            inputEngine.rimeSchema = mainSchema
-            keyboardView?.rimeSchema = mainSchema
-        }
-    }
-    
-    private(set) var reverseLookupSchema: RimeSchema? {
-        didSet {
-            let activeSchema = reverseLookupSchema ?? mainSchema
-            inputEngine.rimeSchema = activeSchema
-            keyboardView?.rimeSchema = activeSchema
-        }
-    }
-    
     private(set) var candidateOrganizer: CandidateOrganizer!
-    
-    var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode {
-        didSet {
-            keyboardView?.inputMode = inputMode
-        }
-    }
-    
-    private var _keyboardType = KeyboardType.alphabetic(.lowercased)
-    private var keyboardType: KeyboardType {
-        get { _keyboardType }
-        set {
-            guard _keyboardType != newValue else { return }
-            _keyboardType = newValue
-            // TODO instead of setting a bunch of fields to keyboardView, cuasing unnecessary changes,
-            // pass input controller to keyboardView. Then call a method to update keyboardView.
-            keyboardView?.keyboardType = _keyboardType
-        }
-    }
-    
-    private var keyboardContextualType: ContextualType = .english {
-        didSet {
-            keyboardView?.keyboardContextualType = keyboardContextualType
-        }
-    }
     
     var textDocumentProxy: UITextDocumentProxy? {
         keyboardViewController?.textDocumentProxy
@@ -82,10 +85,10 @@ class InputController {
     
     init(keyboardViewController: KeyboardViewController) {
         self.keyboardViewController = keyboardViewController
-        inputEngine = BilingualInputEngine(inputController: self, rimeSchema: mainSchema)
+        inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
-        refreshInputMode()
+        enforceInputMode()
     }
     
     func textWillChange(_ textInput: UITextInput?) {
@@ -106,7 +109,7 @@ class InputController {
         // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
         if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
-            clearInput(needResetSchema: false)
+            clearInput(shouldLeaveReverseLookupMode: false)
         } else if inputEngine.composition != nil, !shouldApplyChromeSearchBarHack {
             self.updateMarkedText()
         }
@@ -183,6 +186,7 @@ class InputController {
         
         defer {
             lastKey = action
+            keyboardView?.state = state
         }
         
         needClearInput = false
@@ -203,8 +207,8 @@ class InputController {
                     insertText(c)
                 }
             }
-            if !isHoldingShift && keyboardType == .some(.alphabetic(.uppercased)) {
-                keyboardType = .alphabetic(.lowercased)
+            if !isHoldingShift && state.keyboardType == .some(.alphabetic(.uppercased)) {
+                state.keyboardType = .alphabetic(.lowercased)
             }
         case .rime(let rc):
             guard isComposing || rc == .sym else { return }
@@ -216,8 +220,8 @@ class InputController {
                 insertText("\n")
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
-            if reverseLookupSchema != nil && !isComposing {
-                reverseLookupSchema = nil
+            if state.reverseLookupSchema != nil && !isComposing {
+                state.reverseLookupSchema = nil
             } else if isComposing {
                 if action == .deleteWordSwipe {
                     needClearInput = true
@@ -247,17 +251,17 @@ class InputController {
             }
         case .shiftDown:
             isHoldingShift = true
-            keyboardType = .alphabetic(.uppercased)
+            state.keyboardType = .alphabetic(.uppercased)
             return
         case .shiftUp:
-            keyboardType = .alphabetic(.lowercased)
+            state.keyboardType = .alphabetic(.lowercased)
             isHoldingShift = false
             return
         case .shiftRelax:
             isHoldingShift = false
             return
         case .keyboardType(let type):
-            keyboardType = type
+            state.keyboardType = type
             self.checkAutoCap()
             return
         case .setCharForm(let cs):
@@ -268,30 +272,40 @@ class InputController {
             settings.charForm = cs
             Settings.save(settings)
             return
-        case .setCandidateMode(let newInputMode):
-            if inputMode != newInputMode {
-                inputMode = newInputMode
-                
-                var settings = Settings.cached
-                settings.lastSessionSettings.lastInputMode = inputMode
-                Settings.save(settings)
-                
-                refreshInputMode()
+        case .toggleInputMode:
+            guard state.reverseLookupSchema == nil else {
+                // Disable reverse look up mode on tap.
+                state.reverseLookupSchema = nil
+                changeSchema()
+                return
+            }
+            
+            switch state.inputMode {
+            case .mixed: state.inputMode = .english
+            case .chinese: state.inputMode = .english
+            case .english: state.inputMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
+            }
+            enforceInputMode()
+            
+            var settings = Settings.cached
+            settings.lastSessionSettings.lastInputMode = state.inputMode
+            Settings.save(settings)
+        case .toggleSymbolShape:
+            switch state.symbolShape {
+            case .full: state.symbolShapeOverride = .half
+            case .half: state.symbolShapeOverride = .full
+            default: ()
             }
         case .reverseLookup(let schema):
-            reverseLookupSchema = schema
-            clearInput(needResetSchema: false)
-            return
-        case .quitReverseLookup:
-            reverseLookupSchema = nil
-            clearInput(needResetSchema: false)
+            state.reverseLookupSchema = schema
+            changeSchema()
             return
         case .changeSchema(let schema):
-            mainSchema = schema
+            state.mainSchema = schema
             var settings = Settings.cached
             settings.lastSessionSettings.lastPrimarySchema = schema
             Settings.save(settings)
-            clearInput(needResetSchema: false)
+            changeSchema()
             return
         case .selectCandidate(let choice):
             candidateSelected(choice: choice, enableSmartSpace: true)
@@ -323,12 +337,9 @@ class InputController {
         }
     }
     
-    func refreshInputMode() {
-        if Settings.cached.isMixedModeEnabled && inputMode == .chinese { inputMode = .mixed }
-        if !Settings.cached.isMixedModeEnabled && inputMode == .mixed { inputMode = .chinese }
-        
-        keyboardView?.candidatePaneView?.setupButtons()
-        updateMarkedText()
+    func enforceInputMode() {
+        if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
+        if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
     }
     
     private func isTextChromeSearchBar() -> Bool {
@@ -357,16 +368,23 @@ class InputController {
     }
     
     private func checkAutoCap() {
-        guard Settings.cached.isAutoCapEnabled && !isHoldingShift && reverseLookupSchema == nil &&
-              (keyboardType == .alphabetic(.lowercased) || keyboardType == .alphabetic(.uppercased))
+        guard Settings.cached.isAutoCapEnabled && !isHoldingShift && state.reverseLookupSchema == nil &&
+                (state.keyboardType == .alphabetic(.lowercased) || state.keyboardType == .alphabetic(.uppercased))
             else { return }
-        keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
+        state.keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
     }
     
-    private func clearInput(needResetSchema: Bool = true) {
+    private func changeSchema() {
+        inputEngine.rimeSchema = state.activeSchema
+    }
+    
+    private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
         inputEngine.clearInput()
         updateInputState()
-        if needResetSchema { reverseLookupSchema = nil }
+        if shouldLeaveReverseLookupMode {
+            state.reverseLookupSchema = nil
+            changeSchema()
+        }
     }
     
     func clearState() {
@@ -425,11 +443,13 @@ class InputController {
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: true)
         
-        keyboardView?.returnKeyType = hasMarkedText ? .default : textDocumentProxy?.returnKeyType ?? .default
+        state.returnKeyType = hasMarkedText ? .default : textDocumentProxy?.returnKeyType ?? .default
+        state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
+        keyboardView?.state = state
     }
     
     private func updateMarkedText() {
-        switch inputMode {
+        switch state.inputMode {
         case .chinese: setMarkedText(inputEngine.rimeComposition)
         case .english: setMarkedText(inputEngine.englishComposition)
         case .mixed: setMarkedText(inputEngine.composition)
@@ -519,7 +539,7 @@ class InputController {
            (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Translate double space tap into ". "
             textDocumentProxy.deleteBackward()
-            if keyboardContextualType == .chinese {
+            if state.keyboardContextualType == .chinese {
                 textDocumentProxy.insertText("。")
                 hasInsertedAutoSpace = false
             } else {
@@ -558,7 +578,7 @@ class InputController {
               let lastChar = insertingText.last else { return false }
         
         // If we are typing a url or just sent combo text like .com, do not insert smart space.
-        if case .url = keyboardContextualType, insertingText.contains(".") { return false }
+        if case .url = state.keyboardContextualType, insertingText.contains(".") { return false }
         
         // If the user is typing something like a url, do not insert smart space.
         let lastSpaceIndex = textDocumentProxy.documentContextBeforeInput?.lastIndex(where: { $0.isWhitespace })
@@ -584,32 +604,30 @@ class InputController {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         if textDocumentProxy.keyboardType == .some(.URL) || textDocumentProxy.keyboardType == .some(.webSearch) {
-            keyboardContextualType = .url(isRimeComposing: inputEngine.composition?.text != nil)
+            state.keyboardContextualType = .url(isRimeComposing: inputEngine.composition?.text != nil)
         } else if inputEngine.composition?.text != nil {
-            keyboardContextualType = .rime
+            state.keyboardContextualType = .rime
         } else {
             let symbolShape = Settings.cached.symbolShape
             if symbolShape == .smart {
                 // Default to English.
                 guard let lastChar = textDocumentProxy.documentContextBeforeInput?.last(where: { !$0.isWhitespace }) else {
-                    self.keyboardContextualType = .english
+                    self.state.keyboardContextualType = .english
                     return
                 }
                 // If the last char is Chinese, change contextual type to Chinese.
                 if lastChar.isChineseChar {
-                    self.keyboardContextualType = .chinese
+                    self.state.keyboardContextualType = .chinese
                 } else {
-                    self.keyboardContextualType = .english
+                    self.state.keyboardContextualType = .english
                 }
             } else {
-                self.keyboardContextualType = symbolShape == .half ? .english : .chinese
+                self.state.keyboardContextualType = symbolShape == .half ? .english : .chinese
             }
         }
     }
     
-    private func showAutoSuggestCandidates() {
-        guard let keyboardView = keyboardView, !inputEngine.isComposing else { return }
-        
+    private func showAutoSuggestCandidates() {        
         let textAfterInput = textDocumentProxy?.documentContextAfterInput ?? ""
         let textBeforeInput = textDocumentProxy?.documentContextBeforeInput ?? ""
         
@@ -623,7 +641,7 @@ class InputController {
             return
         }
         
-        switch keyboardView.keyboardContextualType {
+        switch state.keyboardContextualType {
         case .english where !lastCharBefore.isNumber && !lastCharBefore.isPunctuation && textAfterInput.isEmpty:
             newAutoSuggestionType = .halfWidthPunctuation
         case .chinese where !lastCharBefore.isNumber && !lastCharBefore.isPunctuation && textAfterInput.isEmpty:
