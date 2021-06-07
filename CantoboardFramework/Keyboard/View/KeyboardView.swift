@@ -147,7 +147,6 @@ class KeyboardView: UIView {
         }
     }
     
-    private var _isLoading: Bool = false
     private weak var loadingIndicatorView: UIActivityIndicatorView?
     
     private func createLoadingIndicatorView() {

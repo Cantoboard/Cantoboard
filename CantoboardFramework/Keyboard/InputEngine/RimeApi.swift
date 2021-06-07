@@ -44,32 +44,16 @@ extension RimeApi {
     static func generateSchemaPatchFromSettings() {
         let userDataPath = DataFileManager.rimeUserDirectory
         let settings = Settings.cached
-        var jyutPingCustomPatch = "", commonCustomPatch = ""
+        var commonCustomPatch = ""
         
         let jyutPingSchemaCustomPath = userDataPath + "/jyut6ping3.custom.yaml"
         let commonSchemaCustomPath = userDataPath + "/common.custom.yaml"
         try? FileManager.default.removeItem(atPath: jyutPingSchemaCustomPath)
         try? FileManager.default.removeItem(atPath: commonSchemaCustomPath)
-
-        /*
-        if settings.rimeSettings.toneInputMode == .vxq {
-            jyutPingCustomPatch += vxqToneConfig
-        }*/
         
         if settings.rimeSettings.enableCorrector {
             commonCustomPatch += correctorConfig
         }
-        
-        /*
-        if jyutPingCustomPatch.count > 0 {
-            DDLogInfo("jyutPingCustomPatch: \(jyutPingCustomPatch)")
-            jyutPingCustomPatch = patchHeader + jyutPingCustomPatch
-            do {
-                try jyutPingCustomPatch.write(toFile: jyutPingSchemaCustomPath, atomically: true, encoding: .utf8)
-            } catch {
-                DDLogInfo("Failed to generate custom schema patch at \(jyutPingSchemaCustomPath).")
-            }
-        }*/
         
         if commonCustomPatch.count > 0 {
             DDLogInfo("commonCustomPatch: \(commonCustomPatch)")
