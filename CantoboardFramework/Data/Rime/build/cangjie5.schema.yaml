@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    cangjie5.schema: 1620283455
-    common.custom: 1620283471
-    default: 1620283455
-    default.custom: 1620283455
-    symbols: 1620283455
+    cangjie5.custom: 0
+    cangjie5.schema: 1623024529
+    default: 1623024529
+    default.custom: 1623024529
+    symbols: 1623024529
     symbols.custom: 0
-    symbols_cantonese: 1620283455
+    symbols_cantonese: 1623024529
 engine:
   filters:
     - uniquifier
@@ -378,7 +378,6 @@ translator:
     - "^z.*$"
     - "^yyy.*$"
   enable_charset_filter: true
-  enable_correction: true
   enable_encoder: true
   enable_sentence: true
   encode_commit_history: true

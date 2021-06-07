@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1620283471
-    default: 1620283455
-    default.custom: 1620283455
-    quick5.schema: 1620283455
-    symbols: 1620283455
+    default: 1623024529
+    default.custom: 1623024529
+    quick5.custom: 0
+    quick5.schema: 1623024529
+    symbols: 1623024529
     symbols.custom: 0
-    symbols_cantonese: 1620283455
+    symbols_cantonese: 1623024529
 engine:
   filters:
     - uniquifier
@@ -379,7 +379,6 @@ translator:
   disable_user_dict_for_patterns:
     - "^z.*$"
     - "^yyy.*$"
-  enable_correction: true
   preedit_format:
     - "xlit|abcdefghijklmnopqrstuvwxyz;'|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符··|"
   prism: quick5
