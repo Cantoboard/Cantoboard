@@ -30,7 +30,7 @@ class InputController {
     
     private var prevTextBefore: String?
     
-    var mainSchema: RimeSchema = .jyutping {
+    var mainSchema: RimeSchema = Settings.cached.lastSessionSettings.lastPrimarySchema {
         didSet {
             reverseLookupSchema = nil
             inputEngine.rimeSchema = mainSchema
@@ -48,7 +48,7 @@ class InputController {
     
     private(set) var candidateOrganizer: CandidateOrganizer!
     
-    var inputMode: InputMode = Settings.cached.lastInputMode {
+    var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode {
         didSet {
             keyboardView?.inputMode = inputMode
         }
@@ -273,7 +273,7 @@ class InputController {
                 inputMode = newInputMode
                 
                 var settings = Settings.cached
-                settings.lastInputMode = inputMode
+                settings.lastSessionSettings.lastInputMode = inputMode
                 Settings.save(settings)
                 
                 refreshInputMode()
@@ -288,6 +288,9 @@ class InputController {
             return
         case .changeSchema(let schema):
             mainSchema = schema
+            var settings = Settings.cached
+            settings.lastSessionSettings.lastPrimarySchema = schema
+            Settings.save(settings)
             clearInput(needResetSchema: false)
             return
         case .selectCandidate(let choice):

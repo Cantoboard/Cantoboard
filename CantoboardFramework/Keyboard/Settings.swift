@@ -54,7 +54,27 @@ public struct RimeSettings: Codable, Equatable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
+        enableCorrector = try container.decodeIfPresent(Bool.self, forKey: .enableCorrector) ?? false
+    }
+}
+
+// If the input method doesn't have full access, the following settings will be not be reloaded from disk.
+public struct SessionSettings: Codable, Equatable {
+    private static let defaultInputMode: InputMode = .mixed
+    private static let defaultPrimarySchema: RimeSchema = .jyutping
+    
+    public var lastInputMode: InputMode
+    public var lastPrimarySchema: RimeSchema
+
+    public init() {
+        lastInputMode = Self.defaultInputMode
+        lastPrimarySchema = Self.defaultPrimarySchema
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Self.defaultInputMode
+        lastPrimarySchema = try container.decodeIfPresent(RimeSchema.self, forKey: .lastPrimarySchema) ?? Self.defaultPrimarySchema
     }
 }
 
@@ -62,7 +82,6 @@ public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
     private static let defaultCharForm: CharForm = .traditionalTW
     private static let defaultMixedModeEnabled: Bool = true
-    private static let defaultInputMode: InputMode = .mixed
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultSymbolShape: SymbolShape = .smart
@@ -72,10 +91,10 @@ public struct Settings: Codable, Equatable {
     private static let defaultEnglishLocale: EnglishLocale = .us
     private static let defaultShowRomanization: Bool = false
     private static let defaultAudioFeedbackEnabled: Bool = true
+    private static let defaultSessionSettings: SessionSettings = SessionSettings()
 
     public var charForm: CharForm
     public var isMixedModeEnabled: Bool
-    public var lastInputMode: InputMode
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
     public var symbolShape: SymbolShape
@@ -85,37 +104,37 @@ public struct Settings: Codable, Equatable {
     public var englishLocale: EnglishLocale
     public var shouldShowRomanization: Bool
     public var isAudioFeedbackEnabled: Bool
+    public var lastSessionSettings: SessionSettings
     
     public init() {
-        charForm = Settings.defaultCharForm
-        lastInputMode = Settings.defaultInputMode
-        isMixedModeEnabled = Settings.defaultMixedModeEnabled
-        isAutoCapEnabled = Settings.defaultAutoCapEnabled
-        isSmartFullStopEnabled = Settings.defaultSmartFullStopEnabled
-        symbolShape = Settings.defaultSymbolShape
-        spaceOutputMode = Settings.defaultSpaceOutputMode
-        toneInputMode = Settings.defaultToneInputMode
-        rimeSettings = Settings.defaultRimeSettings
-        englishLocale = Settings.defaultEnglishLocale
-        shouldShowRomanization = Settings.defaultShowRomanization
-        isAudioFeedbackEnabled = Settings.defaultAudioFeedbackEnabled
+        charForm = Self.defaultCharForm
+        isMixedModeEnabled = Self.defaultMixedModeEnabled
+        isAutoCapEnabled = Self.defaultAutoCapEnabled
+        isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
+        symbolShape = Self.defaultSymbolShape
+        spaceOutputMode = Self.defaultSpaceOutputMode
+        toneInputMode = Self.defaultToneInputMode
+        rimeSettings = Self.defaultRimeSettings
+        englishLocale = Self.defaultEnglishLocale
+        shouldShowRomanization = Self.defaultShowRomanization
+        isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
+        lastSessionSettings = Self.defaultSessionSettings
     }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.defaultCharForm
-        self.lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Settings.defaultInputMode
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
-        // self.spaceOutputMode = try container.decodeIfPresent(SpaceOutputMode.self, forKey: .spaceOutputMode) ?? Settings.defaultSpaceOutputMode
         self.spaceOutputMode = Settings.defaultSpaceOutputMode
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale
         self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.defaultShowRomanization
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
+        self.lastSessionSettings = try container.decodeIfPresent(SessionSettings.self, forKey: .lastSessionSettings) ?? Settings.defaultSessionSettings
     }
     
     private static var _cached: Settings?
@@ -137,8 +156,8 @@ public struct Settings: Codable, Equatable {
                 let setting = try decoder.decode(Settings.self, from: saved)
                 _cached = setting
                 if let prevSetting = prevSetting, !hasFullAccess {
-                    // If the app doesn't have full acesss, overwrite lastInputMode from memory.
-                    _cached!.lastInputMode = prevSetting.lastInputMode
+                    // If the app doesn't have full acesss, preserve lastSessionSettings in memory.
+                    _cached!.lastSessionSettings = prevSetting.lastSessionSettings
                 }
                 return setting
             } catch {

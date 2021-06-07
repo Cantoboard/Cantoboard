@@ -107,7 +107,7 @@ class KeyboardView: UIView {
         }
     }
     
-    var inputMode: InputMode = Settings.cached.lastInputMode
+    var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode
     
     var symbolShapeOverride: SymbolShape? {
         didSet {

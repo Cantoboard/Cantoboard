@@ -10,7 +10,7 @@ import UIKit
 
 import CocoaLumberjackSwift
 
-enum RimeSchema: String {
+public enum RimeSchema: String, Codable {
     case jyutping = "jyut6ping3"
     case cangjie = "cangjie5"
     case quick = "quick5"
