@@ -271,6 +271,8 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func setCharForm(isSimplification: Bool) {
+        rimeSession?.setOption("variants_hk", value: !isSimplification)
+        rimeSession?.setOption("simp_hk2s", value: isSimplification)
         rimeSession?.setOption("simplification", value: isSimplification)
         rimeSession?.setCandidateMenuToFirstPage()
         refreshCandidates()

@@ -23,8 +23,8 @@ switches:
     states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - options: [ noop, variants_hk, trad_tw, simplification ]
-    states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
+  - options: [ noop, variants_hk, simp_hk2s ]
+    states: [ 傳統漢字, 香港傳統漢字, 大陆简化汉字 ]
     reset: 1
   - name: ascii_punct
     states: [ 。，, ．， ]
@@ -51,7 +51,7 @@ engine:
     - script_translator
   filters:
     - simplifier@variants_hk
-    - simplifier@trad_tw
+    - simplifier@simp_hk2s
     - simplifier
     - uniquifier
     - reverse_lookup_filter@jyut6ping3_reverse_lookup
@@ -95,9 +95,9 @@ variants_hk:
   option_name: variants_hk
   opencc_config: t2hk.json
 
-trad_tw:
-  option_name: trad_tw
-  opencc_config: t2tw.json
+simp_hk2s:
+  option_name: simp_hk2s
+  opencc_config: hk2s.json
 
 jyut6ping3_reverse_lookup:
   overwrite_comment: true

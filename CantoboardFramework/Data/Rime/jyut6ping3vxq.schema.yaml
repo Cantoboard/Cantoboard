@@ -28,16 +28,11 @@ switches:
     states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - options: [ noop, variants_hk, trad_tw, simplification ]
-    states: [ 傳統漢字, 香港傳統漢字, 臺灣傳統漢字, 大陆简化汉字 ]
-    # 修改下行，改變預設用字 [0, 1, 2, 3 --> 對應上表]
+  - options: [ noop, variants_hk, simp_hk2s ]
+    states: [ 傳統漢字, 香港傳統漢字, 大陆简化汉字 ]
     reset: 1
   - name: ascii_punct
     states: [ 。，, ．， ]
-  - name: emoji_suggestion
-    # 取消下行註釋，預設啓動 emoji
-    #reset: 1
-    states: [ 冇 Emoji, 有 Emoji ]
 
 engine:
   processors:
@@ -60,9 +55,8 @@ engine:
     - script_translator
   filters:
     - simplifier@variants_hk
-    - simplifier@trad_tw
+    - simplifier@simp_hk2s
     - simplifier
-    - simplifier@emoji_suggestion
     - uniquifier
 
 menu:
@@ -123,14 +117,9 @@ variants_hk:
   option_name: variants_hk
   opencc_config: t2hk.json
 
-trad_tw:
-  option_name: trad_tw
-  opencc_config: t2tw.json
-
-emoji_suggestion:
-  opencc_config: emoji.json
-  option_name: emoji_suggestion
-  tips: all
+simp_hk2s:
+  option_name: simp_hk2s
+  opencc_config: hk2s.json
 
 punctuator:
   import_preset: symbols_cantonese
