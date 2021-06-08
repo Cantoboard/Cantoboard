@@ -9,18 +9,18 @@ import UIKit
 import CantoboardFramework
 
 class SettingViewController: UITableViewController {
-    @IBOutlet private var charFormControl: UISegmentedControl!
-    @IBOutlet private var enableMixedModeControl: UISwitch!
-    @IBOutlet private var autoCapControl: UISwitch!
-    @IBOutlet private var smartFullStopControl: UISwitch!
-    @IBOutlet private var symbolShapeControl: UISegmentedControl!
-    @IBOutlet private var spaceOutputControl: UISegmentedControl!
-    @IBOutlet private var toneInputControl: UISegmentedControl!
-    @IBOutlet private var rimeEnableCorrector: UISwitch!
-    @IBOutlet private var englishLocaleInputControl: UISegmentedControl!
-    @IBOutlet private var showRomanizationControl: UISwitch!
-    @IBOutlet private var audioFeedbackControl: UISwitch!
-    @IBOutlet private var hapticFeedbackControl: UISwitch!
+    @IBOutlet weak private var charFormControl: UISegmentedControl!
+    @IBOutlet weak private var enableMixedModeControl: UISwitch!
+    @IBOutlet weak private var autoCapControl: UISwitch!
+    @IBOutlet weak private var smartFullStopControl: UISwitch!
+    @IBOutlet weak private var symbolShapeControl: UISegmentedControl!
+    @IBOutlet weak private var spaceActionControl: UISegmentedControl!
+    @IBOutlet weak private var toneInputControl: UISegmentedControl!
+    @IBOutlet weak private var rimeEnableCorrector: UISwitch!
+    @IBOutlet weak private var englishLocaleInputControl: UISegmentedControl!
+    @IBOutlet weak private var showRomanizationControl: UISwitch!
+    @IBOutlet weak private var audioFeedbackControl: UISwitch!
+    @IBOutlet weak private var hapticFeedbackControl: UISwitch!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class SettingViewController: UITableViewController {
         autoCapControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
-        spaceOutputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        spaceActionControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         rimeEnableCorrector.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         englishLocaleInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -55,7 +55,7 @@ class SettingViewController: UITableViewController {
         default: selectedSymbolShape = .smart
         }
         
-        let spaceOutputMode: SpaceOutputMode = spaceOutputControl.selectedSegmentIndex == 0 ? .bestEnglishCandidate : .bestCandidate
+        let spaceAction: SpaceAction = spaceActionControl.selectedSegmentIndex == 0 ? .nextPage : .insertText
         let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
         let englishLocale: EnglishLocale
@@ -73,7 +73,7 @@ class SettingViewController: UITableViewController {
         settings.isAutoCapEnabled = autoCapControl.isOn
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
-        settings.spaceOutputMode = spaceOutputMode
+        settings.spaceAction = spaceAction
         settings.toneInputMode = toneInputMode
         settings.rimeSettings.enableCorrector = rimeEnableCorrector.isOn
         settings.englishLocale = englishLocale
@@ -161,10 +161,10 @@ class SettingViewController: UITableViewController {
     }
     
     private func populateSpaceOutputMode(_ settings: Settings) {
-        populateSetting(toSegmentedControl: spaceOutputControl, settingToIndexMapper: {
-            switch $0.spaceOutputMode {
-            case .bestEnglishCandidate: return 0
-            case .bestCandidate: return 1
+        populateSetting(toSegmentedControl: spaceActionControl, settingToIndexMapper: {
+            switch $0.spaceAction {
+            case .nextPage: return 0
+            case .insertText: return 1
             }
         })
     }

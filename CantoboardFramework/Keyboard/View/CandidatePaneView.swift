@@ -460,6 +460,17 @@ extension CandidatePaneView {
         sectionHeaderWidth = LayoutConstants.forMainScreen.candidateCharSize.width * 2
         super.traitCollectionDidChange(previousTraitCollection)
     }
+    
+    func scrollToNextPageInRowMode() {
+        guard mode == .row,
+              let collectionView = self.collectionView else { return }
+        var targetOffset = CGPoint(x: collectionView.contentOffset.x + collectionView.frame.width, y: collectionView.contentOffset.y)
+        if let indexPathAtTargetOffset = collectionView.indexPathForItem(at: targetOffset),
+           let cellAtTargetOffset = collectionView.cellForItem(at: indexPathAtTargetOffset) {
+            targetOffset.x = cellAtTargetOffset.frame.minX
+        }
+        collectionView.setContentOffset(targetOffset, animated: true)
+    }
 }
 
 extension CandidatePaneView: UICollectionViewDataSource {

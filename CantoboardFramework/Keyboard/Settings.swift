@@ -27,9 +27,9 @@ public enum SymbolShape: String, Codable {
     case smart = "smart"
 }
 
-public enum SpaceOutputMode: String, Codable {
-    case bestEnglishCandidate = "bestEnglishCandidate"
-    case bestCandidate = "bestCandidate"
+public enum SpaceAction: String, Codable {
+    case insertText = "insertText"
+    case nextPage = "nextPage"
 }
 
 public enum ToneInputMode: String, Codable {
@@ -85,7 +85,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultSymbolShape: SymbolShape = .smart
-    private static let defaultSpaceOutputMode: SpaceOutputMode = .bestCandidate
+    private static let defaultSpaceAction: SpaceAction = .insertText
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
     private static let defaultEnglishLocale: EnglishLocale = .us
@@ -99,7 +99,7 @@ public struct Settings: Codable, Equatable {
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
     public var symbolShape: SymbolShape
-    public var spaceOutputMode: SpaceOutputMode
+    public var spaceAction: SpaceAction
     public var toneInputMode: ToneInputMode
     public var rimeSettings: RimeSettings
     public var englishLocale: EnglishLocale
@@ -114,7 +114,7 @@ public struct Settings: Codable, Equatable {
         isAutoCapEnabled = Self.defaultAutoCapEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         symbolShape = Self.defaultSymbolShape
-        spaceOutputMode = Self.defaultSpaceOutputMode
+        spaceAction = Self.defaultSpaceAction
         toneInputMode = Self.defaultToneInputMode
         rimeSettings = Self.defaultRimeSettings
         englishLocale = Self.defaultEnglishLocale
@@ -131,7 +131,7 @@ public struct Settings: Codable, Equatable {
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
-        self.spaceOutputMode = Settings.defaultSpaceOutputMode
+        self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale

@@ -32,6 +32,7 @@ struct KeyboardState: Equatable {
     
     var returnKeyType: UIReturnKeyType
     var needsInputModeSwitchKey: Bool
+    var spaceKeyMode: SpaceKeyMode
     
     var mainSchema: RimeSchema, reverseLookupSchema: RimeSchema?
     var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode
@@ -52,6 +53,7 @@ struct KeyboardState: Equatable {
         
         returnKeyType = .default
         needsInputModeSwitchKey = false
+        spaceKeyMode = .space
         
         mainSchema = Settings.cached.lastSessionSettings.lastPrimarySchema
         inputMode = Settings.cached.lastSessionSettings.lastInputMode
@@ -71,7 +73,7 @@ class InputController {
         
     private var hasInsertedAutoSpace = false
     private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
-    private var needClearInput = false
+    private var needClearInput = false, needReloadCandidates = true
     
     private var prevTextBefore: String?
     
@@ -150,7 +152,12 @@ class InputController {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         if inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
-            candidateSelected(choice: [0, 0], enableSmartSpace: true)
+            if Settings.cached.spaceAction == .insertText {
+                candidateSelected(choice: [0, 0], enableSmartSpace: true)
+            } else {
+                keyboardView?.candidatePaneView?.scrollToNextPageInRowMode()
+                needReloadCandidates = false
+            }
         } else {
             if !insertComposingText() {
                 if !handleAutoSpace() {
@@ -194,6 +201,7 @@ class InputController {
         }
         
         needClearInput = false
+        needReloadCandidates = true
         let isComposing = inputEngine.isComposing
         
         switch action {
@@ -450,10 +458,15 @@ class InputController {
     private func updateInputState() {
         updateMarkedText()
         updateContextualSuggestion()
-        candidateOrganizer.updateCandidates(reload: true)
+        candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
         state.returnKeyType = hasMarkedText ? .default : textDocumentProxy?.returnKeyType ?? .default
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
+        if !inputEngine.isComposing {
+            state.spaceKeyMode = .space
+        } else {
+            state.spaceKeyMode = Settings.cached.spaceAction == .insertText ? .select : .nextPage
+        }
         keyboardView?.state = state
     }
     

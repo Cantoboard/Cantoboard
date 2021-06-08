@@ -24,6 +24,12 @@ import UIKit
  Actions like these are a way for you to express your intent,
  but require manual handling in a custom action handler.
 */
+enum SpaceKeyMode: String {
+    case space = "space"
+    case select = "select"
+    case nextPage = "next page"
+}
+
 enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
@@ -36,7 +42,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     keyboardType(KeyboardType),
     returnKey(UIReturnKeyType),
     nextKeyboard,
-    space,
+    space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
     rime(RimeChar),
     contexualSymbols(ContextualType),
@@ -151,7 +157,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .returnKey(.send): return "send"
         case .returnKey(.search), .returnKey(.google): return "search"
         case .returnKey: return "return"
-        case .space: return "space"
+        case .space(let label): return label.rawValue
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
         case .keyboardType(.alphabetic): return "ABC"

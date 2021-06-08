@@ -119,7 +119,7 @@ extension KeyRowView {
         var allFrames = leftKeyFrames + middleKeyFrames + rightKeyFrames
         
         // Special case, widen the space key to fill the empty space.
-        if rowLayoutMode == .bottomRow && middleKeys.count == 1 && middleKeys.first!.keyCap == .space {
+        if rowLayoutMode == .bottomRow && middleKeys.count == 1, case .space = middleKeys.first!.keyCap {
             let thisKeyFrame = allFrames[leftKeyFrames.count]
             let spaceStartX = allFrames[leftKeyFrames.count - 1].maxX + layoutConstants.buttonGap
             let spaceEndX = allFrames[leftKeyFrames.count + middleKeyFrames.count].minX - layoutConstants.buttonGap

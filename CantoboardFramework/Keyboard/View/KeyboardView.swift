@@ -46,6 +46,10 @@ class KeyboardView: UIView {
             newLineKey?.setKeyCap(.returnKey(newState.returnKeyType))
         }
         
+        if prevState.spaceKeyMode != newState.spaceKeyMode {
+            spaceKey?.setKeyCap(.space(newState.spaceKeyMode))
+        }
+        
         if prevState.enableState != newState.enableState {
             changeKeyboardEnabled(isEnabled: newState.enableState == .enabled, isLoading: newState.enableState == .loading)
         }
@@ -67,38 +71,39 @@ class KeyboardView: UIView {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space], [.contexualSymbols(.english), .returnKey(.default)]]
+        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contexualSymbols(.english), .returnKey(.default)]]
     ]
     
     private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["-", "/", ":", ";", "(", ")", "$", "\"", "「", "」"]],
         [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["@", .returnKey(.default)]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
     
     private let symbolsHalfKeyCapRows: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
         [["_", "—", "\\", "|", "~", "<", ">", "《", "》", "•"]],
         [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.returnKey(.default)]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
     private let numbersFullKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["－", "／", "：", "；", "（", "）", "＄", "＂", "「", "」"]],
         [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], ["＠", .returnKey(.default)]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["＠", .returnKey(.default)]]
     ]
     
     private let symbolsFullKeyCapRows: [[[KeyCap]]] = [
         [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
         [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
         [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "‘"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space], [.returnKey(.default)]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
     private weak var newLineKey: KeyView?
+    private weak var spaceKey: KeyView?
     
     var candidateOrganizer: CandidateOrganizer? {
         didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
@@ -275,6 +280,7 @@ class KeyboardView: UIView {
                     return $0
                 case .contexualSymbols: return .contexualSymbols(state.keyboardContextualType)
                 case .returnKey: return .returnKey(state.returnKeyType)
+                case .space: return .space(state.spaceKeyMode)
                 default: return $0
                 }
             } }
@@ -286,8 +292,13 @@ class KeyboardView: UIView {
             }*/
             keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
         }
-        if let lastRowRightKeys = keyRows[safe: 3]?.rightKeys {
-            newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1]
+        if let lastRow = keyRows[safe: 3] {
+            if let lastRowRightKeys = lastRow.rightKeys {
+                newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1]
+            }
+            if let lastRowMiddleKeys = lastRow.middleKeys {
+                spaceKey = lastRowMiddleKeys[safe: 0]
+            }
         }
     }
     
