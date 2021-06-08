@@ -148,6 +148,16 @@ open class KeyboardViewController: UIInputViewController {
         super.viewWillLayoutSubviews()
     }
     
+    public override var traitCollection: UITraitCollection {
+        get {
+            let traitCollection = super.traitCollection
+            // InputContoller.overrideUserInterfaceStyle overrides the color scheme onTextDidChange().
+            // If we don't unset the style here, if the global color scheme changes, traitCollection won't be updated.
+            overrideUserInterfaceStyle = .unspecified
+            return traitCollection
+        }
+    }
+    
     public func createKeyboardIfNeeded() {
         if keyboardView == nil {
             inputController = InputController(keyboardViewController: self)
