@@ -1,17 +1,17 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1620283471
-    default: 1620283455
-    default.custom: 1620283455
+    common.custom: 1623119342
+    default: 1623119338
+    default.custom: 1623119338
     grammar: 0
     luna_pinyin.custom: 0
-    luna_pinyin.schema: 1620283455
-    pinyin: 1620283455
+    luna_pinyin.schema: 1623119338
+    pinyin: 1623119338
     pinyin.custom: 0
-    symbols: 1620283455
+    symbols: 1623119338
     symbols.custom: 0
-    symbols_cantonese: 1620283455
+    symbols_cantonese: 1623119338
 custom_phrase:
   db_class: stabledb
   dictionary: ""
@@ -22,7 +22,7 @@ custom_phrase:
 engine:
   filters:
     - "simplifier@variants_hk"
-    - "simplifier@trad_tw"
+    - "simplifier@simp_hk2s"
     - simplifier
     - uniquifier
     - "reverse_lookup_filter@jyut6ping3_reverse_lookup"
@@ -377,6 +377,9 @@ schema:
   name: "朙月拼音"
   schema_id: luna_pinyin
   version: 0.26
+simp_hk2s:
+  opencc_config: hk2s.json
+  option_name: simp_hk2s
 speller:
   algebra:
     - "abbrev/^([a-z]).+$/$1/"
@@ -399,14 +402,11 @@ switches:
     states: ["中文", "西文"]
   - name: full_shape
     states: ["半角", "全角"]
-  - options: [noop, variants_hk, trad_tw, simplification]
+  - options: [noop, variants_hk, simp_hk2s]
     reset: 1
-    states: ["傳統漢字", "香港傳統漢字", "臺灣傳統漢字", "大陆简化汉字"]
+    states: ["傳統漢字", "香港傳統漢字", "大陆简化汉字"]
   - name: ascii_punct
     states: ["。，", "．，"]
-trad_tw:
-  opencc_config: t2tw.json
-  option_name: trad_tw
 translator:
   dictionary: luna_pinyin
   enable_correction: true

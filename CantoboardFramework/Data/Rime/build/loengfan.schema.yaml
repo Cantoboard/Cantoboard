@@ -1,17 +1,17 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1620283471
-    default: 1620283455
-    default.custom: 1620283455
-    loengfan.schema: 1620283455
-    symbols: 1620283455
+    common.custom: 1623119342
+    default: 1623119338
+    default.custom: 1623119338
+    loengfan.schema: 1623119338
+    symbols: 1623119338
     symbols.custom: 0
-    symbols_cantonese: 1620283455
+    symbols_cantonese: 1623119338
 engine:
   filters:
     - "simplifier@variants_hk"
-    - "simplifier@trad_tw"
+    - "simplifier@simp_hk2s"
     - simplifier
     - uniquifier
     - "reverse_lookup_filter@jyut6ping3_reverse_lookup"
@@ -359,6 +359,9 @@ schema:
   name: "粵語兩分"
   schema_id: loengfan
   version: 2020.08.05
+simp_hk2s:
+  opencc_config: hk2s.json
+  option_name: simp_hk2s
 speller:
   algebra:
     - "derive/[123456]//"
@@ -376,14 +379,11 @@ switches:
     states: ["中文", "英文"]
   - name: full_shape
     states: ["半形", "全形"]
-  - options: [noop, variants_hk, trad_tw, simplification]
+  - options: [noop, variants_hk, simp_hk2s]
     reset: 1
-    states: ["傳統漢字", "香港傳統漢字", "臺灣傳統漢字", "大陆简化汉字"]
+    states: ["傳統漢字", "香港傳統漢字", "大陆简化汉字"]
   - name: ascii_punct
     states: ["。，", "．，"]
-trad_tw:
-  opencc_config: t2tw.json
-  option_name: trad_tw
 translator:
   dictionary: loengfan
   enable_correction: true

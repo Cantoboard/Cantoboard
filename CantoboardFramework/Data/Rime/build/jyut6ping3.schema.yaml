@@ -1,24 +1,19 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1620283471
-    default: 1620283455
-    default.custom: 1620283455
+    common.custom: 1623119342
+    default: 1623119338
+    default.custom: 1623119338
     grammar: 0
-    jyut6ping3.schema: 1620283455
-    symbols: 1620283455
+    jyut6ping3.schema: 1623119338
+    symbols: 1623119338
     symbols.custom: 0
-    symbols_cantonese: 1620283455
-emoji_suggestion:
-  opencc_config: emoji.json
-  option_name: emoji_suggestion
-  tips: all
+    symbols_cantonese: 1623119338
 engine:
   filters:
     - "simplifier@variants_hk"
-    - "simplifier@trad_tw"
+    - "simplifier@simp_hk2s"
     - simplifier
-    - "simplifier@emoji_suggestion"
     - uniquifier
   processors:
     - ascii_composer
@@ -341,6 +336,9 @@ schema:
   name: "粵語拼音"
   schema_id: jyut6ping3
   version: 2020.11.26
+simp_hk2s:
+  opencc_config: hk2s.json
+  option_name: simp_hk2s
 speller:
   algebra:
     - "derive/[123456]//"
@@ -362,16 +360,11 @@ switches:
     states: ["中文", "西文"]
   - name: full_shape
     states: ["半角", "全角"]
-  - options: [noop, variants_hk, trad_tw, simplification]
+  - options: [noop, variants_hk, simp_hk2s]
     reset: 1
-    states: ["傳統漢字", "香港傳統漢字", "臺灣傳統漢字", "大陆简化汉字"]
+    states: ["傳統漢字", "香港傳統漢字", "大陆简化汉字"]
   - name: ascii_punct
     states: ["。，", "．，"]
-  - name: emoji_suggestion
-    states: ["冇 Emoji", "有 Emoji"]
-trad_tw:
-  opencc_config: t2tw.json
-  option_name: trad_tw
 translator:
   always_show_comments: true
   dictionary: jyut6ping3
