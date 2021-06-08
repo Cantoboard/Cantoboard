@@ -8,7 +8,7 @@ import UIKit
 
 import CantoboardFramework
 
-class ConfigTableViewController: UITableViewController {
+class SettingViewController: UITableViewController {
     @IBOutlet private var charFormControl: UISegmentedControl!
     @IBOutlet private var enableMixedModeControl: UISwitch!
     @IBOutlet private var autoCapControl: UISwitch!
@@ -20,6 +20,7 @@ class ConfigTableViewController: UITableViewController {
     @IBOutlet private var englishLocaleInputControl: UISegmentedControl!
     @IBOutlet private var showRomanizationControl: UISwitch!
     @IBOutlet private var audioFeedbackControl: UISwitch!
+    @IBOutlet private var hapticFeedbackControl: UISwitch!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +38,7 @@ class ConfigTableViewController: UITableViewController {
         englishLocaleInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         showRomanizationControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         audioFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        hapticFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -77,6 +79,7 @@ class ConfigTableViewController: UITableViewController {
         settings.englishLocale = englishLocale
         settings.shouldShowRomanization = showRomanizationControl.isOn
         settings.isAudioFeedbackEnabled = audioFeedbackControl.isOn
+        settings.isTapHapticFeedbackEnabled = hapticFeedbackControl.isOn
         Settings.save(settings)
     }
     
@@ -133,7 +136,8 @@ class ConfigTableViewController: UITableViewController {
         autoCapControl.isOn = settings.isAutoCapEnabled
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
         showRomanizationControl.isOn = settings.shouldShowRomanization
-        audioFeedbackControl.isOn = settings.isAudioFeedbackEnabled 
+        audioFeedbackControl.isOn = settings.isAudioFeedbackEnabled
+        hapticFeedbackControl.isOn = settings.isTapHapticFeedbackEnabled
         rimeEnableCorrector.isOn = settings.rimeSettings.enableCorrector
         
         populateSetting(toSegmentedControl: englishLocaleInputControl, settingToIndexMapper: {

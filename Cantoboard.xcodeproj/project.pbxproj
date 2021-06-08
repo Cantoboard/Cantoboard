@@ -11,7 +11,7 @@
 		7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7917DDA32660A41F00D0010D /* GuideViewController.swift */; };
 		7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78025F3320F0075DD4D /* AppDelegate.swift */; };
 		7919A78325F3320F0075DD4D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78225F3320F0075DD4D /* SceneDelegate.swift */; };
-		7919A78525F3320F0075DD4D /* ConfigTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78425F3320F0075DD4D /* ConfigTableViewController.swift */; };
+		7919A78525F3320F0075DD4D /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78425F3320F0075DD4D /* SettingViewController.swift */; };
 		7919A78825F3320F0075DD4D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78625F3320F0075DD4D /* Main.storyboard */; };
 		7919A78A25F332100075DD4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78925F332100075DD4D /* Assets.xcassets */; };
 		7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78B25F332100075DD4D /* LaunchScreen.storyboard */; };
@@ -264,7 +264,7 @@
 		7919A77D25F3320F0075DD4D /* Cantoboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cantoboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7919A78025F3320F0075DD4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7919A78225F3320F0075DD4D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		7919A78425F3320F0075DD4D /* ConfigTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigTableViewController.swift; sourceTree = "<group>"; };
+		7919A78425F3320F0075DD4D /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		7919A78725F3320F0075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7919A78925F332100075DD4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7919A78C25F332100075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -494,7 +494,7 @@
 				7919A78025F3320F0075DD4D /* AppDelegate.swift */,
 				7919A78925F332100075DD4D /* Assets.xcassets */,
 				79B9B70725F43D0E00238E80 /* Cantoboard.entitlements */,
-				7919A78425F3320F0075DD4D /* ConfigTableViewController.swift */,
+				7919A78425F3320F0075DD4D /* SettingViewController.swift */,
 				7917DDA32660A41F00D0010D /* GuideViewController.swift */,
 				7919A78E25F332100075DD4D /* Info.plist */,
 				7919A78B25F332100075DD4D /* LaunchScreen.storyboard */,
@@ -1149,7 +1149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */,
-				7919A78525F3320F0075DD4D /* ConfigTableViewController.swift in Sources */,
+				7919A78525F3320F0075DD4D /* SettingViewController.swift in Sources */,
 				7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */,
 				7919A78325F3320F0075DD4D /* SceneDelegate.swift in Sources */,
 			);

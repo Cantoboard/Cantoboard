@@ -91,6 +91,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultEnglishLocale: EnglishLocale = .us
     private static let defaultShowRomanization: Bool = false
     private static let defaultAudioFeedbackEnabled: Bool = true
+    private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultSessionSettings: SessionSettings = SessionSettings()
 
     public var charForm: CharForm
@@ -104,6 +105,7 @@ public struct Settings: Codable, Equatable {
     public var englishLocale: EnglishLocale
     public var shouldShowRomanization: Bool
     public var isAudioFeedbackEnabled: Bool
+    public var isTapHapticFeedbackEnabled: Bool
     public var lastSessionSettings: SessionSettings
     
     public init() {
@@ -118,6 +120,7 @@ public struct Settings: Codable, Equatable {
         englishLocale = Self.defaultEnglishLocale
         shouldShowRomanization = Self.defaultShowRomanization
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
+        isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
         lastSessionSettings = Self.defaultSessionSettings
     }
     
@@ -134,6 +137,7 @@ public struct Settings: Codable, Equatable {
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale
         self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.defaultShowRomanization
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
+        self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
         self.lastSessionSettings = try container.decodeIfPresent(SessionSettings.self, forKey: .lastSessionSettings) ?? Settings.defaultSessionSettings
     }
     

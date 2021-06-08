@@ -37,8 +37,9 @@ class TouchHandler {
     private var keyRepeatTimer: Timer?
     private var keyRepeatCounter: Int = 0
     private let selectionGenerator = UISelectionFeedbackGenerator()
-    private let impactGenerator = UIImpactFeedbackGenerator(style: .medium)
-    
+    private let feedbackMediumGenerator = UIImpactFeedbackGenerator(style: .medium)
+    private let feedbackLightGenerator = UIImpactFeedbackGenerator(style: .light)
+
     init(keyboardView: KeyboardView) {
         self.keyboardView = keyboardView
     }
@@ -48,7 +49,11 @@ class TouchHandler {
               inputMode == .typing && // Ignore new touches if we are not in typing mode.
               currentTouch?.0 != touch // Dedup began events coming from gesture recognizer and touch event.
             else { return }
-
+        
+        if Settings.cached.isTapHapticFeedbackEnabled {
+            feedbackLightGenerator.impactOccurred()
+        }
+        
         let touchTuple = (touch, key, key.selectedAction)
         
         // DDLogInfo("touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
@@ -116,7 +121,7 @@ class TouchHandler {
                 cancelKeyRepeatTimer()
                 hasTakenAction = true
                 callKeyHandler(.deleteWordSwipe)
-                impactGenerator.impactOccurred()
+                feedbackMediumGenerator.impactOccurred()
             }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
