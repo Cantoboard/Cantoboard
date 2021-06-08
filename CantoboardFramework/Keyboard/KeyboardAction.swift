@@ -80,6 +80,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     selectCandidate(IndexPath),
     longPressCandidate(IndexPath),
     exportFile(String, String),
+    enableKeyboard(Bool),
     exit
     
     public init(stringLiteral value: String) {

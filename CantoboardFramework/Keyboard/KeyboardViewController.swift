@@ -48,8 +48,7 @@ open class KeyboardViewController: UIInputViewController {
                     let logs = self.fetchLog()
                     DDLogInfo("Rime Engine deployment failed. Log: \(logs)")
                     self.showLogs(logs)
-                } else if let keyboardView = self.keyboardView,
-                          newState == .succeeded && !keyboardView.isEnabled {
+                } else if newState == .succeeded {
                     DDLogInfo("Enabling keyboard")
                     self.inputController?.reenableKeyboard()
                 }

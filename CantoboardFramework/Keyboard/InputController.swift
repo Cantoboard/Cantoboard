@@ -15,6 +15,10 @@ enum ContextualType: Equatable {
     case english, chinese, rime, url(isRimeComposing: Bool)
 }
 
+enum KeyboardEnableState: Equatable {
+    case enabled, disabled, loading
+}
+
 struct KeyboardState: Equatable {
     var keyboardType: KeyboardType {
         didSet {
@@ -24,8 +28,7 @@ struct KeyboardState: Equatable {
     var keyboardContextualType: ContextualType
     var symbolShapeOverride: SymbolShape?
     
-    // var isEnabled: Bool
-    // var isLoading: Bool
+    var enableState: KeyboardEnableState
     
     var returnKeyType: UIReturnKeyType
     var needsInputModeSwitchKey: Bool
@@ -45,8 +48,7 @@ struct KeyboardState: Equatable {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         keyboardContextualType = .english
         
-        // isEnabled = true
-        // isLoading = false
+        enableState = .enabled
         
         returnKeyType = .default
         needsInputModeSwitchKey = false
@@ -161,15 +163,16 @@ class InputController {
     private var cachedActions: [KeyboardAction] = []
     
     func reenableKeyboard() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             guard RimeApi.shared.state == .succeeded else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: self.reenableKeyboard)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: reenableKeyboard)
                 return
             }
             DDLogInfo("Enabling keyboard.")
-            self.cachedActions.forEach({ self.keyPressed($0) })
-            self.cachedActions = []
-            self.keyboardView?.setEnable(isEnabled: true, isLoading: false)
+            cachedActions.forEach({ self.keyPressed($0) })
+            cachedActions = []
+            state.enableState = .enabled
+            keyboardView?.state = state
         }
     }
     
@@ -177,8 +180,9 @@ class InputController {
         guard RimeApi.shared.state == .succeeded else {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
-            self.keyboardView?.setEnable(isEnabled: false, isLoading: true)
+            state.enableState = .loading
             cachedActions.append(action)
+            keyboardView?.state = state
             return
         }
         
@@ -312,8 +316,9 @@ class InputController {
         case .longPressCandidate(let choice):
             candidateLongPressed(choice: choice)
         case .exportFile(let namePrefix, let path):
-            keyboardView?.setEnable(isEnabled: false, isLoading: true)
-            
+            state.enableState = .loading
+            keyboardView?.state = state
+
             let zipFilePath = FileManager.default.temporaryDirectory.appendingPathComponent("\(namePrefix)-\(NSDate().timeIntervalSince1970).zip")
             DispatchQueue.global(qos: .userInteractive).async { [self] in
                 do {
@@ -324,9 +329,13 @@ class InputController {
                     DDLogError("Failed to export \(namePrefix) at \(path).")
                 }
                 DispatchQueue.main.async {
-                    self.keyboardView?.setEnable(isEnabled: true, isLoading: false)
+                    state.enableState = .enabled
+                    keyboardView?.state = state
                 }
             }
+        case .enableKeyboard(let e):
+            state.enableState = e ? .enabled : .disabled
+            keyboardView?.state = state
         case .exit: exit(0)
         default: ()
         }

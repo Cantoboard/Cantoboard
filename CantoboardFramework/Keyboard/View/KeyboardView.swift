@@ -46,6 +46,10 @@ class KeyboardView: UIView {
             newLineKey?.setKeyCap(.returnKey(newState.returnKeyType))
         }
         
+        if prevState.enableState != newState.enableState {
+            changeKeyboardEnabled(isEnabled: newState.enableState == .enabled, isLoading: newState.enableState == .loading)
+        }
+        
         _state = newState
         if isViewDirty { setupView() }
         
@@ -98,16 +102,6 @@ class KeyboardView: UIView {
     
     var candidateOrganizer: CandidateOrganizer? {
         didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
-    }
-    
-    private(set) var isEnabled: Bool {
-        get { _isEnabled }
-        set {
-            if _isEnabled != newValue {
-                keyRows.forEach { $0.isEnabled = newValue }
-            }
-            _isEnabled = newValue
-        }
     }
     
     private weak var loadingIndicatorView: UIActivityIndicatorView?
@@ -358,7 +352,9 @@ class KeyboardView: UIView {
         self.emojiView = nil
     }
     
-    func setEnable(isEnabled: Bool, isLoading: Bool = false) {
+    
+    private func changeKeyboardEnabled(isEnabled: Bool, isLoading: Bool = false) {
+        keyRows.forEach { $0.isEnabled = isEnabled }
         if isLoading && loadingIndicatorView == nil {
             createLoadingIndicatorView()
             candidatePaneView?.isHidden = true
@@ -368,7 +364,6 @@ class KeyboardView: UIView {
             loadingIndicatorView = nil
             candidatePaneView?.isHidden = false
         }
-        self.isEnabled = isEnabled
     }
 }
 

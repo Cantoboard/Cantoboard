@@ -21,7 +21,7 @@ class TouchHandler {
         get { _inputMode }
         set {
             if _inputMode != newValue {
-                keyboardView?.setEnable(isEnabled: newValue != .cursorMoving)
+                callKeyHandler(.enableKeyboard(newValue != .cursorMoving))
                 if newValue == .cursorMoving { selectionGenerator.selectionChanged() }
                 
                 if _inputMode == .typing {
