@@ -92,7 +92,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var popupFont: UIFont {
         switch self {
-        case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(26)
+        case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(24)
         case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu", .exportFile, .exit:
             return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
         default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
@@ -224,7 +224,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
         
         switch self {
-        case .characterWithConditioanlPopup("D"), .characterWithConditioanlPopup("d"): return "反"
+        case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
         case .reverseLookup: return "反"
         case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
@@ -295,7 +295,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
             case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
             case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
-            case "D", "d": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+            case "R", "r": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
             default: return [self]
             }
         case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
