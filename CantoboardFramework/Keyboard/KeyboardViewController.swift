@@ -18,6 +18,7 @@ open class KeyboardViewController: UIInputViewController {
     
     private var inputController: InputController?
     private(set) weak var keyboardView: KeyboardView?
+    private weak var keyboardWidthConstraint, superviewCenterXConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var logView: UITextView?
     
@@ -84,19 +85,20 @@ open class KeyboardViewController: UIInputViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
+        LayoutConstants.currentTraitCollection = traitCollection
         
         Settings.hasFullAccess = hasFullAccess
         
-        let keyboardSize = LayoutConstants.forMainScreen.keyboardSize
+        let layoutConstants = LayoutConstants.forMainScreen
         if heightConstraint == nil {
-            let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardSize.height)
+            let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.height)
             heightConstraint.priority = .required
             heightConstraint.isActive = true
             self.heightConstraint = heightConstraint
         }
         
         if widthConstraint == nil {
-            let widthConstraint = view.widthAnchor.constraint(equalToConstant: keyboardSize.width)
+            let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.superviewSize.width)
             widthConstraint.priority = .required
             widthConstraint.isActive = true
             self.widthConstraint = widthConstraint
@@ -108,6 +110,13 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        LayoutConstants.currentTraitCollection = traitCollection
+        
+        if superviewCenterXConstraint == nil {
+            let superviewCenterXConstraint = view.centerXAnchor.constraint(equalTo: view.superview!.centerXAnchor)
+            self.superviewCenterXConstraint = superviewCenterXConstraint
+            superviewCenterXConstraint.isActive = true
+        }
         
         reloadSettings()
         createKeyboardIfNeeded()
@@ -133,19 +142,26 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
+        LayoutConstants.currentTraitCollection = traitCollection
         view.setNeedsLayout()
+    }
+    
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        LayoutConstants.currentTraitCollection = traitCollection
     }
     
     public override func viewWillLayoutSubviews() {
         // Reset the size constraints to handle screen rotation.
-        let nextKeyboardSize = LayoutConstants.forMainScreen.keyboardSize
-        widthConstraint?.constant = nextKeyboardSize.width
-        heightConstraint?.constant = nextKeyboardSize.height
-        
-        // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
-        logView?.frame = CGRect(origin: .zero, size: nextKeyboardSize)
+        let layoutConstants = LayoutConstants.forMainScreen
+        keyboardWidthConstraint?.constant = layoutConstants.keyboardSize.width
+        heightConstraint?.constant = layoutConstants.keyboardSize.height
+        widthConstraint?.constant = layoutConstants.superviewSize.width
         
         super.viewWillLayoutSubviews()
+        
+        // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
+        logView?.frame = CGRect(origin: .zero, size: layoutConstants.keyboardSize)
     }
     
     public func createKeyboardIfNeeded() {
@@ -160,12 +176,16 @@ open class KeyboardViewController: UIInputViewController {
             
             // EmojiView inside KeyboardView requires AutoLayout.
             NSLayoutConstraint.activate([
-                keyboardView.leftAnchor.constraint(equalTo: view.leftAnchor),
-                keyboardView.rightAnchor.constraint(equalTo: view.rightAnchor),
+                keyboardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 keyboardView.topAnchor.constraint(equalTo: view.topAnchor),
                 keyboardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
-                        
+            
+            let widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.width)
+            widthConstraint.priority = .required
+            widthConstraint.isActive = true
+            self.keyboardWidthConstraint = widthConstraint
+            
             self.keyboardView = keyboardView
             
             textWillChange(nil)

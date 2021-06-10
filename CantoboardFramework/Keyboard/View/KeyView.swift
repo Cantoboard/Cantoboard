@@ -214,6 +214,7 @@ class KeyView: UIButton {
         
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
+            keyHintLayer.fontSize = keyCap.buttonHintFontSize
         }
     }
     

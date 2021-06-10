@@ -68,7 +68,7 @@ class StatusButton: UIButton {
 class CandidatePaneView: UIControl {
     private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
     private static let miniStatusSize = CGSize(width: 20, height: 20)
-    static let miniStatusFontSize: CGFloat = DeviceLayoutConstants.forCurrentDevice.miniStatusFontSize
+    static let miniStatusFontSize: CGFloat = LayoutConstants.forMainScreen.miniStatusFontSize
     
     enum Mode {
         case row, table
