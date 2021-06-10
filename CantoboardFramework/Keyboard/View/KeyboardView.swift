@@ -264,7 +264,7 @@ class KeyboardView: UIView {
                     switch state.keyboardContextualType {
                     case .rime, .url(true):
                         if case .character(let c) = $0,
-                           state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress {
+                           state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale {
                             // Show tone keys.
                             return .characterWithConditioanlPopup(c)
                         } else {
@@ -274,7 +274,7 @@ class KeyboardView: UIView {
                         return $0
                     }
                 case "R", "r":
-                    if state.activeSchema == .jyutping, case .character(let c) = $0 {
+                    if state.activeSchema.isCantonese, case .character(let c) = $0 {
                         return .characterWithConditioanlPopup(c)
                     }
                     return $0

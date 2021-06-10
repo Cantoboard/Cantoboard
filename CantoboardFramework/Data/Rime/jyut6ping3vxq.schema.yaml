@@ -80,7 +80,6 @@ speller:
     #- derive/^ng([123456])$/m$1/
 
     - derive/[123456]//           # 忽略聲調
-    - derive/^([aeiou])/q$1/      # 增加 q 表示喉塞
     - derive/^jy?([aeiou])/y$1/   # 容錯 je -> ye, jyu -> yu
     - derive/^jyu/ju/             # 容錯 jyu -> ju
     - derive/yu/y/                # 容錯 jyu -> jy

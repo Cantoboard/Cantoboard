@@ -269,6 +269,7 @@ class CandidatePaneView: UIControl {
             let activeSchema = keyboardState.activeSchema
             let items = UIMenu(options: .displayInline, children: [
                 UIAction(title: "粵拼", state: activeSchema == .jyutping ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.jyutping)) }),
+                UIAction(title: "耶魯", state: activeSchema == .yale ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.yale)) }),
                 UIAction(title: "倉頡", state: activeSchema == .cangjie ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.cangjie)) }),
                 UIAction(title: "速成", state: activeSchema == .quick ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.quick)) }),
                 UIAction(title: "普通話", state: activeSchema == .mandarin ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.mandarin)) }),

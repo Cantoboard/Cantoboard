@@ -2,8 +2,8 @@
 # encoding: utf-8
 
 schema:
-  schema_id: jyut6ping3
-  name: 粵語拼音
+  schema_id: yale
+  name: 耶魯拼音
   version: "2020.11.26"
   author:
     - sgalal <sgalal.me@outlook.com>
@@ -16,11 +16,7 @@ schema:
     - Bing Jeung <bing@ososo.io>
     - Ayaka Mikazuki <ayaka@mail.shn.hk>
 
-  description: |-
-    採用香港語言學學會粵語拼音方案
-    https://www.lshk.org/jyutping
-    支援聲調顯示同輸入
-    Telegram 用户交流組 https://t.me/rime_cantonese
+  description: 耶魯拼音
 
 switches:
   - name: ascii_mode
@@ -78,17 +74,32 @@ speller:
 
     # 取消下行註釋，支援獨立鼻音韻 ng 併入 m，如「吳」讀若「唔」
     #- derive/^ng([123456])$/m$1/
-
-    - derive/[123456]//           # 忽略聲調
-    - derive/^jy?([aeiou])/y$1/   # 容錯 je -> ye, jyu -> yu
-    - derive/^jyu/ju/             # 容錯 jyu -> ju
-    - derive/yu/y/                # 容錯 jyu -> jy
-    - derive/eoi$/oey/            # 容錯
-    - derive/eoi$/eoy/            # 容錯
-    - derive/eo/oe/               # 容錯 eo/oe 不分
-    - derive/oe(ng|k)$/eo$1/      # 容錯
-    - derive/aa$/a/               # 容錯
     
+    # 耶魯轉換成粵拼
+    - xform/^jyu/yu/
+    - xform/^j/y/
+    - xform/^z/j/
+    - xform/^c/ch/
+    - xform/oeng(\d)/eung$1/
+    - xform/oek(\d)/euk$1/
+    - xform/eoi(\d)/eui$1/
+    - xform/eon(\d)/eun$1/
+    - xform/eot(\d)/eut$1/
+    - xform/oe(\d)/eu$1/
+    - xform/aa(\d)/a$1/
+    
+    - derive/[123456]//           # 忽略聲調
+
+    # 教院轉換成粵拼
+    #- derive/^z/dz/
+    #- derive/^c/ts/
+    #- derive/eoi$/oey/
+    #- derive/eon$/oen/
+    #- derive/eot$/oet/
+    #- derive/yu$/y/
+    #- derive/yun$/yn/
+    #- derive/yut$/yt/
+   
     # - abbrev/^([a-z]).+([1-6])$/$1$2/      # 首字母聲調簡拼
     # - abbrev/^([a-z]{2}).+([1-6])$/$1$2/   # 首2字母聲調簡拼
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
@@ -98,6 +109,18 @@ translator:
   dictionary: jyut6ping3
   spelling_hints: 256
   always_show_comments: true
+  comment_format:
+    - xform/oeng/eung/
+    - xform/oek/euk/
+    - xform/eoi/eui/
+    - xform/eon/eun/
+    - xform/eot/eut/
+    - xform/jyu/yu/
+    - xform/oe/eu/
+    - xform/aa/a/
+    - xform/j/y/
+    - xform/z/j/
+    - xform/c/ch/
 
 variants_hk:
   option_name: variants_hk

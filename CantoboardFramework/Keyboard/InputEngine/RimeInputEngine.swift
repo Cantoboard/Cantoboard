@@ -12,6 +12,7 @@ import CocoaLumberjackSwift
 
 public enum RimeSchema: String, Codable {
     case jyutping = "jyut6ping3"
+    case yale = "yale"
     case cangjie = "cangjie5"
     case quick = "quick5"
     case mandarin = "luna_pinyin"
@@ -21,6 +22,7 @@ public enum RimeSchema: String, Codable {
     var signChar: String {
         switch self {
         case .cangjie: return "倉"
+        case .yale: return "耶"
         case .quick: return "速"
         case .jyutping: return "粵"
         case .loengfan: return "兩"
@@ -37,9 +39,16 @@ public enum RimeSchema: String, Codable {
         self == .cangjie || self == .quick || self == .stroke
     }
     
+    var isCantonese: Bool {
+        switch self {
+        case .jyutping, .yale: return true
+        default: return false
+        }
+    }
+    
     var supportMixedMode: Bool {
         switch self {
-        case .jyutping, .stroke: return true
+        case .jyutping: return true
         default: return false
         }
     }
