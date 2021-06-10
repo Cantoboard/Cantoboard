@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1620283455
-    default.custom: 1620283455
+    default: 1623310136
+    default.custom: 1623310136
 ascii_composer:
   switch_key:
     Control_L: noop
@@ -115,6 +115,7 @@ recognizer:
 schema_list:
   - schema: jyut6ping3
   - schema: jyut6ping3vxq
+  - schema: yale
   - schema: cangjie5
   - schema: quick5
   - schema: luna_pinyin

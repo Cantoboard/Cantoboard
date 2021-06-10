@@ -1,14 +1,14 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1623119342
-    default: 1623119338
-    default.custom: 1623119338
+    common.custom: 1623310158
+    default: 1623310136
+    default.custom: 1623310136
     grammar: 0
-    jyut6ping3vxq.schema: 1623119338
-    symbols: 1623119338
+    jyut6ping3vxq.schema: 1623310136
+    symbols: 1623310136
     symbols.custom: 0
-    symbols_cantonese: 1623119338
+    symbols_cantonese: 1623310136
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -342,7 +342,6 @@ simp_hk2s:
 speller:
   algebra:
     - "derive/[123456]//"
-    - "derive/^([aeiou])/q$1/"
     - "derive/^jy?([aeiou])/y$1/"
     - "derive/^jyu/ju/"
     - "derive/yu/y/"

@@ -109,6 +109,7 @@ translator:
   dictionary: jyut6ping3
   spelling_hints: 256
   always_show_comments: true
+  prism: yale
   comment_format:
     - xform/oeng/eung/
     - xform/oek/euk/
