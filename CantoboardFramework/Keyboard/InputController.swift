@@ -305,10 +305,10 @@ class InputController {
             return
         case .changeSchema(let schema):
             state.mainSchema = schema
+            changeSchema()
             var settings = Settings.cached
             settings.lastSessionSettings.lastPrimarySchema = schema
             Settings.save(settings)
-            changeSchema()
             return
         case .selectCandidate(let choice):
             candidateSelected(choice: choice, enableSmartSpace: true)
@@ -384,6 +384,7 @@ class InputController {
     
     private func changeSchema() {
         inputEngine.rimeSchema = state.activeSchema
+        clearInput(shouldLeaveReverseLookupMode: false)
     }
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
