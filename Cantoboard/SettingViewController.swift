@@ -14,6 +14,7 @@ class SettingViewController: UITableViewController {
     @IBOutlet weak private var autoCapControl: UISwitch!
     @IBOutlet weak private var smartFullStopControl: UISwitch!
     @IBOutlet weak private var symbolShapeControl: UISegmentedControl!
+    @IBOutlet weak private var candidateFontSizeControl: UISegmentedControl!
     @IBOutlet weak private var spaceActionControl: UISegmentedControl!
     @IBOutlet weak private var toneInputControl: UISegmentedControl!
     @IBOutlet weak private var rimeEnableCorrector: UISwitch!
@@ -32,6 +33,7 @@ class SettingViewController: UITableViewController {
         autoCapControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        candidateFontSizeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         spaceActionControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         rimeEnableCorrector.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -55,6 +57,12 @@ class SettingViewController: UITableViewController {
         default: selectedSymbolShape = .smart
         }
         
+        let candidateFontSize: CandidateFontSize
+        switch candidateFontSizeControl.selectedSegmentIndex {
+        case 1: candidateFontSize = .large
+        default: candidateFontSize = .normal
+        }
+        
         let spaceAction: SpaceAction = spaceActionControl.selectedSegmentIndex == 0 ? .nextPage : .insertText
         let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
@@ -73,6 +81,7 @@ class SettingViewController: UITableViewController {
         settings.isAutoCapEnabled = autoCapControl.isOn
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
+        settings.candidateFontSize = candidateFontSize
         settings.spaceAction = spaceAction
         settings.toneInputMode = toneInputMode
         settings.rimeSettings.enableCorrector = rimeEnableCorrector.isOn
@@ -146,6 +155,13 @@ class SettingViewController: UITableViewController {
             case .ca: return 1
             case .gb: return 2
             case .us: return 3
+            }
+        })
+        
+        populateSetting(toSegmentedControl: candidateFontSizeControl, settingToIndexMapper: {
+            switch $0.candidateFontSize {
+            case .normal: return 0
+            case .large: return 1
             }
         })
     }

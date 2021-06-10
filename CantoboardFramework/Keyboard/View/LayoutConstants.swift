@@ -15,16 +15,6 @@ enum LayoutIdiom {
 }
 
 struct LayoutConstants {
-    private static let iPhonePortraitCandidateFontSize = CGFloat(22)
-    private static let iPhoneLandscapeCandidateFontSize = CGFloat(20.5)
-    private static let iPhonePortraitCandidateCommentFontSize = CGFloat(12)
-    private static let iPhoneLandscapeCandidateCommentFontSize = CGFloat(10)
-    
-    private static let iPadPortraitCandidateFontSize = CGFloat(28)
-    private static let iPadLandscapeCandidateFontSize = CGFloat(28)
-    private static let iPadPortraitCandidateCommentFontSize = CGFloat(15)
-    private static let iPadLandscapeCandidateCommentFontSize = CGFloat(15)
-    
     // Fixed:
     static let keyViewTopInset = CGFloat(8)
     static let keyViewBottomInset = CGFloat(3)
@@ -527,9 +517,9 @@ struct DeviceLayoutConstants {
     let miniStatusFontSize: CGFloat
     
     static let phone = DeviceLayoutConstants(
-        portraitCandidateFontSize: 22,
+        portraitCandidateFontSize: 20,
         portraitCandidateCommentFontSize: 12,
-        landscapeCandidateFontSize: 20.5,
+        landscapeCandidateFontSize: 20,
         landscapeCandidateCommentFontSize: 12,
         portraitStatusIndicatorFontSize: 20,
         landscapeStatusIndicatorFontSize: 15,
@@ -550,9 +540,9 @@ struct DeviceLayoutConstants {
     
     // iPad floating mode.
     static let padFloating = DeviceLayoutConstants(
-        portraitCandidateFontSize: 20.5,
+        portraitCandidateFontSize: 20,
         portraitCandidateCommentFontSize: 12,
-        landscapeCandidateFontSize: 20.5,
+        landscapeCandidateFontSize: 20,
         landscapeCandidateCommentFontSize: 12,
         portraitStatusIndicatorFontSize: 16,
         landscapeStatusIndicatorFontSize: 16,

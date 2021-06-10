@@ -44,6 +44,18 @@ public enum EnglishLocale: String, Codable {
     case au = "en_AU"
 }
 
+public enum CandidateFontSize: String, Codable {
+    case normal = "normal"
+    case large = "large"
+    
+    var scale: CGFloat {
+        switch self {
+        case .normal: return 1
+        case .large: return 1.1
+        }
+    }
+}
+
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
@@ -84,6 +96,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultMixedModeEnabled: Bool = true
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
+    private static let defaultCandidateFontSize: CandidateFontSize = .normal
     private static let defaultSymbolShape: SymbolShape = .smart
     private static let defaultSpaceAction: SpaceAction = .insertText
     private static let defaultToneInputMode: ToneInputMode = .longPress
@@ -98,6 +111,7 @@ public struct Settings: Codable, Equatable {
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
+    public var candidateFontSize: CandidateFontSize
     public var symbolShape: SymbolShape
     public var spaceAction: SpaceAction
     public var toneInputMode: ToneInputMode
@@ -113,6 +127,7 @@ public struct Settings: Codable, Equatable {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
         isAutoCapEnabled = Self.defaultAutoCapEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
+        candidateFontSize = Self.defaultCandidateFontSize
         symbolShape = Self.defaultSymbolShape
         spaceAction = Self.defaultSpaceAction
         toneInputMode = Self.defaultToneInputMode
@@ -130,6 +145,7 @@ public struct Settings: Codable, Equatable {
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
+        self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
         self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode

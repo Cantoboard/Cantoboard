@@ -196,7 +196,6 @@ class CandidateCell: UICollectionViewCell {
             self.label = label
         }
         
-        label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize)
         label?.text = text
         
         let keyCap = KeyCap(stringLiteral: text)
@@ -260,8 +259,9 @@ class CandidateCell: UICollectionViewCell {
     
     private func layout(_ bounds: CGRect) {
         let layoutConstants = LayoutConstants.forMainScreen
+        let fontSizeScale = Settings.cached.candidateFontSize.scale
 
-        label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize)
+        label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize * fontSizeScale)
         commentLayer?.font = UIFont.systemFont(ofSize: layoutConstants.candidateCommentFontSize)
         commentLayer?.fontSize = layoutConstants.candidateCommentFontSize
         
