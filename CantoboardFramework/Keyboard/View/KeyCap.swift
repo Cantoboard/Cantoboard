@@ -48,6 +48,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     contexualSymbols(ContextualType),
     charForm(CharForm),
     reverseLookup(RimeSchema),
+    changeSchema(RimeSchema),
     exportFile(String, String),
     exit
     
@@ -78,6 +79,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.url): return "."
         case .charForm(let cs): return .setCharForm(cs)
         case .reverseLookup(let s): return .reverseLookup(s)
+        case .changeSchema(let s): return .changeSchema(s)
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
         }
@@ -170,6 +172,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.delimiter): return "分"
         case .rime(.sym): return "符"
         case .reverseLookup(let schema): return schema.signChar
+        case .changeSchema(let schema): return schema.shortName
         case .contexualSymbols(.chinese): return "，"
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return "分"

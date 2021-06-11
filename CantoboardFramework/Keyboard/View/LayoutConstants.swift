@@ -18,6 +18,7 @@ struct LayoutConstants {
     // Fixed:
     static let keyViewTopInset = CGFloat(8)
     static let keyViewBottomInset = CGFloat(3)
+    static let statusMenuRowSize = CGSize(width: 180, height: 45)
     
     // Provided:
     let idiom: LayoutIdiom

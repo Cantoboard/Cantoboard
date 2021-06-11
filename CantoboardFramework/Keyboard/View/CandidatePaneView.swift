@@ -17,12 +17,29 @@ protocol CandidatePaneViewDelegate: NSObject {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath)
     func candidatePaneCandidateLoaded()
     func handleKey(_ action: KeyboardAction)
+    func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool
 }
 
 class StatusButton: UIButton {
-    private static let statusInset: CGFloat = 4
+    private static let longPressDelay: Double = 0.08
+    private static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
+    private static let miniExpandImageSizeRatio: CGFloat = 0.18, miniExpandImageAspectRatio: CGFloat = 1 / 2.3
+    
+    private var longPressTimer: Timer?
+    private var isMenuActive: Bool = false
+    
     private weak var statusSquareBg: CALayer?
+    private weak var miniExpandImageLayer: CALayer?, miniExpandImageMaskLayer: CALayer?
+    
+    var handleStatusMenu: ((_ from: UIView, _ with: UIEvent?) -> Bool)?
+    
     var isMini: Bool = false {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+    
+    var shouldShowMenuIndicator: Bool = false {
         didSet {
             setNeedsLayout()
         }
@@ -58,10 +75,83 @@ class StatusButton: UIButton {
         statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         statusSquareBg?.isHidden = isMini
         setTitleColor(isMini ? ButtonColor.keyHintColor : .label, for: .normal)
+        
+        if !isMini && shouldShowMenuIndicator {
+            createMiniExpandImageLayer()
+            
+            let width = bounds.width * Self.miniExpandImageSizeRatio
+            let size = CGSize(width: width, height: width * Self.miniExpandImageAspectRatio)
+            let origin = CGPoint(x: Self.miniExpandImageInset, y: bounds.maxY - Self.miniExpandImageInset - size.height)
+            miniExpandImageLayer?.frame = CGRect(origin: origin, size: size)
+            miniExpandImageMaskLayer?.frame = CGRect(origin: .zero, size: size)
+        } else {
+            miniExpandImageLayer?.removeFromSuperlayer()
+        }
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         statusSquareBg?.backgroundColor = ButtonColor.systemKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
+        miniExpandImageLayer?.backgroundColor = ButtonColor.keyHintColor.resolvedColor(with: traitCollection).cgColor
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        
+        longPressTimer?.invalidate()
+        longPressTimer = nil
+        
+        longPressTimer = Timer.scheduledTimer(withTimeInterval: Self.longPressDelay, repeats: false) { [weak self] timer in
+            guard let self = self, self.shouldShowMenuIndicator && !self.isMenuActive && self.longPressTimer == timer else { return }
+            self.isMenuActive = self.handleStatusMenu?(self, event) ?? false
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        if !bounds.contains(location) && location.y > bounds.height * 1.5 || isMenuActive {
+            isMenuActive = handleStatusMenu?(self, event) ?? false
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        longPressTimer?.invalidate()
+        longPressTimer = nil
+        
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        if bounds.contains(location) {
+            AudioFeedbackProvider.rigidFeedbackGenerator.impactOccurred()
+            super.touchesEnded(touches, with: event)
+        } else {
+            touchesCancelled(touches, with: event)
+        }
+        if isMenuActive {
+            isMenuActive = handleStatusMenu?(self, event) ?? false
+        }
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        longPressTimer?.invalidate()
+        longPressTimer = nil
+        
+        isMenuActive = handleStatusMenu?(self, event) ?? false
+    }
+    
+    private func createMiniExpandImageLayer() {
+        if miniExpandImageLayer == nil {
+            let miniExpandImageLayer = CALayer(), miniExpandImageMaskLayer = CALayer()
+            miniExpandImageLayer.backgroundColor = ButtonColor.keyForegroundColor.resolvedColor(with: traitCollection).cgColor
+            miniExpandImageLayer.mask = miniExpandImageMaskLayer
+            
+            miniExpandImageMaskLayer.contents = ButtonImage.paneExpandButtonImage?.cgImage
+            
+            layer.addSublayer(miniExpandImageLayer)
+            self.miniExpandImageLayer = miniExpandImageLayer
+            self.miniExpandImageMaskLayer = miniExpandImageMaskLayer
+        }
     }
 }
 
@@ -169,20 +259,29 @@ class CandidatePaneView: UIControl {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         
-        initCollectionView()
-        initButtons()
+        createCollectionView()
+        createButtons()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initButtons() {
+    var shouldShowStatusMenu: Bool {
+        if keyboardState.inputMode != .english && mode == .row,
+           case .alphabetic = keyboardState.keyboardType {
+            return true
+        }
+        return false
+    }
+    
+    private func createButtons() {
         expandButton = createAndAddButton(isStatusIndicator: false)
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
 
         inputModeButton = (createAndAddButton(isStatusIndicator: true) as! StatusButton)
         inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
+        inputModeButton.handleStatusMenu = handleStatusMenu
         sendSubviewToBack(inputModeButton)
         
         backspaceButton = createAndAddButton(isStatusIndicator: false)
@@ -210,11 +309,15 @@ class CandidatePaneView: UIControl {
         expandButton.setImage(expandButtonImage, for: .normal)
         
         var title: String?
+        var shouldShowMiniIndicator = false
         if statusIndicatorMode == .lang {
             switch keyboardState.inputMode {
-            // TODO What to show in non jyut mixed mode???
-            case .mixed: title = keyboardState.activeSchema.signChar // = "雙"
-            case .chinese: title = keyboardState.activeSchema.signChar
+            case .mixed:
+                title = keyboardState.activeSchema.signChar
+                shouldShowMiniIndicator = true
+            case .chinese:
+                title = keyboardState.activeSchema.signChar
+                shouldShowMiniIndicator = true
             case .english: title = "英"
             }
         } else {
@@ -225,6 +328,7 @@ class CandidatePaneView: UIControl {
             }
         }
         inputModeButton.setTitle(title, for: .normal)
+        inputModeButton.shouldShowMenuIndicator = shouldShowMiniIndicator && mode == .row
 
         backspaceButton.setImage(ButtonImage.backspace, for: .normal)
         
@@ -256,34 +360,14 @@ class CandidatePaneView: UIControl {
             backspaceButton.isHidden = true
             charFormButton.isHidden = true
         }
-        
-        setupContextMenu()
         setNeedsLayout()
     }
     
-    private func setupContextMenu() {
-        if #available(iOS 14.0, *) {
-            expandButton.menu = nil
-            inputModeButton.menu = nil
-            
-            let activeSchema = keyboardState.activeSchema
-            let items = UIMenu(options: .displayInline, children: [
-                UIAction(title: "粵拼", state: activeSchema == .jyutping ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.jyutping)) }),
-                UIAction(title: "耶魯", state: activeSchema == .yale ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.yale)) }),
-                UIAction(title: "倉頡", state: activeSchema == .cangjie ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.cangjie)) }),
-                UIAction(title: "速成", state: activeSchema == .quick ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.quick)) }),
-                UIAction(title: "普通話", state: activeSchema == .mandarin ? .on : .off, handler: { [weak self] _ in self?.delegate?.handleKey(.changeSchema(.mandarin)) }),
-            ])
-            
-            if expandButton.isHidden {
-                inputModeButton.menu = items
-            } else {
-                expandButton.menu = items
-            }
-        }
+    private func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
+        return delegate?.handleStatusMenu(from: from, with: with) ?? false
     }
     
-    private func initCollectionView() {
+    private func createCollectionView() {
         let collectionViewLayout = CandidateCollectionViewFlowLayout(candidatePaneView: self)
         
         let collectionView = CandidateCollectionView(frame :.zero, collectionViewLayout: collectionViewLayout)
@@ -341,6 +425,10 @@ class CandidatePaneView: UIControl {
         let currentCharForm = Settings.cached.charForm
         let newCharForm: CharForm = currentCharForm == .simplified ? .traditionalTW : .simplified
         delegate?.handleKey(.setCharForm(newCharForm))
+    }
+    
+    private func handleKey(_ action: KeyboardAction) {
+        delegate?.handleKey(action)
     }
     
     override func layoutSubviews() {

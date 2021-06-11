@@ -31,6 +31,18 @@ public enum RimeSchema: String, Codable {
         }
     }
     
+    var shortName: String {
+        switch self {
+        case .cangjie: return "倉頡"
+        case .yale: return "耶魯"
+        case .quick: return "速成"
+        case .jyutping: return "粵拼"
+        case .loengfan: return "兩分"
+        case .mandarin: return "普通話"
+        case .stroke: return "筆劃"
+        }
+    }
+    
     var isCangjieFamily: Bool {
         self == .cangjie || self == .quick
     }

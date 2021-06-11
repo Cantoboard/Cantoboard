@@ -26,4 +26,7 @@ class AudioFeedbackProvider {
         default: ()
         }
     }
+    
+    static let softFeedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
+    static let rigidFeedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
 }

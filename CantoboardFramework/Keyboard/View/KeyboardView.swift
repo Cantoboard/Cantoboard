@@ -17,10 +17,13 @@ protocol KeyboardViewDelegate: NSObject {
 }
 
 class KeyboardView: UIView {
+    private static let statusMenuXInset: CGFloat = 5
+    
     // Uncomment this to debug memory leak.
     // private let c = InstanceCounter<KeyboardView>()
     
     private var _state: KeyboardState
+    private weak var statusMenu: StatusMenu?
     
     var state: KeyboardState {
         get { _state }
@@ -159,6 +162,7 @@ class KeyboardView: UIView {
         layoutKeyboardSubviews(layoutConstants)
         layoutCandidateSubviews(layoutConstants)
         layoutLoadingIndicatorView()
+        layoutStatusMenu()
     }
     
     private func layoutKeyboardSubviews(_ layoutConstants: LayoutConstants) {
@@ -200,6 +204,15 @@ class KeyboardView: UIView {
         
         guard let loadingIndicatorView = loadingIndicatorView else { return }
         loadingIndicatorView.frame = CGRect(x: frame.midX - size / 2, y: frame.midY - size / 2, width: size, height: size)
+    }
+    
+    private func layoutStatusMenu() {
+        guard let statusMenu = statusMenu else { return }
+        
+        let size = statusMenu.intrinsicContentSize
+        let origin = CGPoint(x: frame.width - size.width, y: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        let frame = CGRect(origin: origin, size: size)
+        statusMenu.frame = frame.offsetBy(dx: -Self.statusMenuXInset, dy: 0)
     }
     
     private func refreshCandidatePaneViewVisibility() {
@@ -341,14 +354,14 @@ class KeyboardView: UIView {
         guard self.emojiView == nil else { return }
         let keyboardSettings = KeyboardSettings(bottomType: .categories)
         keyboardSettings.needToShowAbcButton = true
-
+        
         let emojiView = EmojiView(keyboardSettings: keyboardSettings)
         emojiView.delegate = self
-
+        
         emojiView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(emojiView)
         self.emojiView = emojiView
-
+        
         NSLayoutConstraint.activate([
             emojiView.topAnchor.constraint(equalTo: self.topAnchor),
             emojiView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -402,12 +415,56 @@ extension KeyboardView: CandidatePaneViewDelegate {
     func handleKey(_ action: KeyboardAction) {
         delegate?.handleKey(action)
     }
+    
+    func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
+        guard candidatePaneView?.shouldShowStatusMenu ?? false else {
+            hideStatusMenu()
+            return false
+        }
+        if let touch = with?.allTouches?.first, touch.view == from {
+            switch touch.phase {
+            case .began, .moved, .stationary:
+                showStatusMenu()
+                statusMenu?.touchesMoved([touch], with: with)
+                return true
+            case .ended:
+                statusMenu?.touchesEnded([touch], with: with)
+                hideStatusMenu()
+                return false
+            case .cancelled:
+                statusMenu?.touchesCancelled([touch], with: with)
+                hideStatusMenu()
+                return false
+            default: ()
+            }
+        }
+        return statusMenu != nil
+    }
+    
+    private func showStatusMenu() {
+        guard statusMenu == nil else { return }
+        AudioFeedbackProvider.softFeedbackGenerator.impactOccurred()
+        let statusMenu = StatusMenu(actionRows: [
+            [ .changeSchema(.yale), .changeSchema(.jyutping) ],
+            [ .changeSchema(.cangjie), .changeSchema(.quick) ],
+            [ .changeSchema(.mandarin) ]
+        ])
+        statusMenu.handleKey = delegate?.handleKey
+
+        addSubview(statusMenu)
+        self.statusMenu = statusMenu
+    }
+    
+    private func hideStatusMenu() {
+        statusMenu?.removeFromSuperview()
+    }
 }
 
 extension KeyboardView {
     // touchesBegan() is delayed if touches are near the screen edge.
     // We use GestureRecoginzer to workaround the delay.
     func touchesBeganFromGestureRecoginzer(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard statusMenu == nil else { return }
         for touch in touches {
             switch touch.view {
             case let key as KeyView:
@@ -420,6 +477,7 @@ extension KeyboardView {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         
+        guard statusMenu == nil else { return }
         for touch in touches {
             let key = findTouchingView(touch, with: event) as? KeyView
             touchHandler.touchMoved(touch, key: key, with: event)
@@ -429,6 +487,7 @@ extension KeyboardView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         
+        guard statusMenu == nil else { return }
         for touch in touches {
             let key = findTouchingView(touch, with: event) as? KeyView
             touchHandler.touchEnded(touch, key: key, with: event)
@@ -438,6 +497,7 @@ extension KeyboardView {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         
+        guard statusMenu == nil else { return }
         for touch in touches {
             touchHandler.touchCancelled(touch, with: event)
         }
@@ -464,8 +524,10 @@ extension KeyboardView: EmojiViewDelegate {
     }
 }
 
+/*
 extension KeyboardView: UIInputViewAudioFeedback {
     var enableInputClicksWhenVisible: Bool {
         get { true }
     }
 }
+*/

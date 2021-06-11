@@ -139,6 +139,7 @@
 		79D4E1D42642372600857D7D /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 79515AD72609BFB400D29A5C /* Data */; };
 		79D4E23B264251C600857D7D /* EnglishDictSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E23A264251C600857D7D /* EnglishDictSource */; };
 		79D4E244264262D200857D7D /* UnihanSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E243264262D200857D7D /* UnihanSource */; };
+		79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E98DBC2672FC92006E32DE /* StatusMenu.swift */; };
 		79FFBCFF25F7516900860D63 /* Rime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; };
 		79FFBD0025F7516900860D63 /* Rime.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79FFBD0125F7516D00860D63 /* Rime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79FFBCFC25F7516300860D63 /* Rime.framework */; };
@@ -391,6 +392,7 @@
 		79D4E23A264251C600857D7D /* EnglishDictSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EnglishDictSource; sourceTree = "<group>"; };
 		79D4E243264262D200857D7D /* UnihanSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UnihanSource; sourceTree = "<group>"; };
 		79D7180525FDA0C400A25AC3 /* CantoboardTestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardTestApp.entitlements; sourceTree = "<group>"; };
+		79E98DBC2672FC92006E32DE /* StatusMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenu.swift; sourceTree = "<group>"; };
 		79FFBCFC25F7516300860D63 /* Rime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Rime.framework; path = RimeFramework/Rime.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -630,6 +632,7 @@
 				79B9B5A425F34A1200238E80 /* KeyboardView.swift */,
 				79B9B5A525F34A1200238E80 /* KeyHintLayer.swift */,
 				79B9B5A625F34A1200238E80 /* KeyCap.swift */,
+				79E98DBC2672FC92006E32DE /* StatusMenu.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1217,6 +1220,7 @@
 				79B9B60725F34A1200238E80 /* KeyRowView.swift in Sources */,
 				79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */,
 				79D4E1BF26422C6E00857D7D /* DataFileManager.swift in Sources */,
+				79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

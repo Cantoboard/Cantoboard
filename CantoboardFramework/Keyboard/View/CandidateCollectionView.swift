@@ -124,9 +124,7 @@ class CandidateCollectionView: UICollectionView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
-        if longPressTimer != nil {
-            longPressTimer?.invalidate()
-        }
+        longPressTimer?.invalidate()
         
         guard let longPressTouch = touches.first else { return }
         let longPressBeginPoint = longPressTouch.location(in: self)
