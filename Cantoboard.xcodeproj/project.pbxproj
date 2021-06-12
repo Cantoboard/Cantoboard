@@ -28,6 +28,7 @@
 		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
 		799D919D2674646D00AE9DBD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 799D919C2674646D00AE9DBD /* Settings.bundle */; };
+		799D91A32674690700AE9DBD /* StatusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799D91A22674690700AE9DBD /* StatusButton.swift */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -285,6 +286,7 @@
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799D919C2674646D00AE9DBD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		799D91A22674690700AE9DBD /* StatusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusButton.swift; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		799F2E4E25F46B0800C53416 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		799F2E5025F46B0800C53416 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -628,13 +630,14 @@
 			children = (
 				79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */,
 				79B9B59F25F34A1200238E80 /* CandidatePaneView.swift */,
-				79B9B5A025F34A1200238E80 /* KeyView.swift */,
-				79B9B5A125F34A1200238E80 /* KeyRowView.swift */,
-				79B9B5A225F34A1200238E80 /* KeyPopupView.swift */,
-				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
 				79B9B5A425F34A1200238E80 /* KeyboardView.swift */,
-				79B9B5A525F34A1200238E80 /* KeyHintLayer.swift */,
 				79B9B5A625F34A1200238E80 /* KeyCap.swift */,
+				79B9B5A525F34A1200238E80 /* KeyHintLayer.swift */,
+				79B9B5A225F34A1200238E80 /* KeyPopupView.swift */,
+				79B9B5A125F34A1200238E80 /* KeyRowView.swift */,
+				79B9B5A025F34A1200238E80 /* KeyView.swift */,
+				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
+				799D91A22674690700AE9DBD /* StatusButton.swift */,
 				79E98DBC2672FC92006E32DE /* StatusMenu.swift */,
 			);
 			path = View;
@@ -1191,6 +1194,7 @@
 				79B9B60A25F34A1200238E80 /* KeyboardView.swift in Sources */,
 				79B9B5FE25F34A1200238E80 /* CGPoints+Extension.swift in Sources */,
 				79B9B60C25F34A1200238E80 /* KeyCap.swift in Sources */,
+				799D91A32674690700AE9DBD /* StatusButton.swift in Sources */,
 				79B9B5F325F34A1200238E80 /* RKRimeSession.m in Sources */,
 				79B9B60125F34A1200238E80 /* CGSize+Extension.swift in Sources */,
 				79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */,
