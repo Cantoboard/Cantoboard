@@ -228,7 +228,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         
         switch self {
         case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
-        case .reverseLookup: return "反"
         case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
         case .charForm(let cs): return Settings.cached.charForm == cs ? "*" : nil
