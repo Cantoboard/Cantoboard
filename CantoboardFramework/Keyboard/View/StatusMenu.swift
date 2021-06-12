@@ -15,9 +15,9 @@ class StatusMenu: UIView {
     var labels: [[UILabel]]
     var handleKey: ((_ action: KeyboardAction) -> Void)?
     
-    init(actionRows: [[KeyCap]]) {
+    init(menuRows: [[KeyCap]]) {
         var labelActions: [UILabel: KeyCap] = [:]
-        labels = actionRows.map({
+        labels = menuRows.map({
             $0.map({ keyCap in
                 let label = Self.createLabel(keyCap: keyCap)
                 labelActions[label] = keyCap

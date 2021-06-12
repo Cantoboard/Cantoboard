@@ -444,11 +444,16 @@ extension KeyboardView: CandidatePaneViewDelegate {
     private func showStatusMenu() {
         guard statusMenu == nil else { return }
         AudioFeedbackProvider.softFeedbackGenerator.impactOccurred()
-        let statusMenu = StatusMenu(actionRows: [
+        
+        var menuRows: [[KeyCap]] =  [
             [ .changeSchema(.yale), .changeSchema(.jyutping) ],
             [ .changeSchema(.cangjie), .changeSchema(.quick) ],
-            [ .changeSchema(.mandarin) ]
-        ])
+            [ .changeSchema(.mandarin) ],
+        ]
+        if state.activeSchema.supportMixedMode {
+            menuRows[menuRows.count - 1].append(.switchToEnglishMode)
+        }
+        let statusMenu = StatusMenu(menuRows: menuRows)
         statusMenu.handleKey = delegate?.handleKey
 
         addSubview(statusMenu)
