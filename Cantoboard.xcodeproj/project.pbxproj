@@ -27,6 +27,7 @@
 		796D9566263EA649006D9370 /* Rime.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 796D9565263EA63E006D9370 /* Rime.framework.dSYM */; };
 		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
+		799D919D2674646D00AE9DBD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 799D919C2674646D00AE9DBD /* Settings.bundle */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -283,6 +284,7 @@
 		796D9565263EA63E006D9370 /* Rime.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Rime.framework.dSYM; path = RimeFramework/Rime.framework.dSYM; sourceTree = "<group>"; };
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
+		799D919C2674646D00AE9DBD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		799F2E4E25F46B0800C53416 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		799F2E5025F46B0800C53416 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -502,6 +504,7 @@
 				7919A78B25F332100075DD4D /* LaunchScreen.storyboard */,
 				7919A78625F3320F0075DD4D /* Main.storyboard */,
 				7919A78225F3320F0075DD4D /* SceneDelegate.swift */,
+				799D919C2674646D00AE9DBD /* Settings.bundle */,
 			);
 			path = Cantoboard;
 			sourceTree = "<group>";
@@ -1038,6 +1041,7 @@
 			files = (
 				7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */,
 				7919A78A25F332100075DD4D /* Assets.xcassets in Resources */,
+				799D919D2674646D00AE9DBD /* Settings.bundle in Resources */,
 				7919A78825F3320F0075DD4D /* Main.storyboard in Resources */,
 				79A2D0802661FD0C00F2EB19 /* Guide in Resources */,
 			);
