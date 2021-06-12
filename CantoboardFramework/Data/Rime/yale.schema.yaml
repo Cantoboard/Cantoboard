@@ -118,7 +118,7 @@ translator:
     - xform/eot/eut/
     - xform/jyu/yu/
     - xform/oe/eu/
-    - xform/aa/a/
+    - xform/aa(\>|\d)/a$1/
     - xform/j/y/
     - xform/z/j/
     - xform/c/ch/
