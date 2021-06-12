@@ -469,21 +469,21 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
 extension LayoutConstants {
     static var forMainScreen: LayoutConstants {
         let traitCollection = Self.currentTraitCollection
-        DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue)")
-        DDLogInfo("iPad special mode debug traitCollection \(traitCollection)")
+        // DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue)")
+        // DDLogInfo("iPad special mode debug traitCollection \(traitCollection)")
         let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass == .compact
         let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
         if isPadFloatingMode {
-            DDLogInfo("Using isPadFloatingMode")
+            // DDLogInfo("Using isPadFloatingMode")
             return getContants(screenSize: CGSize(width: 320, height: 254))
         } else if isPadCompatibleMode {
             // iPad's compatiblity mode has a bug. UIScreen doesn't return the right resolution. We canot rely on it.
             let isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
             let size = isLandscape ? CGSize(width: 667, height: 375) : CGSize(width: 375, height: 667)
-            DDLogInfo("Using isPadCompatibleMode \(size)")
+            // DDLogInfo("Using isPadCompatibleMode \(size)")
             return getContants(screenSize: size)
         } else {
-            DDLogInfo("Using \(UIScreen.main.bounds.size)")
+            // DDLogInfo("Using \(UIScreen.main.bounds.size)")
             return getContants(screenSize: UIScreen.main.bounds.size)
         }
     }
