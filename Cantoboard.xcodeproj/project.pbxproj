@@ -29,6 +29,7 @@
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
 		799D919D2674646D00AE9DBD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 799D919C2674646D00AE9DBD /* Settings.bundle */; };
 		799D91A32674690700AE9DBD /* StatusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799D91A22674690700AE9DBD /* StatusButton.swift */; };
+		799D91AD26746D2500AE9DBD /* Sessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799D91AC26746D2500AE9DBD /* Sessions.swift */; };
 		799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
 		799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B65725F34AF100238E80 /* ISEmojiView.framework */; };
@@ -287,6 +288,7 @@
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799D919C2674646D00AE9DBD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		799D91A22674690700AE9DBD /* StatusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusButton.swift; sourceTree = "<group>"; };
+		799D91AC26746D2500AE9DBD /* Sessions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sessions.swift; sourceTree = "<group>"; };
 		799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CantoboardTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		799F2E4E25F46B0800C53416 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		799F2E5025F46B0800C53416 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -585,6 +587,7 @@
 				79B9B5A825F34A1200238E80 /* KeyboardAction.swift */,
 				79B9B59D25F34A1200238E80 /* KeyboardViewController.swift */,
 				79B9B59C25F34A1200238E80 /* Settings.swift */,
+				799D91AC26746D2500AE9DBD /* Sessions.swift */,
 				79B9B59B25F34A1200238E80 /* TouchHandler.swift */,
 				79B9B58B25F34A1200238E80 /* InputEngine */,
 				79B9B59225F34A1200238E80 /* Utils */,
@@ -1195,6 +1198,7 @@
 				79B9B5FE25F34A1200238E80 /* CGPoints+Extension.swift in Sources */,
 				79B9B60C25F34A1200238E80 /* KeyCap.swift in Sources */,
 				799D91A32674690700AE9DBD /* StatusButton.swift in Sources */,
+				799D91AD26746D2500AE9DBD /* Sessions.swift in Sources */,
 				79B9B5F325F34A1200238E80 /* RKRimeSession.m in Sources */,
 				79B9B60125F34A1200238E80 /* CGSize+Extension.swift in Sources */,
 				79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */,

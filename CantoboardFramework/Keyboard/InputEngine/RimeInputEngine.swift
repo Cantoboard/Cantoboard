@@ -82,7 +82,7 @@ class RimeInputEngine: NSObject, InputEngine {
         }
     }
     
-    private var _charForm: CharForm = Settings.cached.charForm
+    private var _charForm: CharForm = SessionState.main.lastCharForm
     var charForm: CharForm {
         get { _charForm }
         set {

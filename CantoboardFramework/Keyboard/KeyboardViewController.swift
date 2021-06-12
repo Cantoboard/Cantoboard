@@ -38,8 +38,8 @@ open class KeyboardViewController: UIInputViewController {
     
     public override init(nibName: String?, bundle: Bundle?) {
         _ = Self.isLoggerInited
-
         super.init(nibName: nibName, bundle: bundle)
+        inputController = InputController(keyboardViewController: self)
         
         RimeApi.stateChangeCallbacks.append({ [weak self] rimeApi, newState in
             guard let self = self else { return true }
@@ -166,8 +166,6 @@ open class KeyboardViewController: UIInputViewController {
     
     public func createKeyboardIfNeeded() {
         if keyboardView == nil {
-            inputController = InputController(keyboardViewController: self)
-            
             let keyboardView = KeyboardView(state: inputController!.state)
             keyboardView.delegate = self
             keyboardView.translatesAutoresizingMaskIntoConstraints = false
@@ -236,6 +234,7 @@ open class KeyboardViewController: UIInputViewController {
         }
         
         if prevSettings.charForm != settings.charForm {
+            SessionState.main.lastCharForm = settings.charForm
             inputController?.keyPressed(.setCharForm(settings.charForm))
             DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }

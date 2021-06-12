@@ -70,26 +70,6 @@ public struct RimeSettings: Codable, Equatable {
     }
 }
 
-// If the input method doesn't have full access, the following settings will be not be reloaded from disk.
-public struct SessionSettings: Codable, Equatable {
-    private static let defaultInputMode: InputMode = .mixed
-    private static let defaultPrimarySchema: RimeSchema = .jyutping
-    
-    public var lastInputMode: InputMode
-    public var lastPrimarySchema: RimeSchema
-
-    public init() {
-        lastInputMode = Self.defaultInputMode
-        lastPrimarySchema = Self.defaultPrimarySchema
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        lastInputMode = try container.decodeIfPresent(InputMode.self, forKey: .lastInputMode) ?? Self.defaultInputMode
-        lastPrimarySchema = try container.decodeIfPresent(RimeSchema.self, forKey: .lastPrimarySchema) ?? Self.defaultPrimarySchema
-    }
-}
-
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
     private static let defaultCharForm: CharForm = .traditionalTW
@@ -105,7 +85,6 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowRomanization: Bool = false
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
-    private static let defaultSessionSettings: SessionSettings = SessionSettings()
 
     public var charForm: CharForm
     public var isMixedModeEnabled: Bool
@@ -120,7 +99,6 @@ public struct Settings: Codable, Equatable {
     public var shouldShowRomanization: Bool
     public var isAudioFeedbackEnabled: Bool
     public var isTapHapticFeedbackEnabled: Bool
-    public var lastSessionSettings: SessionSettings
     
     public init() {
         charForm = Self.defaultCharForm
@@ -136,7 +114,6 @@ public struct Settings: Codable, Equatable {
         shouldShowRomanization = Self.defaultShowRomanization
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
-        lastSessionSettings = Self.defaultSessionSettings
     }
     
     public init(from decoder: Decoder) throws {
@@ -154,7 +131,6 @@ public struct Settings: Codable, Equatable {
         self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.defaultShowRomanization
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
-        self.lastSessionSettings = try container.decodeIfPresent(SessionSettings.self, forKey: .lastSessionSettings) ?? Settings.defaultSessionSettings
     }
     
     private static var _cached: Settings?
@@ -170,15 +146,10 @@ public struct Settings: Codable, Equatable {
     
     public static func reload() -> Settings {
         if let saved = userDefaults.object(forKey: settingsKeyName) as? Data {
-            let prevSetting = _cached
             let decoder = JSONDecoder()
             do {
                 let setting = try decoder.decode(Settings.self, from: saved)
                 _cached = setting
-                if let prevSetting = prevSetting, !hasFullAccess {
-                    // If the app doesn't have full acesss, preserve lastSessionSettings in memory.
-                    _cached!.lastSessionSettings = prevSetting.lastSessionSettings
-                }
                 return setting
             } catch {
                 DDLogInfo("Failed to load \(saved). Falling back to default settings. Error: \(error)")

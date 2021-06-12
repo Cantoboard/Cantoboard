@@ -46,7 +46,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     shift(_ state: KeyboardShiftState),
     rime(RimeChar),
     contexualSymbols(ContextualType),
-    charForm(CharForm),
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
     switchToEnglishMode,
@@ -78,7 +77,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return .rime(.delimiter)
         case .contexualSymbols(.url): return "."
-        case .charForm(let cs): return .setCharForm(cs)
         case .reverseLookup(let s): return .reverseLookup(s)
         case .changeSchema(let s): return .changeSchema(s)
         case .switchToEnglishMode: return .toggleInputMode
@@ -180,8 +178,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .contexualSymbols(.english): return ","
         case .contexualSymbols(.rime): return "分"
         case .contexualSymbols(.url): return "."
-        case .charForm(.traditionalHK): return "繁"
-        case .charForm(.simplified): return "簡"
         case "（": return "("
         case "）": return ")"
         case "「": return "「　"
@@ -233,7 +229,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
         case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
         case .contexualSymbols(.url): return "/"
-        case .charForm(let cs): return Settings.cached.charForm == cs ? "*" : nil
         case .space: return "Cantoboard"
         default: return barHint
         }

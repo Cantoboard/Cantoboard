@@ -32,7 +32,10 @@ class BilingualInputEngine: InputEngine {
 
     var charForm: CharForm {
         get { rimeInputEngine.charForm }
-        set { rimeInputEngine.charForm = newValue }
+        set {
+            SessionState.main.lastCharForm = newValue
+            rimeInputEngine.charForm = newValue
+        }
     }
 
     var rimeSchema: RimeSchema {

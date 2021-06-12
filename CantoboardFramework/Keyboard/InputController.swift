@@ -35,7 +35,9 @@ struct KeyboardState: Equatable {
     var spaceKeyMode: SpaceKeyMode
     
     var mainSchema: RimeSchema, reverseLookupSchema: RimeSchema?
-    var inputMode: InputMode = Settings.cached.lastSessionSettings.lastInputMode
+    var inputMode: InputMode {
+        didSet { SessionState.main.lastInputMode = inputMode }
+    }
     
     var activeSchema: RimeSchema {
         get { reverseLookupSchema ?? mainSchema }
@@ -55,8 +57,8 @@ struct KeyboardState: Equatable {
         needsInputModeSwitchKey = false
         spaceKeyMode = .space
         
-        mainSchema = Settings.cached.lastSessionSettings.lastPrimarySchema
-        inputMode = Settings.cached.lastSessionSettings.lastInputMode
+        mainSchema = SessionState.main.lastPrimarySchema
+        inputMode = SessionState.main.lastInputMode
     }
 }
 
@@ -270,10 +272,6 @@ class InputController {
         case .setCharForm(let cs):
             inputEngine.charForm = cs
             candidateOrganizer.updateCandidates(reload: true)
-            
-            var settings = Settings.cached
-            settings.charForm = cs
-            Settings.save(settings)
             return
         case .toggleInputMode:
             guard state.reverseLookupSchema == nil else {
@@ -289,10 +287,6 @@ class InputController {
             case .english: state.inputMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
             }
             enforceInputMode()
-            
-            var settings = Settings.cached
-            settings.lastSessionSettings.lastInputMode = state.inputMode
-            Settings.save(settings)
         case .toggleSymbolShape:
             switch state.symbolShape {
             case .full: state.symbolShapeOverride = .half
@@ -306,9 +300,7 @@ class InputController {
         case .changeSchema(let schema):
             state.mainSchema = schema
             changeSchema()
-            var settings = Settings.cached
-            settings.lastSessionSettings.lastPrimarySchema = schema
-            Settings.save(settings)
+            SessionState.main.lastPrimarySchema = schema
             return
         case .selectCandidate(let choice):
             candidateSelected(choice: choice, enableSmartSpace: true)
@@ -317,7 +309,7 @@ class InputController {
         case .exportFile(let namePrefix, let path):
             state.enableState = .loading
             keyboardView?.state = state
-
+            
             let zipFilePath = FileManager.default.temporaryDirectory.appendingPathComponent("\(namePrefix)-\(NSDate().timeIntervalSince1970).zip")
             DispatchQueue.global(qos: .userInteractive).async { [self] in
                 do {

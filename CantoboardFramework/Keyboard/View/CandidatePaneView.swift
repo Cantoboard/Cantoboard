@@ -198,7 +198,7 @@ class CandidatePaneView: UIControl {
         backspaceButton.setImage(ButtonImage.backspace, for: .normal)
         
         var charFormText: String
-        if Settings.cached.charForm == .simplified {
+        if SessionState.main.lastCharForm == .simplified {
             charFormText = "簡"
         } else {
             charFormText = "繁"
@@ -287,7 +287,7 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func charFormButtonClick() {
-        let currentCharForm = Settings.cached.charForm
+        let currentCharForm = SessionState.main.lastCharForm
         let newCharForm: CharForm = currentCharForm == .simplified ? .traditionalTW : .simplified
         delegate?.handleKey(.setCharForm(newCharForm))
     }
