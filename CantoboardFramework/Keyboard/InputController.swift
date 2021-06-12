@@ -435,7 +435,7 @@ class InputController {
         }
         
         if hasMarkedText {
-            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: NSNotFound, length: 0))
+            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.utf16.count, length: 0))
             textDocumentProxy.unmarkText()
             hasMarkedText = false
         } else {
