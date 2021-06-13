@@ -112,8 +112,8 @@ open class KeyboardViewController: UIInputViewController {
         super.viewWillAppear(animated)
         LayoutConstants.currentTraitCollection = traitCollection
         
-        if superviewCenterXConstraint == nil {
-            let superviewCenterXConstraint = view.centerXAnchor.constraint(equalTo: view.superview!.centerXAnchor)
+        if superviewCenterXConstraint == nil, let superview = view.superview {
+            let superviewCenterXConstraint = view.centerXAnchor.constraint(equalTo: superview.centerXAnchor)
             self.superviewCenterXConstraint = superviewCenterXConstraint
             superviewCenterXConstraint.isActive = true
         }
