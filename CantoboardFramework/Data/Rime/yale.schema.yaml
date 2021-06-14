@@ -110,19 +110,19 @@ translator:
   spelling_hints: 256
   always_show_comments: true
   prism: yale
-# Show JyutPing in Yale mode to encourage users to learn JyutPing
-#  comment_format:
-#    - xform/oeng/eung/
-#    - xform/oek/euk/
-#    - xform/eoi/eui/
-#    - xform/eon/eun/
-#    - xform/eot/eut/
-#    - xform/jyu/yu/
-#    - xform/oe/eu/
-#    - xform/aa(\>|\d)/a$1/
-#    - xform/j/y/
-#    - xform/z/j/
-#    - xform/c/ch/
+# TODO Show JyutPing in Yale mode to encourage users to learn JyutPing
+  comment_format:
+    - xform/oeng/eung/
+    - xform/oek/euk/
+    - xform/eoi/eui/
+    - xform/eon/eun/
+    - xform/eot/eut/
+    - xform/jyu/yu/
+    - xform/oe/eu/
+    - xform/aa(\>|\d)/a$1/
+    - xform/j/y/
+    - xform/z/j/
+    - xform/c/ch/
 
 variants_hk:
   option_name: variants_hk
