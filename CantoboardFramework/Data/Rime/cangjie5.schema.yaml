@@ -4,13 +4,14 @@
 schema:
   schema_id: cangjie5
   name: 倉頡五代
-  version: "0.30"
+  version: "2020.03.01"
   author:
     - 發明人 朱邦復先生
   description: |
-    第五代倉頡輸入法
-    碼表源自倉頡之友發佈的《五倉世紀版》
-    www.chinesecj.com
+    倉頡五代補完計畫
+    專案網址：https://github.com/Jackchows/Cangjie5
+    原碼表為「倉頡之友·馬來西亞」發佈的「倉頡平台2012」軟件所含「五倉世紀」碼表
+    網址：www.chinesecj.com
   dependencies:
     - jyut6ping3
 
@@ -53,7 +54,7 @@ speller:
 
 translator:
   dictionary: cangjie5
-  enable_charset_filter: true
+  enable_charset_filter: false
   enable_sentence: true
   enable_encoder: true
   encode_commit_history: true
@@ -83,6 +84,3 @@ jyut6ping3_reverse_lookup:
   dictionary: jyut6ping3
   comment_format:
     - "xlit| |/|"
-
-#__patch:
-#  - common.custom:/patch?
