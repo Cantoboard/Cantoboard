@@ -64,7 +64,7 @@ class KeyboardView: UIView {
         candidatePaneView?.keyboardState = state
     }
     
-    private(set) var candidatePaneView: CandidatePaneView?
+    private var candidatePaneView: CandidatePaneView?
     private var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
     private var touchHandler: TouchHandler!
@@ -174,6 +174,14 @@ class KeyboardView: UIView {
         layoutCandidateSubviews(layoutConstants)
         layoutLoadingIndicatorView()
         layoutStatusMenu()
+    }
+    
+    func changeCandidatePaneMode(_ newMode: CandidatePaneView.Mode) {
+        candidatePaneView?.changeMode(newMode)
+    }
+    
+    func scrollToNextPageInRowMode() {
+        candidatePaneView?.scrollToNextPageInRowMode()
     }
     
     private func layoutKeyboardSubviews(_ layoutConstants: LayoutConstants) {

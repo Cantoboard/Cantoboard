@@ -149,7 +149,7 @@ class InputController: NSObject {
             }
             insertText(commitedText, isFromCandidateBar: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
-                keyboardView?.candidatePaneView?.changeMode(.row)
+                keyboardView?.changeCandidatePaneMode(.row)
             }
         }
     }
@@ -169,7 +169,7 @@ class InputController: NSObject {
             if Settings.cached.spaceAction == .insertText {
                 candidateSelected(choice: [0, 0], enableSmartSpace: true)
             } else {
-                keyboardView?.candidatePaneView?.scrollToNextPageInRowMode()
+                keyboardView?.scrollToNextPageInRowMode()
                 needReloadCandidates = false
             }
         } else {
@@ -255,7 +255,7 @@ class InputController: NSObject {
                     _ = inputEngine.processBackspace()
                 }
                 if !inputEngine.isComposing {
-                    keyboardView?.candidatePaneView?.changeMode(.row)
+                    keyboardView?.changeCandidatePaneMode(.row)
                 }
             } else {
                 switch action {
