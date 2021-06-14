@@ -71,6 +71,11 @@ class KeyboardView: UIView {
     private var _isEnabled = true
     weak var delegate: KeyboardViewDelegate?
     
+    // Touch event near the screen edge are delayed.
+    // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
+    // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
+    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
+    
     private let englishLettersKeyCapRows: [[[KeyCap]]] = [
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
@@ -139,7 +144,7 @@ class KeyboardView: UIView {
         keyRows[2].rowLayoutMode = .shiftRow
         keyRows[3].rowLayoutMode = .bottomRow
         keyRows.forEach { addSubview($0) }
-                
+        
         initTouchHandler()
         createCandidatePaneView()
         
@@ -147,6 +152,11 @@ class KeyboardView: UIView {
     }
     
     private func initTouchHandler() {
+        longPressGestureRecognizer = UILongPressGestureRecognizer()
+        longPressGestureRecognizer.minimumPressDuration = 0
+        longPressGestureRecognizer.delegate = self
+        addGestureRecognizer(longPressGestureRecognizer)
+        
         touchHandler = TouchHandler(keyboardView: self)
     }
     
@@ -516,6 +526,16 @@ extension KeyboardView {
     }
 }
 
+extension KeyboardView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive event: UIEvent) -> Bool {
+        let beganTouches = event.allTouches?.filter { $0.phase == .began }
+        if let beganTouches = beganTouches, beganTouches.count > 0 {
+            touchesBeganFromGestureRecoginzer(Set(beganTouches), with: event)
+        }
+        return false
+    }
+}
+
 extension KeyboardView: EmojiViewDelegate {
     func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
         delegate?.handleKey(.emoji(emoji))
@@ -529,11 +549,3 @@ extension KeyboardView: EmojiViewDelegate {
         delegate?.handleKey(.backspace)
     }
 }
-
-/*
-extension KeyboardView: UIInputViewAudioFeedback {
-    var enableInputClicksWhenVisible: Bool {
-        get { true }
-    }
-}
-*/

@@ -22,11 +22,6 @@ open class KeyboardViewController: UIInputViewController {
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var logView: UITextView?
     
-    // Touch event near the screen edge are delayed.
-    // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
-    // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
-    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
-    
     private var candidateOrganizer: CandidateOrganizer? {
         get {
             return keyboardView?.candidateOrganizer
@@ -188,11 +183,6 @@ open class KeyboardViewController: UIInputViewController {
             
             textWillChange(nil)
             textDidChange(nil)
-            
-            longPressGestureRecognizer = UILongPressGestureRecognizer()
-            longPressGestureRecognizer.minimumPressDuration = 0
-            longPressGestureRecognizer.delegate = self
-            view.addGestureRecognizer(longPressGestureRecognizer)
         }
     }
     
@@ -249,15 +239,5 @@ open class KeyboardViewController: UIInputViewController {
 extension KeyboardViewController: KeyboardViewDelegate {
     func handleKey(_ action: KeyboardAction) {
         inputController?.keyPressed(action)
-    }
-}
-
-extension KeyboardViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive event: UIEvent) -> Bool {
-        let beganTouches = event.allTouches?.filter { $0.phase == .began }
-        if let beganTouches = beganTouches, beganTouches.count > 0 {
-            keyboardView?.touchesBeganFromGestureRecoginzer(Set(beganTouches), with: event)
-        }
-        return false
     }
 }
