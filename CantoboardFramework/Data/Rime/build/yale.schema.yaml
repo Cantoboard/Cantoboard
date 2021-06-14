@@ -1,14 +1,14 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1623493016
-    default: 1623492880
-    default.custom: 1623492880
+    common.custom: 1623643578
+    default: 1623643562
+    default.custom: 1623643562
     grammar: 0
-    symbols: 1623492880
+    symbols: 1623643562
     symbols.custom: 0
-    symbols_cantonese: 1623492880
-    yale.schema: 1623492880
+    symbols_cantonese: 1623643562
+    yale.schema: 1623643562
 engine:
   filters:
     - "simplifier@variants_hk"
