@@ -22,55 +22,22 @@ class KeyboardView: UIView {
     // Uncomment this to debug memory leak.
     // private let c = InstanceCounter<KeyboardView>()
     
-    private var _state: KeyboardState
-    private weak var statusMenu: StatusMenu?
+    weak var delegate: KeyboardViewDelegate?
     
+    private var _state: KeyboardState
     var state: KeyboardState {
         get { _state }
         set { changeState(prevState: _state, newState: newValue) }
     }
     
-    private func changeState(prevState: KeyboardState, newState: KeyboardState) {
-        var isViewDirty = prevState.keyboardType != newState.keyboardType ||
-            prevState.keyboardContextualType != newState.keyboardContextualType ||
-            prevState.symbolShape != newState.symbolShape ||
-            prevState.activeSchema != newState.activeSchema ||
-            prevState.inputMode != newState.inputMode // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
-        
-        if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
-            keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
-            isViewDirty = true
-        }
-        
-        if prevState.activeSchema != newState.activeSchema {
-            isViewDirty = true
-        }
-        
-        if prevState.returnKeyType != newState.returnKeyType {
-            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType))
-        }
-        
-        if prevState.spaceKeyMode != newState.spaceKeyMode {
-            spaceKey?.setKeyCap(.space(newState.spaceKeyMode))
-        }
-        
-        if prevState.enableState != newState.enableState {
-            changeKeyboardEnabled(isEnabled: newState.enableState == .enabled, isLoading: newState.enableState == .loading)
-        }
-        
-        _state = newState
-        if isViewDirty { setupView() }
-        
-        candidatePaneView?.keyboardState = state
-    }
+    private var candidateOrganizer: CandidateOrganizer
     
+    private weak var statusMenu: StatusMenu?
     private var candidatePaneView: CandidatePaneView?
     private var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
-    private var touchHandler: TouchHandler!
-    private var _isEnabled = true
-    weak var delegate: KeyboardViewDelegate?
     
+    private var touchHandler: TouchHandler!
     // Touch event near the screen edge are delayed.
     // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
@@ -113,11 +80,6 @@ class KeyboardView: UIView {
     
     private weak var newLineKey: KeyView?
     private weak var spaceKey: KeyView?
-    
-    var candidateOrganizer: CandidateOrganizer? {
-        didSet { candidatePaneView?.candidateOrganizer = candidateOrganizer }
-    }
-    
     private weak var loadingIndicatorView: UIActivityIndicatorView?
     
     private func createLoadingIndicatorView() {
@@ -129,9 +91,9 @@ class KeyboardView: UIView {
         self.loadingIndicatorView = loadingIndicatorView
     }
     
-    init(state: KeyboardState) {
+    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer) {
         self._state = state
-
+        self.candidateOrganizer = candidateOrganizer
         super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
@@ -164,6 +126,40 @@ class KeyboardView: UIView {
         fatalError("NSCoder is not supported")
     }
     
+    private func changeState(prevState: KeyboardState, newState: KeyboardState) {
+        var isViewDirty = prevState.keyboardType != newState.keyboardType ||
+            prevState.keyboardContextualType != newState.keyboardContextualType ||
+            prevState.symbolShape != newState.symbolShape ||
+            prevState.activeSchema != newState.activeSchema ||
+            prevState.inputMode != newState.inputMode // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
+        
+        if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
+            keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
+            isViewDirty = true
+        }
+        
+        if prevState.activeSchema != newState.activeSchema {
+            isViewDirty = true
+        }
+        
+        if prevState.returnKeyType != newState.returnKeyType {
+            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType))
+        }
+        
+        if prevState.spaceKeyMode != newState.spaceKeyMode {
+            spaceKey?.setKeyCap(.space(newState.spaceKeyMode))
+        }
+        
+        if prevState.enableState != newState.enableState {
+            changeKeyboardEnabled(isEnabled: newState.enableState == .enabled, isLoading: newState.enableState == .loading)
+        }
+        
+        _state = newState
+        if isViewDirty { setupView() }
+        
+        candidatePaneView?.keyboardState = state
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -176,11 +172,12 @@ class KeyboardView: UIView {
         layoutStatusMenu()
     }
     
+    /*
     func changeCandidatePaneMode(_ newMode: CandidatePaneView.Mode) {
         candidatePaneView?.changeMode(newMode)
-    }
+    } */
     
-    func scrollToNextPageInRowMode() {
+    func candidatePanescrollToNextPageInRowMode() {
         candidatePaneView?.scrollToNextPageInRowMode()
     }
     
@@ -353,10 +350,8 @@ class KeyboardView: UIView {
     private func createCandidatePaneView() {
         guard candidatePaneView == nil else { return }
         
-        let candidatePaneView = CandidatePaneView(keyboardState: state)
-        candidatePaneView.delegate = self
-        candidatePaneView.candidateOrganizer = candidateOrganizer
-        
+        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer)
+        candidatePaneView.delegate = self        
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)
         

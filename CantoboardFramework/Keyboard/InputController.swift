@@ -98,10 +98,9 @@ class InputController: NSObject {
     }
     
     private func initKeyboardView(keyboardViewPlaceholder: UIView) {
-        let keyboardView = KeyboardView(state: state)
+        let keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
         keyboardView.delegate = self
         keyboardView.translatesAutoresizingMaskIntoConstraints = false
-        keyboardView.candidateOrganizer = candidateOrganizer
         keyboardViewPlaceholder.addSubview(keyboardView)
         
         NSLayoutConstraint.activate([
@@ -149,7 +148,7 @@ class InputController: NSObject {
             }
             insertText(commitedText, isFromCandidateBar: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
-                keyboardView?.changeCandidatePaneMode(.row)
+                // keyboardView?.changeCandidatePaneMode(.row)
             }
         }
     }
@@ -169,7 +168,7 @@ class InputController: NSObject {
             if Settings.cached.spaceAction == .insertText {
                 candidateSelected(choice: [0, 0], enableSmartSpace: true)
             } else {
-                keyboardView?.scrollToNextPageInRowMode()
+                keyboardView?.candidatePanescrollToNextPageInRowMode()
                 needReloadCandidates = false
             }
         } else {
@@ -255,7 +254,7 @@ class InputController: NSObject {
                     _ = inputEngine.processBackspace()
                 }
                 if !inputEngine.isComposing {
-                    keyboardView?.changeCandidatePaneMode(.row)
+                    // keyboardView?.changeCandidatePaneMode(.row)
                 }
             } else {
                 switch action {
