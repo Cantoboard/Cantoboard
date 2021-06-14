@@ -18,6 +18,7 @@ open class KeyboardViewController: UIInputViewController {
     
     private var inputController: InputController?
     private(set) weak var keyboardView: KeyboardView?
+    private weak var keyboardViewPlaceholder: UIView?
     private weak var keyboardWidthConstraint, superviewCenterXConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var logView: UITextView?
@@ -33,7 +34,9 @@ open class KeyboardViewController: UIInputViewController {
     
     public override init(nibName: String?, bundle: Bundle?) {
         _ = Self.isLoggerInited
+        
         super.init(nibName: nibName, bundle: bundle)
+        
         inputController = InputController(keyboardViewController: self)
         
         RimeApi.stateChangeCallbacks.append({ [weak self] rimeApi, newState in
@@ -85,19 +88,32 @@ open class KeyboardViewController: UIInputViewController {
         Settings.hasFullAccess = hasFullAccess
         
         let layoutConstants = LayoutConstants.forMainScreen
-        if heightConstraint == nil {
-            let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.height)
-            heightConstraint.priority = .required
-            heightConstraint.isActive = true
-            self.heightConstraint = heightConstraint
-        }
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.height)
+        heightConstraint.priority = .required
+        heightConstraint.isActive = true
+        self.heightConstraint = heightConstraint
+    
+        let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.superviewSize.width)
+        widthConstraint.priority = .required
+        widthConstraint.isActive = true
+        self.widthConstraint = widthConstraint
+    
+        let keyboardViewPlaceholder = UIView()
+        keyboardViewPlaceholder.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(keyboardViewPlaceholder)
+        self.keyboardViewPlaceholder = keyboardViewPlaceholder
         
-        if widthConstraint == nil {
-            let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.superviewSize.width)
-            widthConstraint.priority = .required
-            widthConstraint.isActive = true
-            self.widthConstraint = widthConstraint
-        }
+        let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.width)
+        keyboardWidthConstraint.priority = .required
+        keyboardWidthConstraint.isActive = true
+        self.keyboardWidthConstraint = keyboardWidthConstraint
+        
+        // EmojiView inside KeyboardView requires AutoLayout.
+        NSLayoutConstraint.activate([
+            keyboardViewPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor),
+            keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
         
         reloadSettings()
         createKeyboardIfNeeded()
@@ -160,24 +176,19 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public func createKeyboardIfNeeded() {
-        if keyboardView == nil {
+        if let keyboardViewPlaceholder = keyboardViewPlaceholder, keyboardView == nil {
             let keyboardView = KeyboardView(state: inputController!.state)
             keyboardView.delegate = self
             keyboardView.translatesAutoresizingMaskIntoConstraints = false
             keyboardView.candidateOrganizer = inputController!.candidateOrganizer
-            view.addSubview(keyboardView)
+            keyboardViewPlaceholder.addSubview(keyboardView)
             
-            // EmojiView inside KeyboardView requires AutoLayout.
             NSLayoutConstraint.activate([
-                keyboardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                keyboardView.topAnchor.constraint(equalTo: view.topAnchor),
-                keyboardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                keyboardView.leftAnchor.constraint(equalTo: keyboardViewPlaceholder.leftAnchor),
+                keyboardView.rightAnchor.constraint(equalTo: keyboardViewPlaceholder.rightAnchor),
+                keyboardView.topAnchor.constraint(equalTo: keyboardViewPlaceholder.topAnchor),
+                keyboardView.bottomAnchor.constraint(equalTo: keyboardViewPlaceholder.bottomAnchor),
             ])
-            
-            let widthConstraint = keyboardView.widthAnchor.constraint(equalToConstant: LayoutConstants.forMainScreen.keyboardSize.width)
-            widthConstraint.priority = .required
-            widthConstraint.isActive = true
-            self.keyboardWidthConstraint = widthConstraint
             
             self.keyboardView = keyboardView
             
