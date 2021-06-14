@@ -9,11 +9,13 @@ import Foundation
 import System
 import AppKit
 
-let fonts = [NSFont(name: "PingFang HK", size: 12)!,
-             NSFont(name: "PingFang TC", size: 12)!,
-             NSFont(name: "PingFang SC", size: 12)!,
-             NSFont(name: "Heiti TC", size: 12)!,
-             NSFont(name: "Heiti SC", size: 12)!]
+let fonts = [
+    NSFont(name: "PingFang HK", size: 12)!,
+    NSFont(name: "PingFang TC", size: 12)!,
+    NSFont(name: "PingFang SC", size: 12)!,
+    // NSFont(name: "Heiti TC", size: 12)!,
+    // NSFont(name: "Heiti SC", size: 12)!
+]
 var output: [String] = []
 main()
 
@@ -46,7 +48,7 @@ func filterLineByLine(filePath: URL) {
 
     for line in lines {
         let lineWithoutWhitespaces = line.filter{ !$0.isWhitespace }
-        if canStringBeEncoded(lineWithoutWhitespaces) { output.append(line) }
+        if !lineWithoutWhitespaces.isEmpty && canStringBeEncoded(lineWithoutWhitespaces) { output.append(line) }
         i += 1
         // if i > 50 { break }
     }
