@@ -62,10 +62,11 @@ struct KeyboardState: Equatable {
     }
 }
 
-class InputController {
+class InputController: NSObject {
     private static let feedbackGenerator = UIImpactFeedbackGenerator()
     
     private weak var keyboardViewController: KeyboardViewController?
+    private weak var keyboardView: KeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
     
     private(set) var state: KeyboardState = KeyboardState()
@@ -85,16 +86,36 @@ class InputController {
         keyboardViewController?.textDocumentProxy
     }
     
-    private var keyboardView: KeyboardView? {
-        keyboardViewController?.keyboardView
-    }
-    
-    init(keyboardViewController: KeyboardViewController) {
+    init(keyboardViewController: KeyboardViewController, keyboardViewPlaceholder: UIView) {
+        super.init()
+        
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
+        initKeyboardView(keyboardViewPlaceholder: keyboardViewPlaceholder)
         enforceInputMode()
+    }
+    
+    private func initKeyboardView(keyboardViewPlaceholder: UIView) {
+        let keyboardView = KeyboardView(state: state)
+        keyboardView.delegate = self
+        keyboardView.translatesAutoresizingMaskIntoConstraints = false
+        keyboardView.candidateOrganizer = candidateOrganizer
+        keyboardViewPlaceholder.addSubview(keyboardView)
+        
+        NSLayoutConstraint.activate([
+            keyboardView.leftAnchor.constraint(equalTo: keyboardViewPlaceholder.leftAnchor),
+            keyboardView.rightAnchor.constraint(equalTo: keyboardViewPlaceholder.rightAnchor),
+            keyboardView.topAnchor.constraint(equalTo: keyboardViewPlaceholder.topAnchor),
+            keyboardView.bottomAnchor.constraint(equalTo: keyboardViewPlaceholder.bottomAnchor),
+        ])
+        
+        self.keyboardView = keyboardView
+    }
+    
+    deinit {
+        keyboardView?.removeFromSuperview()
     }
     
     func textWillChange(_ textInput: UITextInput?) {
@@ -169,14 +190,14 @@ class InputController {
                 return
             }
             DDLogInfo("Enabling keyboard.")
-            cachedActions.forEach({ self.keyPressed($0) })
+            cachedActions.forEach({ self.handleKey($0) })
             cachedActions = []
             state.enableState = .enabled
             keyboardView?.state = state
         }
     }
     
-    func keyPressed(_ action: KeyboardAction) {
+    func handleKey(_ action: KeyboardAction) {
         guard RimeApi.shared.state == .succeeded else {
             // If RimeEngine isn't ready, disable the keyboard.
             DDLogInfo("Disabling keyboard")
@@ -670,5 +691,12 @@ class InputController {
                 }
             }
         }
+    }
+}
+
+// TODO remove this
+extension InputController: KeyboardViewDelegate {
+    func handleInputModeList(from: UIView, with: UIEvent) {
+        keyboardViewController?.handleInputModeList(from: from, with: with)
     }
 }

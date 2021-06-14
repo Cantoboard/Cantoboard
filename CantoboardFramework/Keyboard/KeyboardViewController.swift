@@ -17,27 +17,15 @@ open class KeyboardViewController: UIInputViewController {
     // private let c = InstanceCounter<KeyboardViewController>()
     
     private var inputController: InputController?
-    private(set) weak var keyboardView: KeyboardView?
     private weak var keyboardViewPlaceholder: UIView?
     private weak var keyboardWidthConstraint, superviewCenterXConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var logView: UITextView?
     
-    private var candidateOrganizer: CandidateOrganizer? {
-        get {
-            return keyboardView?.candidateOrganizer
-        }
-        set {
-            keyboardView?.candidateOrganizer = newValue
-        }
-    }
-    
     public override init(nibName: String?, bundle: Bundle?) {
         _ = Self.isLoggerInited
         
         super.init(nibName: nibName, bundle: bundle)
-        
-        inputController = InputController(keyboardViewController: self)
         
         RimeApi.stateChangeCallbacks.append({ [weak self] rimeApi, newState in
             guard let self = self else { return true }
@@ -176,21 +164,8 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public func createKeyboardIfNeeded() {
-        if let keyboardViewPlaceholder = keyboardViewPlaceholder, keyboardView == nil {
-            let keyboardView = KeyboardView(state: inputController!.state)
-            keyboardView.delegate = self
-            keyboardView.translatesAutoresizingMaskIntoConstraints = false
-            keyboardView.candidateOrganizer = inputController!.candidateOrganizer
-            keyboardViewPlaceholder.addSubview(keyboardView)
-            
-            NSLayoutConstraint.activate([
-                keyboardView.leftAnchor.constraint(equalTo: keyboardViewPlaceholder.leftAnchor),
-                keyboardView.rightAnchor.constraint(equalTo: keyboardViewPlaceholder.rightAnchor),
-                keyboardView.topAnchor.constraint(equalTo: keyboardViewPlaceholder.topAnchor),
-                keyboardView.bottomAnchor.constraint(equalTo: keyboardViewPlaceholder.bottomAnchor),
-            ])
-            
-            self.keyboardView = keyboardView
+        if let keyboardViewPlaceholder = keyboardViewPlaceholder, inputController == nil {
+            inputController = InputController(keyboardViewController: self, keyboardViewPlaceholder: keyboardViewPlaceholder)
             
             textWillChange(nil)
             textDidChange(nil)
@@ -199,12 +174,6 @@ open class KeyboardViewController: UIInputViewController {
     
     public func destroyKeyboard() {
         inputController = nil
-        
-        keyboardView?.removeFromSuperview()
-        keyboardView = nil
-        
-        view.subviews.forEach({ $0.removeFromSuperview() })
-        view.gestureRecognizers?.forEach({ view.removeGestureRecognizer($0) })
     }
     
     private func showLogs(_ logs: [String]) {
@@ -236,7 +205,7 @@ open class KeyboardViewController: UIInputViewController {
         
         if prevSettings.charForm != settings.charForm {
             SessionState.main.lastCharForm = settings.charForm
-            inputController?.keyPressed(.setCharForm(settings.charForm))
+            inputController?.handleKey(.setCharForm(settings.charForm))
             DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }
         
@@ -244,11 +213,5 @@ open class KeyboardViewController: UIInputViewController {
             inputController?.enforceInputMode()
             DDLogInfo("Detected change in isMixedModeEnabled from \(prevSettings.isMixedModeEnabled) to \(settings.isMixedModeEnabled).")
         }
-    }
-}
-
-extension KeyboardViewController: KeyboardViewDelegate {
-    func handleKey(_ action: KeyboardAction) {
-        inputController?.keyPressed(action)
     }
 }
