@@ -34,7 +34,8 @@ class KeyboardView: UIView {
         var isViewDirty = prevState.keyboardType != newState.keyboardType ||
             prevState.keyboardContextualType != newState.keyboardContextualType ||
             prevState.symbolShape != newState.symbolShape ||
-            prevState.activeSchema != newState.activeSchema
+            prevState.activeSchema != newState.activeSchema ||
+            prevState.inputMode != newState.inputMode // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
@@ -268,7 +269,7 @@ class KeyboardView: UIView {
             // let rimeSchema = state.rimeSchema
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false:
+                case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && state.inputMode != .english:
                     return .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),

@@ -75,7 +75,7 @@ class InputEngineCandidateSource: CandidateSource {
         let inputMode = inputController.state.inputMode
         let doesSchemaSupportMixedMode = inputEngine.rimeSchema.supportMixedMode
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || !doesSchemaSupportMixedMode
-        let isEnglishActive = inputMode != .chinese && !isInRimeOnlyMode
+        let isEnglishActive = inputMode == .english || inputMode == .mixed && !isInRimeOnlyMode
         let englishCandidates = inputEngine.englishCandidates
         
         if candidatePaths.isEmpty {
