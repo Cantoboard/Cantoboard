@@ -161,7 +161,6 @@ class KeypadView: UIView, InputView {
     }
 }
 
-
 extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath) {
         delegate?.handleKey(.selectCandidate(choice))

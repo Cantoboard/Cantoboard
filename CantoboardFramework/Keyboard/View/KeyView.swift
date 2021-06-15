@@ -8,47 +8,10 @@
 import Foundation
 import UIKit
 
-class KeyView: UIButton {
+class KeyView: HighlightableButton {
     private var keyHintLayer: KeyHintLayer?
     private var popupView: KeyPopupView?
     private var isPopupInLongPressMode: Bool?
-    private var originalBackgroundColor: UIColor?
-    
-    private var highlightedColor: UIColor? {
-        didSet {
-            setupBackgroundColor()
-        }
-    }
-    
-    override var backgroundColor: UIColor? {
-        get { super.backgroundColor }
-        set {
-            if super.backgroundColor != newValue {
-                originalBackgroundColor = newValue
-                setupBackgroundColor()
-            }
-        }
-    }
-    
-    private var _isHighlighted: Bool = false
-    internal override var isHighlighted: Bool {
-        get { _isHighlighted }
-        set {
-            if _isHighlighted != newValue {
-                _isHighlighted = newValue
-                setupBackgroundColor()
-            }
-        }
-    }
-    
-    private func setupBackgroundColor() {
-        if !_isHighlighted {
-            super.backgroundColor = originalBackgroundColor
-        } else {
-            super.backgroundColor = highlightedColor ?? originalBackgroundColor
-        }
-    }
-    
     private var _keyCap: KeyCap = .none
     var keyCap: KeyCap {
         get { _keyCap }

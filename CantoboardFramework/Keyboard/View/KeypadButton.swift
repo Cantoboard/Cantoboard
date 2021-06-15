@@ -8,48 +8,18 @@
 import Foundation
 import UIKit
 
-class KeypadButton: UIButton {
+class KeypadButton: HighlightableButton {
     let colRowOrigin: CGPoint
     let colRowSize: CGSize
     var props: KeypadButtonProps
     var keyRepeatCounter: Int = 0
     let onAction: ((KeyboardAction) -> Void)
     
-    private var originalBackgroundColor: UIColor?
-    private var highlightedColor: UIColor? {
-        didSet {
-            setupBackgroundColor()
-        }
-    }
     private var keyRepeatTimer: Timer?
     
     deinit {
         keyRepeatTimer?.invalidate()
         keyRepeatTimer = nil
-    }
-    
-    override var backgroundColor: UIColor? {
-        get { super.backgroundColor }
-        set {
-            if super.backgroundColor != newValue {
-                originalBackgroundColor = newValue
-                setupBackgroundColor()
-            }
-        }
-    }
-    
-    override var isHighlighted: Bool {
-        didSet {
-            setupBackgroundColor()
-        }
-    }
-    
-    private func setupBackgroundColor() {
-        if !isHighlighted {
-            super.backgroundColor = originalBackgroundColor
-        } else {
-            super.backgroundColor = highlightedColor ?? originalBackgroundColor
-        }
     }
     
     init(props: KeypadButtonProps, colRowOrigin: CGPoint, colRowSize: CGSize, onAction: @escaping ((KeyboardAction) -> Void)) {
