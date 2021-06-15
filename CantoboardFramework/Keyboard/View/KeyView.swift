@@ -48,6 +48,8 @@ class KeyView: HighlightableButton {
         popupView?.keyCaps.count ?? 0 > 1
     }
     
+    var shouldDisablePopup: Bool = false
+    
     var heightClearance: CGFloat?
     
     required init?(coder: NSCoder) {
@@ -71,13 +73,13 @@ class KeyView: HighlightableButton {
         layer.cornerRadius = 5
     }
     
-    func setKeyCap(_ keyCap: KeyCap) {
+    internal func setKeyCap(_ keyCap: KeyCap) {
         self._keyCap = keyCap
         self.action = keyCap.action
         setupView()
     }
         
-    private func setupView() {
+    internal func setupView() {
         backgroundColor = keyCap.buttonBgColor
         
         let foregroundColor = keyCap.buttonFgColor
@@ -246,7 +248,7 @@ extension KeyView {
     }
     
     private func updatePopup(isLongPress: Bool) {
-        guard keyCap.hasPopup else { return }
+        guard keyCap.hasPopup && !shouldDisablePopup else { return }
         
         // Special case, do not show "enhance" keycap of the emoji button.
         if keyCap == .keyboardType(.emojis) && !isLongPress {

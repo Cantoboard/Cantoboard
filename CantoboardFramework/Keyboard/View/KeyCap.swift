@@ -90,7 +90,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFont: UIFont {
         switch self {
         case .rime, "^_^": return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        case .stroke: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(26)
         default: return .preferredFont(forTextStyle: buttonFontStyle)
         }
     }

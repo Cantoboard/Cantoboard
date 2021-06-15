@@ -27,6 +27,9 @@
 		796D9566263EA649006D9370 /* Rime.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 796D9565263EA63E006D9370 /* Rime.framework.dSYM */; };
 		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
+		799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */; };
+		799AE20226792F4C00286530 /* KeypadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE20126792F4C00286530 /* KeypadButton.swift */; };
+		799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE20B26793F6D00286530 /* HighlightableButton.swift */; };
 		799D919D2674646D00AE9DBD /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 799D919C2674646D00AE9DBD /* Settings.bundle */; };
 		799D91A32674690700AE9DBD /* StatusButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799D91A22674690700AE9DBD /* StatusButton.swift */; };
 		799D91AD26746D2500AE9DBD /* Sessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799D91AC26746D2500AE9DBD /* Sessions.swift */; };
@@ -47,6 +50,7 @@
 		799F2E9125F46C0000C53416 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
 		79A211F525F46E6100CB01CC /* CantoboardExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 799F2E7B25F46BC600C53416 /* CantoboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79A2D0802661FD0C00F2EB19 /* Guide in Resources */ = {isa = PBXBuildFile; fileRef = 79A2D07F2661FD0C00F2EB19 /* Guide */; };
+		79B23738267832BD009FF854 /* KeypadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B23737267832BD009FF854 /* KeypadView.swift */; };
 		79B9B57725F3496800238E80 /* CantoboardFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B57525F3496800238E80 /* CantoboardFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B57A25F3496800238E80 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
 		79B9B57B25F3496800238E80 /* CantoboardFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -59,7 +63,7 @@
 		79B9B5F625F34A1200238E80 /* InputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58E25F34A1200238E80 /* InputEngine.swift */; };
 		79B9B5F725F34A1200238E80 /* RimeInputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B58F25F34A1200238E80 /* RimeInputEngine.swift */; };
 		79B9B5F825F34A1200238E80 /* BilingualInputEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59025F34A1200238E80 /* BilingualInputEngine.swift */; };
-		79B9B5F925F34A1200238E80 /* AudioFeedbackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59125F34A1200238E80 /* AudioFeedbackProvider.swift */; };
+		79B9B5F925F34A1200238E80 /* FeedbackProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59125F34A1200238E80 /* FeedbackProvider.swift */; };
 		79B9B5FA25F34A1200238E80 /* UITextDocumentProxy+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */; };
 		79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59425F34A1200238E80 /* UIColor+Extension.swift */; };
 		79B9B5FC25F34A1200238E80 /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59525F34A1200238E80 /* Collection+Extension.swift */; };
@@ -285,6 +289,9 @@
 		79607A64260FF09200E23D33 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		796D9565263EA63E006D9370 /* Rime.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Rime.framework.dSYM; path = RimeFramework/Rime.framework.dSYM; sourceTree = "<group>"; };
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuHandler.swift; sourceTree = "<group>"; };
+		799AE20126792F4C00286530 /* KeypadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadButton.swift; sourceTree = "<group>"; };
+		799AE20B26793F6D00286530 /* HighlightableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightableButton.swift; sourceTree = "<group>"; };
 		799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateOrganizer.swift; sourceTree = "<group>"; };
 		799D919C2674646D00AE9DBD /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		799D91A22674690700AE9DBD /* StatusButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusButton.swift; sourceTree = "<group>"; };
@@ -302,6 +309,7 @@
 		799F2E7F25F46BC600C53416 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		799F2E8D25F46BEF00C53416 /* CantoboardExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardExtension.entitlements; sourceTree = "<group>"; };
 		79A2D07F2661FD0C00F2EB19 /* Guide */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Guide; sourceTree = "<group>"; };
+		79B23737267832BD009FF854 /* KeypadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadView.swift; sourceTree = "<group>"; };
 		79B9B57325F3496800238E80 /* CantoboardFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CantoboardFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79B9B57525F3496800238E80 /* CantoboardFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CantoboardFramework.h; sourceTree = "<group>"; };
 		79B9B57625F3496800238E80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -314,7 +322,7 @@
 		79B9B58E25F34A1200238E80 /* InputEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputEngine.swift; sourceTree = "<group>"; };
 		79B9B58F25F34A1200238E80 /* RimeInputEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RimeInputEngine.swift; sourceTree = "<group>"; };
 		79B9B59025F34A1200238E80 /* BilingualInputEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BilingualInputEngine.swift; sourceTree = "<group>"; };
-		79B9B59125F34A1200238E80 /* AudioFeedbackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFeedbackProvider.swift; sourceTree = "<group>"; };
+		79B9B59125F34A1200238E80 /* FeedbackProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackProvider.swift; sourceTree = "<group>"; };
 		79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextDocumentProxy+Extension.swift"; sourceTree = "<group>"; };
 		79B9B59425F34A1200238E80 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		79B9B59525F34A1200238E80 /* Collection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
@@ -581,7 +589,7 @@
 		79B9B58A25F34A1200238E80 /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				79B9B59125F34A1200238E80 /* AudioFeedbackProvider.swift */,
+				79B9B59125F34A1200238E80 /* FeedbackProvider.swift */,
 				799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */,
 				79B9B5A725F34A1200238E80 /* InputController.swift */,
 				79B9B5A825F34A1200238E80 /* KeyboardAction.swift */,
@@ -633,15 +641,19 @@
 			children = (
 				79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */,
 				79B9B59F25F34A1200238E80 /* CandidatePaneView.swift */,
+				799AE20B26793F6D00286530 /* HighlightableButton.swift */,
 				79B9B5A425F34A1200238E80 /* KeyboardView.swift */,
 				79B9B5A625F34A1200238E80 /* KeyCap.swift */,
 				79B9B5A525F34A1200238E80 /* KeyHintLayer.swift */,
+				799AE20126792F4C00286530 /* KeypadButton.swift */,
+				79B23737267832BD009FF854 /* KeypadView.swift */,
 				79B9B5A225F34A1200238E80 /* KeyPopupView.swift */,
 				79B9B5A125F34A1200238E80 /* KeyRowView.swift */,
 				79B9B5A025F34A1200238E80 /* KeyView.swift */,
 				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
 				799D91A22674690700AE9DBD /* StatusButton.swift */,
 				79E98DBC2672FC92006E32DE /* StatusMenu.swift */,
+				799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1209,6 +1221,7 @@
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,
 				79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */,
+				799AE20226792F4C00286530 /* KeypadButton.swift in Sources */,
 				79B9B60025F34A1200238E80 /* Utils.swift in Sources */,
 				79B9B5F625F34A1200238E80 /* InputEngine.swift in Sources */,
 				79B9B5EE25F34A1200238E80 /* RKRimeApi.m in Sources */,
@@ -1216,9 +1229,11 @@
 				79B9B60D25F34A1200238E80 /* InputController.swift in Sources */,
 				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
-				79B9B5F925F34A1200238E80 /* AudioFeedbackProvider.swift in Sources */,
+				79B9B5F925F34A1200238E80 /* FeedbackProvider.swift in Sources */,
 				795B22D5261EEE1400271D9F /* UserDictionary.swift in Sources */,
+				799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */,
 				79B9B60225F34A1200238E80 /* TouchHandler.swift in Sources */,
+				799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */,
 				79B9B5FA25F34A1200238E80 /* UITextDocumentProxy+Extension.swift in Sources */,
 				79B9B60525F34A1200238E80 /* CandidatePaneView.swift in Sources */,
 				79B9B5FD25F34A1200238E80 /* Character+Extension.swift in Sources */,
@@ -1226,6 +1241,7 @@
 				798032A52645F6AF008DC703 /* Logging.swift in Sources */,
 				79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */,
 				79B9B5F425F34A1200238E80 /* RimeApi.swift in Sources */,
+				79B23738267832BD009FF854 /* KeypadView.swift in Sources */,
 				79B9B5F725F34A1200238E80 /* RimeInputEngine.swift in Sources */,
 				79B9B60825F34A1200238E80 /* KeyPopupView.swift in Sources */,
 				79B9B60325F34A1200238E80 /* Settings.swift in Sources */,

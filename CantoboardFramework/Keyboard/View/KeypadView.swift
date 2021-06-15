@@ -23,7 +23,7 @@ class KeypadView: UIView, InputView {
     
     private let leftButtonProps: [[KeypadButtonProps]] = [
         [ KeypadButtonProps(keyCap: .keyboardType(.numeric)) ],
-        [ KeypadButtonProps(keyCap: .keyboardType(.alphabetic(.lowercased))) ],
+        [ KeypadButtonProps(keyCap: .switchToEnglishMode) ],
         [ KeypadButtonProps(keyCap: .keyboardType(.symbolic)) ],
         [ KeypadButtonProps(keyCap: .keyboardType(.emojis)) ],
     ]
@@ -35,8 +35,7 @@ class KeypadView: UIView, InputView {
           KeypadButtonProps(keyCap: .backspace) ],
         [ KeypadButtonProps(keyCap: .stroke("n")),
           KeypadButtonProps(keyCap: .stroke("z")),
-          KeypadButtonProps(keyCap: "?"),
-          KeypadButtonProps(keyCap: .none) ],
+          KeypadButtonProps(keyCap: "?") ],
         [ KeypadButtonProps(keyCap: ","), KeypadButtonProps(keyCap: "."), KeypadButtonProps(keyCap: "!"), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
         [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
     ]
@@ -44,6 +43,7 @@ class KeypadView: UIView, InputView {
     private weak var candidatePaneView: CandidatePaneView?
     internal weak var statusMenu: StatusMenu?
     
+    private var touchHandler: TouchHandler!
     private var leftButtons: [[KeypadButton]] = []
     private var rightButtons: [[KeypadButton]] = []
     
@@ -65,6 +65,7 @@ class KeypadView: UIView, InputView {
         preservesSuperviewLayoutMargins = false
         
         initView()
+        touchHandler = TouchHandler(keyboardView: self)
     }
     
     required init?(coder: NSCoder) {
@@ -87,7 +88,7 @@ class KeypadView: UIView, InputView {
         for row in buttonLayouts {
             var buttonRow: [KeypadButton] = []
             for props in row {
-                let button = KeypadButton(props: props, colRowOrigin: CGPoint(x: x, y: y), colRowSize: props.colRowSize, onAction: handleKey)
+                let button = KeypadButton(props: props, colRowOrigin: CGPoint(x: x, y: y), colRowSize: props.colRowSize)
                 addSubview(button)
                 buttonRow.append(button)
                 x += 1
@@ -110,7 +111,7 @@ class KeypadView: UIView, InputView {
                 case "!", "！": props.keyCap = isFullShape ? "！" : "!"
                 default: ()
                 }
-                button.setup(props: props)
+                button.keyCap = props.keyCap
             }
         }
     }
@@ -192,10 +193,40 @@ extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
     }
     
     func handleKey(_ action: KeyboardAction) {
-        if case .keyboardType(.alphabetic) = action, case .alphabetic = state.keyboardType {
-            delegate?.handleKey(.toggleInputMode)
-        } else {
-            delegate?.handleKey(action)
-        }
+        // if case .keyboardType(.alphabetic) = action, case .alphabetic = state.keyboardType {
+        delegate?.handleKey(action)
+    }
+}
+
+extension KeypadView {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        guard let touch = touches.first,
+              let keypadButton = touch.view as? KeypadButton else { return }
+        
+        touchHandler.touchBegan(touch, key: keypadButton, with: event)
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        guard let touch = touches.first,
+              let keypadButton = touch.view as? KeypadButton else { return }
+        
+        touchHandler.touchMoved(touch, key: keypadButton, with: event)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        guard let touch = touches.first,
+              let keypadButton = touch.view as? KeypadButton else { return }
+        
+        touchHandler.touchEnded(touch, key: keypadButton, with: event)
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        guard let touch = touches.first else { return }
+        
+        touchHandler.touchCancelled(touch, with: event)
     }
 }
