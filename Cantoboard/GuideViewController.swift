@@ -41,8 +41,12 @@ extension GuideViewController: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
-        UIApplication.shared.open(url)
-        decisionHandler(.cancel)
+        if url.isFileURL {
+            decisionHandler(.allow)
+        } else {
+            UIApplication.shared.open(url)
+            decisionHandler(.cancel)
+        }
     }
 }
 
