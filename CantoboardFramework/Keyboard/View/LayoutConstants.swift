@@ -18,7 +18,7 @@ struct LayoutConstants {
     // Fixed:
     static let keyViewTopInset = CGFloat(8)
     static let keyViewBottomInset = CGFloat(3)
-    static let statusMenuRowSize = CGSize(width: 180, height: 45)
+    static let statusMenuRowSize = CGSize(width: 200, height: 45)
     
     // Provided:
     let idiom: LayoutIdiom
@@ -39,6 +39,7 @@ struct LayoutConstants {
     let candidateCommentFontSize: CGFloat
     let candidateCommentCharSize: CGSize
     let statusIndicatorFontSize: CGFloat
+    let keypadButtonUnitSize: CGSize
     
     // Inferred from device constants
     // private var deviceLayoutConstants: DeviceLayoutConstants
@@ -83,6 +84,10 @@ struct LayoutConstants {
         candidateCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateFontSize))
         candidateCommentCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize))
         statusIndicatorFontSize = isPortrait ? deviceLayoutConstants.portraitStatusIndicatorFontSize : deviceLayoutConstants.landscapeStatusIndicatorFontSize
+        
+        let width = (keyboardSize.width - 2 * edgeHorizontalInset - 4 * buttonGap) / 5
+        let height = ((keyboardSize.height - Self.keyViewTopInset - Self.keyViewBottomInset - autoCompleteBarHeight) - 3 * buttonGap) / 4
+        keypadButtonUnitSize = CGSize(width: width, height: height)
     }
     
     private static func getDeviceLayoutConstants(idiom: LayoutIdiom) -> DeviceLayoutConstants {

@@ -38,6 +38,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     character(String),
     characterWithConditioanlPopup(String),
     cangjie(String),
+    stroke(String),
     emoji(String),
     keyboardType(KeyboardType),
     returnKey(UIReturnKeyType),
@@ -66,6 +67,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character(let c): return .character(c)
         case .characterWithConditioanlPopup(let c): return .character(c)
         case .cangjie(let c): return .character(c)
+        case .stroke(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
         case .returnKey: return .newLine
@@ -88,6 +90,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFont: UIFont {
         switch self {
         case .rime, "^_^": return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
+        case .stroke: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(26)
         default: return .preferredFont(forTextStyle: buttonFontStyle)
         }
     }
@@ -111,7 +114,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
+        case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.go), .returnKey(.search): return UIColor.systemBlue
         default: return ButtonColor.systemKeyBackgroundColor
@@ -123,6 +126,13 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character, .characterWithConditioanlPopup, .cangjie, .contexualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default: return ButtonColor.systemHighlightedKeyBackgroundColor
+        }
+    }
+    
+    var keypadButtonBgHighlightedColor: UIColor? {
+        switch self {
+        case .keyboardType, .backspace, .none, .returnKey: return ButtonColor.systemHighlightedKeyBackgroundColor
+        default: return ButtonColor.spaceKeyHighlightedBackgroundColor
         }
     }
     
@@ -193,6 +203,15 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
+        case .stroke(let c):
+            switch c.lowercased() {
+            case "h": return "一"
+            case "s": return "丨"
+            case "p": return "丿"
+            case "n": return "丶"
+            case "z": return "乙"
+            default: return nil
+            }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
         case .exit: return "Exit"
         default: return nil

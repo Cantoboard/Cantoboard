@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 class StatusMenu: UIView {
+    static let xInset: CGFloat = 5
     static let cornerRadius: CGFloat = 5
     static let separatorWidth: CGFloat = 1
     var labelActions: [UILabel: KeyCap]

@@ -8,10 +8,10 @@ class TouchHandler {
     enum InputMode: Equatable {
         case typing, backspacing, nextKeyboard, cursorMoving
     }
-    private static let KeyRepeatInitialDelay = 7 // 5 * KeyRepeatInterval
-    private static let LongPressDelay = 3
-    private static let KeyRepeatInterval = 0.08
-    private static let CursorMovingStepX = CGFloat(8), InitialCursorMovingThreshold = CursorMovingStepX * 1.25
+    static let keyRepeatInitialDelay = 7 // 5 * KeyRepeatInterval
+    static let longPressDelay = 3
+    static let keyRepeatInterval = 0.08
+    static let cursorMovingStepX = CGFloat(8), initialCursorMovingThreshold = cursorMovingStepX * 1.25
     
     private var currentTouch, shiftTouch: (UITouch, /*_ currentKeyView:*/ KeyView, /*_ initialAction:*/ KeyboardAction)?
     private var cursorMoveStartPosition: CGPoint?
@@ -22,7 +22,7 @@ class TouchHandler {
         set {
             if _inputMode != newValue {
                 callKeyHandler(.enableKeyboard(newValue != .cursorMoving))
-                if newValue == .cursorMoving { selectionGenerator.selectionChanged() }
+                if newValue == .cursorMoving { AudioFeedbackProvider.selectionGenerator.selectionChanged() }
                 
                 if _inputMode == .typing {
                     currentTouch?.1.keyTouchEnded()
@@ -36,9 +36,6 @@ class TouchHandler {
     private weak var keyboardView: KeyboardView?
     private var keyRepeatTimer: Timer?
     private var keyRepeatCounter: Int = 0
-    private let selectionGenerator = UISelectionFeedbackGenerator()
-    private let feedbackMediumGenerator = UIImpactFeedbackGenerator(style: .medium)
-    private let feedbackLightGenerator = UIImpactFeedbackGenerator(style: .light)
 
     init(keyboardView: KeyboardView) {
         self.keyboardView = keyboardView
@@ -51,7 +48,7 @@ class TouchHandler {
             else { return }
         
         if Settings.cached.isTapHapticFeedbackEnabled {
-            feedbackLightGenerator.impactOccurred()
+            AudioFeedbackProvider.lightFeedbackGenerator.impactOccurred()
         }
         
         let touchTuple = (touch, key, key.selectedAction)
@@ -121,7 +118,7 @@ class TouchHandler {
                 cancelKeyRepeatTimer()
                 hasTakenAction = true
                 callKeyHandler(.deleteWordSwipe)
-                feedbackMediumGenerator.impactOccurred()
+                AudioFeedbackProvider.mediumFeedbackGenerator.impactOccurred()
             }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
@@ -132,7 +129,7 @@ class TouchHandler {
             var dX = point.x - cursorMoveStartPosition.x
             let isLeft = dX < 0
             dX = isLeft ? -dX : dX
-            let threshold = Self.CursorMovingStepX
+            let threshold = Self.cursorMovingStepX
             while dX > threshold {
                 dX -= threshold
                 callKeyHandler(isLeft ? .moveCursorBackward : .moveCursorForward)
@@ -169,7 +166,7 @@ class TouchHandler {
             // Ignore short swipe.
             guard let cursorMoveStartPosition = cursorMoveStartPosition else { return }
             let point = touch.location(in: keyboardView), deltaX = abs(point.x - cursorMoveStartPosition.x)
-            guard deltaX >= Self.InitialCursorMovingThreshold else { return }
+            guard deltaX >= Self.initialCursorMovingThreshold else { return }
             
             // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
             let tapStartAction = currentTouch.2
@@ -271,7 +268,7 @@ class TouchHandler {
     private func onKeyRepeat(_ timer: Timer) {
         guard timer == self.keyRepeatTimer else { timer.invalidate(); return } // Timer was overwritten.
         keyRepeatCounter += 1
-        if self.inputMode == .backspacing && keyRepeatCounter > Self.KeyRepeatInitialDelay {
+        if self.inputMode == .backspacing && keyRepeatCounter > Self.keyRepeatInitialDelay {
             let action: KeyboardAction
             if keyRepeatCounter <= 20 {
                 action = .backspace
@@ -281,7 +278,7 @@ class TouchHandler {
             callKeyHandler(action)
             hasTakenAction = true
             AudioFeedbackProvider.play(keyboardAction: action)
-        } else if self.inputMode == .typing && keyRepeatCounter > Self.LongPressDelay,
+        } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay,
             let currentTouch = currentTouch {
             currentTouch.1.keyLongPressed(currentTouch.0)
             cancelKeyRepeatTimer()
@@ -291,7 +288,7 @@ class TouchHandler {
     private func setupKeyRepeatTimer() {
         keyRepeatTimer?.invalidate()
         keyRepeatCounter = 0
-        keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: Self.KeyRepeatInterval, repeats: true) { [weak self] timer in
+        keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: Self.keyRepeatInterval, repeats: true) { [weak self] timer in
             guard let self = self else { timer.invalidate(); return }
             self.onKeyRepeat(timer)
         }

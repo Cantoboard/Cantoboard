@@ -63,10 +63,8 @@ struct KeyboardState: Equatable {
 }
 
 class InputController: NSObject {
-    private static let feedbackGenerator = UIImpactFeedbackGenerator()
-    
     private weak var keyboardViewController: KeyboardViewController?
-    private weak var keyboardView: KeyboardView?
+    private weak var keyboardView: InputView?
     private(set) var inputEngine: BilingualInputEngine!
     
     private(set) var state: KeyboardState = KeyboardState()
@@ -86,19 +84,40 @@ class InputController: NSObject {
         keyboardViewController?.textDocumentProxy
     }
     
-    init(keyboardViewController: KeyboardViewController, keyboardViewPlaceholder: UIView) {
+    init(keyboardViewController: KeyboardViewController) {
         super.init()
         
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
-        initKeyboardView(keyboardViewPlaceholder: keyboardViewPlaceholder)
+        initKeyboardView()
         enforceInputMode()
     }
     
-    private func initKeyboardView(keyboardViewPlaceholder: UIView) {
-        let keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
+    private var shouldUseKeypad: Bool {
+        if state.activeSchema == .stroke, case .alphabetic = state.keyboardType, state.inputMode != .english {
+            return true
+        }
+        return false
+    }
+    
+    private func reinitInputViewIfNeeded() {
+        if shouldUseKeypad && keyboardView is KeyboardView ||
+            !shouldUseKeypad && keyboardView is KeypadView {
+            keyboardView?.removeFromSuperview()
+            initKeyboardView()
+        }
+    }
+    
+    private func initKeyboardView() {
+        guard let keyboardViewPlaceholder = keyboardViewController?.keyboardViewPlaceholder else { return }
+        let keyboardView: InputView
+        if shouldUseKeypad {
+            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer)
+        } else {
+            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
+        }
         keyboardView.delegate = self
         keyboardView.translatesAutoresizingMaskIntoConstraints = false
         keyboardViewPlaceholder.addSubview(keyboardView)
@@ -156,7 +175,7 @@ class InputController: NSObject {
     private func candidateLongPressed(choice: IndexPath) {
         if let text = candidateOrganizer.getCandidate(indexPath: choice), text.allSatisfy({ $0.isEnglishLetter }) {
             if EnglishInputEngine.userDictionary.unlearnWord(word: text) {
-                Self.feedbackGenerator.impactOccurred()
+                AudioFeedbackProvider.lightFeedbackGenerator.impactOccurred()
             }
         }
     }
@@ -210,6 +229,7 @@ class InputController: NSObject {
         
         defer {
             lastKey = action
+            reinitInputViewIfNeeded()
             keyboardView?.state = state
         }
         

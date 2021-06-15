@@ -27,6 +27,10 @@ class AudioFeedbackProvider {
         }
     }
     
+    static let selectionGenerator = UISelectionFeedbackGenerator()
+
+    static let lightFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+    static let mediumFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
     static let softFeedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
     static let rigidFeedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
 }

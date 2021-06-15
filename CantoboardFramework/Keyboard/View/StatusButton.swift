@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class StatusButton: UIButton {
-    private static let longPressDelay: Double = 0.08
+    private static let longPressDelay: Double = TouchHandler.keyRepeatInterval * Double(TouchHandler.keyRepeatInitialDelay)
     private static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
     private static let miniExpandImageSizeRatio: CGFloat = 0.18, miniExpandImageAspectRatio: CGFloat = 1 / 2.3
     
@@ -85,6 +85,8 @@ class StatusButton: UIButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
+        AudioFeedbackProvider.rigidFeedbackGenerator.impactOccurred()
+        
         longPressTimer?.invalidate()
         longPressTimer = nil
         
@@ -110,7 +112,6 @@ class StatusButton: UIButton {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
         if bounds.contains(location) {
-            AudioFeedbackProvider.rigidFeedbackGenerator.impactOccurred()
             super.touchesEnded(touches, with: event)
         } else {
             touchesCancelled(touches, with: event)

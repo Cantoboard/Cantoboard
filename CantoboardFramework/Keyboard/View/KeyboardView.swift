@@ -16,9 +16,13 @@ protocol KeyboardViewDelegate: NSObject {
     func handleInputModeList(from: UIView, with: UIEvent)
 }
 
-class KeyboardView: UIView {
-    private static let statusMenuXInset: CGFloat = 5
-    
+protocol InputView: UIView {
+    var delegate: KeyboardViewDelegate? { get set }
+    var state: KeyboardState { get set }
+    func candidatePanescrollToNextPageInRowMode()
+}
+
+class KeyboardView: UIView, InputView {
     // Uncomment this to debug memory leak.
     // private let c = InstanceCounter<KeyboardView>()
     
@@ -228,7 +232,7 @@ class KeyboardView: UIView {
         let size = statusMenu.intrinsicContentSize
         let origin = CGPoint(x: frame.width - size.width, y: LayoutConstants.forMainScreen.autoCompleteBarHeight)
         let frame = CGRect(origin: origin, size: size)
-        statusMenu.frame = frame.offsetBy(dx: -Self.statusMenuXInset, dy: 0)
+        statusMenu.frame = frame.offsetBy(dx: -StatusMenu.xInset, dy: 0)
     }
     
     private func refreshCandidatePaneViewVisibility() {
@@ -462,7 +466,7 @@ extension KeyboardView: CandidatePaneViewDelegate {
         var menuRows: [[KeyCap]] =  [
             [ .changeSchema(.yale), .changeSchema(.jyutping) ],
             [ .changeSchema(.cangjie), .changeSchema(.quick) ],
-            [ .changeSchema(.mandarin) ],
+            [ .changeSchema(.mandarin), .changeSchema(.stroke) ],
         ]
         if state.activeSchema.supportMixedMode {
             menuRows[menuRows.count - 1].append(.switchToEnglishMode)

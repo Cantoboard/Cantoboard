@@ -17,7 +17,7 @@ open class KeyboardViewController: UIInputViewController {
     // private let c = InstanceCounter<KeyboardViewController>()
     
     private var inputController: InputController?
-    private weak var keyboardViewPlaceholder: UIView?
+    private(set) weak var keyboardViewPlaceholder: UIView?
     private weak var keyboardWidthConstraint, superviewCenterXConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var logView: UITextView?
@@ -164,8 +164,8 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public func createKeyboardIfNeeded() {
-        if let keyboardViewPlaceholder = keyboardViewPlaceholder, inputController == nil {
-            inputController = InputController(keyboardViewController: self, keyboardViewPlaceholder: keyboardViewPlaceholder)
+        if inputController == nil {
+            inputController = InputController(keyboardViewController: self)
             
             textWillChange(nil)
             textDidChange(nil)
