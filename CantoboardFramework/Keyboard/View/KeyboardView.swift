@@ -11,7 +11,7 @@ import UIKit
 import CocoaLumberjackSwift
 import ISEmojiView
 
-protocol KeyboardViewDelegate: NSObject {
+protocol KeyboardViewDelegate: class {
     func handleKey(_ action: KeyboardAction)
     func handleInputModeList(from: UIView, with: UIEvent)
 }
@@ -36,7 +36,7 @@ class KeyboardView: UIView, InputView {
     
     private var candidateOrganizer: CandidateOrganizer
     
-    private weak var statusMenu: StatusMenu?
+    internal weak var statusMenu: StatusMenu?
     private var candidatePaneView: CandidatePaneView?
     private var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
@@ -226,15 +226,6 @@ class KeyboardView: UIView, InputView {
         loadingIndicatorView.frame = CGRect(x: frame.midX - size / 2, y: frame.midY - size / 2, width: size, height: size)
     }
     
-    private func layoutStatusMenu() {
-        guard let statusMenu = statusMenu else { return }
-        
-        let size = statusMenu.intrinsicContentSize
-        let origin = CGPoint(x: frame.width - size.width, y: LayoutConstants.forMainScreen.autoCompleteBarHeight)
-        let frame = CGRect(origin: origin, size: size)
-        statusMenu.frame = frame.offsetBy(dx: -StatusMenu.xInset, dy: 0)
-    }
-    
     private func refreshCandidatePaneViewVisibility() {
         if state.keyboardType == .emojis {
             destroyCandidatePaneView()
@@ -409,7 +400,7 @@ class KeyboardView: UIView, InputView {
     }
 }
 
-extension KeyboardView: CandidatePaneViewDelegate {
+extension KeyboardView: CandidatePaneViewDelegate, StatusMenuHandler {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath) {
         delegate?.handleKey(.selectCandidate(choice))
     }
@@ -432,54 +423,6 @@ extension KeyboardView: CandidatePaneViewDelegate {
     
     func handleKey(_ action: KeyboardAction) {
         delegate?.handleKey(action)
-    }
-    
-    func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
-        guard candidatePaneView?.shouldShowStatusMenu ?? false else {
-            hideStatusMenu()
-            return false
-        }
-        if let touch = with?.allTouches?.first, touch.view == from {
-            switch touch.phase {
-            case .began, .moved, .stationary:
-                showStatusMenu()
-                statusMenu?.touchesMoved([touch], with: with)
-                return true
-            case .ended:
-                statusMenu?.touchesEnded([touch], with: with)
-                hideStatusMenu()
-                return false
-            case .cancelled:
-                statusMenu?.touchesCancelled([touch], with: with)
-                hideStatusMenu()
-                return false
-            default: ()
-            }
-        }
-        return statusMenu != nil
-    }
-    
-    private func showStatusMenu() {
-        guard statusMenu == nil else { return }
-        FeedbackProvider.softImpact.impactOccurred()
-        
-        var menuRows: [[KeyCap]] =  [
-            [ .changeSchema(.yale), .changeSchema(.jyutping) ],
-            [ .changeSchema(.cangjie), .changeSchema(.quick) ],
-            [ .changeSchema(.mandarin), .changeSchema(.stroke) ],
-        ]
-        if state.activeSchema.supportMixedMode {
-            menuRows[menuRows.count - 1].append(.switchToEnglishMode)
-        }
-        let statusMenu = StatusMenu(menuRows: menuRows)
-        statusMenu.handleKey = delegate?.handleKey
-
-        addSubview(statusMenu)
-        self.statusMenu = statusMenu
-    }
-    
-    private func hideStatusMenu() {
-        statusMenu?.removeFromSuperview()
     }
 }
 

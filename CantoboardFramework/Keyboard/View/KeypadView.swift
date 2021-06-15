@@ -185,8 +185,8 @@ class KeypadView: UIView, InputView {
         [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
     ]
     
-    private weak var statusMenu: StatusMenu?
     private weak var candidatePaneView: CandidatePaneView?
+    internal weak var statusMenu: StatusMenu?
     
     private var leftButtons: [[KeypadButton]] = []
     private var rightButtons: [[KeypadButton]] = []
@@ -300,22 +300,13 @@ class KeypadView: UIView, InputView {
         candidatePaneView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: bounds.width, height: height))
     }
     
-    private func layoutStatusMenu() {
-        guard let statusMenu = statusMenu else { return }
-        
-        let size = statusMenu.intrinsicContentSize
-        let origin = CGPoint(x: frame.width - size.width, y: LayoutConstants.forMainScreen.autoCompleteBarHeight)
-        let frame = CGRect(origin: origin, size: size)
-        statusMenu.frame = frame.offsetBy(dx: -StatusMenu.xInset, dy: 0)
-    }
-    
     func candidatePanescrollToNextPageInRowMode() {
         candidatePaneView?.scrollToNextPageInRowMode()
     }
 }
 
 
-extension KeypadView: CandidatePaneViewDelegate {
+extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
     func candidatePaneViewCandidateSelected(_ choice: IndexPath) {
         delegate?.handleKey(.selectCandidate(choice))
     }
@@ -351,53 +342,5 @@ extension KeypadView: CandidatePaneViewDelegate {
         } else {
             delegate?.handleKey(action)
         }
-    }
-    
-    func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
-        guard candidatePaneView?.shouldShowStatusMenu ?? false else {
-            hideStatusMenu()
-            return false
-        }
-        if let touch = with?.allTouches?.first, touch.view == from {
-            switch touch.phase {
-            case .began, .moved, .stationary:
-                showStatusMenu()
-                statusMenu?.touchesMoved([touch], with: with)
-                return true
-            case .ended:
-                statusMenu?.touchesEnded([touch], with: with)
-                hideStatusMenu()
-                return false
-            case .cancelled:
-                statusMenu?.touchesCancelled([touch], with: with)
-                hideStatusMenu()
-                return false
-            default: ()
-            }
-        }
-        return statusMenu != nil
-    }
-    
-    private func showStatusMenu() {
-        guard statusMenu == nil else { return }
-        FeedbackProvider.softImpact.impactOccurred()
-        
-        var menuRows: [[KeyCap]] =  [
-            [ .changeSchema(.yale), .changeSchema(.jyutping) ],
-            [ .changeSchema(.cangjie), .changeSchema(.quick) ],
-            [ .changeSchema(.mandarin), .changeSchema(.stroke) ],
-        ]
-        if state.activeSchema.supportMixedMode {
-            menuRows[menuRows.count - 1].append(.switchToEnglishMode)
-        }
-        let statusMenu = StatusMenu(menuRows: menuRows)
-        statusMenu.handleKey = delegate?.handleKey
-
-        addSubview(statusMenu)
-        self.statusMenu = statusMenu
-    }
-    
-    private func hideStatusMenu() {
-        statusMenu?.removeFromSuperview()
     }
 }
