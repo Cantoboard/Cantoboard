@@ -22,7 +22,7 @@ class TouchHandler {
         set {
             if _inputMode != newValue {
                 callKeyHandler(.enableKeyboard(newValue != .cursorMoving))
-                if newValue == .cursorMoving { AudioFeedbackProvider.selectionGenerator.selectionChanged() }
+                if newValue == .cursorMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
                 
                 if _inputMode == .typing {
                     currentTouch?.1.keyTouchEnded()
@@ -48,7 +48,7 @@ class TouchHandler {
             else { return }
         
         if Settings.cached.isTapHapticFeedbackEnabled {
-            AudioFeedbackProvider.lightFeedbackGenerator.impactOccurred()
+            FeedbackProvider.lightImpact.impactOccurred()
         }
         
         let touchTuple = (touch, key, key.selectedAction)
@@ -71,11 +71,11 @@ class TouchHandler {
         switch key.selectedAction {
         case .backspace:
             inputMode = .backspacing
-            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
+            FeedbackProvider.play(keyboardAction: key.selectedAction)
         case .keyboardType(.emojis), .character, .rime:
-            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
+            FeedbackProvider.play(keyboardAction: key.selectedAction)
         case .keyboardType:
-            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
+            FeedbackProvider.play(keyboardAction: key.selectedAction)
             callKeyHandler(key.selectedAction)
         case .nextKeyboard:
             guard let event = event else { return }
@@ -91,7 +91,7 @@ class TouchHandler {
                 callKeyHandler(.keyboardType(.alphabetic(.capsLocked)))
             }
         case .space, .newLine:
-            AudioFeedbackProvider.play(keyboardAction: key.selectedAction)
+            FeedbackProvider.play(keyboardAction: key.selectedAction)
         default: () // Ignore other keys on key down.
         }
         
@@ -118,7 +118,7 @@ class TouchHandler {
                 cancelKeyRepeatTimer()
                 hasTakenAction = true
                 callKeyHandler(.deleteWordSwipe)
-                AudioFeedbackProvider.mediumFeedbackGenerator.impactOccurred()
+                FeedbackProvider.mediumImpact.impactOccurred()
             }
         case .cursorMoving:
             guard let cursorMoveStartPosition = cursorMoveStartPosition else {
@@ -277,7 +277,7 @@ class TouchHandler {
             }
             callKeyHandler(action)
             hasTakenAction = true
-            AudioFeedbackProvider.play(keyboardAction: action)
+            FeedbackProvider.play(keyboardAction: action)
         } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay,
             let currentTouch = currentTouch {
             currentTouch.1.keyLongPressed(currentTouch.0)

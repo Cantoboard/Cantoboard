@@ -121,7 +121,7 @@ class KeypadButton: UIButton {
         let action = props.keyCap.action
         guard action == .backspace else { return }
         
-        AudioFeedbackProvider.lightFeedbackGenerator.impactOccurred()
+        FeedbackProvider.lightImpact.impactOccurred()
         onAction(action)
         keyRepeatCounter = 0
         keyRepeatTimer = Timer.scheduledTimer(withTimeInterval: TouchHandler.keyRepeatInterval, repeats: true) { [weak self] timer in
@@ -151,7 +151,7 @@ class KeypadButton: UIButton {
             return
         }
         
-        AudioFeedbackProvider.lightFeedbackGenerator.impactOccurred()
+        FeedbackProvider.lightImpact.impactOccurred()
         onAction(action)
     }
     
@@ -380,7 +380,7 @@ extension KeypadView: CandidatePaneViewDelegate {
     
     private func showStatusMenu() {
         guard statusMenu == nil else { return }
-        AudioFeedbackProvider.softFeedbackGenerator.impactOccurred()
+        FeedbackProvider.softImpact.impactOccurred()
         
         var menuRows: [[KeyCap]] =  [
             [ .changeSchema(.yale), .changeSchema(.jyutping) ],

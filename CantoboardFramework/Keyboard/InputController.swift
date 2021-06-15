@@ -175,7 +175,7 @@ class InputController: NSObject {
     private func candidateLongPressed(choice: IndexPath) {
         if let text = candidateOrganizer.getCandidate(indexPath: choice), text.allSatisfy({ $0.isEnglishLetter }) {
             if EnglishInputEngine.userDictionary.unlearnWord(word: text) {
-                AudioFeedbackProvider.lightFeedbackGenerator.impactOccurred()
+                FeedbackProvider.lightImpact.impactOccurred()
             }
         }
     }
@@ -290,7 +290,7 @@ class InputController: NSObject {
                 }
             }
         case .emoji(let e):
-            AudioFeedbackProvider.play(keyboardAction: action)
+            FeedbackProvider.play(keyboardAction: action)
             if !insertComposingText(appendBy: e, shouldDisableSmartSpace: true) {
                 textDocumentProxy.insertText(e)
             }

@@ -85,7 +85,7 @@ class StatusButton: UIButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         
-        AudioFeedbackProvider.rigidFeedbackGenerator.impactOccurred()
+        FeedbackProvider.rigidImpact.impactOccurred()
         
         longPressTimer?.invalidate()
         longPressTimer = nil

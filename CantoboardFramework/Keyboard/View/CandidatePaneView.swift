@@ -277,7 +277,7 @@ class CandidatePaneView: UIControl {
     
     @objc private func filterButtonClick() {
         Self.hapticsGenerator.impactOccurred(intensity: 1)
-        AudioFeedbackProvider.play(keyboardAction: .none)
+        FeedbackProvider.play(keyboardAction: .none)
         
         if statusIndicatorMode == .lang {
             delegate?.handleKey(.toggleInputMode)
@@ -590,7 +590,7 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section > 0 else { return }
         
-        AudioFeedbackProvider.play(keyboardAction: .none)
+        FeedbackProvider.play(keyboardAction: .none)
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
     }
     

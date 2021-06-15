@@ -109,7 +109,7 @@ class StatusMenu: UIView {
             for label in labelRow {
                 let isTouching = label.frame.contains(touchLocation)
                 if isTouching, let keyCap = labelActions[label] {
-                    AudioFeedbackProvider.rigidFeedbackGenerator.impactOccurred()
+                    FeedbackProvider.rigidImpact.impactOccurred()
                     handleKey?(keyCap.action)
                     return
                 }

@@ -9,7 +9,7 @@ import Foundation
 import AudioToolbox
 import UIKit
 
-class AudioFeedbackProvider {
+class FeedbackProvider {
     private static let clickPress: SystemSoundID = 1123
     private static let deletePress: SystemSoundID = 1155
     private static let modifierPress: SystemSoundID = 1156
@@ -27,10 +27,10 @@ class AudioFeedbackProvider {
         }
     }
     
-    static let selectionGenerator = UISelectionFeedbackGenerator()
+    static let selectionFeedback = UISelectionFeedbackGenerator()
 
-    static let lightFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-    static let mediumFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
-    static let softFeedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
-    static let rigidFeedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    static let lightImpact = UIImpactFeedbackGenerator(style: .light)
+    static let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
+    static let softImpact = UIImpactFeedbackGenerator(style: .soft)
+    static let rigidImpact = UIImpactFeedbackGenerator(style: .rigid)
 }

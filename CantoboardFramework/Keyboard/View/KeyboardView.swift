@@ -461,7 +461,7 @@ extension KeyboardView: CandidatePaneViewDelegate {
     
     private func showStatusMenu() {
         guard statusMenu == nil else { return }
-        AudioFeedbackProvider.softFeedbackGenerator.impactOccurred()
+        FeedbackProvider.softImpact.impactOccurred()
         
         var menuRows: [[KeyCap]] =  [
             [ .changeSchema(.yale), .changeSchema(.jyutping) ],
