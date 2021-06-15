@@ -11,7 +11,9 @@ class TouchHandler {
     static let keyRepeatInitialDelay = 7 // 5 * KeyRepeatInterval
     static let longPressDelay = 3
     static let keyRepeatInterval = 0.08
-    static let cursorMovingStepX = CGFloat(8), initialCursorMovingThreshold = cursorMovingStepX * 1.25
+    static let cursorMovingStepX: CGFloat = 8
+    static let initialCursorMovingThreshold = cursorMovingStepX * 1.25
+    static let swipeXThreshold: CGFloat = 30
     
     private var currentTouch, shiftTouch: (UITouch, /*_ currentKeyView:*/ KeyView, /*_ initialAction:*/ KeyboardAction)?
     private var cursorMoveStartPosition: CGPoint?
@@ -114,7 +116,7 @@ class TouchHandler {
             }
             let point = touch.location(in: keyboardView)
             let dX = point.x - cursorMoveStartPosition.x
-            if dX < -30 && !hasTakenAction {
+            if dX < -Self.swipeXThreshold && !hasTakenAction {
                 cancelKeyRepeatTimer()
                 hasTakenAction = true
                 callKeyHandler(.deleteWordSwipe)
@@ -170,7 +172,7 @@ class TouchHandler {
             
             // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
             let tapStartAction = currentTouch.2
-            let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2 && deltaX > 30
+            let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2 && deltaX > Self.swipeXThreshold
             switch tapStartAction {
             case .space,
                  .character(_) where isForceSwiping:
