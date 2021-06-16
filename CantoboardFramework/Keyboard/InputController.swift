@@ -416,6 +416,9 @@ class InputController: NSObject {
     
     private func changeSchema() {
         inputEngine.rimeSchema = state.activeSchema
+        if state.inputMode == .english {
+            handleKey(.toggleInputMode)
+        }
         clearInput(shouldLeaveReverseLookupMode: false)
     }
     
