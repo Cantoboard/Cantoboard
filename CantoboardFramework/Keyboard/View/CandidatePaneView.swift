@@ -564,7 +564,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
             let commentWidth = comment?.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width ?? 0
             cellWidth = max(cellWidth, commentWidth)
-            cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.45)
+            cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.3)
         } else {
             // Min width add 30% padding
             cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.3 * fontSizeScale)

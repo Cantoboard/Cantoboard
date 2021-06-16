@@ -524,9 +524,9 @@ struct DeviceLayoutConstants {
     
     static let phone = DeviceLayoutConstants(
         portraitCandidateFontSize: 20,
-        portraitCandidateCommentFontSize: 12,
+        portraitCandidateCommentFontSize: 11,
         landscapeCandidateFontSize: 20,
-        landscapeCandidateCommentFontSize: 12,
+        landscapeCandidateCommentFontSize: 11,
         portraitStatusIndicatorFontSize: 20,
         landscapeStatusIndicatorFontSize: 15,
         smallKeyHintFontSize: 7,
