@@ -93,9 +93,9 @@ class InputEngineCandidateSource: CandidateSource {
         let rawInputWithoutDigits = inputEngine.englishComposition?.text.lowercased() ?? ""
         let firstRimeCandidateLength = inputEngine.getRimeCandidate(0)?.count ?? 0
         let firstRimeCode = (inputEngine.getRimeCandidateComment(0) ?? "").lowercased().filter({ !$0.isNumber && $0 != " " })
-        // let composeTextFirstRimeCodeLCS = rawInputWithoutDigits.longestCommonSubsequence(firstRimeCode)
-        // let isRimeExactMatch = composeTextFirstRimeCodeLCS.count == rawInputWithoutDigits.count
-        let isRimeExactMatch = firstRimeCode.starts(with: rawInputWithoutDigits)
+        let composeTextFirstRimeCodeLCS = rawInputWithoutDigits.longestCommonSubsequence(firstRimeCode)
+        let isRimeExactMatch = composeTextFirstRimeCodeLCS.count == rawInputWithoutDigits.count
+        //let isRimeExactMatch = firstRimeCode.starts(with: rawInputWithoutDigits)
 
         if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
         
