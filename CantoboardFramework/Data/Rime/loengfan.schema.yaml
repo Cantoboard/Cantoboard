@@ -52,7 +52,7 @@ engine:
     - reverse_lookup_filter@jyut6ping3_reverse_lookup
 
 speller:
-  alphabet: zyxwvutsrqponmlkjihgfedcba
+  alphabet: zyxwvutsrqponmlkjihgfedcba`
   delimiter: " '"
   algebra:
     - derive/[123456]//           # 忽略聲調
