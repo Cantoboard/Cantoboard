@@ -324,10 +324,21 @@ class InputEngineCandidateSource: CandidateSource {
     func getCandidateComment(indexPath: IndexPath) -> String? {
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
+        let comment: String?
         switch candidatePath.source {
-        case .rime: return inputController?.inputEngine.getRimeCandidateComment(candidatePath.index)
+        case .rime: comment = inputController?.inputEngine.getRimeCandidateComment(candidatePath.index)
         default: return nil
         }
+        
+        if let reverseLookupPerChars = comment?.split(separator: " ").map({ $0.split(separator: "/") }) {
+            var reverseLookupFirstChoice = ""
+            for reverseLookupPerChar in reverseLookupPerChars {
+                reverseLookupFirstChoice += (reverseLookupPerChar.first ?? "") + " "
+            }
+            _ = reverseLookupFirstChoice.popLast()
+            return reverseLookupFirstChoice
+        }
+        return comment
     }
     
     func getCandidateCount(section: Int) -> Int {
