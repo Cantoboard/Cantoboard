@@ -116,5 +116,4 @@ recognizer:
     punct: "^/([0-9]0?|[a-z]+)$"
 
 __patch:
-  - grammar:/hant?
   - common.custom:/patch?
