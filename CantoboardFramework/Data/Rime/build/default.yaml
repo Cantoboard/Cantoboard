@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1623831523
-    default.custom: 1623831523
+    default: 1623889325
+    default.custom: 1623889325
 ascii_composer:
   switch_key:
     Control_L: noop
