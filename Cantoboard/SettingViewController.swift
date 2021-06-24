@@ -8,7 +8,7 @@ import UIKit
 
 import CantoboardFramework
 
-class SettingViewController: UITableViewController {
+class SettingViewController: UITableViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak private var charFormControl: UISegmentedControl!
     @IBOutlet weak private var enableMixedModeControl: UISwitch!
     @IBOutlet weak private var autoCapControl: UISwitch!
@@ -22,6 +22,7 @@ class SettingViewController: UITableViewController {
     @IBOutlet weak private var showRomanizationModeControl: UISegmentedControl!
     @IBOutlet weak private var audioFeedbackControl: UISwitch!
     @IBOutlet weak private var hapticFeedbackControl: UISwitch!
+    @IBOutlet weak var testTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,10 @@ class SettingViewController: UITableViewController {
         
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGestureRecognizer.delegate = self
+        tableView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     @objc func updateSettings(_ sender: Any) {
@@ -103,6 +108,16 @@ class SettingViewController: UITableViewController {
     @objc func appMovedToBackground(_ notification: NSNotification) {
         populateSettings()
         tableView.reloadData()
+    }
+    
+    @objc func hideKeyboard() {
+        tableView.endEditing(true)
+        testTextField.text = ""
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        hideKeyboard()
+        return true
     }
     
     @IBAction func openAppSetting(_ sender: Any) {
