@@ -256,7 +256,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var barHint: String? {
         switch self {
-        case "，", "。", "？", "！", "—", "——", "＆",
+        case "，", "。", "？", "！", "—", "——", "＆", "．",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
@@ -347,9 +347,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "｢": return ["｢", "「", "『", "“", "‘"]
         case "｣": return ["｣", "」", "』", "”", "’"]
         // 123 3rd row
-        case ".": return [".", "。"]
+        case ".": return [".", "。", "．"]
         case ",": return [",", "，"]
-        case "､": return ["､ ", "、"]
+        case "､": return ["､", "、"]
         case "?": return ["?", "？", "¿"]
         case "!": return ["!", "！", "¡"]
         case "'": return ["'", "＇", "’", "‘", "`"]
@@ -376,7 +376,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "«": return ["«", "《"]
         case "»": return ["»", "》"]
         case "&": return ["＆", "&", "§"]
-        case "•": return ["•", "·", "°"]
+        case "•": return ["•", "·", "．", "°"]
         // #+= 4rd row
         case "@": return ["@", "＠"]
         // 123 1st row full width
@@ -402,9 +402,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "「": return ["「", "｢", "『", "“", "‘"]
         case "」": return ["」", "｣", "』", "”", "’"]
         // 123 3rd row full width
-        case "。": return ["。", "."]
+        case "。": return ["。", ".", "．"]
         case "，": return ["，", ","]
-        case "、": return ["､ ", "、"]
+        case "、": return ["､", "、"]
         case "？": return ["？", "?", "¿"]
         case "！": return ["！", "!", "¡"]
         case "＇": return ["＇", "'", "’", "‘", "｀"]
@@ -431,7 +431,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "＆": return ["&", "＆", "§"]
-        case "·": return ["·", "•", "°"]
+        case "·": return ["·", "．", "•", "°"]
         // #+= 4rd row full width
         case "＠": return ["＠", "@"]
         default: return [self]
