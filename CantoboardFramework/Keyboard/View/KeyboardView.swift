@@ -78,7 +78,7 @@ class KeyboardView: UIView, InputView {
     private let symbolsFullKeyCapRows: [[[KeyCap]]] = [
         [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
         [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
-        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "’"], [.backspace]],
+        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "＇"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     

@@ -113,17 +113,18 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFont: UIFont {
         switch self {
-        case .rime, "^_^": return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        default: return .preferredFont(forTextStyle: buttonFontStyle)
+        case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
+        case .rime, "^_^", .keyboardType, .returnKey, .space, .contextualSymbols(.rime): return .systemFont(ofSize: 16)
+        default: return .systemFont(ofSize: 22)
         }
     }
     
     var popupFont: UIFont {
         switch self {
-        case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(24)
-        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu", .exportFile, .exit:
-            return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
+        case .reverseLookup, .rime(.delimiter), .rime(.sym): return .systemFont(ofSize: 24)
+        case .exportFile, .exit: return .systemFont(ofSize: 12)
+        case .rime, "……", "⋯⋯", "——", "^_^", ".com", ".net", ".org", ".edu": return .systemFont(ofSize: 16)
+        default: return .systemFont(ofSize: 30)
         }
     }
     
@@ -226,6 +227,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "）": return ")"
         case "「": return "「　"
         case "」": return "  」"
+        case "〈": return "〈　"
+        case "〉": return "  〉"
         case "《": return "《　"
         case "》": return "  》"
         case "［": return "["

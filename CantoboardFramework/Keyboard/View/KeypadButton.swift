@@ -44,7 +44,7 @@ class KeypadButton: KeyView {
         
         switch keyCap {
         case .character, .stroke:
-            titleLabel?.font = UIFont.preferredFont(forTextStyle: .title2).withSize(26)
+            titleLabel?.font = .systemFont(ofSize: 26)
         default:()
         }
         
