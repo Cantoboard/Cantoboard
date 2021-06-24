@@ -254,7 +254,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var barHint: String? {
         switch self {
-        case "，", "。", "？", "！",
+        case "，", "。", "．", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
@@ -345,8 +345,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "「": return ["「", "『", "“", "‘"]
         case "」": return ["」", "』", "”", "’"]
         // 123 3rd row
-        case ".": return [".", "。", "…", "⋯", "⋯⋯"]
-        case ",": return [", ", "，"]
+        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯"]
+        case ",": return [",", "，"]
+        case "､": return ["､", "、"]
         case "&": return ["＆", "&", "§"]
         case "?": return ["?", "？", "¿"]
         case "!": return ["!", "！", "¡"]
@@ -371,7 +372,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "~": return ["~", "～"]
         case "<": return ["<", "〈", "＜"]
         case ">": return [">", "〉", "＞"]
-        case "•": return ["•", "·", "°"]
+        case "«": return ["«", "《"]
+        case "»": return ["»", "》"]
+        case "•": return ["•", "·", "．", "°"]
         // 123 1st row full width
         case "１": return ["１", "一", "壹", "1", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "２": return ["貳", "２", "二", "2", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
@@ -393,9 +396,10 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "＄": return ["￠", "$", "＄", "€", "￡", "￥", "￦", "₽"]
         case "＂": return ["＂", "\"", "”", "“", "c", "»", "«"]
         // 123 3rd row full width
-        case "。": return ["。", ".","…", "⋯", "⋯⋯"]
+        case "。": return ["。", ".", "．", "…", "⋯", "⋯⋯"]
         case "，": return ["，", ", "]
         case "＆": return ["&", "＆", "§"]
+        case "、": return ["､", "、"]
         case "？": return ["？", "?", "¿"]
         case "！": return ["！", "!", "¡"]
         case "＇": return ["＇", "'", "’", "‘", "｀"]
@@ -419,6 +423,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "～": return ["～", "~"]
         case "〈": return ["〈", "<", "＜"]
         case "〉": return ["〉", ">", "＞"]
+        case "《": return ["《", "«"]
+        case "》": return ["》", "»"]
+        case "·": return ["·", "．", "•", "°"]
         default: return [self]
         }
     }
