@@ -56,7 +56,7 @@ class KeyboardView: UIView, InputView {
     
     private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["-", "/", ":", ";", "(", ")", "$", "\"", "「", "」"]],
+        [["-", "/", ":", ";", "(", ")", .currency, "\"", "「", "」"]],
         [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "‘"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
@@ -70,7 +70,7 @@ class KeyboardView: UIView, InputView {
     
     private let numbersFullKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["－", "／", "：", "；", "（", "）", "＄", "＂", "「", "」"]],
+        [["－", "／", "：", "；", "（", "）", .currency, "＂", "「", "」"]],
         [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["＠", .returnKey(.default)]]
     ]
@@ -248,7 +248,15 @@ class KeyboardView: UIView, InputView {
             refreshAlphabeticKeys(shiftState)
         case .numeric:
             let rows = state.symbolShape == .full ? numbersFullKeyCapRows : numbersHalfKeyCapRows
-            for (index, keyCaps) in rows.enumerated() {
+            for (index, var keyCaps) in rows.enumerated() {
+                keyCaps = keyCaps.map { $0.map {
+                    switch $0 {
+                    case .currency:
+                        return .character(NSLocale.current.currencySymbol ?? "$")
+                    default:
+                        return $0
+                    }
+                } }
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
         case .symbolic:

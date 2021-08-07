@@ -73,6 +73,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     changeSchema(RimeSchema),
     switchToEnglishMode,
     exportFile(String, String),
+    currency,
     exit
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
@@ -106,6 +107,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .switchToEnglishMode: return .toggleInputMode
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
+        case .currency: return .character("BUG")
         }
     }
     
@@ -290,7 +292,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
              "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉",
-             "￠", "＄", "€", "￡", "￥", "￦", "₽", "＂", "＇": return "全"
+             "＄", "＂", "＇": return "全"
         default: return nil
         }
     }
@@ -371,7 +373,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case ";": return [";", "；"]
         case "(": return ["(", "（"]
         case ")": return [")", "）"]
-        case "$": return ["¢", "$", "€", "£", "¥", "₩", "₽"]
         case "\"": return ["\"", "＂", "”", "“", "„", "»", "«"]
         case "「": return ["「", "『", "“", "‘"]
         case "」": return ["」", "』", "”", "’"]
@@ -424,7 +425,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "；": return ["；", ";"]
         case "（": return ["（", "("]
         case "）": return ["）", ")"]
-        case "＄": return ["￠", "$", "＄", "€", "￡", "￥", "￦", "₽"]
         case "＂": return ["＂", "\"", "”", "“", "c", "»", "«"]
         // 123 3rd row full width
         case "。": return ["。", ".", "．", "…", "⋯", "⋯⋯"]
@@ -457,6 +457,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "·": return ["·", "．", "•", "°"]
+        case .character(let c) where c.first?.isCurrencySymbol ?? false:
+            var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
+            let localCurrencySymbolKeyCap: KeyCap = .character(NSLocale.current.currencySymbol ?? "$")
+            currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
+            currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
+            return currencyLists
         default: return [self]
         }
     }
