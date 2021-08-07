@@ -30,6 +30,28 @@ enum SpaceKeyMode: String {
     case nextPage = "next page"
 }
 
+enum ReturnKeyType: Int {
+    case confirm = -1
+    case `default` = 0
+    case go = 1
+    case google = 2
+    case join = 3
+    case next = 4
+    case route = 5
+    case search = 6
+    case send = 7
+    case yahoo = 8
+    case done = 9
+    case emergencyCall = 10
+
+    @available(iOS 9.0, *)
+    case `continue` = 11
+    
+    public init(_ returnKeyType: UIReturnKeyType) {
+        self = ReturnKeyType(rawValue: returnKeyType.rawValue) ?? .default
+    }
+}
+
 enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
@@ -41,7 +63,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     stroke(String),
     emoji(String),
     keyboardType(KeyboardType),
-    returnKey(UIReturnKeyType),
+    returnKey(ReturnKeyType),
     nextKeyboard,
     space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
@@ -115,7 +137,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
-        case .returnKey(.continue), .returnKey(.next), .returnKey(.default): return ButtonColor.systemKeyBackgroundColor
+        case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
         default: return ButtonColor.systemKeyBackgroundColor
         }
@@ -140,7 +162,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .returnKey(.go), .returnKey(.search): return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
-        case .returnKey(.continue), .returnKey(.next), .returnKey(.default): return ButtonColor.keyForegroundColor
+        case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.keyForegroundColor
         case .returnKey: return .white
         default: return ButtonColor.keyForegroundColor
         }
@@ -166,6 +188,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonText: String? {
         switch self {
         case .characterWithConditioanlPopup(let text): return text
+        case .returnKey(.confirm): return "confirm"
         case .returnKey(.go): return "go"
         case .returnKey(.next): return "next"
         case .returnKey(.send): return "send"

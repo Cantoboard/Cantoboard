@@ -30,7 +30,7 @@ struct KeyboardState: Equatable {
     
     var enableState: KeyboardEnableState
     
-    var returnKeyType: UIReturnKeyType
+    var returnKeyType: ReturnKeyType
     var needsInputModeSwitchKey: Bool
     var spaceKeyMode: SpaceKeyMode
     
@@ -487,7 +487,7 @@ class InputController: NSObject {
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
-        state.returnKeyType = hasMarkedText ? .default : textDocumentProxy?.returnKeyType ?? .default
+        state.returnKeyType = hasMarkedText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
         if !inputEngine.isComposing {
             state.spaceKeyMode = .space
