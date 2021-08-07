@@ -424,11 +424,11 @@ class InputController: NSObject {
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
         inputEngine.clearInput()
-        updateInputState()
         if shouldLeaveReverseLookupMode {
             state.reverseLookupSchema = nil
-            changeSchema()
+            inputEngine.rimeSchema = state.activeSchema
         }
+        updateInputState()
     }
     
     func clearState() {
