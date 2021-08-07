@@ -176,6 +176,9 @@ class CandidateCell: UICollectionViewCell {
     weak var keyHintLayer: KeyHintLayer?
     weak var commentLayer: CATextLayer?
     
+    // Uncomment this to debug memory leak.
+    private let c = InstanceCounter<CandidateCell>()
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
     }

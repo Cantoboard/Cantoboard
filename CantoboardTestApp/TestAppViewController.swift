@@ -103,7 +103,6 @@ Python in the browser has long been an item on the wish list of many in the Pyth
         
         createKeyboardController()
         
-        // englishDictionary
         /*
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.recreateKeyboardController()

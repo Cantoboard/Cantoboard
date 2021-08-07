@@ -16,6 +16,9 @@ class StatusMenu: UIView {
     var labels: [[UILabel]]
     var handleKey: ((_ action: KeyboardAction) -> Void)?
     
+    // Uncomment this to debug memory leak.
+    private let c = InstanceCounter<StatusMenu>()
+    
     init(menuRows: [[KeyCap]]) {
         var labelActions: [UILabel: KeyCap] = [:]
         labels = menuRows.map({

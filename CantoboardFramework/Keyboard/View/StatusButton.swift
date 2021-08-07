@@ -19,6 +19,9 @@ class StatusButton: UIButton {
     private weak var statusSquareBg: CALayer?
     private weak var miniExpandImageLayer: CALayer?, miniExpandImageMaskLayer: CALayer?
     
+    // Uncomment this to debug memory leak.
+    private let c = InstanceCounter<StatusButton>()
+    
     var handleStatusMenu: ((_ from: UIView, _ with: UIEvent?) -> Bool)?
     
     var isMini: Bool = false {

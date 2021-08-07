@@ -24,7 +24,7 @@ protocol InputView: UIView {
 
 class KeyboardView: UIView, InputView {
     // Uncomment this to debug memory leak.
-    // private let c = InstanceCounter<KeyboardView>()
+    private let c = InstanceCounter<KeyboardView>()
     
     weak var delegate: KeyboardViewDelegate?
     

@@ -25,6 +25,9 @@ class CandidatePaneView: UIControl {
     private static let miniStatusSize = CGSize(width: 20, height: 20)
     static let miniStatusFontSize: CGFloat = LayoutConstants.forMainScreen.miniStatusFontSize
     
+    // Uncomment this to debug memory leak.
+    private let c = InstanceCounter<CandidatePaneView>()
+    
     enum Mode {
         case row, table
     }

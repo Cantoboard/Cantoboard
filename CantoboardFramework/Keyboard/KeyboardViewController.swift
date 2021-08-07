@@ -14,7 +14,7 @@ open class KeyboardViewController: UIInputViewController {
     private static let isLoggerInited = initLogger()
     
     // Uncomment this to debug memory leak.
-    // private let c = InstanceCounter<KeyboardViewController>()
+    private let c = InstanceCounter<KeyboardViewController>()
     
     private var inputController: InputController?
     private(set) weak var keyboardViewPlaceholder: UIView?
