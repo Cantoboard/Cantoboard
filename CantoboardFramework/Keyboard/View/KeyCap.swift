@@ -115,7 +115,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
-        case .returnKey(.go), .returnKey(.search): return UIColor.systemBlue
+        case .returnKey(.continue), .returnKey(.next), .returnKey(.default): return ButtonColor.systemKeyBackgroundColor
+        case .returnKey: return UIColor.systemBlue
         default: return ButtonColor.systemKeyBackgroundColor
         }
     }
@@ -139,6 +140,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .returnKey(.go), .returnKey(.search): return .white
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedForegroundColor
+        case .returnKey(.continue), .returnKey(.next), .returnKey(.default): return ButtonColor.keyForegroundColor
+        case .returnKey: return .white
         default: return ButtonColor.keyForegroundColor
         }
     }
@@ -166,7 +169,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .returnKey(.go): return "go"
         case .returnKey(.next): return "next"
         case .returnKey(.send): return "send"
-        case .returnKey(.search), .returnKey(.google): return "search"
+        case .returnKey(.search), .returnKey(.google), .returnKey(.yahoo): return "search"
+        case .returnKey(.continue): return "→"
+        case .returnKey(.done): return "done"
+        case .returnKey(.emergencyCall): return "SOS"
+        case .returnKey(.join): return "join"
+        case .returnKey(.route): return "route"
         case .returnKey: return "return"
         case .space(let label): return label.rawValue
         case .keyboardType(.numeric): return "123"
