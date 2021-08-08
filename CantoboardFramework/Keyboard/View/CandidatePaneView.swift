@@ -153,7 +153,9 @@ class CandidatePaneView: UIControl {
 
         inputModeButton = (createAndAddButton(isStatusIndicator: true) as! StatusButton)
         inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
-        inputModeButton.handleStatusMenu = handleStatusMenu
+        inputModeButton.handleStatusMenu = { [weak self] in
+            return self?.handleStatusMenu(from: $0, with: $1) ?? false
+        }
         sendSubviewToBack(inputModeButton)
         
         backspaceButton = createAndAddButton(isStatusIndicator: false)
