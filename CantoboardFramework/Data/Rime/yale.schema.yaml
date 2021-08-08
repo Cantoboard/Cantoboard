@@ -88,7 +88,27 @@ speller:
     - xform/oe(\d)/eu$1/
     - xform/aa(\d)/a$1/
     
-    - derive/[123456]//           # 忽略聲調
+    # 常見錯誤拼音 幫助港式拼音使用者上手
+    # 聲母
+    - derive/^ch/ts/ # e.g. 荃灣 Tsuen
+    - derive/^s/sh/ # e.g. 上環 Sheung
+
+    # 韻母
+    - derive/am(\d)/um$1/ # e.g. 點心 Sum
+    - derive/am(\d)/om$1/ # e.g. 紅磡 Hom
+    
+    - derive/ou(\d)/o$1/ # e.g. 好 ho
+    - derive/h(\d)/$1/ # e.g. 野 yeh
+    
+    - derive/u(\w?\d)/oo$1/ # e.g. 美乎 Foo
+    
+    - derive/o(\d)/oh$1/ # e.g. 個 goh
+    - derive/o(\d)/or$1/ # e.g. 哥 gor
+    
+    - derive/eu(\w?\d)/u$1/ # e.g. 對 dui 春 chun
+
+    - derive/^yu(\w{0,2}\d)/yue$1/ # e.g. 元朗 Yuen
+    - derive/([^y])yu(\w{0,2}\d)/$1ue$2/ # e.g. 全 chuen 屯門 Tuen
 
     # 教院轉換成粵拼
     #- derive/^z/dz/
@@ -99,18 +119,20 @@ speller:
     #- derive/yu$/y/
     #- derive/yun$/yn/
     #- derive/yut$/yt/
-   
+    
+    - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
     # - abbrev/^([a-z]).+([1-6])$/$1$2/      # 首字母聲調簡拼
     # - abbrev/^([a-z]{2}).+([1-6])$/$1$2/   # 首2字母聲調簡拼
-    - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
     # - abbrev/^([a-z]{2}).+$/$1/   # 首2字母簡拼
+    
+    - derive/[123456]//           # 忽略聲調
 
 translator:
   dictionary: jyut6ping3
   spelling_hints: 256
   always_show_comments: true
   prism: yale
-# TODO Show JyutPing in Yale mode to encourage users to learn JyutPing
+  # TODO Show JyutPing in Yale mode to encourage users to learn JyutPing
   comment_format:
     - xform/oeng/eung/
     - xform/oek/euk/

@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1623889682
-    default: 1623889325
-    default.custom: 1623889325
-    symbols: 1623889325
+    common.custom: 1628400980
+    default: 1628400609
+    default.custom: 1628400609
+    symbols: 1628400609
     symbols.custom: 0
-    symbols_cantonese: 1623889325
-    yale.schema: 1623889325
+    symbols_cantonese: 1628400609
+    yale.schema: 1628400609
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -347,8 +347,20 @@ speller:
     - "xform/eot(\\d)/eut$1/"
     - "xform/oe(\\d)/eu$1/"
     - "xform/aa(\\d)/a$1/"
-    - "derive/[123456]//"
+    - "derive/^ch/ts/"
+    - "derive/^s/sh/"
+    - "derive/am(\\d)/um$1/"
+    - "derive/am(\\d)/om$1/"
+    - "derive/ou(\\d)/o$1/"
+    - "derive/h(\\d)/$1/"
+    - "derive/u(\\w?\\d)/oo$1/"
+    - "derive/o(\\d)/oh$1/"
+    - "derive/o(\\d)/or$1/"
+    - "derive/eu(\\w?\\d)/u$1/"
+    - "derive/^yu(\\w{0,2}\\d)/yue$1/"
+    - "derive/([^y])yu(\\w{0,2}\\d)/$1ue$2/"
     - "abbrev/^([a-z]).+$/$1/"
+    - "derive/[123456]//"
   alphabet: zyxwvutsrqponmlkjihgfedcba654321
   delimiter: " '"
 switches:
