@@ -50,16 +50,17 @@ speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
   delimiter: " ;'"
   algebra:
-    - 'derive/^([^z])\w+(\w)$/$1$2/'  # 取倉頡首尾二碼爲速成碼
+    - 'xform/^([^z])\w+(\w)$/$1$2/'  # 取倉頡首尾二碼爲速成碼
 
 translator:
-  dictionary: quick5
+  dictionary: cangjie5
   enable_charset_filter: false
   enable_completion: false
 
   prism: quick5
   preedit_format:
-    - "xlit|abcdefghijklmnopqrstuvwxyz;'|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符··|"
+    - 'xform/^([a-z ]*)$/\U$1\E/'
+    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
   comment_format:
     - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
   disable_user_dict_for_patterns:
