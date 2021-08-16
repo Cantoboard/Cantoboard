@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1623889325
-    default.custom: 1623889325
+    default: 1629148618
+    default.custom: 1629148618
     quick5.custom: 0
-    quick5.schema: 1623889325
-    symbols: 1623889325
+    quick5.schema: 1629148618
+    symbols: 1629148618
     symbols.custom: 0
-    symbols_cantonese: 1623889325
+    symbols_cantonese: 1629148618
 engine:
   filters:
     - uniquifier
@@ -361,7 +361,7 @@ schema:
   version: 0.20
 speller:
   algebra:
-    - "derive/^([^z])\\w+(\\w)$/$1$2/"
+    - "xform/^([^z])\\w+(\\w)$/$1$2/"
   alphabet: zyxwvutsrqponmlkjihgfedcba
   delimiter: " ;'"
 switches:
@@ -375,12 +375,13 @@ switches:
 translator:
   comment_format:
     - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
-  dictionary: quick5
+  dictionary: cangjie5
   disable_user_dict_for_patterns:
     - "^z.*$"
     - "^yyy.*$"
   enable_charset_filter: false
   enable_completion: false
   preedit_format:
-    - "xlit|abcdefghijklmnopqrstuvwxyz;'|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符··|"
+    - "xform/^([a-z ]*)$/\\U$1\\E/"
+    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
   prism: quick5
