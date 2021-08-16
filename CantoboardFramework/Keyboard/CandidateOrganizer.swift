@@ -85,7 +85,7 @@ class InputEngineCandidateSource: CandidateSource {
         // If input is an English word, insert best English candidates first.
         if !hasPopulatedPrefectEnglishCandidates && isEnglishActive {
             for i in 0..<inputEngine.englishPrefectCandidatesStartIndex {
-                candidatePaths[0].append(CandidatePath(source: .english, index: i))
+                appendEnglishCandidate(i)
             }
             hasPopulatedPrefectEnglishCandidates = true
         }
@@ -124,7 +124,7 @@ class InputEngineCandidateSource: CandidateSource {
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishPrefectCandidatesStartIndex..<inputEngine.englishWorstCandidatesStartIndex {
-                candidatePaths[0].append(CandidatePath(source: .english, index: i))
+                appendEnglishCandidate(i)
             }
             hasPopulatedBestEnglishCandidates = true
         }
@@ -138,10 +138,23 @@ class InputEngineCandidateSource: CandidateSource {
         // Populate worst English candidates.
         if (inputMode == .english || inputEngine.hasRimeLoadedAllCandidates) && !hasPopulatedWorstEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishWorstCandidatesStartIndex..<englishCandidates.count {
-                candidatePaths[0].append(CandidatePath(source: .english, index: i))
+                appendEnglishCandidate(i)
             }
             hasPopulatedWorstEnglishCandidates = true
         }
+    }
+    
+    private func appendEnglishCandidate(_ i: Int) {
+        guard let inputController = inputController,
+              let inputEngine = inputController.inputEngine
+            else { return }
+        
+        if inputController.state.inputMode == .mixed && inputEngine.englishCandidates[i] == inputEngine.englishComposition?.text {
+            // Skip exact match in mixed mode.
+            return
+        }
+        
+        candidatePaths[0].append(CandidatePath(source: .english, index: i))
     }
     
     private func populateCandidatesByRomanization() {

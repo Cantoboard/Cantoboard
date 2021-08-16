@@ -183,7 +183,7 @@ class InputController: NSObject {
     private func handleSpace() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        if inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
+        if state.inputMode != .mixed && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
             if Settings.cached.spaceAction == .insertText {
                 candidateSelected(choice: [0, 0], enableSmartSpace: true)
             } else {
@@ -191,7 +191,7 @@ class InputController: NSObject {
                 needReloadCandidates = false
             }
         } else {
-            if !insertComposingText() {
+            if !insertComposingText(appendBy: " ") {
                 if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
                 }
