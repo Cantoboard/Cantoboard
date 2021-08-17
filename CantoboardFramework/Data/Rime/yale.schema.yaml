@@ -106,10 +106,12 @@ speller:
     - derive/o(\d)/or$1/ # e.g. 哥 gor
     
     - derive/eu(\w?\d)/u$1/ # e.g. 對 dui 春 chun
-
+    
     - derive/^yu(\w{0,2}\d)/yue$1/ # e.g. 元朗 Yuen
     - derive/([^y])yu(\w{0,2}\d)/$1ue$2/ # e.g. 全 chuen 屯門 Tuen
-
+    
+    - derive/([^y])yu(\w{0,2}\d)/$1u$2/ # e.g. 豬 Ju
+    
     # 教院轉換成粵拼
     #- derive/^z/dz/
     #- derive/^c/ts/
