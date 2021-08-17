@@ -546,7 +546,9 @@ class InputController: NSObject {
         if let englishText = inputEngine.englishComposition?.text,
            var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
-            if Settings.cached.toneInputMode == .vxq {
+            if state.inputMode == .english {
+                composingText = englishText
+            } else if inputEngine.rimeSchema == .jyutping && Settings.cached.toneInputMode == .vxq {
                 var englishTailLength = 0
                 for c in composingText.reversed() {
                     switch c {
