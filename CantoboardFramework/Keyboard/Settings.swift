@@ -56,6 +56,12 @@ public enum CandidateFontSize: String, Codable {
     }
 }
 
+public enum ShowRomanizationMode: String, Codable {
+    case always = "always"
+    case onlyInNonCantoneseMode = "onlyInNonCantoneseMode"
+    case never = "never"
+}
+
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
@@ -82,7 +88,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
     private static let defaultEnglishLocale: EnglishLocale = .us
-    private static let defaultShowRomanization: Bool = false
+    private static let defaultShowRomanizationMode: ShowRomanizationMode = .onlyInNonCantoneseMode
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
 
@@ -96,7 +102,7 @@ public struct Settings: Codable, Equatable {
     public var toneInputMode: ToneInputMode
     public var rimeSettings: RimeSettings
     public var englishLocale: EnglishLocale
-    public var shouldShowRomanization: Bool
+    public var showRomanizationMode: ShowRomanizationMode
     public var isAudioFeedbackEnabled: Bool
     public var isTapHapticFeedbackEnabled: Bool
     
@@ -111,7 +117,7 @@ public struct Settings: Codable, Equatable {
         toneInputMode = Self.defaultToneInputMode
         rimeSettings = Self.defaultRimeSettings
         englishLocale = Self.defaultEnglishLocale
-        shouldShowRomanization = Self.defaultShowRomanization
+        showRomanizationMode = Self.defaultShowRomanizationMode
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
     }
@@ -128,7 +134,7 @@ public struct Settings: Codable, Equatable {
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings
         self.englishLocale = try container.decodeIfPresent(EnglishLocale.self, forKey: .englishLocale) ?? Settings.defaultEnglishLocale
-        self.shouldShowRomanization = try container.decodeIfPresent(Bool.self, forKey: .shouldShowRomanization) ?? Settings.defaultShowRomanization
+        self.showRomanizationMode = try container.decodeIfPresent(ShowRomanizationMode.self, forKey: .showRomanizationMode) ?? Settings.defaultShowRomanizationMode
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
     }

@@ -19,7 +19,7 @@ class SettingViewController: UITableViewController {
     @IBOutlet weak private var toneInputControl: UISegmentedControl!
     @IBOutlet weak private var rimeEnableCorrector: UISwitch!
     @IBOutlet weak private var englishLocaleInputControl: UISegmentedControl!
-    @IBOutlet weak private var showRomanizationControl: UISwitch!
+    @IBOutlet weak private var showRomanizationModeControl: UISegmentedControl!
     @IBOutlet weak private var audioFeedbackControl: UISwitch!
     @IBOutlet weak private var hapticFeedbackControl: UISwitch!
     
@@ -38,7 +38,7 @@ class SettingViewController: UITableViewController {
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         rimeEnableCorrector.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         englishLocaleInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
-        showRomanizationControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        showRomanizationModeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         audioFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         hapticFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         
@@ -75,6 +75,14 @@ class SettingViewController: UITableViewController {
         default: englishLocale = .us
         }
         
+        let showRomanizationMode: ShowRomanizationMode
+        switch showRomanizationModeControl.selectedSegmentIndex {
+        case 0: showRomanizationMode = .never
+        case 1: showRomanizationMode = .always
+        case 2: showRomanizationMode = .onlyInNonCantoneseMode
+        default: showRomanizationMode = .onlyInNonCantoneseMode
+        }
+        
         var settings = Settings()
         settings.charForm = selectedCharForm
         settings.isMixedModeEnabled = enableMixedModeControl.isOn
@@ -86,7 +94,7 @@ class SettingViewController: UITableViewController {
         settings.toneInputMode = toneInputMode
         settings.rimeSettings.enableCorrector = rimeEnableCorrector.isOn
         settings.englishLocale = englishLocale
-        settings.shouldShowRomanization = showRomanizationControl.isOn
+        settings.showRomanizationMode = showRomanizationMode
         settings.isAudioFeedbackEnabled = audioFeedbackControl.isOn
         settings.isTapHapticFeedbackEnabled = hapticFeedbackControl.isOn
         Settings.save(settings)
@@ -144,7 +152,6 @@ class SettingViewController: UITableViewController {
         enableMixedModeControl.isOn = settings.isMixedModeEnabled
         autoCapControl.isOn = settings.isAutoCapEnabled
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
-        showRomanizationControl.isOn = settings.shouldShowRomanization
         audioFeedbackControl.isOn = settings.isAudioFeedbackEnabled
         hapticFeedbackControl.isOn = settings.isTapHapticFeedbackEnabled
         rimeEnableCorrector.isOn = settings.rimeSettings.enableCorrector
@@ -162,6 +169,14 @@ class SettingViewController: UITableViewController {
             switch $0.candidateFontSize {
             case .normal: return 0
             case .large: return 1
+            }
+        })
+        
+        populateSetting(toSegmentedControl: showRomanizationModeControl, settingToIndexMapper: {
+            switch $0.showRomanizationMode {
+            case .never: return 0
+            case .always: return 1
+            case .onlyInNonCantoneseMode: return 2
             }
         })
     }

@@ -579,7 +579,11 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private var showComment: Bool {
-        !keyboardState.activeSchema.isCantonese || Settings.cached.shouldShowRomanization
+        switch Settings.cached.showRomanizationMode {
+        case .never: return false
+        case .always: return true
+        case .onlyInNonCantoneseMode: return !keyboardState.activeSchema.isCantonese
+        }
     }
     
     private func translateCollectionViewIndexPathToCandidateIndexPath(_ collectionViewIndexPath: IndexPath) -> IndexPath {
