@@ -90,17 +90,15 @@ class KeyView: HighlightableButton {
         var shadowOpacity: Float = 1.0
         var buttonHintTitle = keyCap.buttonHint
         highlightedColor = nil
-
+        
         if !isKeyEnabled {
             setImage(nil, for: .normal)
             setTitle(nil, for: .normal)
             titleLabel?.text = nil
-            let backgroundColorAlpha = backgroundColor?.alpha ?? 1
             if case .shift = keyCap {
                 // Hide the highlighted color in swipe mode.
                 backgroundColor = ButtonColor.systemKeyBackgroundColor
             }
-            backgroundColor = backgroundColor?.withAlphaComponent(backgroundColorAlpha * 0.8)
             shadowOpacity = 0
             buttonHintTitle = nil
         } else if popupView != nil {
