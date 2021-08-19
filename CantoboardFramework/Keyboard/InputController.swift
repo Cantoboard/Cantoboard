@@ -165,7 +165,7 @@ class InputController: NSObject {
             if commitedText.allSatisfy({ $0.isEnglishLetter }) {
                 EnglishInputEngine.userDictionary.learnWord(word: commitedText)
             }
-            insertText(commitedText, isFromCandidateBar: enableSmartSpace)
+            insertText(commitedText, requestSmartSpace: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
                 // keyboardView?.changeCandidatePaneMode(.row)
             }
@@ -191,7 +191,7 @@ class InputController: NSObject {
                 needReloadCandidates = false
             }
         } else {
-            if !insertComposingText(appendBy: " ") {
+            if !insertComposingText() {
                 if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
                 }
@@ -441,7 +441,7 @@ class InputController: NSObject {
     
     private var hasMarkedText = false
     
-    private func insertText(_ text: String, isFromCandidateBar: Bool = false) {
+    private func insertText(_ text: String, requestSmartSpace: Bool = false) {
         guard !text.isEmpty else { return }
         guard let textDocumentProxy = textDocumentProxy else { return }
         let isNewLine = text == "\n"
@@ -461,7 +461,7 @@ class InputController: NSObject {
         
         let textToBeInserted: String
         
-        if shouldInsertSmartSpace(text, isFromCandidateBar, isNewLine) {
+        if shouldInsertSmartSpace(text, requestSmartSpace, isNewLine) {
             textToBeInserted = text + " "
             hasInsertedAutoSpace = true
         } else {
@@ -562,7 +562,7 @@ class InputController: NSObject {
             }
             EnglishInputEngine.userDictionary.learnWordIfNeeded(word: composingText)
             if let c = appendBy { composingText.append(c) }
-            insertText(composingText)
+            insertText(composingText, requestSmartSpace: !shouldDisableSmartSpace)
             return true
         }
         return false
