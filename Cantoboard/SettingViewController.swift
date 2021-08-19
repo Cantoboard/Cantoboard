@@ -22,7 +22,8 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak private var showRomanizationModeControl: UISegmentedControl!
     @IBOutlet weak private var audioFeedbackControl: UISwitch!
     @IBOutlet weak private var hapticFeedbackControl: UISwitch!
-    @IBOutlet weak var testTextField: UITextField!
+    @IBOutlet weak private var showEnglishExactMatchControl: UISwitch!
+    @IBOutlet weak private var testTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +43,8 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         showRomanizationModeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         audioFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         hapticFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
-        
+        showEnglishExactMatchControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
         
@@ -102,6 +104,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         settings.showRomanizationMode = showRomanizationMode
         settings.isAudioFeedbackEnabled = audioFeedbackControl.isOn
         settings.isTapHapticFeedbackEnabled = hapticFeedbackControl.isOn
+        settings.shouldShowEnglishExactMatch = showEnglishExactMatchControl.isOn
         Settings.save(settings)
     }
     
@@ -170,6 +173,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         audioFeedbackControl.isOn = settings.isAudioFeedbackEnabled
         hapticFeedbackControl.isOn = settings.isTapHapticFeedbackEnabled
         rimeEnableCorrector.isOn = settings.rimeSettings.enableCorrector
+        showEnglishExactMatchControl.isOn = settings.shouldShowEnglishExactMatch
         
         populateSetting(toSegmentedControl: englishLocaleInputControl, settingToIndexMapper: {
             switch $0.englishLocale {

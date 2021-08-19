@@ -91,6 +91,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowRomanizationMode: ShowRomanizationMode = .onlyInNonCantoneseMode
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
+    private static let defaultShowEnglishExactMatch: Bool = true
 
     public var charForm: CharForm
     public var isMixedModeEnabled: Bool
@@ -105,6 +106,7 @@ public struct Settings: Codable, Equatable {
     public var showRomanizationMode: ShowRomanizationMode
     public var isAudioFeedbackEnabled: Bool
     public var isTapHapticFeedbackEnabled: Bool
+    public var shouldShowEnglishExactMatch: Bool
     
     public init() {
         charForm = Self.defaultCharForm
@@ -120,6 +122,7 @@ public struct Settings: Codable, Equatable {
         showRomanizationMode = Self.defaultShowRomanizationMode
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
+        shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
     }
     
     public init(from decoder: Decoder) throws {
@@ -137,6 +140,7 @@ public struct Settings: Codable, Equatable {
         self.showRomanizationMode = try container.decodeIfPresent(ShowRomanizationMode.self, forKey: .showRomanizationMode) ?? Settings.defaultShowRomanizationMode
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
+        self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
     }
     
     private static var _cached: Settings?

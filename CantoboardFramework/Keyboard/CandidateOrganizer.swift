@@ -149,7 +149,8 @@ class InputEngineCandidateSource: CandidateSource {
               let inputEngine = inputController.inputEngine
             else { return }
         
-        if inputController.state.inputMode == .mixed && inputEngine.englishCandidates[i] == inputEngine.englishComposition?.text {
+        if inputController.state.inputMode != .chinese && !Settings.cached.shouldShowEnglishExactMatch &&
+            inputEngine.englishCandidates[i] == inputEngine.englishComposition?.text {
             // Skip exact match in mixed mode.
             return
         }
