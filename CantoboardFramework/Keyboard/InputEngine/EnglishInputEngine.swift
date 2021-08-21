@@ -183,6 +183,18 @@ class EnglishInputEngine: InputEngine {
         
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
+        if isWord {
+            if text == "i" {
+                text = "I"
+            } else if spellCorrectionCandidates.count == 1 && textLowercased == spellCorrectionCandidates.first!.lowercased() {
+                text = spellCorrectionCandidates.first!
+            }
+            candidates.append(text)
+            prefectCandidatesStartIndex += 1
+            worstCandidatesStartIndex = candidates.count
+            return
+        }
+        
         // If the user is typing a word after an English word, run autocomplete.
         let autoCompleteCandidates: [String]
         if documentContextBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
@@ -190,8 +202,6 @@ class EnglishInputEngine: InputEngine {
         } else {
             autoCompleteCandidates = []
         }
-        
-        if text == "i" { text = "I" }
         
         if text.allSatisfy({ $0.isUppercase }) {
             candidateSets.insert(text)
@@ -226,7 +236,7 @@ class EnglishInputEngine: InputEngine {
             candidateSets.insert(text)
         }
         
-        for word in spellCorrectionCandidates + autoCompleteCandidates {
+        for word in (spellCorrectionCandidates + autoCompleteCandidates).prefix(7) {
             let wordLowercased = word.lowercased()
             if word.isEmpty || word == text || candidateSets.contains(word) {
                 continue // We added the word already. Ignore.
