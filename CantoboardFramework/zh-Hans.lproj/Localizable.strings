@@ -1,0 +1,22 @@
+/* 
+  Localizable.strings
+  Cantoboard
+
+  Created by Alex Man on 8/21/21.
+  
+*/
+
+"KeyNextPage" = "下一页";
+"KeySelect" = "选字";
+"KeySpace" = "空格";
+"KeyConfirm" = "确认";
+"KeyGo" = "前往";
+"KeyNext" = "下一个";
+"KeySend" = "传送";
+"KeySearch" = "搜寻";
+"KeyContinue" = "→";
+"KeyDone" = "完成";
+"KeySOS" = "紧急电话";
+"KeyJoin" = "加入";
+"KeyRoute" = "路线";
+"KeyReturn" = "换行";

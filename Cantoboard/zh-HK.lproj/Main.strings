@@ -1,0 +1,138 @@
+
+/* Class = "UITableViewSection"; footerTitle = "自動模式會在英文字後輸入半形符號， 中文字後輸入全形符號．"; ObjectID = "0Eb-P1-eK0"; */
+"0Eb-P1-eK0.footerTitle" = "自動模式會在英文字後輸入半形符號， 中文字後輸入全形符號．";
+
+/* Class = "UILabel"; text = "英文詞典"; ObjectID = "0Pr-8T-E6F"; */
+"0Pr-8T-E6F.text" = "英文詞典";
+
+/* Class = "UISegmentedControl"; 0gi-3A-yIJ.segmentTitles[0] = "候選詞下一頁"; ObjectID = "0gi-3A-yIJ"; */
+"0gi-3A-yIJ.segmentTitles[0]" = "候選詞下一頁";
+
+/* Class = "UISegmentedControl"; 0gi-3A-yIJ.segmentTitles[1] = "輸出候選詞"; ObjectID = "0gi-3A-yIJ"; */
+"0gi-3A-yIJ.segmentTitles[1]" = "輸出候選詞";
+
+/* Class = "UILabel"; text = "自動大寫"; ObjectID = "4Ez-uG-WjS"; */
+"4Ez-uG-WjS.text" = "自動大寫";
+
+/* Class = "UILabel"; text = "按鍵聲音"; ObjectID = "5Od-tW-Bey"; */
+"5Od-tW-Bey.text" = "按鍵聲音";
+
+/* Class = "UILabel"; text = "聲調輸入"; ObjectID = "7ke-ng-awN"; */
+"7ke-ng-awN.text" = "聲調輸入";
+
+/* Class = "UITextField"; placeholder = "按此輸入文字 測試鍵盤"; ObjectID = "9oP-oc-KaE"; */
+"9oP-oc-KaE.placeholder" = "按此輸入文字 測試鍵盤";
+
+/* Class = "UILabel"; text = "句號快捷鍵"; ObjectID = "CKT-yB-qVu"; */
+"CKT-yB-qVu.text" = "句號快捷鍵";
+
+/* Class = "UITableViewSection"; headerTitle = "英文輸入設定"; ObjectID = "DJi-g5-Nh5"; */
+"DJi-g5-Nh5.headerTitle" = "英文輸入設定";
+
+/* Class = "UISegmentedControl"; IDG-2O-Xwy.segmentTitles[0] = "vxq"; ObjectID = "IDG-2O-Xwy"; */
+"IDG-2O-Xwy.segmentTitles[0]" = "vxq";
+
+/* Class = "UISegmentedControl"; IDG-2O-Xwy.segmentTitles[1] = "長按"; ObjectID = "IDG-2O-Xwy"; */
+"IDG-2O-Xwy.segmentTitles[1]" = "長按";
+
+/* Class = "UILabel"; text = "標點符號"; ObjectID = "Icv-mZ-Dim"; */
+"Icv-mZ-Dim.text" = "標點符號";
+
+/* Class = "UISegmentedControl"; JqT-NC-LHq.segmentTitles[0] = "簡體"; ObjectID = "JqT-NC-LHq"; */
+"JqT-NC-LHq.segmentTitles[0]" = "簡體";
+
+/* Class = "UISegmentedControl"; JqT-NC-LHq.segmentTitles[1] = "繁體"; ObjectID = "JqT-NC-LHq"; */
+"JqT-NC-LHq.segmentTitles[1]" = "繁體";
+
+/* Class = "UITabBarItem"; title = "簡介"; ObjectID = "Lm1-9J-P40"; */
+"Lm1-9J-P40.title" = "簡介";
+
+/* Class = "UILabel"; text = "候選詞顯示 exact match"; ObjectID = "MZo-fJ-dQv"; */
+"MZo-fJ-dQv.text" = "候選詞顯示 exact match";
+
+/* Class = "UILabel"; text = "繁簡"; ObjectID = "MiO-XF-PQM"; */
+"MiO-XF-PQM.text" = "繁簡";
+
+/* Class = "UILabel"; text = "按鍵震動"; ObjectID = "PVa-Kf-DfN"; */
+"PVa-Kf-DfN.text" = "按鍵震動";
+
+/* Class = "UITableViewSection"; footerTitle = "請按齒輪前往\"系統設定\"啓用鍵盤． 以下功能需要\"全權取用\"權限： • 按鍵震動 • 按鍵聲音"; ObjectID = "RRC-gO-GLI"; */
+"RRC-gO-GLI.footerTitle" = "請按齒輪前往\"系統設定\"啓用鍵盤． 以下功能需要\"全權取用\"權限： • 按鍵震動 • 按鍵聲音";
+
+/* Class = "UITableViewSection"; headerTitle = "輸入法安裝"; ObjectID = "RRC-gO-GLI"; */
+"RRC-gO-GLI.headerTitle" = "輸入法安裝";
+
+/* Class = "UISegmentedControl"; T9Y-f1-IF7.segmentTitles[0] = "正常"; ObjectID = "T9Y-f1-IF7"; */
+"T9Y-f1-IF7.segmentTitles[0]" = "正常";
+
+/* Class = "UISegmentedControl"; T9Y-f1-IF7.segmentTitles[1] = "大"; ObjectID = "T9Y-f1-IF7"; */
+"T9Y-f1-IF7.segmentTitles[1]" = "大";
+
+/* Class = "UITableViewSection"; headerTitle = "測試鍵盤"; ObjectID = "V3k-Vr-VeJ"; */
+"V3k-Vr-VeJ.headerTitle" = "測試鍵盤";
+
+/* Class = "UILabel"; text = "候選詞大小"; ObjectID = "VUN-fA-22k"; */
+"VUN-fA-22k.text" = "候選詞大小";
+
+/* Class = "UILabel"; text = "鍵盤系統設定"; ObjectID = "VXT-kI-9XG"; */
+"VXT-kI-9XG.text" = "鍵盤系統設定";
+
+/* Class = "UISegmentedControl"; ZM2-oE-LJv.segmentTitles[0] = "半形"; ObjectID = "ZM2-oE-LJv"; */
+"ZM2-oE-LJv.segmentTitles[0]" = "半形";
+
+/* Class = "UISegmentedControl"; ZM2-oE-LJv.segmentTitles[1] = "全形"; ObjectID = "ZM2-oE-LJv"; */
+"ZM2-oE-LJv.segmentTitles[1]" = "全形";
+
+/* Class = "UISegmentedControl"; ZM2-oE-LJv.segmentTitles[2] = "自動"; ObjectID = "ZM2-oE-LJv"; */
+"ZM2-oE-LJv.segmentTitles[2]" = "自動";
+
+/* Class = "UISegmentedControl"; eyu-Nr-LIF.segmentTitles[0] = "不顯示"; ObjectID = "eyu-Nr-LIF"; */
+"eyu-Nr-LIF.segmentTitles[0]" = "不顯示";
+
+/* Class = "UISegmentedControl"; eyu-Nr-LIF.segmentTitles[1] = "顯示"; ObjectID = "eyu-Nr-LIF"; */
+"eyu-Nr-LIF.segmentTitles[1]" = "顯示";
+
+/* Class = "UISegmentedControl"; eyu-Nr-LIF.segmentTitles[2] = "於非廣東話輸入法顯示"; ObjectID = "eyu-Nr-LIF"; */
+"eyu-Nr-LIF.segmentTitles[2]" = "於非廣東話輸入法顯示";
+
+/* Class = "UILabel"; text = "空白鍵功能"; ObjectID = "fU8-wf-e8t"; */
+"fU8-wf-e8t.text" = "空白鍵功能";
+
+/* Class = "UITableViewSection"; footerTitle = "在粵拼模式可輸入聲調減少重碼字． vxq: 單按 v/x/q 輸入1/2/3聲         雙按 v/x/q 輸入4/5/6聲 長按：長按鍵盤中間的鍵選擇聲調．"; ObjectID = "gvd-ax-8qX"; */
+"gvd-ax-8qX.footerTitle" = "在粵拼模式可輸入聲調減少重碼字． vxq: 單按 v/x/q 輸入1/2/3聲         雙按 v/x/q 輸入4/5/6聲 長按：長按鍵盤中間的鍵選擇聲調．";
+
+/* Class = "UITableViewSection"; headerTitle = "中文輸入設定"; ObjectID = "gvd-ax-8qX"; */
+"gvd-ax-8qX.headerTitle" = "中文輸入設定";
+
+/* Class = "UILabel"; text = "雙語混打"; ObjectID = "hnh-6m-IXx"; */
+"hnh-6m-IXx.text" = "雙語混打";
+
+/* Class = "UILabel"; text = "候選詞粵拼"; ObjectID = "je5-hD-Xh5"; */
+"je5-hD-Xh5.text" = "候選詞粵拼";
+
+/* Class = "UINavigationItem"; title = "Cantoboard"; ObjectID = "kJa-ND-EC3"; */
+"kJa-ND-EC3.title" = "Cantoboard";
+
+/* Class = "UITableViewSection"; footerTitle = "輸入文字後，雙按空白鍵會輸入句號．"; ObjectID = "pa7-J1-CeF"; */
+"pa7-J1-CeF.footerTitle" = "輸入文字後，雙按空白鍵會輸入句號．";
+
+/* Class = "UITableViewSection"; headerTitle = "輸入法設定"; ObjectID = "pa7-J1-CeF"; */
+"pa7-J1-CeF.headerTitle" = "輸入法設定";
+
+/* Class = "UISegmentedControl"; rKe-fT-nEO.segmentTitles[0] = "澳洲"; ObjectID = "rKe-fT-nEO"; */
+"rKe-fT-nEO.segmentTitles[0]" = "澳洲";
+
+/* Class = "UISegmentedControl"; rKe-fT-nEO.segmentTitles[1] = "加拿大"; ObjectID = "rKe-fT-nEO"; */
+"rKe-fT-nEO.segmentTitles[1]" = "加拿大";
+
+/* Class = "UISegmentedControl"; rKe-fT-nEO.segmentTitles[2] = "英國"; ObjectID = "rKe-fT-nEO"; */
+"rKe-fT-nEO.segmentTitles[2]" = "英國";
+
+/* Class = "UISegmentedControl"; rKe-fT-nEO.segmentTitles[3] = "美國"; ObjectID = "rKe-fT-nEO"; */
+"rKe-fT-nEO.segmentTitles[3]" = "美國";
+
+/* Class = "UILabel"; text = "輸入糾錯"; ObjectID = "sw3-wy-Jli"; */
+"sw3-wy-Jli.text" = "輸入糾錯";
+
+/* Class = "UITabBarItem"; title = "設定"; ObjectID = "xT8-Jm-9fO"; */
+"xT8-Jm-9fO.title" = "設定";
