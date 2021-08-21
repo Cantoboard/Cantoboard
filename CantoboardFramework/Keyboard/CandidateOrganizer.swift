@@ -90,14 +90,16 @@ class InputEngineCandidateSource: CandidateSource {
             hasPopulatedPrefectEnglishCandidates = true
         }
         
-        let rawInputWithoutDigits = inputEngine.englishComposition?.text.lowercased() ?? ""
+        // let rawInputWithoutDigits = inputEngine.englishComposition?.text.lowercased() ?? ""
         let firstRimeCandidateLength = inputEngine.getRimeCandidate(0)?.count ?? 0
-        let firstRimeCode = (inputEngine.getRimeCandidateComment(0) ?? "").lowercased().filter({ !$0.isNumber && $0 != " " })
-        let composeTextFirstRimeCodeLCS = rawInputWithoutDigits.longestCommonSubsequence(firstRimeCode)
-        let isRimeExactMatch = composeTextFirstRimeCodeLCS.count == rawInputWithoutDigits.count
-        //let isRimeExactMatch = firstRimeCode.starts(with: rawInputWithoutDigits)
+        // let firstRimeCode = (inputEngine.getRimeCandidateComment(0) ?? "").lowercased().filter({ !$0.isNumber && $0 != " " })
+        // let composeTextFirstRimeCodeLCS = rawInputWithoutDigits.longestCommonSubsequence(firstRimeCode)
+        // let isRimeExactMatch = composeTextFirstRimeCodeLCS.count == rawInputWithoutDigits.count
+        // let isRimeExactMatch = firstRimeCode.starts(with: rawInputWithoutDigits)
+        // Experimenting new way to order candidates.
+        let isRimeExactMatch = true
 
-        if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
+        //if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
         while inputMode != .english &&
