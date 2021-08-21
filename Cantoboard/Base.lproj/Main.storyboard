@@ -36,7 +36,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bWt-kK-58O">
-                                                    <rect key="frame" x="20" y="11" width="285" height="22"/>
+                                                    <rect key="frame" x="19" y="11" width="285" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <state key="normal" image="gearshape" catalog="system">
                                                         <color key="titleColor" systemColor="linkColor"/>
@@ -60,10 +60,10 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="按此輸入文字 測試鍵盤" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9oP-oc-KaE">
-                                                    <rect key="frame" x="20" y="5" width="285" height="34"/>
+                                                    <rect key="frame" x="19" y="5" width="285" height="34"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                                                 </textField>
                                             </subviews>
                                         </tableViewCellContentView>
@@ -108,7 +108,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="0gi-3A-yIJ">
-                                                    <rect key="frame" x="131" y="6" width="172" height="32"/>
+                                                    <rect key="frame" x="130" y="6" width="173" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="候選詞下一頁"/>
@@ -189,7 +189,7 @@
                                         <rect key="frame" x="0.0" y="584" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bWx-7X-CLH" id="iHH-no-DM7">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="候選詞大小" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VUN-fA-22k">
@@ -200,7 +200,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="T9Y-f1-IF7">
-                                                    <rect key="frame" x="287" y="6" width="110" height="32"/>
+                                                    <rect key="frame" x="193" y="6" width="110" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="正常"/>
@@ -214,7 +214,7 @@
                                         <rect key="frame" x="0.0" y="627" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Yrr-5R-clQ" id="0ef-BU-uzM">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="標點符號" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Icv-mZ-Dim">
@@ -225,7 +225,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="ZM2-oE-LJv">
-                                                    <rect key="frame" x="237" y="6" width="160" height="32"/>
+                                                    <rect key="frame" x="143" y="6" width="160" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="半形"/>
@@ -244,7 +244,7 @@
                                         <rect key="frame" x="0.0" y="761.5" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="V82-lM-GjD" id="OnI-2O-z3i">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="繁簡" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MiO-XF-PQM">
@@ -255,7 +255,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="JqT-NC-LHq">
-                                                    <rect key="frame" x="287" y="6" width="110" height="32"/>
+                                                    <rect key="frame" x="193" y="6" width="110" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="簡體"/>
@@ -269,7 +269,7 @@
                                         <rect key="frame" x="0.0" y="804.5" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LvM-kE-epQ" id="ain-DT-qvQ">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="聲調輸入" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ke-ng-awN">
@@ -280,7 +280,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="IDG-2O-Xwy">
-                                                    <rect key="frame" x="287" y="6" width="110" height="32"/>
+                                                    <rect key="frame" x="193" y="6" width="110" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
                                                         <segment title="vxq"/>
@@ -298,7 +298,7 @@
                                         <rect key="frame" x="0.0" y="943.5" width="320" height="87"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SeC-Jy-74g" id="cVa-F4-vVE">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="87"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="87"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="候選詞粵拼" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="je5-hD-Xh5">
@@ -309,7 +309,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="eyu-Nr-LIF">
-                                                    <rect key="frame" x="20" y="40" width="378" height="32"/>
+                                                    <rect key="frame" x="20" y="40" width="284" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                                     <segments>
                                                         <segment title="不顯示"/>
@@ -324,7 +324,7 @@
                                         <rect key="frame" x="0.0" y="1030.5" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0Eu-nU-3YL" id="jyJ-Mt-zI1">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="輸入糾錯" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sw3-wy-Jli">
@@ -335,7 +335,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Ac-pe-tKv">
-                                                    <rect key="frame" x="348" y="6" width="52" height="31"/>
+                                                    <rect key="frame" x="254" y="6" width="52" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                 </switch>
                                             </subviews>
@@ -349,7 +349,7 @@
                                         <rect key="frame" x="0.0" y="1129.5" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="YwS-EE-Lcb" id="L2V-zC-Wwr">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="自動大寫" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ez-uG-WjS">
@@ -360,7 +360,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HWw-Ww-K7d">
-                                                    <rect key="frame" x="347" y="6" width="53" height="31"/>
+                                                    <rect key="frame" x="253" y="6" width="53" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                 </switch>
                                             </subviews>
@@ -370,7 +370,7 @@
                                         <rect key="frame" x="0.0" y="1172.5" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6bO-iZ-nVl" id="du4-Dm-xJi">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="候選詞顯示 exact match" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MZo-fJ-dQv">
@@ -381,7 +381,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qM4-1L-YOd">
-                                                    <rect key="frame" x="347" y="6" width="53" height="31"/>
+                                                    <rect key="frame" x="253" y="6" width="53" height="31"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                 </switch>
                                             </subviews>
@@ -391,7 +391,7 @@
                                         <rect key="frame" x="0.0" y="1215.5" width="320" height="43"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4P6-Or-M6e" id="t35-RH-yhA">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="英文詞典" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Pr-8T-E6F">
@@ -402,7 +402,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="3" translatesAutoresizingMaskIntoConstraints="NO" id="rKe-fT-nEO">
-                                                    <rect key="frame" x="134" y="6" width="263" height="32"/>
+                                                    <rect key="frame" x="102" y="6" width="201" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES"/>
                                                     <segments>
                                                         <segment title="澳洲"/>
@@ -501,7 +501,7 @@
             <objects>
                 <navigationController id="ihW-bd-Kpl" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="jIB-k4-muF">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
