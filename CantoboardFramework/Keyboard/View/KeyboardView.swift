@@ -284,10 +284,11 @@ class KeyboardView: UIView, InputView {
                 } }
             }
             
+            let isInEnglishMode = state.inputMode == .english
             // let rimeSchema = state.rimeSchema
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && state.inputMode != .english:
+                case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && !isInEnglishMode:
                     return .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),
@@ -296,7 +297,8 @@ class KeyboardView: UIView, InputView {
                     switch state.keyboardContextualType {
                     case .rime, .url(true):
                         if case .character(let c) = $0,
-                           state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale {
+                           !isInEnglishMode &&
+                            (state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale) {
                             // Show tone keys.
                             return .characterWithConditioanlPopup(c)
                         } else {
@@ -306,11 +308,12 @@ class KeyboardView: UIView, InputView {
                         return $0
                     }
                 case "R", "r":
-                    if state.activeSchema.isCantonese, case .character(let c) = $0 {
+                    if !isInEnglishMode && state.activeSchema.isCantonese, case .character(let c) = $0 {
                         return .characterWithConditioanlPopup(c)
                     }
                     return $0
-                case .contexualSymbols: return .contexualSymbols(state.keyboardContextualType)
+                case .contexualSymbols:
+                    return .contexualSymbols(isInEnglishMode ? .english : state.keyboardContextualType)
                 case .returnKey: return .returnKey(state.returnKeyType)
                 case .space: return .space(state.spaceKeyMode)
                 default: return $0
