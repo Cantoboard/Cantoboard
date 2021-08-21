@@ -51,7 +51,7 @@ class KeyboardView: UIView, InputView {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contexualSymbols(.english), .returnKey(.default)]]
+        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .returnKey(.default)]]
     ]
     
     private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
@@ -312,8 +312,8 @@ class KeyboardView: UIView, InputView {
                         return .characterWithConditioanlPopup(c)
                     }
                     return $0
-                case .contexualSymbols:
-                    return .contexualSymbols(isInEnglishMode ? .english : state.keyboardContextualType)
+                case .contextualSymbols:
+                    return .contextualSymbols(isInEnglishMode ? .english : state.keyboardContextualType)
                 case .returnKey: return .returnKey(state.returnKeyType)
                 case .space: return .space(state.spaceKeyMode)
                 default: return $0

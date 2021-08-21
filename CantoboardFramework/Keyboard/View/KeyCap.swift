@@ -68,7 +68,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
     rime(RimeChar),
-    contexualSymbols(ContextualType),
+    contextualSymbols(ContextualType),
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
     switchToEnglishMode,
@@ -98,10 +98,10 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .space: return .space
         case .shift(let shiftState): return .shift(shiftState)
         case .rime(let rc): return .rime(rc)
-        case .contexualSymbols(.chinese): return "，"
-        case .contexualSymbols(.english): return ","
-        case .contexualSymbols(.rime): return .rime(.delimiter)
-        case .contexualSymbols(.url): return "."
+        case .contextualSymbols(.chinese): return "，"
+        case .contextualSymbols(.english): return ","
+        case .contextualSymbols(.rime): return .rime(.delimiter)
+        case .contextualSymbols(.url): return "."
         case .reverseLookup(let s): return .reverseLookup(s)
         case .changeSchema(let s): return .changeSchema(s)
         case .switchToEnglishMode: return .toggleInputMode
@@ -129,7 +129,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFontStyle: UIFont.TextStyle {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .emoji, .contexualSymbols: return .title2
+        case .character, .characterWithConditioanlPopup, .cangjie, .emoji, .contextualSymbols: return .title2
         case .keyboardType(.emojis): return .title1
         default: return .body
         }
@@ -137,7 +137,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contexualSymbols: return ButtonColor.inputKeyBackgroundColor
+        case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contextualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
@@ -147,7 +147,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgHighlightedColor: UIColor? {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .contexualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
+        case .character, .characterWithConditioanlPopup, .cangjie, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default: return ButtonColor.systemHighlightedKeyBackgroundColor
         }
@@ -218,10 +218,10 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .reverseLookup(let schema): return schema.signChar
         case .changeSchema(let schema): return schema.shortName
         case .switchToEnglishMode: return "英文"
-        case .contexualSymbols(.chinese): return "，"
-        case .contexualSymbols(.english): return ","
-        case .contexualSymbols(.rime): return "分"
-        case .contexualSymbols(.url): return "."
+        case .contextualSymbols(.chinese): return "，"
+        case .contextualSymbols(.english): return ","
+        case .contextualSymbols(.rime): return "分"
+        case .contextualSymbols(.url): return "."
         case "（": return "("
         case "）": return ")"
         case "「": return "「　"
@@ -280,8 +280,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         
         switch self {
         case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
-        case .contexualSymbols(.chinese), .contexualSymbols(.english): return "符"
-        case .contexualSymbols(.url): return "/"
+        case .contextualSymbols(.chinese), .contextualSymbols(.english): return "符"
+        case .contextualSymbols(.url): return "/"
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -320,7 +320,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             return layoutConstants.shiftButtonWidth
         case .returnKey:
             return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .characterWithConditioanlPopup, .cangjie, .contexualSymbols:
+        case .character, .characterWithConditioanlPopup, .cangjie, .contextualSymbols:
             return layoutConstants.keyButtonWidth
         default:
             return layoutConstants.systemButtonWidth
@@ -329,7 +329,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithConditioanlPopup, .contexualSymbols, .cangjie: return true
+        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie: return true
         // For debugging
         case .keyboardType(.emojis): return true
         default: return false
@@ -352,10 +352,10 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "R", "r": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
             default: return [self]
             }
-        case .contexualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
-        case .contexualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
-        case .contexualSymbols(.rime): return [self, ".", ",", "?", "!"]
-        case .contexualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
+        case .contextualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
+        case .contextualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
+        case .contextualSymbols(.rime): return [self, ".", ",", "?", "!"]
+        case .contextualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
         case .keyboardType(.emojis): return [.exportFile("user", Self.userDataPath), .exportFile("logs", Self.logsPath), .exit]
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
