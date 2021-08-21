@@ -107,6 +107,8 @@ speller:
     
     - derive/eu(\w?\d)/u$1/ # e.g. 對 dui 春 chun
     
+    - derive/i(\d)/ee$1/ # e.g. 以 yee
+
     - derive/^yu(\w{0,2}\d)/yue$1/ # e.g. 元朗 Yuen
     - derive/([^y])yu(\w{0,2}\d)/$1ue$2/ # e.g. 全 chuen 屯門 Tuen
     
