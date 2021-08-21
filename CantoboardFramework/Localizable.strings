@@ -1,0 +1,22 @@
+/* 
+  Localizable.strings
+  Cantoboard
+
+  Created by Alex Man on 8/21/21.
+  
+*/
+
+"KeyNextPage" = "next page";
+"KeySelect" = "select";
+"KeySpace" = "space";
+"KeyConfirm" = "confirm";
+"KeyGo" = "go";
+"KeyNext" = "next";
+"KeySend" = "send";
+"KeySearch" = "search";
+"KeyContinue" = "→";
+"KeyDone" = "done";
+"KeySOS" = "SOS";
+"KeyJoin" = "join";
+"KeyRoute" = " route";
+"KeyReturn" = "return";

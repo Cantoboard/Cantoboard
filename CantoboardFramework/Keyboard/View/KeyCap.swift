@@ -190,18 +190,20 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonText: String? {
         switch self {
         case .characterWithConditioanlPopup(let text): return text
-        case .returnKey(.confirm): return "confirm"
-        case .returnKey(.go): return "go"
-        case .returnKey(.next): return "next"
-        case .returnKey(.send): return "send"
-        case .returnKey(.search), .returnKey(.google), .returnKey(.yahoo): return "search"
-        case .returnKey(.continue): return "→"
-        case .returnKey(.done): return "done"
-        case .returnKey(.emergencyCall): return "SOS"
-        case .returnKey(.join): return "join"
-        case .returnKey(.route): return "route"
-        case .returnKey: return "return"
-        case .space(let label): return label.rawValue
+        case .returnKey(.confirm): return LocalizedStrings.keyTitleConfirm
+        case .returnKey(.go): return LocalizedStrings.keyTitleGo
+        case .returnKey(.next): return LocalizedStrings.keyTitleNext
+        case .returnKey(.send): return LocalizedStrings.keyTitleSend
+        case .returnKey(.search), .returnKey(.google), .returnKey(.yahoo): return LocalizedStrings.keyTitleSearch
+        case .returnKey(.continue): return LocalizedStrings.keyTitleContinue
+        case .returnKey(.done): return LocalizedStrings.keyTitleDone
+        case .returnKey(.emergencyCall): return LocalizedStrings.keyTitleSOS
+        case .returnKey(.join): return LocalizedStrings.keyTitleJoin
+        case .returnKey(.route): return LocalizedStrings.keyTitleRoute
+        case .returnKey: return LocalizedStrings.keyTitleReturn
+        case .space(.nextPage): return LocalizedStrings.keyTitleNextPage
+        case .space(.select): return LocalizedStrings.keyTitleSelect
+        case .space(.space): return LocalizedStrings.keyTitleSpace
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
         case .keyboardType(.alphabetic): return "ABC"

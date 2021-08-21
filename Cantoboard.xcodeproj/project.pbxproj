@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		790839A126D0E93F00CA6B56 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 790839A026D0E93F00CA6B56 /* Localizable.strings */; };
+		790839A726D0FCED00CA6B56 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */; };
 		7913D968266752FC00DB78C2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7913D967266752FC00DB78C2 /* main.swift */; };
 		7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7917DDA32660A41F00D0010D /* GuideViewController.swift */; };
 		7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78025F3320F0075DD4D /* AppDelegate.swift */; };
@@ -266,6 +268,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		790839A026D0E93F00CA6B56 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
 		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		7917DDA32660A41F00D0010D /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
@@ -571,6 +575,7 @@
 				79B9B58A25F34A1200238E80 /* Keyboard */,
 				79B9B58125F34A1200238E80 /* RimeKit */,
 				79515AB72609AF3F00D29A5C /* Utils */,
+				790839A026D0E93F00CA6B56 /* Localizable.strings */,
 			);
 			path = CantoboardFramework;
 			sourceTree = "<group>";
@@ -632,6 +637,7 @@
 				79607A64260FF09200E23D33 /* String+Extension.swift */,
 				795B22C3261EBA3D00271D9F /* Array+Extension.swift */,
 				798032A42645F6AF008DC703 /* Logging.swift */,
+				790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1089,6 +1095,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79D4E1D42642372600857D7D /* Data in Resources */,
+				790839A126D0E93F00CA6B56 /* Localizable.strings in Resources */,
 				79B9B64C25F34A1200238E80 /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1236,6 +1243,7 @@
 				799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */,
 				79B9B5FA25F34A1200238E80 /* UITextDocumentProxy+Extension.swift in Sources */,
 				79B9B60525F34A1200238E80 /* CandidatePaneView.swift in Sources */,
+				790839A726D0FCED00CA6B56 /* LocalizedStrings.swift in Sources */,
 				79B9B5FD25F34A1200238E80 /* Character+Extension.swift in Sources */,
 				79B9B5F525F34A1200238E80 /* EnglishInputEngine.swift in Sources */,
 				798032A52645F6AF008DC703 /* Logging.swift in Sources */,
