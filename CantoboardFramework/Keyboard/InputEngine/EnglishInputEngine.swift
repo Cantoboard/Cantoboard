@@ -90,7 +90,8 @@ class EnglishInputEngine: InputEngine {
     }
     static var userDictionary = UserDictionary()
     
-    private static let highFreqSuffixes = ["'m", "'t", "let's", "he's", "'ve", "'re", "what's", "this's", "that's", "which's", "where's", "these're", "there're", "which're", "where're"]
+    private static let highFreqSuffixes = ["’m", "’t", "’d", "’s", "’ve", "’re", "’ll"]
+    private static let commonContractionPrefixes = ["i", "we", "you", "he", "she", "it", "they", "can", "would", "could"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
@@ -174,7 +175,7 @@ class EnglishInputEngine: InputEngine {
         let englishDictionaryWordsSet = lookupInDictionary(wordLowercased: textLowercased)
         var candidateSets = Set<String>()
         
-        isWord = (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
+        isWord = (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase })) && !Self.commonContractionPrefixes.contains(where: { textLowercased.starts(with: $0) && textLowercased.count != $0.count })
         
         candidates = []
         var worstCandidates:[String] = []
