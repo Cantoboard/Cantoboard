@@ -13,13 +13,17 @@ extension Character {
     }
     
     var isEnglishLetterOrDigit: Bool {
-        isASCII && (isLetter || isNumber)
+        isASCII && (isLetter || isNumber || isOpeningBracket)
+    }
+    
+    var isOpeningBracket: Bool {
+        self == "(" || self == "{" || self == "[" || self == "<"
     }
     
     var isPunctuation: Bool {
         // TODO Distingish apostrophe & single quote.
         self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self ==  "\n" ||
-            self == ")" || self == "}" || self == "]" ||
+            self == ")" || self == "}" || self == "]" || self == ">" || // Closing brackets
             isFullShapePunctuation
     }
     
@@ -52,7 +56,7 @@ extension Character {
     }
     
     var isChineseChar: Bool {
-        !isASCII /* TODO if char is in CJK range */
+        !isASCII && self.unicodeScalars.first?.isFullwidth ?? false /* TODO if char is in CJK range */
     }
     
     var isVowel: Bool {

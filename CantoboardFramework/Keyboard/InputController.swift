@@ -612,7 +612,10 @@ class InputController: NSObject {
             hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Remove leading smart space if:
             // English" "(中/.)
-            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit ||
+            let isOpeningDoubleQuote = textBeingInserted.first! == "\"" && (textDocumentProxy.documentContextBeforeInput?.filter({ $0 == "\"" }).count ?? 0) % 2 == 0
+            let isOpeningSingleQuote = textBeingInserted.first! == "\'" && (textDocumentProxy.documentContextBeforeInput?.filter({ $0 == "\'" }).count ?? 0) % 2 == 0
+            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit &&
+                !isOpeningDoubleQuote && !isOpeningSingleQuote ||
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 // TODO Remove this.

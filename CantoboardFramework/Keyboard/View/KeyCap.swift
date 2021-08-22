@@ -385,7 +385,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "&": return ["＆", "&", "§"]
         case "?": return ["?", "？", "¿"]
         case "!": return ["!", "！", "¡"]
-        case "‘": return ["'", "＇", "’", "‘", "`"]
+        case "’": return ["’", "'", "＇", "‘", "`"]
         // 123 4rd row
         case "@": return ["@", "＠"]
         // #+= 1st row

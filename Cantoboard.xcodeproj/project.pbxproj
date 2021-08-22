@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		790839A726D0FCED00CA6B56 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */; };
 		790839B626D1053C00CA6B56 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 790839B826D1053C00CA6B56 /* Localizable.strings */; };
+		7912CC5A26D2173000BA89AB /* EastAsianWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7912CC5926D2173000BA89AB /* EastAsianWidth.swift */; };
 		7913D968266752FC00DB78C2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7913D967266752FC00DB78C2 /* main.swift */; };
 		7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7917DDA32660A41F00D0010D /* GuideViewController.swift */; };
 		7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78025F3320F0075DD4D /* AppDelegate.swift */; };
@@ -273,6 +274,7 @@
 		790839C226D105F000CA6B56 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		790839C326D1062F00CA6B56 /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		790839C426D1063700CA6B56 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		7912CC5926D2173000BA89AB /* EastAsianWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EastAsianWidth.swift; sourceTree = "<group>"; };
 		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
 		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		7917DDA32660A41F00D0010D /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
@@ -641,6 +643,7 @@
 				795B22C3261EBA3D00271D9F /* Array+Extension.swift */,
 				798032A42645F6AF008DC703 /* Logging.swift */,
 				790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */,
+				7912CC5926D2173000BA89AB /* EastAsianWidth.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1230,6 +1233,7 @@
 				79607A65260FF09200E23D33 /* String+Extension.swift in Sources */,
 				79B9B5FC25F34A1200238E80 /* Collection+Extension.swift in Sources */,
 				79B9B5FF25F34A1200238E80 /* UIEdgeInsets+Extension.swift in Sources */,
+				7912CC5A26D2173000BA89AB /* EastAsianWidth.swift in Sources */,
 				79B9B5F825F34A1200238E80 /* BilingualInputEngine.swift in Sources */,
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,

@@ -236,7 +236,8 @@ class EnglishInputEngine: InputEngine {
             candidateSets.insert(text)
         }
         
-        for word in spellCorrectionCandidates + autoCompleteCandidates {
+        for originalWord in spellCorrectionCandidates + autoCompleteCandidates {
+            let word = originalWord.replacingOccurrences(of: "\'", with: "’") // Replace single quote with opening single quote to match iOS default.
             let wordLowercased = word.lowercased()
             if word.isEmpty || word == text || candidateSets.contains(word) {
                 continue // We added the word already. Ignore.

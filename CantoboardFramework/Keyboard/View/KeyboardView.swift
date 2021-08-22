@@ -57,14 +57,14 @@ class KeyboardView: UIView, InputView {
     private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
         [["-", "/", ":", ";", "(", ")", .currency, "\"", "「", "」"]],
-        [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "‘"], [.backspace]],
+        [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "’"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
     
     private let symbolsHalfKeyCapRows: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
         [["_", "—", "\\", "|", "~", "<", ">", "«", "»", "•"]],
-        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "‘"], [.backspace]],
+        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "’"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
@@ -78,7 +78,7 @@ class KeyboardView: UIView, InputView {
     private let symbolsFullKeyCapRows: [[[KeyCap]]] = [
         [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
         [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
-        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "‘"], [.backspace]],
+        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "’"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
