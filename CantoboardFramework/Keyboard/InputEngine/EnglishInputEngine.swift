@@ -90,7 +90,7 @@ class EnglishInputEngine: InputEngine {
     }
     static var userDictionary = UserDictionary()
     
-    private static let highFreqSuffixes = ["'m", "'t", "let's", "he's", "'ve", "'re", "what's", "this's", "that's", "which's", "these're", "there're"]
+    private static let highFreqSuffixes = ["'m", "'t", "let's", "he's", "'ve", "'re", "what's", "this's", "that's", "which's", "where's", "these're", "there're", "which're", "where're"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
@@ -186,8 +186,8 @@ class EnglishInputEngine: InputEngine {
         if isWord {
             if text == "i" {
                 text = "I"
-            } else if spellCorrectionCandidates.count == 1 && textLowercased == spellCorrectionCandidates.first!.lowercased() {
-                text = spellCorrectionCandidates.first!
+            } else if let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+                text = firstCaseCorrectedCandidate
             }
             candidates.append(text)
             prefectCandidatesStartIndex += 1
