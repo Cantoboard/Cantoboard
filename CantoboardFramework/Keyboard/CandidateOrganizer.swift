@@ -148,7 +148,8 @@ class InputEngineCandidateSource: CandidateSource {
     
     private func appendEnglishCandidate(_ i: Int) {
         guard let inputController = inputController,
-              let inputEngine = inputController.inputEngine
+              let inputEngine = inputController.inputEngine,
+              inputController.state.inputMode != .english && i < 7 || inputController.state.inputMode == .english
             else { return }
         
         if inputController.state.inputMode != .chinese && !Settings.cached.shouldShowEnglishExactMatch &&

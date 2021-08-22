@@ -236,7 +236,7 @@ class EnglishInputEngine: InputEngine {
             candidateSets.insert(text)
         }
         
-        for word in (spellCorrectionCandidates + autoCompleteCandidates).prefix(7) {
+        for word in spellCorrectionCandidates + autoCompleteCandidates {
             let wordLowercased = word.lowercased()
             if word.isEmpty || word == text || candidateSets.contains(word) {
                 continue // We added the word already. Ignore.
