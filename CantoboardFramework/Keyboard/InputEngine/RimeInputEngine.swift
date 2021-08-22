@@ -60,8 +60,8 @@ public enum RimeSchema: String, Codable {
     
     var supportMixedMode: Bool {
         switch self {
-        case .jyutping, .yale: return true
-        default: return false
+        case .stroke: return false
+        default: return true
         }
     }
 }

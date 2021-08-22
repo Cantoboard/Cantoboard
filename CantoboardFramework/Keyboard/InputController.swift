@@ -501,7 +501,15 @@ class InputController: NSObject {
         switch state.inputMode {
         case .chinese: setMarkedText(inputEngine.rimeComposition)
         case .english: setMarkedText(inputEngine.englishComposition)
-        case .mixed: setMarkedText(inputEngine.composition)
+        case .mixed:
+            if state.activeSchema.isCangjieFamily {
+                // Show both Cangjie radicals and english composition in marked text.
+                let composition = inputEngine.rimeComposition
+                composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
+                setMarkedText(composition)
+            } else {
+                setMarkedText(inputEngine.composition)
+            }
         }
     }
     
