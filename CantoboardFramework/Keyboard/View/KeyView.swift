@@ -127,10 +127,7 @@ class KeyView: HighlightableButton {
             highlightedColor = keyCap.buttonBgHighlightedColor
         }
         
-        switch keyCap {
-        case .character, .characterWithConditioanlPopup: titleEdgeInsets = UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
-        default: titleEdgeInsets = UIEdgeInsets.zero
-        }
+        titleEdgeInsets = keyCap.buttonTitleInset
         
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
         

@@ -289,7 +289,7 @@ class KeyboardView: UIView, InputView {
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
                 case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && !isInEnglishMode:
-                    return .cangjie(c)
+                    return state.inputMode == .mixed ? .cangjieMixedMode(c) : .cangjie(c)
                 case .character("F"), .character("G"), .character("H"),
                      .character("C"), .character("V"), .character("B"),
                      .character("f"), .character("g"), .character("h"),

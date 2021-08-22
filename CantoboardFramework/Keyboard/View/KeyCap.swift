@@ -60,6 +60,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     character(String),
     characterWithConditioanlPopup(String),
     cangjie(String),
+    cangjieMixedMode(String),
     stroke(String),
     emoji(String),
     keyboardType(KeyboardType),
@@ -89,7 +90,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .capsLock: return .capsLock
         case .character(let c): return .character(c)
         case .characterWithConditioanlPopup(let c): return .character(c)
-        case .cangjie(let c): return .character(c)
+        case .cangjie(let c), .cangjieMixedMode(let c): return .character(c)
         case .stroke(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
@@ -115,6 +116,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
         case .rime, "^_^", .keyboardType, .returnKey, .space, .contextualSymbols(.rime): return .systemFont(ofSize: 16)
+        case .cangjieMixedMode: return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
         }
     }
@@ -128,17 +130,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonFontStyle: UIFont.TextStyle {
-        switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .emoji, .contextualSymbols: return .title2
-        case .keyboardType(.emojis): return .title1
-        default: return .body
-        }
-    }
-    
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contextualSymbols: return ButtonColor.inputKeyBackgroundColor
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .stroke, .space, .contextualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
@@ -148,7 +142,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgHighlightedColor: UIColor? {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default: return ButtonColor.systemHighlightedKeyBackgroundColor
         }
@@ -236,7 +230,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "｛": return "{"
         case "｝": return "}"
         case .character(let text): return text
-        case .cangjie(let c):
+        case .cangjie(let c), .cangjieMixedMode(let c):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
@@ -253,6 +247,15 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .exit: return "Exit"
         default: return nil
         }
+    }
+    
+    var buttonTitleInset: UIEdgeInsets {
+        switch self {
+        case .character, .characterWithConditioanlPopup: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+        case .cangjieMixedMode: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        default: return UIEdgeInsets.zero
+        }
+
     }
     
     var buttonHint: String? {
@@ -285,6 +288,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
         case .contextualSymbols(.chinese), .contextualSymbols(.english): return "符"
         case .contextualSymbols(.url): return "/"
+        case .cangjieMixedMode(let c): return c
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -323,7 +327,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             return layoutConstants.shiftButtonWidth
         case .returnKey:
             return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .characterWithConditioanlPopup, .cangjie, .contextualSymbols:
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols:
             return layoutConstants.keyButtonWidth
         default:
             return layoutConstants.systemButtonWidth
@@ -332,7 +336,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie: return true
+        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie, .cangjieMixedMode: return true
         // For debugging
         case .keyboardType(.emojis): return true
         default: return false
