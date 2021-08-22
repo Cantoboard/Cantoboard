@@ -580,7 +580,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     
     private var showComment: Bool {
         switch Settings.cached.showRomanizationMode {
-        case .never: return false
+        case .never: return keyboardState.reverseLookupSchema != nil
         case .always: return true
         case .onlyInNonCantoneseMode: return !keyboardState.activeSchema.isCantonese
         }
