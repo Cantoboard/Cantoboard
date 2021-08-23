@@ -469,16 +469,16 @@ class InputController: NSObject {
             hasInsertedAutoSpace = false
         }
         
-        if hasMarkedText {
-            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.utf16.count, length: 0))
-            textDocumentProxy.unmarkText()
-            hasMarkedText = false
-        } else {
-            textDocumentProxy.insertText(textToBeInserted)
-        }
+        // After countless attempt, this provides best compatibility.
+        // Test cases:
+        // Normal text fields
+        // Safari/Chrome searching on www.youtube.com
+        // Chrome address bar
+        // Google Calender create event title text field
+        hasMarkedText = false
+        textDocumentProxy.insertText(textToBeInserted)
         
         needClearInput = true
-        
         // DDLogInfo("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
     }
     
