@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1629622882
-    default: 1629622878
-    default.custom: 1629622878
-    jyut6ping3vxq.schema: 1629622878
-    symbols: 1629622878
+    common.custom: 1629707090
+    default: 1629706919
+    default.custom: 1629706919
+    jyut6ping3vxq.schema: 1629706919
+    symbols: 1629706919
     symbols.custom: 0
-    symbols_cantonese: 1629622878
+    symbols_cantonese: 1629706919
 engine:
   filters:
     - "simplifier@variants_hk"
