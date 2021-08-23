@@ -468,7 +468,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "·": return ["·", "．", "•", "°"]
         case .character(let c) where c.first?.isCurrencySymbol ?? false:
             var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
-            let localCurrencySymbolKeyCap: KeyCap = .character(NSLocale.current.currencySymbol ?? "$")
+            let localCurrencySymbolKeyCap: KeyCap = .character(SessionState.main.currencySymbol)
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
             return currencyLists

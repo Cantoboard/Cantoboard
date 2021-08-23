@@ -252,7 +252,7 @@ class KeyboardView: UIView, InputView {
                 keyCaps = keyCaps.map { $0.map {
                     switch $0 {
                     case .currency:
-                        return .character(NSLocale.current.currencySymbol ?? "$")
+                        return .character(SessionState.main.currencySymbol)
                     default:
                         return $0
                     }

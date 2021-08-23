@@ -16,6 +16,19 @@ public struct SessionState: Codable, Equatable {
     private static let defaultPrimarySchema: RimeSchema = .jyutping
     private static let defaultCharForm: CharForm = .traditionalHK
     
+    public let currencySymbol: String = getLocalCurrencyCode()
+    
+    private static func getLocalCurrencyCode() -> String {
+        if let currencySymbol = Locale.current.currencySymbol {
+            let currencySymbolWithoutLetters = currencySymbol.filter({ $0.isSymbol })
+            if currencySymbolWithoutLetters.isEmpty {
+                return currencySymbol
+            }
+            return currencySymbolWithoutLetters
+        }
+        return "$"
+    }
+    
     public var lastInputMode: InputMode {
         didSet { save() }
     }
