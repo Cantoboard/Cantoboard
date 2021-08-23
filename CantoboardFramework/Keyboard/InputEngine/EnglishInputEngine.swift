@@ -153,12 +153,9 @@ class EnglishInputEngine: InputEngine {
     
     private func updateCandidates() {
         var text = inputTextBuffer.text, textLowercased = text.lowercased()
-        guard !text.isEmpty && text.count < 25 && textLowercased != "m" else {
+        guard !text.isEmpty && text.count < 25 else {
             isWord = false
             candidates = [text]
-            if text == "m" {
-                candidates.append("M")
-            }
             prefectCandidatesStartIndex = 0
             worstCandidatesStartIndex = 0
             return
@@ -184,15 +181,27 @@ class EnglishInputEngine: InputEngine {
         
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
-        if isWord {
-            if text == "i" {
-                text = "I"
-            } else if let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+        var performCaseCorrection = false
+        
+        if text == "i" {
+            inputTextBuffer.textOverride = "I"
+            performCaseCorrection = true
+        }
+        
+        if let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+            if isInAppleDictionary {
                 text = firstCaseCorrectedCandidate
+            } else {
+                inputTextBuffer.textOverride = firstCaseCorrectedCandidate
             }
+            performCaseCorrection = true
+        }
+        
+        if performCaseCorrection {
             candidates.append(text)
             prefectCandidatesStartIndex += 1
             worstCandidatesStartIndex = candidates.count
+            isWord = true
             return
         }
         

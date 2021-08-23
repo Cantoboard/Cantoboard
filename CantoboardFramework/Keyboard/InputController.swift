@@ -554,7 +554,7 @@ class InputController: NSObject {
         if let englishText = inputEngine.englishComposition?.text,
            var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
-            if state.inputMode == .english {
+            if state.inputMode != .chinese {
                 composingText = englishText
             } else if inputEngine.rimeSchema == .jyutping && Settings.cached.toneInputMode == .vxq {
                 var englishTailLength = 0
