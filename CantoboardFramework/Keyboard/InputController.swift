@@ -496,7 +496,7 @@ class InputController: NSObject {
         
         state.returnKeyType = hasMarkedText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
-        if !inputEngine.isComposing {
+        if !inputEngine.isComposing || state.inputMode != .chinese {
             state.spaceKeyMode = .space
         } else {
             state.spaceKeyMode = Settings.cached.spaceAction == .insertText ? .select : .nextPage
