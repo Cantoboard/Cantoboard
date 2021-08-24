@@ -172,7 +172,7 @@ class EnglishInputEngine: InputEngine {
         let englishDictionaryWordsSet = lookupInDictionary(wordLowercased: textLowercased)
         var candidateSets = Set<String>()
         
-        isWord = (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase })) && !Self.commonContractionPrefixes.contains(where: { textLowercased.starts(with: $0) && textLowercased.count != $0.count })
+        isWord = (!englishDictionaryWordsSet.isEmpty || text.allSatisfy({ $0.isUppercase }))
         
         candidates = []
         var worstCandidates:[String] = []
@@ -197,7 +197,8 @@ class EnglishInputEngine: InputEngine {
             performCaseCorrection = true
         }
         
-        if performCaseCorrection {
+        let isContraction = Self.commonContractionPrefixes.contains(where: { textLowercased.starts(with: $0) && textLowercased.count != $0.count })
+        if performCaseCorrection && !isContraction {
             candidates.append(text)
             prefectCandidatesStartIndex += 1
             worstCandidatesStartIndex = candidates.count
@@ -213,13 +214,15 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
-        if text.allSatisfy({ $0.isUppercase }) {
+        let shortWordLengthThreshold = 5
+        if text.count >= shortWordLengthThreshold && text.allSatisfy({ $0.isUppercase }) {
             candidateSets.insert(text)
             candidates.append(text)
             prefectCandidatesStartIndex += 1
         }
         
         englishDictionaryWordsSet.forEach({ word in
+            if word.count < shortWordLengthThreshold { return }
             var word = word
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
