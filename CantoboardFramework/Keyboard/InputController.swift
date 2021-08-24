@@ -454,6 +454,7 @@ class InputController: NSObject {
                 // It will contain part of the marked text which the doc doesn't contain.
                 // Fortunately, contextual update looks at the tail of the documentContextBeforeInput only.
                 // After inserting text, the inaccurate text doesn't affect the contextual update.
+                hasMarkedText = false
             }
             textDocumentProxy.deleteBackward()
             hasInsertedAutoSpace = false
@@ -475,9 +476,12 @@ class InputController: NSObject {
         // Safari/Chrome searching on www.youtube.com
         // Chrome address bar
         // Google Calender create event title text field
-        hasMarkedText = false
+        // Slack
+        textDocumentProxy.insertText("中") // Without these 2 lines, duplicated insert happens in Slack.
+        textDocumentProxy.deleteBackward()
         textDocumentProxy.insertText(textToBeInserted)
-        
+        hasMarkedText = false
+
         needClearInput = true
         // DDLogInfo("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
     }
