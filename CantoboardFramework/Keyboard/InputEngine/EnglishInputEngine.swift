@@ -213,13 +213,15 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
-        if text.allSatisfy({ $0.isUppercase }) {
+        let shortWordLengthThreshold = 5
+        if text.count >= shortWordLengthThreshold && text.allSatisfy({ $0.isUppercase }) {
             candidateSets.insert(text)
             candidates.append(text)
             prefectCandidatesStartIndex += 1
         }
         
         englishDictionaryWordsSet.forEach({ word in
+            if word.count < shortWordLengthThreshold { return }
             var word = word
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
