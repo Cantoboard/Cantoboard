@@ -321,19 +321,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         return layoutConstants.mediumKeyHintFontSize
     }
     
-    func buttonWidth(_ layoutConstants: LayoutConstants) -> CGFloat {
-        switch self {
-        case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
-            return layoutConstants.shiftButtonWidth
-        case .returnKey:
-            return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols:
-            return layoutConstants.keyButtonWidth
-        default:
-            return layoutConstants.systemButtonWidth
-        }
-    }
-    
     var hasPopup: Bool {
         switch self {
         case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie, .cangjieMixedMode: return true

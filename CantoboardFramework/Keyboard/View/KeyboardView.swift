@@ -47,41 +47,6 @@ class KeyboardView: UIView, InputView {
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
-    private let englishLettersKeyCapRows: [[[KeyCap]]] = [
-        [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
-        [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
-        [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .returnKey(.default)]]
-    ]
-    
-    private let numbersHalfKeyCapRows: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["-", "/", ":", ";", "(", ")", .currency, "\"", "「", "」"]],
-        [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "’"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
-    ]
-    
-    private let symbolsHalfKeyCapRows: [[[KeyCap]]] = [
-        [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
-        [["_", "—", "\\", "|", "~", "<", ">", "«", "»", "•"]],
-        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "’"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
-    ]
-    
-    private let numbersFullKeyCapRows: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["－", "／", "：", "；", "（", "）", .currency, "＂", "「", "」"]],
-        [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["＠", .returnKey(.default)]]
-    ]
-    
-    private let symbolsFullKeyCapRows: [[[KeyCap]]] = [
-        [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
-        [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
-        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "＇"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
-    ]
-    
     private weak var newLineKey: KeyView?
     private weak var spaceKey: KeyView?
     private weak var loadingIndicatorView: UIActivityIndicatorView?
@@ -105,11 +70,20 @@ class KeyboardView: UIView, InputView {
         isMultipleTouchEnabled = true
         preservesSuperviewLayoutMargins = false
 
-        keyRows = (0..<4).map { i in KeyRowView() }
-        keyRows[0].rowLayoutMode = .topRow
-        keyRows[2].rowLayoutMode = .shiftRow
-        keyRows[3].rowLayoutMode = .bottomRow
-        keyRows.forEach { addSubview($0) }
+        switch LayoutConstants.forMainScreen.idiom {
+        case .phone, .padFloating:
+            keyRows = (0..<4).map { i in KeyRowView() }
+            keyRows[0].rowLayoutMode = .phoneRowTop
+            keyRows[3].rowLayoutMode = .phoneRowBottom
+            keyRows.forEach { addSubview($0) }
+        case .pad:
+            keyRows = (0..<4).map { i in
+                let keyRowView = KeyRowView()
+                keyRowView.rowLayoutMode = .padRow(i)
+                return keyRowView
+            }
+            keyRows.forEach { addSubview($0) }
+        }
         
         initTouchHandler()
         createCandidatePaneView()
@@ -243,11 +217,19 @@ class KeyboardView: UIView, InputView {
     }
     
     private func refreshKeys() {
+        let layout: KeyboardViewLayout.Type
+        switch LayoutConstants.forMainScreen.idiom {
+        case .phone, .padFloating:
+            layout = PhoneKeyboardViewLayout.self
+        case .pad:
+            layout = PadKeyboardViewLayout.self
+        }
+        
         switch state.keyboardType {
         case let .alphabetic(shiftState):
-            refreshAlphabeticKeys(shiftState)
+            refreshAlphabeticKeys(layout, shiftState)
         case .numeric:
-            let rows = state.symbolShape == .full ? numbersFullKeyCapRows : numbersHalfKeyCapRows
+            let rows = state.symbolShape == .full ? layout.numbersFull : layout.numbersHalf
             for (index, var keyCaps) in rows.enumerated() {
                 keyCaps = keyCaps.map { $0.map {
                     switch $0 {
@@ -260,7 +242,7 @@ class KeyboardView: UIView, InputView {
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
         case .symbolic:
-            let rows = state.symbolShape == .full ? symbolsFullKeyCapRows : symbolsHalfKeyCapRows
+            let rows = state.symbolShape == .full ? layout.symbolsFull : layout.symbolsHalf
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
@@ -269,8 +251,8 @@ class KeyboardView: UIView, InputView {
         }
     }
     
-    private func refreshAlphabeticKeys(_ shiftState: (KeyboardShiftState)) {
-        for (index, var keyCaps) in englishLettersKeyCapRows.enumerated() {
+    private func refreshAlphabeticKeys(_ layout: KeyboardViewLayout.Type, _ shiftState: (KeyboardShiftState)) {
+        for (index, var keyCaps) in layout.letters.enumerated() {
             if shiftState != .lowercased {
                 keyCaps = keyCaps.map { $0.map {
                     switch $0 {

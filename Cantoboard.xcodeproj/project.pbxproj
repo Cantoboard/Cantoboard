@@ -20,6 +20,8 @@
 		7919A78D25F332100075DD4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78B25F332100075DD4D /* LaunchScreen.storyboard */; };
 		791DE95B263250F500AFA033 /* SwiftLCS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 791DE95A263250F500AFA033 /* SwiftLCS.swift */; };
 		79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */; };
+		7922EF2F26D61029007E1699 /* KeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7922EF2E26D61029007E1699 /* KeyboardViewLayout.swift */; };
+		7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7922EF3426D61A99007E1699 /* CGRect+Extension.swift */; };
 		79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79305FF3260A6EF7002131EF /* DefaultDictionary.swift */; };
 		79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* LevelDbTable.mm */; };
 		79515ABC2609AF9C00D29A5C /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79515AB82609AF5D00D29A5C /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -287,6 +289,8 @@
 		7919A78C25F332100075DD4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7919A78E25F332100075DD4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		791DE95A263250F500AFA033 /* SwiftLCS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftLCS.swift; sourceTree = "<group>"; };
+		7922EF2E26D61029007E1699 /* KeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewLayout.swift; sourceTree = "<group>"; };
+		7922EF3426D61A99007E1699 /* CGRect+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extension.swift"; sourceTree = "<group>"; };
 		79305FF3260A6EF7002131EF /* DefaultDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDictionary.swift; sourceTree = "<group>"; };
 		79515A7D2609AA1500D29A5C /* LevelDbTable.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LevelDbTable.mm; sourceTree = "<group>"; };
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
@@ -631,19 +635,20 @@
 		79B9B59225F34A1200238E80 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */,
-				79B9B59425F34A1200238E80 /* UIColor+Extension.swift */,
-				79B9B59525F34A1200238E80 /* Collection+Extension.swift */,
-				79B9B59625F34A1200238E80 /* Character+Extension.swift */,
-				79B9B59725F34A1200238E80 /* CGPoints+Extension.swift */,
-				79B9B59825F34A1200238E80 /* UIEdgeInsets+Extension.swift */,
-				79B9B59925F34A1200238E80 /* Utils.swift */,
-				79B9B59A25F34A1200238E80 /* CGSize+Extension.swift */,
-				79607A64260FF09200E23D33 /* String+Extension.swift */,
 				795B22C3261EBA3D00271D9F /* Array+Extension.swift */,
-				798032A42645F6AF008DC703 /* Logging.swift */,
-				790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */,
+				79B9B59725F34A1200238E80 /* CGPoints+Extension.swift */,
+				7922EF3426D61A99007E1699 /* CGRect+Extension.swift */,
+				79B9B59A25F34A1200238E80 /* CGSize+Extension.swift */,
+				79B9B59625F34A1200238E80 /* Character+Extension.swift */,
+				79B9B59525F34A1200238E80 /* Collection+Extension.swift */,
 				7912CC5926D2173000BA89AB /* EastAsianWidth.swift */,
+				790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */,
+				798032A42645F6AF008DC703 /* Logging.swift */,
+				79607A64260FF09200E23D33 /* String+Extension.swift */,
+				79B9B59425F34A1200238E80 /* UIColor+Extension.swift */,
+				79B9B59825F34A1200238E80 /* UIEdgeInsets+Extension.swift */,
+				79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */,
+				79B9B59925F34A1200238E80 /* Utils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -655,6 +660,7 @@
 				79B9B59F25F34A1200238E80 /* CandidatePaneView.swift */,
 				799AE20B26793F6D00286530 /* HighlightableButton.swift */,
 				79B9B5A425F34A1200238E80 /* KeyboardView.swift */,
+				7922EF2E26D61029007E1699 /* KeyboardViewLayout.swift */,
 				79B9B5A625F34A1200238E80 /* KeyCap.swift */,
 				79B9B5A525F34A1200238E80 /* KeyHintLayer.swift */,
 				799AE20126792F4C00286530 /* KeypadButton.swift */,
@@ -1223,6 +1229,7 @@
 				79B9B60B25F34A1200238E80 /* KeyHintLayer.swift in Sources */,
 				795B22C4261EBA3D00271D9F /* Array+Extension.swift in Sources */,
 				79B9B60A25F34A1200238E80 /* KeyboardView.swift in Sources */,
+				7922EF2F26D61029007E1699 /* KeyboardViewLayout.swift in Sources */,
 				79B9B5FE25F34A1200238E80 /* CGPoints+Extension.swift in Sources */,
 				79B9B60C25F34A1200238E80 /* KeyCap.swift in Sources */,
 				799D91A32674690700AE9DBD /* StatusButton.swift in Sources */,
@@ -1247,6 +1254,7 @@
 				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
 				79B9B5F925F34A1200238E80 /* FeedbackProvider.swift in Sources */,
+				7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */,
 				795B22D5261EEE1400271D9F /* UserDictionary.swift in Sources */,
 				799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */,
 				79B9B60225F34A1200238E80 /* TouchHandler.swift in Sources */,

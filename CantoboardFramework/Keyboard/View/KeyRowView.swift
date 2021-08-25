@@ -9,13 +9,14 @@ import Foundation
 import UIKit
 
 class KeyRowView: UIView {
-    enum RowLayoutMode {
-        case topRow, normalRow, shiftRow, bottomRow
+    enum RowLayoutMode: Equatable {
+        case phoneRowTop, phoneRowNormal, phoneRowBottom
+        case padRow(Int)
     }
     
     private(set) var leftKeys, middleKeys, rightKeys: [KeyView]!
     private var keyboardType: KeyboardType = .none
-    var rowLayoutMode: RowLayoutMode = .normalRow
+    var rowLayoutMode: RowLayoutMode = .phoneRowNormal
     var needsInputModeSwitchKey = false
     
     var isEnabled: Bool = true {
@@ -108,18 +109,27 @@ extension KeyRowView {
     }
     
     override func layoutSubviews() {
+        switch rowLayoutMode {
+        case .phoneRowTop, .phoneRowNormal, .phoneRowBottom:
+            layoutPhoneSubviews()
+        case .padRow:
+            layoutPadSubviews()
+        }
+    }
+    
+    private func layoutPhoneSubviews() {
         let layoutConstants = LayoutConstants.forMainScreen
         
         // First, put the keys to where they should be.
-        let leftKeyFrames = layoutKeys(leftKeys, direction: .left, layoutConstants: layoutConstants)
-        let middleKeyFrames = layoutKeys(middleKeys, direction: .middle, layoutConstants: layoutConstants)
-        let rightKeyFrames = layoutKeys(rightKeys, direction: .right, layoutConstants: layoutConstants)
+        let leftKeyFrames = layoutPhoneKeys(leftKeys, direction: .left, layoutConstants: layoutConstants)
+        let middleKeyFrames = layoutPhoneKeys(middleKeys, direction: .middle, layoutConstants: layoutConstants)
+        let rightKeyFrames = layoutPhoneKeys(rightKeys, direction: .right, layoutConstants: layoutConstants)
         
         let allKeys = leftKeys + middleKeys + rightKeys
         var allFrames = leftKeyFrames + middleKeyFrames + rightKeyFrames
         
         // Special case, widen the space key to fill the empty space.
-        if rowLayoutMode == .bottomRow && middleKeys.count == 1, case .space = middleKeys.first!.keyCap {
+        if rowLayoutMode == .phoneRowBottom && middleKeys.count == 1, case .space = middleKeys.first!.keyCap {
             let thisKeyFrame = allFrames[leftKeyFrames.count]
             let spaceStartX = allFrames[leftKeyFrames.count - 1].maxX + layoutConstants.buttonGap
             let spaceEndX = allFrames[leftKeyFrames.count + middleKeyFrames.count].minX - layoutConstants.buttonGap
@@ -131,7 +141,7 @@ extension KeyRowView {
         expandKeysToFillGap(allKeys, allFrames)
     }
     
-    private func layoutKeys(_ keys: [KeyView], direction: GroupLayoutDirection, layoutConstants: LayoutConstants) -> [CGRect] {
+    private func layoutPhoneKeys(_ keys: [KeyView], direction: GroupLayoutDirection, layoutConstants: LayoutConstants) -> [CGRect] {
         var x: CGFloat
         switch direction {
         case .left:
@@ -146,14 +156,99 @@ extension KeyRowView {
             x = bounds.maxX - directionalLayoutMargins.trailing - rightKeysWidth
         }
         
-        let frame: [CGRect] = keys.map { key in
+        let frames: [CGRect] = keys.map { key in
             let keyWidth = getKeyWidth(key, layoutConstants)
             let rect = CGRect(x: x, y: layoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
             x += keyWidth + layoutConstants.buttonGap
             
             return rect
         }
-        return frame
+        return frames
+    }
+    
+    private func layoutPadSubviews() {
+        let layoutConstants = LayoutConstants.forMainScreen
+        
+        let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
+        let row3LeftGroupWidth = availableWidth - layoutConstants.shiftButtonWidth - layoutConstants.buttonGap
+        let keyWidthRow3n4 = (row3LeftGroupWidth - 9 * layoutConstants.buttonGap) / 10
+        
+        let allKeys: [KeyView]
+        var allFrames: [CGRect]
+        
+        switch rowLayoutMode {
+        case .padRow(0):
+            let keyWidth = (availableWidth - 10 * layoutConstants.buttonGap) / 11
+            var x = directionalLayoutMargins.leading
+            
+            allKeys = leftKeys + middleKeys + rightKeys
+            allFrames = layoutPadKeys(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, x: &x)
+        case .padRow(1):
+            let leftInset: CGFloat = keyWidthRow3n4 / 2
+            let lastKeyWidth = layoutConstants.systemButtonWidth
+            let keyWidth = (availableWidth - leftInset - lastKeyWidth - 9 * layoutConstants.buttonGap) / 9
+            var x = directionalLayoutMargins.leading + leftInset
+            
+            allKeys = leftKeys + middleKeys + rightKeys
+            allFrames = layoutPadKeys(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, x: &x)
+            
+            overrideLastFrame(frames: &allFrames, width: lastKeyWidth)
+        case .padRow(2):
+            var x = directionalLayoutMargins.leading
+            allKeys = leftKeys + middleKeys + rightKeys
+            allFrames = layoutPadKeys(keys: allKeys, keyWidth: keyWidthRow3n4, layoutConstants: layoutConstants, x: &x)
+            
+            overrideLastFrame(frames: &allFrames, width: layoutConstants.shiftButtonWidth)
+        case .padRow(3):
+            let leftRightGroupWidth: CGFloat = 3 * keyWidthRow3n4 + 2 * layoutConstants.buttonGap
+            var x = directionalLayoutMargins.leading
+            
+            let leftKeyWidth = (leftRightGroupWidth - CGFloat(leftKeys.count - 1) * layoutConstants.buttonGap) / CGFloat(leftKeys.count)
+            let leftFrames = layoutPadKeys(keys: leftKeys, keyWidth: leftKeyWidth, layoutConstants: layoutConstants, x: &x)
+            
+            let middleGroupWidth: CGFloat = availableWidth - 2 * leftRightGroupWidth - 2 * layoutConstants.buttonGap
+            let middleKeyWidth = (middleGroupWidth - CGFloat(middleKeys.count - 1) * layoutConstants.buttonGap) / CGFloat(middleKeys.count)
+            let middleFrames = layoutPadKeys(keys: middleKeys, keyWidth: middleKeyWidth, layoutConstants: layoutConstants, x: &x)
+            
+            let rightKeyWidth: CGFloat = (leftRightGroupWidth - CGFloat(rightKeys.count - 1) * layoutConstants.buttonGap) / CGFloat(rightKeys.count)
+            let rightFrames = layoutPadKeys(keys: rightKeys, keyWidth: rightKeyWidth, layoutConstants: layoutConstants, x: &x)
+            
+            allKeys = leftKeys + middleKeys + rightKeys
+            allFrames = leftFrames + middleFrames + rightFrames
+        default: fatalError("Bug. Unexpected type \(rowLayoutMode). Expecting .padRow(0...4).")
+        }
+        
+        // Then, expand the keys to fill the void between keys.
+        // In the stock keyboard, if the user tap between two keys, the event is sent to the nearest key.
+        expandKeysToFillGap(allKeys, allFrames)
+    }
+    
+    private func layoutPadKeys(keys: [KeyView], keyWidth: CGFloat, layoutConstants: LayoutConstants, x: inout CGFloat) -> [CGRect] {
+        return keys.map { key in
+            let rect = CGRect(x: x, y: layoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
+            x += rect.width + layoutConstants.buttonGap
+            
+            return rect
+        }
+    }
+    
+    private func overrideLastFrame(frames: inout [CGRect], width: CGFloat) {
+        if let lastFrame = frames.popLast() {
+            frames.append(lastFrame.with(width: width))
+        }
+    }
+    
+    private func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
+        switch key.keyCap {
+        case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
+            return layoutConstants.shiftButtonWidth
+        case .returnKey:
+            return 1.5 * layoutConstants.systemButtonWidth
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols:
+            return layoutConstants.keyButtonWidth
+        default:
+            return layoutConstants.systemButtonWidth
+        }
     }
     
     private func expandKeysToFillGap(_ allKeys: [KeyView], _ allFrames: [CGRect]) {
@@ -163,7 +258,7 @@ extension KeyRowView {
             let isLastKey = index == allKeyCount - 1
             let thisKeyFrame = allFrames[index]
             
-            if rowLayoutMode == .topRow {
+            if rowLayoutMode == .phoneRowTop {
                 key.heightClearance = frame.minY + 8
             }
             key.frame = thisKeyFrame
@@ -173,10 +268,6 @@ extension KeyRowView {
             
             startX = midXBetweenThisAndNextKey
         }
-    }
-    
-    private func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
-        return key.keyCap.buttonWidth(layoutConstants)
     }
 }
 
