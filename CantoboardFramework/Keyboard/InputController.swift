@@ -477,7 +477,7 @@ class InputController: NSObject {
         // Google Calender create event title text field
         // Slack
         hasMarkedText = false
-        let shouldApplySlackHack = textToBeInserted.allSatisfy({ $0.isASCII })
+        let shouldApplySlackHack = textToBeInserted.first?.isASCII ?? false
         if shouldApplySlackHack && !isNewLine {
             textDocumentProxy.insertText("　") // Without these 2 lines, duplicate insert happens in Slack.
             textDocumentProxy.deleteBackward()
