@@ -41,6 +41,9 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
             if attributes.representedElementKind == UICollectionView.elementKindSectionHeader {
                 fixHeaderPosition(attributes)
             }
+            if attributes.indexPath == [0, 0], let collectionViewSize = collectionView?.bounds {
+                attributes.frame = CGRect(origin: .zero, size: CGSize(width: collectionViewSize.width, height: LayoutConstants.forMainScreen.autoCompleteBarHeight))
+            }
         }
         
         return allAttributes
