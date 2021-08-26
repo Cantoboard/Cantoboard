@@ -12,8 +12,11 @@ class StatusMenu: UIView {
     static let xInset: CGFloat = 5
     static let cornerRadius: CGFloat = 5
     static let separatorWidth: CGFloat = 1
-    var labelActions: [UILabel: KeyCap]
-    var labels: [[UILabel]]
+    static let fontSizeAtUnitHeight: CGFloat = 15
+    static let unitHeight: CGFloat = 45
+    
+    var itemActions: [UILabel: KeyCap]
+    var itemLabelInRows: [[UILabel]]
     var handleKey: ((_ action: KeyboardAction) -> Void)?
     
     // Uncomment this to debug memory leak.
@@ -21,17 +24,17 @@ class StatusMenu: UIView {
     
     init(menuRows: [[KeyCap]]) {
         var labelActions: [UILabel: KeyCap] = [:]
-        labels = menuRows.map({
+        itemLabelInRows = menuRows.map({
             $0.map({ keyCap in
                 let label = Self.createLabel(keyCap: keyCap)
                 labelActions[label] = keyCap
                 return label
             })
         })
-        self.labelActions = labelActions
+        self.itemActions = labelActions
         super.init(frame: .zero)
         
-        labels.forEach({ [self] in
+        itemLabelInRows.forEach({ [self] in
             $0.forEach({ self.addSubview($0) })
         })
         backgroundColor = UIColor.tertiarySystemBackground
@@ -42,19 +45,19 @@ class StatusMenu: UIView {
         layer.shadowOffset = CGSize(width: 10, height: 10)
         layer.shadowColor = CGColor(gray: 0, alpha: 1)
         
-        labels.first?.first?.layer.maskedCorners = []
-        labels.first?.last?.layer.maskedCorners = []
-        labels.first?.first?.layer.masksToBounds = true
-        labels.first?.last?.layer.masksToBounds = true
-        labels.first?.first?.layer.maskedCorners.insert(.layerMinXMinYCorner)
-        labels.first?.last?.layer.maskedCorners.insert(.layerMaxXMinYCorner)
+        itemLabelInRows.first?.first?.layer.maskedCorners = []
+        itemLabelInRows.first?.last?.layer.maskedCorners = []
+        itemLabelInRows.first?.first?.layer.masksToBounds = true
+        itemLabelInRows.first?.last?.layer.masksToBounds = true
+        itemLabelInRows.first?.first?.layer.maskedCorners.insert(.layerMinXMinYCorner)
+        itemLabelInRows.first?.last?.layer.maskedCorners.insert(.layerMaxXMinYCorner)
         
-        labels.last?.first?.layer.maskedCorners = []
-        labels.last?.last?.layer.maskedCorners = []
-        labels.last?.first?.layer.masksToBounds = true
-        labels.last?.last?.layer.masksToBounds = true
-        labels.last?.first?.layer.maskedCorners.insert(.layerMinXMaxYCorner)
-        labels.last?.last?.layer.maskedCorners.insert(.layerMaxXMaxYCorner)
+        itemLabelInRows.last?.first?.layer.maskedCorners = []
+        itemLabelInRows.last?.last?.layer.maskedCorners = []
+        itemLabelInRows.last?.first?.layer.masksToBounds = true
+        itemLabelInRows.last?.last?.layer.masksToBounds = true
+        itemLabelInRows.last?.first?.layer.maskedCorners.insert(.layerMinXMaxYCorner)
+        itemLabelInRows.last?.last?.layer.maskedCorners.insert(.layerMaxXMaxYCorner)
     }
     
     required init?(coder: NSCoder) {
@@ -65,6 +68,7 @@ class StatusMenu: UIView {
         let label = UILabel()
         label.text = keyCap.buttonText
         label.textAlignment = .center
+        label.adjustsFontSizeToFitWidth = true
         label.layer.cornerRadius = Self.cornerRadius
         return label
     }
@@ -74,28 +78,25 @@ class StatusMenu: UIView {
         layer.shadowPath = CGPath(roundedRect: bounds, cornerWidth: Self.cornerRadius, cornerHeight: Self.cornerRadius, transform: nil)
         
         var y = CGFloat(0)
-        for r in 0..<labels.count {
-            let row = labels[r]
-            let cellSize = CGSize(width: LayoutConstants.statusMenuRowSize.width / CGFloat(row.count), height: LayoutConstants.statusMenuRowSize.height)
+        for r in 0..<itemLabelInRows.count {
+            let row = itemLabelInRows[r]
+            let cellSize = CGSize(width: bounds.width / CGFloat(row.count), height: bounds.height / CGFloat(itemLabelInRows.count))
             var x = CGFloat(0)
             for i in 0..<row.count {
-                let label = labels[r][i]
+                let label = itemLabelInRows[r][i]
                 label.frame = CGRect(origin: CGPoint(x: x, y: y), size: cellSize)
+                label.font = .systemFont(ofSize: Self.fontSizeAtUnitHeight * cellSize.height / Self.unitHeight)
                 x += cellSize.width
             }
             y += cellSize.height
         }
     }
     
-    override var intrinsicContentSize: CGSize {
-        return CGSize(width: LayoutConstants.statusMenuRowSize.width, height: LayoutConstants.statusMenuRowSize.height * CGFloat(labels.count))
-    }
-    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
-        for labelRow in labels {
+        for labelRow in itemLabelInRows {
             for label in labelRow {
                 let isTouching = label.frame.contains(touchLocation)
                 label.backgroundColor = isTouching ? .systemGray3 : .clearInteractable
@@ -108,10 +109,10 @@ class StatusMenu: UIView {
         guard let touch = touches.first else { return }
         let touchLocation = touch.location(in: self)
         
-        for labelRow in labels {
+        for labelRow in itemLabelInRows {
             for label in labelRow {
                 let isTouching = label.frame.contains(touchLocation)
-                if isTouching, let keyCap = labelActions[label] {
+                if isTouching, let keyCap = itemActions[label] {
                     FeedbackProvider.rigidImpact.impactOccurred()
                     handleKey?(keyCap.action)
                     return

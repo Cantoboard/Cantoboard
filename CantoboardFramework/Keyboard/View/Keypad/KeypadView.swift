@@ -196,6 +196,14 @@ extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
         // if case .keyboardType(.alphabetic) = action, case .alphabetic = state.keyboardType {
         delegate?.handleKey(action)
     }
+    
+    var statusMenuOriginY: CGFloat {
+        get { LayoutConstants.forMainScreen.autoCompleteBarHeight }
+    }
+    
+    var keyboardSize: CGSize {
+        LayoutConstants.forMainScreen.keyboardSize
+    }
 }
 
 extension KeypadView {

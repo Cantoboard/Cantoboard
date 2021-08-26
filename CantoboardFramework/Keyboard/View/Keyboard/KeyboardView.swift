@@ -396,6 +396,14 @@ extension KeyboardView: CandidatePaneViewDelegate, StatusMenuHandler {
     func handleKey(_ action: KeyboardAction) {
         delegate?.handleKey(action)
     }
+    
+    var statusMenuOriginY: CGFloat {
+        LayoutConstants.forMainScreen.autoCompleteBarHeight
+    }
+    
+    var keyboardSize: CGSize {
+        LayoutConstants.forMainScreen.keyboardSize
+    }
 }
 
 extension KeyboardView {

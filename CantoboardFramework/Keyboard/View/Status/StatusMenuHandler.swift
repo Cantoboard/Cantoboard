@@ -12,6 +12,8 @@ protocol StatusMenuHandler: class {
     var delegate: KeyboardViewDelegate? { get set }
     var state: KeyboardState { get set }
     var statusMenu: StatusMenu? { get set }
+    var statusMenuOriginY: CGFloat { get }
+    var keyboardSize: CGSize { get }
 
     func layoutStatusMenu()
     func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool
@@ -23,10 +25,20 @@ extension StatusMenuHandler where Self: UIView {
     func layoutStatusMenu() {
         guard let statusMenu = statusMenu else { return }
         
-        let size = statusMenu.intrinsicContentSize
-        let origin = CGPoint(x: frame.width - size.width, y: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        let size = statusMenuSize
+        let origin = CGPoint(x: frame.width - size.width, y: statusMenuOriginY)
         let frame = CGRect(origin: origin, size: size)
         statusMenu.frame = frame.offsetBy(dx: -StatusMenu.xInset, dy: 0)
+    }
+    
+    private var statusMenuSize: CGSize {
+        let statusMenuHeightRatio: CGFloat = 0.8
+        let statusMenuWidthRatio: CGFloat = 0.35
+        let statusMenuMinWidth: CGFloat = 200
+        
+        let height = (keyboardSize.height - statusMenuOriginY) * statusMenuHeightRatio
+        let width = max(statusMenuMinWidth, keyboardSize.width * statusMenuWidthRatio)
+        return CGSize(width: width, height: height)
     }
     
     func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {

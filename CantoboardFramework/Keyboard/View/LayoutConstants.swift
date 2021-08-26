@@ -14,10 +14,9 @@ enum LayoutIdiom {
     case phone, pad, padFloating
 }
 
-struct LayoutConstants {
+class LayoutConstants {
     // Fixed:
     static let keyViewTopInset = CGFloat(8)
-    static let statusMenuRowSize = CGSize(width: 200, height: 45)
     
     // Provided:
     let idiom: LayoutIdiom
