@@ -7,7 +7,7 @@
 //
 import Foundation
 
-public extension UnicodeScalar {
+extension UnicodeScalar {
 
     // MARK: -
     /// East Asian Ambiguous (A)
@@ -17,7 +17,7 @@ public extension UnicodeScalar {
     ///
     /// See: http://unicode.org/reports/tr11/#ED6
     ///      https://github.com/audreyt/Unicode-EastAsianWidth/blob/master/lib/Unicode/EastAsianWidth.pm#L38-L199
-    public var isEastAsianAmbiguous: Bool {
+    var isEastAsianAmbiguous: Bool {
         switch self.value {
         case 0x00A1...0x00A1: return true
         case 0x00A4...0x00A4: return true
@@ -190,7 +190,7 @@ public extension UnicodeScalar {
     ///
     /// See: http://unicode.org/reports/tr11/#ED3
     ///      https://github.com/audreyt/Unicode-EastAsianWidth/blob/master/lib/Unicode/EastAsianWidth.pm#L209-L215
-    public var isEastAsianHalfwidth: Bool {
+    var isEastAsianHalfwidth: Bool {
         switch self.value {
         case 0x20A9...0x20A9: return true
         case 0xFF61...0xFFDC: return true
@@ -207,7 +207,7 @@ public extension UnicodeScalar {
     ///
     /// See: http://unicode.org/reports/tr11/#ED2
     ///      https://github.com/audreyt/Unicode-EastAsianWidth/blob/master/lib/Unicode/EastAsianWidth.pm#L201-L207
-    public var isEastAsianFullwidth: Bool {
+    var isEastAsianFullwidth: Bool {
         switch self.value {
         case 0x3000...0x3000: return true
         case 0xFF01...0xFF60: return true
@@ -225,7 +225,7 @@ public extension UnicodeScalar {
     ///
     /// See: http://unicode.org/reports/tr11/#ED5
     ///      https://github.com/audreyt/Unicode-EastAsianWidth/blob/master/lib/Unicode/EastAsianWidth.pm#L217-L227
-    public var isEastAsianNarrow: Bool {
+    var isEastAsianNarrow: Bool {
         switch self.value {
         case 0x0020...0x007E: return true
         case 0x00A2...0x00A3: return true
@@ -249,7 +249,7 @@ public extension UnicodeScalar {
     ///
     /// See: http://unicode.org/reports/tr11/#ED7
     ///      https://github.com/audreyt/Unicode-EastAsianWidth/blob/master/lib/Unicode/EastAsianWidth.pm#L229-L400
-    public var isEastAsianNeutral: Bool {
+    var isEastAsianNeutral: Bool {
         switch self.value {
         case 0x0000...0x001F: return true
         case 0x007F...0x00A0: return true
@@ -435,7 +435,7 @@ public extension UnicodeScalar {
     ///
     /// See: http://unicode.org/reports/tr11/#ED4
     /// https://github.com/audreyt/Unicode-EastAsianWidth/blob/master/lib/Unicode/EastAsianWidth.pm#L402-L422
-    public var isEastAsianWide: Bool {
+    var isEastAsianWide: Bool {
         switch self.value {
         case 0x1100...0x115F: return true
         case 0x2329...0x232A: return true
@@ -460,25 +460,25 @@ public extension UnicodeScalar {
     }
 
     // MARK: -
-    public var isFullwidthOrAmbiguous: Bool {
+    var isFullwidthOrAmbiguous: Bool {
         return isEastAsianFullwidth
             || isEastAsianWide
             || isEastAsianAmbiguous
     }
 
-    public var isFullwidth: Bool {
+    var isFullwidth: Bool {
         return isEastAsianFullwidth
             || isEastAsianWide
     }
 
-    public var isHalfwidthOrAmbiguous: Bool {
+    var isHalfwidthOrAmbiguous: Bool {
         return isEastAsianHalfwidth
             || isEastAsianNarrow
             || isEastAsianNeutral
             || isEastAsianAmbiguous
     }
 
-    public var isHalfwidth: Bool {
+    var isHalfwidth: Bool {
         return isEastAsianHalfwidth
             || isEastAsianNarrow
             || isEastAsianNeutral
