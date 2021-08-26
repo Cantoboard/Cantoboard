@@ -102,13 +102,11 @@ open class KeyboardViewController: UIInputViewController {
             keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor),
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-        
-        reloadSettings()
-        createKeyboardIfNeeded()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         LayoutConstants.currentTraitCollection = traitCollection
         
         if superviewCenterXConstraint == nil, let superview = view.superview {
