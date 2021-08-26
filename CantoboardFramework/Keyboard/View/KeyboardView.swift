@@ -11,18 +11,7 @@ import UIKit
 import CocoaLumberjackSwift
 import ISEmojiView
 
-protocol KeyboardViewDelegate: class {
-    func handleKey(_ action: KeyboardAction)
-    func handleInputModeList(from: UIView, with: UIEvent)
-}
-
-protocol InputView: UIView {
-    var delegate: KeyboardViewDelegate? { get set }
-    var state: KeyboardState { get set }
-    func candidatePanescrollToNextPageInRowMode()
-}
-
-class KeyboardView: UIView, InputView {
+class KeyboardView: UIView, BaseKeyboardView {
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<KeyboardView>()
     
@@ -150,12 +139,7 @@ class KeyboardView: UIView, InputView {
         layoutStatusMenu()
     }
     
-    /*
-    func changeCandidatePaneMode(_ newMode: CandidatePaneView.Mode) {
-        candidatePaneView?.changeMode(newMode)
-    } */
-    
-    func candidatePanescrollToNextPageInRowMode() {
+    func scrollCandidatePaneToNextPageInRowMode() {
         candidatePaneView?.scrollToNextPageInRowMode()
     }
     
@@ -302,11 +286,6 @@ class KeyboardView: UIView, InputView {
                 }
             } }
             
-            // TODO Hide shift button if we are not in jyutping mode.
-            /*
-            if index == 2 && (currentRimeSchemaId != .jyutping || currentRimeSchemaId == .jyutping && Settings.cached.lastInputMode == .chinese) {
-                
-            }*/
             keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
         }
         if let lastRow = keyRows[safe: 3] {

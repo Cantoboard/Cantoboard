@@ -144,6 +144,7 @@
 		79B9B6D925F34B2D00238E80 /* EmojiCollectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A525F34B2D00238E80 /* EmojiCollectionView.xib */; };
 		79B9B6DA25F34B2D00238E80 /* CategoriesBottomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A625F34B2D00238E80 /* CategoriesBottomView.xib */; };
 		79B9B6DB25F34B2D00238E80 /* ISEmojiList_iOS11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A725F34B2D00238E80 /* ISEmojiList_iOS11.plist */; };
+		79BE974F26D73D680059E58A /* BaseKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE974E26D73D680059E58A /* BaseKeyboardView.swift */; };
 		79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AAF263F95F600993949 /* CocoaLumberjackSwift */; };
 		79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AB4263F961800993949 /* CocoaLumberjack */; };
 		79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D31ACC263FAC1300993949 /* InstanceCounter.swift */; };
@@ -414,6 +415,7 @@
 		79B9B6A625F34B2D00238E80 /* CategoriesBottomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoriesBottomView.xib; sourceTree = "<group>"; };
 		79B9B6A725F34B2D00238E80 /* ISEmojiList_iOS11.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS11.plist; sourceTree = "<group>"; };
 		79B9B70725F43D0E00238E80 /* Cantoboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cantoboard.entitlements; sourceTree = "<group>"; };
+		79BE974E26D73D680059E58A /* BaseKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseKeyboardView.swift; sourceTree = "<group>"; };
 		79D31ACC263FAC1300993949 /* InstanceCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstanceCounter.swift; sourceTree = "<group>"; };
 		79D4E1BE26422C6E00857D7D /* DataFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFileManager.swift; sourceTree = "<group>"; };
 		79D4E23A264251C600857D7D /* EnglishDictSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EnglishDictSource; sourceTree = "<group>"; };
@@ -672,6 +674,7 @@
 				799D91A22674690700AE9DBD /* StatusButton.swift */,
 				79E98DBC2672FC92006E32DE /* StatusMenu.swift */,
 				799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */,
+				79BE974E26D73D680059E58A /* BaseKeyboardView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1272,6 +1275,7 @@
 				79B9B60825F34A1200238E80 /* KeyPopupView.swift in Sources */,
 				79B9B60325F34A1200238E80 /* Settings.swift in Sources */,
 				79B9B60725F34A1200238E80 /* KeyRowView.swift in Sources */,
+				79BE974F26D73D680059E58A /* BaseKeyboardView.swift in Sources */,
 				79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */,
 				79D4E1BF26422C6E00857D7D /* DataFileManager.swift in Sources */,
 				79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */,

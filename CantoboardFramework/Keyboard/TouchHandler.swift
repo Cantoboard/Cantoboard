@@ -35,11 +35,11 @@ class TouchHandler {
         }
     }
     
-    private weak var keyboardView: InputView?
+    private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
     private var keyRepeatCounter: Int = 0
     
-    init(keyboardView: InputView) {
+    init(keyboardView: BaseKeyboardView) {
         self.keyboardView = keyboardView
     }
     

@@ -64,7 +64,7 @@ struct KeyboardState: Equatable {
 
 class InputController: NSObject {
     private weak var keyboardViewController: KeyboardViewController?
-    private weak var keyboardView: InputView?
+    private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
     
     private(set) var state: KeyboardState = KeyboardState()
@@ -112,7 +112,7 @@ class InputController: NSObject {
     
     private func initKeyboardView() {
         guard let keyboardViewPlaceholder = keyboardViewController?.keyboardViewPlaceholder else { return }
-        let keyboardView: InputView
+        let keyboardView: BaseKeyboardView
         if shouldUseKeypad {
             keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer)
         } else {
@@ -187,7 +187,7 @@ class InputController: NSObject {
             if Settings.cached.spaceAction == .insertText {
                 candidateSelected(choice: [0, 0], enableSmartSpace: true)
             } else {
-                keyboardView?.candidatePanescrollToNextPageInRowMode()
+                keyboardView?.scrollCandidatePaneToNextPageInRowMode()
                 needReloadCandidates = false
             }
         } else {

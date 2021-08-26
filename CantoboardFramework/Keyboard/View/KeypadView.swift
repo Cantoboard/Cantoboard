@@ -18,7 +18,7 @@ struct KeypadButtonProps {
     }
 }
 
-class KeypadView: UIView, InputView {
+class KeypadView: UIView, BaseKeyboardView {
     weak var delegate: KeyboardViewDelegate?
     
     private let leftButtonProps: [[KeypadButtonProps]] = [
@@ -157,7 +157,7 @@ class KeypadView: UIView, InputView {
         candidatePaneView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: bounds.width, height: height))
     }
     
-    func candidatePanescrollToNextPageInRowMode() {
+    func scrollCandidatePaneToNextPageInRowMode() {
         candidatePaneView?.scrollToNextPageInRowMode()
     }
 }
