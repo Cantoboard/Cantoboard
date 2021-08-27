@@ -278,9 +278,11 @@ extension KeyView {
     
     private func computePopupDirection() -> KeyPopupView.PopupDirection {
         guard let superview = superview else { return .middle }
+        
+        let screenEdgeThreshold = LayoutConstants.forMainScreen.keyButtonWidth / 2
 
         let keyViewFrame = convert(bounds, to: superview)
-        if keyViewFrame.minX < LayoutConstants.forMainScreen.keyButtonWidth / 2 {
+        if keyViewFrame.minX < screenEdgeThreshold {
             // Special case, for key 1, it has 10 children.
             if self.keyCap.childrenKeyCaps.count > 9 {
                 return .middle
@@ -289,7 +291,7 @@ extension KeyView {
             }
         }
         
-        if superview.bounds.width - keyViewFrame.maxX < LayoutConstants.forMainScreen.keyButtonWidth / 2 {
+        if superview.bounds.width - keyViewFrame.maxX < screenEdgeThreshold {
             return .left
         }
         
