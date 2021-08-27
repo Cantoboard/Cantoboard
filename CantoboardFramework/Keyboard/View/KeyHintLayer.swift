@@ -13,7 +13,7 @@ class KeyHintLayer: CATextLayer {
     static let recommendedHeightRatio: CGFloat = 0.24
     
     static let buttonFloatingInsets = UIEdgeInsets(top: 0.5, left: 1, bottom: 1, right: 0.5)
-    static let topRightInsets = UIEdgeInsets(top: 1.5, left: 0, bottom: 0, right: 1.5)
+    static let topRightInsets = UIEdgeInsets(top: 1.5, left: 0, bottom: 0, right: 1.75)
     
     private var contentSize: CGSize = .zero
     

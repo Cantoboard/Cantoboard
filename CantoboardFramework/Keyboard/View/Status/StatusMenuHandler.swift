@@ -32,11 +32,12 @@ extension StatusMenuHandler where Self: UIView {
     }
     
     private var statusMenuSize: CGSize {
-        let statusMenuHeightRatio: CGFloat = 0.8
+        // let statusMenuHeightRatio: CGFloat = 0.8
         let statusMenuWidthRatio: CGFloat = 0.35
         let statusMenuMinWidth: CGFloat = 200
+        let rowHeight = keyboardSize.height / 5
         
-        let height = (keyboardSize.height - statusMenuOriginY) * statusMenuHeightRatio
+        let height = rowHeight * CGFloat(statusMenu?.itemLabelInRows.count ?? 0) // (keyboardSize.height - statusMenuOriginY) * statusMenuHeightRatio
         let width = max(statusMenuMinWidth, keyboardSize.width * statusMenuWidthRatio)
         return CGSize(width: width, height: height)
     }
