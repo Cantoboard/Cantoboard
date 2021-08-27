@@ -10,7 +10,13 @@ import UIKit
 
 class CandidateCell: UICollectionViewCell {
     static var reuseId: String = "CandidateCell"
-    static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
+    
+    private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
+    private static let fontSizePerHeight: CGFloat = 20 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
+    
+    private static let candidateLabelHeightRatio: CGFloat = 0.6
+    private static let candidateCommentHeightRatio: CGFloat = 0.25
+    private static let candidateCommentPaddingHeightRatio: CGFloat = 0.05
     
     var showComment: Bool = false
     
@@ -26,7 +32,6 @@ class CandidateCell: UICollectionViewCell {
     }
     
     func setup(_ text: String, _ comment: String?, showComment: Bool) {
-        let layoutConstants = LayoutConstants.forMainScreen
         self.showComment = showComment
         
         if label == nil {
@@ -63,9 +68,8 @@ class CandidateCell: UICollectionViewCell {
                 commentLayer.allowsFontSubpixelQuantization = true
                 commentLayer.contentsScale = UIScreen.main.scale
                 commentLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
+                commentLayer.font = UIFont.systemFont(ofSize: 10 /* ignored */)
             }
-            commentLayer?.font = UIFont.systemFont(ofSize: layoutConstants.candidateCommentFontSize)
-            commentLayer?.fontSize = layoutConstants.candidateCommentFontSize
             commentLayer?.string = comment
         } else {
             commentLayer?.removeFromSuperlayer()
@@ -101,22 +105,31 @@ class CandidateCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
-        let layoutConstants = LayoutConstants.forMainScreen
-        let fontSizeScale = Settings.cached.candidateFontSize.scale
-
-        label?.font = UIFont.systemFont(ofSize: layoutConstants.candidateFontSize * fontSizeScale)
-        commentLayer?.font = UIFont.systemFont(ofSize: layoutConstants.candidateCommentFontSize)
-        commentLayer?.fontSize = layoutConstants.candidateCommentFontSize
+        guard let label = label else { return }
         
-        if showComment && commentLayer != nil {
-            let margin = Self.margin
-            let textFrame = CGRect(x: 0, y: margin.top, width: bounds.width, height: layoutConstants.candidateCharSize.height)
+        let margin = Self.margin
+        let availableHeight = bounds.height - margin.top - margin.bottom
+        let fontSizeScale = Settings.cached.candidateFontSize.scale
+        
+        let candidateLabelHeight = availableHeight * Self.candidateLabelHeightRatio
+        let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight
+        
+        label.font = UIFont.systemFont(ofSize: candidateFontSize * fontSizeScale)
+        
+        if showComment, let commentLayer = commentLayer {
+            let candidateCommentHeight = availableHeight * Self.candidateCommentHeightRatio
+            let candidateCommentFontSize = candidateCommentHeight * Self.fontSizePerHeight
+            let commentTopPadding = availableHeight * Self.candidateCommentPaddingHeightRatio
             
-            self.label?.frame = textFrame
-            let commentHeight = layoutConstants.candidateCommentCharSize.height
-            commentLayer?.frame = CGRect(x: 0, y: bounds.height - commentHeight - margin.bottom, width: bounds.width, height: commentHeight)
+            commentLayer.fontSize = candidateCommentFontSize
+            
+            let textFrame = CGRect(x: 0, y: margin.top, width: bounds.width, height: candidateLabelHeight)
+            
+            label.frame = textFrame
+            
+            commentLayer.frame = CGRect(x: 0, y: textFrame.maxY + commentTopPadding, width: bounds.width, height: candidateCommentHeight)
         } else {
-            self.label?.frame = bounds
+            label.frame = bounds
         }
     }
     
@@ -129,5 +142,24 @@ class CandidateCell: UICollectionViewCell {
         if let commentLayer = commentLayer {
             commentLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
         }
+    }
+    
+    static func computeCellSize(cellHeight: CGFloat, minWidth: CGFloat, candidateText: String, comment: String?) -> CGSize {
+        let fontSizeScale = Settings.cached.candidateFontSize.scale
+        
+        let candidateLabelHeight = cellHeight * Self.candidateLabelHeightRatio
+        let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
+        
+        var cellWidth = candidateText.size(withFont: UIFont.systemFont(ofSize: candidateFontSize)).width
+        
+        if let comment = comment {
+            let candidateCommentHeight = cellHeight * Self.candidateCommentHeightRatio
+            let candidateCommentFontSize = candidateCommentHeight * Self.fontSizePerHeight
+            
+            let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
+            cellWidth = max(cellWidth, commentWidth)
+        }
+        
+        return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight)).with(minWidth: minWidth)
     }
 }

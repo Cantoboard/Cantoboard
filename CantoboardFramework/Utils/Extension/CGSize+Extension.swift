@@ -20,4 +20,8 @@ extension CGSize {
     func multiplyWidth(byTimes: Int) -> CGSize {
         return CGSize(width: width * CGFloat(byTimes), height: height)
     }
+    
+    func with(minWidth: CGFloat) -> CGSize {
+        return CGSize(width: max(width, minWidth), height: height)
+    }
 }

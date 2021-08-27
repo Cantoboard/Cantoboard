@@ -561,21 +561,12 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
             return .zero
         }
         
-        var cellWidth = text.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateFontSize)).width
-        let cellHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
-        let fontSizeScale = Settings.cached.candidateFontSize.scale
+        let comment = showComment ? candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath) : nil
         
-        if showComment {
-            let comment = candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath)
-            let commentWidth = comment?.size(withFont: UIFont.systemFont(ofSize: layoutConstant.candidateCommentFontSize)).width ?? 0
-            cellWidth = max(cellWidth, commentWidth)
-            cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.3)
-        } else {
-            // Min width add 30% padding
-            cellWidth = max(cellWidth, layoutConstant.candidateCharSize.width * 1.3 * fontSizeScale)
-        }
-        
-        return CandidateCell.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight))
+        let numOfSingleCharCandidateInRow = CGFloat(layoutConstant.numOfSingleCharCandidateInRow)
+        return CandidateCell.computeCellSize(
+            cellHeight: layoutConstant.autoCompleteBarHeight, minWidth: (bounds.width - layoutConstant.autoCompleteBarHeight) / numOfSingleCharCandidateInRow,
+            candidateText: text, comment: comment)
     }
     
     private var showComment: Bool {

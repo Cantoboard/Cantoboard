@@ -20,6 +20,7 @@ class LayoutConstants {
     
     // Provided:
     let idiom: LayoutIdiom
+    let isPortrait: Bool
     let keyboardSize: CGSize
     let keyButtonWidth: CGFloat
     let systemButtonWidth: CGFloat
@@ -49,6 +50,15 @@ class LayoutConstants {
     
     var superviewSize: CGSize
     
+    var numOfSingleCharCandidateInRow: Int {
+        switch idiom {
+        case .phone, .padFloating:
+            return isPortrait ? 7 : 15
+        case .pad:
+            return isPortrait ? 15 : 20
+        }
+    }
+    
     internal init(idiom: LayoutIdiom,
                   isPortrait: Bool,
                   keyboardSize: CGSize,
@@ -61,6 +71,7 @@ class LayoutConstants {
                   keyViewBottomInset: CGFloat,
                   superviewWidth: CGFloat) {
         self.idiom = idiom
+        self.isPortrait = isPortrait
         self.keyboardSize = keyboardSize
         self.buttonGap = buttonGap
         self.edgeHorizontalInset = edgeHorizontalInset
