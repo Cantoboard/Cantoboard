@@ -187,13 +187,10 @@ class CandidatePaneView: UIControl {
         var title: String?
         var shouldShowMiniIndicator = false
         if statusIndicatorMode == .lang {
+            shouldShowMiniIndicator = true
             switch keyboardState.inputMode {
-            case .mixed:
-                title = keyboardState.activeSchema.signChar
-                shouldShowMiniIndicator = true
-            case .chinese:
-                title = keyboardState.activeSchema.signChar
-                shouldShowMiniIndicator = true
+            case .mixed: title = keyboardState.activeSchema.signChar
+            case .chinese: title = keyboardState.activeSchema.signChar
             case .english: title = "英"
             }
         } else {

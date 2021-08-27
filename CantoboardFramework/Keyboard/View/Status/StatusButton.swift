@@ -62,7 +62,10 @@ class StatusButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel?.font = .preferredFont(forTextStyle: isMini ? .caption1 : .title2 )
+        titleLabel?.font = .preferredFont(forTextStyle: isMini ? .caption1 : .title1)
+        titleLabel?.adjustsFontSizeToFitWidth = true
+        titleLabel?.textAlignment = .center
+        titleLabel?.frame = bounds.insetBy(dx: Self.statusInset * 2.5, dy: Self.statusInset * 2.5)
         statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         statusSquareBg?.isHidden = isMini
         setTitleColor(isMini ? ButtonColor.keyHintColor : .label, for: .normal)
