@@ -216,15 +216,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             refreshAlphabeticKeys(layout, shiftState)
         case .numeric:
             let rows = state.symbolShape == .full ? layout.numbersFull : layout.numbersHalf
-            for (index, var keyCaps) in rows.enumerated() {
-                keyCaps = keyCaps.map { $0.map {
-                    switch $0 {
-                    case .currency:
-                        return .character(SessionState.main.currencySymbol)
-                    default:
-                        return $0
-                    }
-                } }
+            for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
         case .symbolic:

@@ -108,7 +108,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .switchToEnglishMode: return .toggleInputMode
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
-        case .currency: return .character("BUG")
+        case .currency: return .character(SessionState.main.currencySymbol)
         }
     }
     
@@ -132,7 +132,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .stroke, .space, .contextualSymbols: return ButtonColor.inputKeyBackgroundColor
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .stroke, .space, .contextualSymbols, .currency: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
@@ -142,7 +142,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgHighlightedColor: UIColor? {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked), .currency: return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default: return ButtonColor.systemHighlightedKeyBackgroundColor
         }
@@ -244,6 +244,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             default: return nil
             }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
+        case .currency: return SessionState.main.currencySymbol
         case .exit: return "Exit"
         default: return nil
         }
@@ -251,7 +252,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .character, .characterWithConditioanlPopup: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+        case .character, .characterWithConditioanlPopup, .currency: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         case .cangjieMixedMode: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         default: return UIEdgeInsets.zero
         }
@@ -308,7 +309,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie, .cangjieMixedMode: return true
+        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie, .cangjieMixedMode, .currency: return true
         // For debugging
         case .keyboardType(.emojis): return true
         default: return false
@@ -438,7 +439,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "·": return ["·", "．", "•", "°"]
-        case .character(let c) where c.first?.isCurrencySymbol ?? false:
+        case .currency:
             var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
             let localCurrencySymbolKeyCap: KeyCap = .character(SessionState.main.currencySymbol)
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
@@ -449,7 +450,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var defaultChildKeyCap: KeyCap? {
-        self
+        switch self {
+        case .currency:
+            return .character(SessionState.main.currencySymbol)
+        default:
+            return self
+        }
     }
 }
 
