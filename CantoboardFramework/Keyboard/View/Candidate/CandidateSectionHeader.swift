@@ -9,29 +9,24 @@ import Foundation
 import UIKit
 
 class CandidateSectionHeader: UICollectionReusableView {
+    static let inset = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
     static var reuseId: String = "CandidateSectionHeader"
     weak var textLayer: UILabel?
-    
-    var layoutConstants: LayoutConstants {
-        get {
-            LayoutConstants.forMainScreen
-        }
-    }
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
         backgroundColor = ButtonColor.systemKeyBackgroundColor
     }
     
-    func setup(_ text: String, autoSize: Bool) {
+    func setup(_ text: String) {
         if textLayer == nil {
             let textLayer = UILabel()
             self.textLayer = textLayer
             addSubview(textLayer)
             textLayer.textAlignment = .center
             textLayer.baselineAdjustment = .alignCenters
-            textLayer.adjustsFontSizeToFitWidth = autoSize
-            textLayer.font = UIFont.systemFont(ofSize: autoSize ? UIFont.labelFontSize : layoutConstants.candidateFontSize + 2)
+            textLayer.font = .preferredFont(forTextStyle: .title2)
+            textLayer.adjustsFontSizeToFitWidth = true
         }
         
         textLayer?.text = text
@@ -58,7 +53,7 @@ class CandidateSectionHeader: UICollectionReusableView {
     }
     
     private func layout(_ bounds: CGRect) {
-        let size = CGSize(width: bounds.width, height: layoutConstants.autoCompleteBarHeight)
-        textLayer?.frame = CGRect(origin: .zero, size: size).insetBy(dx: 4, dy: 0)
+        let size = CGSize(width: bounds.width, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        textLayer?.frame = CGRect(origin: .zero, size: size).inset(by: Self.inset)
     }
 }

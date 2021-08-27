@@ -23,7 +23,6 @@ protocol CandidatePaneViewDelegate: NSObject {
 class CandidatePaneView: UIControl {
     private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
     private static let miniStatusSize = CGSize(width: 20, height: 20)
-    static let miniStatusFontSize: CGFloat = LayoutConstants.forMainScreen.miniStatusFontSize
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidatePaneView>()
@@ -65,7 +64,10 @@ class CandidatePaneView: UIControl {
     private weak var expandButton, backspaceButton, charFormButton: UIButton!
     private weak var inputModeButton: StatusButton!
     weak var delegate: CandidatePaneViewDelegate?
-    private(set) var sectionHeaderWidth: CGFloat = LayoutConstants.forMainScreen.candidateCharSize.width * 2
+    
+    var sectionHeaderWidth: CGFloat {
+        LayoutConstants.forMainScreen.autoCompleteBarHeight
+    }
     
     private(set) var mode: Mode = .row
     var statusIndicatorMode: StatusIndicatorMode {
@@ -413,14 +415,13 @@ extension CandidatePaneView {
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
-        let candidateCharSize = LayoutConstants.forMainScreen.candidateCharSize
+        let candidateCharSize = CGSize(width: LayoutConstants.forMainScreen.autoCompleteBarHeight, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
         let firstAttempt = self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2), to: self.collectionView))
         if firstAttempt != nil { return firstAttempt }
         return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2 + 2 * rowPadding), to: self.collectionView))
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        sectionHeaderWidth = LayoutConstants.forMainScreen.candidateCharSize.width * 2
         super.traitCollectionDidChange(previousTraitCollection)
     }
     
@@ -498,7 +499,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         
         let section = translateCollectionViewSectionToCandidateSection(indexPath.section)
         let text = candidateOrganizer.getSectionHeader(section: section) ?? ""
-        header.setup(text, autoSize: candidateOrganizer.groupByMode == .byRomanization)
+        header.setup(text)
         
         return header
     }

@@ -34,11 +34,6 @@ class LayoutConstants {
     let buttonGap: CGFloat
     let keyViewHeight: CGFloat
     let keyRowGap: CGFloat
-    let candidateFontSize: CGFloat
-    let candidateCharSize: CGSize
-    let candidateCommentFontSize: CGFloat
-    let candidateCommentCharSize: CGSize
-    let statusIndicatorFontSize: CGFloat
     let keypadButtonUnitSize: CGSize
     
     // Inferred from device constants
@@ -46,14 +41,13 @@ class LayoutConstants {
     
     var smallKeyHintFontSize: CGFloat// { deviceLayoutConstants.smallKeyHintFontSize }
     var mediumKeyHintFontSize: CGFloat// { deviceLayoutConstants.mediumKeyHintFontSize }
-    var miniStatusFontSize: CGFloat// { deviceLayoutConstants.miniStatusFontSize }
     
     var superviewSize: CGSize
     
     var numOfSingleCharCandidateInRow: Int {
         switch idiom {
         case .phone, .padFloating:
-            return isPortrait ? 7 : 15
+            return isPortrait ? 8 : 15
         case .pad:
             return isPortrait ? 15 : 20
         }
@@ -88,14 +82,7 @@ class LayoutConstants {
         let deviceLayoutConstants = Self.getDeviceLayoutConstants(idiom: idiom)
         smallKeyHintFontSize = deviceLayoutConstants.smallKeyHintFontSize
         mediumKeyHintFontSize = deviceLayoutConstants.mediumKeyHintFontSize
-        miniStatusFontSize = deviceLayoutConstants.miniStatusFontSize
         superviewSize = CGSize(width: superviewWidth, height: keyboardSize.height)
-        
-        candidateFontSize = isPortrait ? deviceLayoutConstants.portraitCandidateFontSize : deviceLayoutConstants.landscapeCandidateFontSize
-        candidateCommentFontSize = isPortrait ? deviceLayoutConstants.portraitCandidateCommentFontSize : deviceLayoutConstants.landscapeCandidateCommentFontSize
-        candidateCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateFontSize))
-        candidateCommentCharSize = "＠".size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize))
-        statusIndicatorFontSize = isPortrait ? deviceLayoutConstants.portraitStatusIndicatorFontSize : deviceLayoutConstants.landscapeStatusIndicatorFontSize
         
         let width = (keyboardSize.width - 2 * edgeHorizontalInset - 4 * buttonGap) / 5
         let height = ((keyboardSize.height - Self.keyViewTopInset - keyViewBottomInset - autoCompleteBarHeight) - 3 * buttonGap) / 4
