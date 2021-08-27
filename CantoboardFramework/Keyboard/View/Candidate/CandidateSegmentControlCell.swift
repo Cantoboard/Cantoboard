@@ -13,7 +13,7 @@ class CandidateSegmentControlCell: UICollectionViewCell {
     static var reuseId: String = "CandidateGroupBySegmentControl"
     private static let inset = UIEdgeInsets(top: 6, left: 8, bottom: 8, right: 12)
     
-    weak var segmentControl: UISegmentedControl?
+    weak var segmentedControl: UISegmentedControl?
     var groupByModes: [GroupByMode]?
     var onSelectionChanged: ((_ groupByMode: GroupByMode) -> Void)?
     
@@ -24,14 +24,17 @@ class CandidateSegmentControlCell: UICollectionViewCell {
     func setup(groupByModes: [GroupByMode], selectedGroupByMode: GroupByMode, onSelectionChanged: ((_ groupByMode: GroupByMode) -> Void)?) {
         self.onSelectionChanged = onSelectionChanged
         
-        if segmentControl == nil {
+        if segmentedControl == nil {
             let segmentControl = UISegmentedControl()
             addSubview(segmentControl)
             segmentControl.addTarget(self, action: #selector(onSegmentControlChange), for: .valueChanged)
-            self.segmentControl = segmentControl
+            self.segmentedControl = segmentControl
         }
         
-        guard let segmentControl = segmentControl, segmentControl.numberOfSegments != groupByModes.count else { return }
+        guard let segmentControl = segmentedControl, segmentControl.numberOfSegments != groupByModes.count else { return }
+        
+        let font: UIFont = .preferredFont(forTextStyle: .subheadline)
+        segmentControl.setTitleTextAttributes([NSAttributedString.Key.font: font], for: .normal)
         
         UIView.performWithoutAnimation {
             segmentControl.removeAllSegments()
@@ -50,7 +53,7 @@ class CandidateSegmentControlCell: UICollectionViewCell {
         for i in 0..<groupByModes.count {
             if groupByModes[i] == selectedGroupByMode {
                 UIView.performWithoutAnimation {
-                    segmentControl?.selectedSegmentIndex = i
+                    segmentedControl?.selectedSegmentIndex = i
                 }
             }
         }
@@ -70,11 +73,11 @@ class CandidateSegmentControlCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
-        segmentControl?.frame = bounds.inset(by: Self.inset)
+        segmentedControl?.frame = bounds.inset(by: Self.inset)
     }
     
     @objc private func onSegmentControlChange() {
-        guard let segmentControl = segmentControl,
+        guard let segmentControl = segmentedControl,
               let selectedGroupByMode = groupByModes?[safe: segmentControl.selectedSegmentIndex]
               else { return }
         

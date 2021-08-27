@@ -12,7 +12,7 @@ class CandidateCell: UICollectionViewCell {
     static var reuseId: String = "CandidateCell"
     
     private static let margin = UIEdgeInsets(top: 3, left: 8, bottom: 0, right: 8)
-    private static let fontSizePerHeight: CGFloat = 20 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
+    private static let fontSizePerHeight: CGFloat = 18 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).height
     
     private static let candidateLabelHeightRatio: CGFloat = 0.6
     private static let candidateCommentHeightRatio: CGFloat = 0.25
