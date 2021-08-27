@@ -33,18 +33,6 @@ class CandidateCollectionView: UICollectionView {
         didLayoutSubviews?(self)
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        guard let previousTraitCollection = previousTraitCollection,
-              traitCollection.verticalSizeClass != previousTraitCollection.verticalSizeClass ||
-              traitCollection.horizontalSizeClass != previousTraitCollection.horizontalSizeClass else {
-                return
-        }
-        
-        // Invalidate layout to resize cells.
-        collectionViewLayout.invalidateLayout()
-    }
-    
     @objc private func onLongPress(longPressTouch: UITouch, longPressBeginPoint: CGPoint) {
         if longPressTouch.force >= longPressTouch.maximumPossibleForce * 0.75,
            let d = delegate as? CandidateCollectionViewDelegate,

@@ -234,7 +234,6 @@ class CandidatePaneView: UIControl {
             backspaceButton.isHidden = true
             charFormButton.isHidden = true
         }
-        setNeedsLayout()
     }
     
     private func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
@@ -306,7 +305,6 @@ class CandidatePaneView: UIControl {
     }
     
     override func layoutSubviews() {
-        super.layoutSubviews()
         guard let superview = superview else { return }
         let layoutConstants = LayoutConstants.forMainScreen
         let height = mode == .row ? layoutConstants.autoCompleteBarHeight : superview.bounds.height
@@ -314,6 +312,8 @@ class CandidatePaneView: UIControl {
         let candidateViewWidth = superview.bounds.width - buttonWidth
         
         collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
+        collectionView.collectionViewLayout.invalidateLayout()
+        super.layoutSubviews()
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
