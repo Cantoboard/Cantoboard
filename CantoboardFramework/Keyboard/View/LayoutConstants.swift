@@ -35,13 +35,6 @@ struct LayoutConstants {
     let keyViewHeight: CGFloat
     let keyRowGap: CGFloat
     let keypadButtonUnitSize: CGSize
-    
-    // Inferred from device constants
-    // private var deviceLayoutConstants: DeviceLayoutConstants
-    
-    var smallKeyHintFontSize: CGFloat// { deviceLayoutConstants.smallKeyHintFontSize }
-    var mediumKeyHintFontSize: CGFloat// { deviceLayoutConstants.mediumKeyHintFontSize }
-    
     var superviewSize: CGSize
     
     var numOfSingleCharCandidateInRow: Int {
@@ -52,7 +45,7 @@ struct LayoutConstants {
             return isPortrait ? 15 : 20
         }
     }
-    
+        
     internal init(idiom: LayoutIdiom,
                   isPortrait: Bool,
                   keyboardSize: CGSize,
@@ -79,22 +72,11 @@ struct LayoutConstants {
         keyViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyViewTopInset - keyViewBottomInset
         keyRowGap = (keyViewHeight - 4 * keyHeight) / 3
         
-        let deviceLayoutConstants = Self.getDeviceLayoutConstants(idiom: idiom)
-        smallKeyHintFontSize = deviceLayoutConstants.smallKeyHintFontSize
-        mediumKeyHintFontSize = deviceLayoutConstants.mediumKeyHintFontSize
         superviewSize = CGSize(width: superviewWidth, height: keyboardSize.height)
         
         let width = (keyboardSize.width - 2 * edgeHorizontalInset - 4 * buttonGap) / 5
         let height = ((keyboardSize.height - Self.keyViewTopInset - keyViewBottomInset - autoCompleteBarHeight) - 3 * buttonGap) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
-    }
-    
-    private static func getDeviceLayoutConstants(idiom: LayoutIdiom) -> DeviceLayoutConstants {
-        switch idiom {
-        case .phone: return DeviceLayoutConstants.phone
-        case .pad: return DeviceLayoutConstants.pad
-        case .padFloating: return DeviceLayoutConstants.padFloating
-        }
     }
     
     internal static func makeiPhoneLayout(isPortrait: Bool,
@@ -512,54 +494,4 @@ extension LayoutConstants {
         
         return ret
     }
-}
-
-struct DeviceLayoutConstants {
-    let portraitCandidateFontSize: CGFloat
-    let portraitCandidateCommentFontSize: CGFloat
-    
-    let landscapeCandidateFontSize: CGFloat
-    let landscapeCandidateCommentFontSize: CGFloat
-    
-    let portraitStatusIndicatorFontSize: CGFloat
-    let landscapeStatusIndicatorFontSize: CGFloat
-    
-    let smallKeyHintFontSize: CGFloat
-    let mediumKeyHintFontSize: CGFloat
-    
-    let miniStatusFontSize: CGFloat
-    
-    static let phone = DeviceLayoutConstants(
-        portraitCandidateFontSize: 20,
-        portraitCandidateCommentFontSize: 11,
-        landscapeCandidateFontSize: 20,
-        landscapeCandidateCommentFontSize: 11,
-        portraitStatusIndicatorFontSize: 20,
-        landscapeStatusIndicatorFontSize: 15,
-        smallKeyHintFontSize: 7,
-        mediumKeyHintFontSize: 9,
-        miniStatusFontSize: 10)
-    
-    static let pad = DeviceLayoutConstants(
-        portraitCandidateFontSize: 28,
-        portraitCandidateCommentFontSize: 15,
-        landscapeCandidateFontSize: 28,
-        landscapeCandidateCommentFontSize: 15,
-        portraitStatusIndicatorFontSize: 25,
-        landscapeStatusIndicatorFontSize: 25,
-        smallKeyHintFontSize: 10,
-        mediumKeyHintFontSize: 12,
-        miniStatusFontSize: 12)
-    
-    // iPad floating mode.
-    static let padFloating = DeviceLayoutConstants(
-        portraitCandidateFontSize: 20,
-        portraitCandidateCommentFontSize: 12,
-        landscapeCandidateFontSize: 20,
-        landscapeCandidateCommentFontSize: 12,
-        portraitStatusIndicatorFontSize: 16,
-        landscapeStatusIndicatorFontSize: 16,
-        smallKeyHintFontSize: 7,
-        mediumKeyHintFontSize: 7,
-        miniStatusFontSize: 9)
 }

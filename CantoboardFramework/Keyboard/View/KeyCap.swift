@@ -306,21 +306,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonHintFontSize: CGFloat {
-        let layoutConstants = LayoutConstants.forMainScreen
-        if Settings.cached.toneInputMode == .vxq {
-            switch self {
-            case .character("V"), .character("v"),
-                 .character("X"), .character("x"),
-                 .character("Q"), .character("q"):
-                return layoutConstants.smallKeyHintFontSize
-            default: ()
-            }
-        }
-        
-        return layoutConstants.mediumKeyHintFontSize
-    }
-    
     var hasPopup: Bool {
         switch self {
         case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie, .cangjieMixedMode: return true

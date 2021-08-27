@@ -11,7 +11,7 @@ import UIKit
 // The cell that contains the segment control to change between group by mode.
 class CandidateSegmentControlCell: UICollectionViewCell {
     static var reuseId: String = "CandidateGroupBySegmentControl"
-    private static let inset = UIEdgeInsets(top: 6, left: 8, bottom: 8, right: 12)
+    private static let insets = UIEdgeInsets(top: 6, left: 8, bottom: 8, right: 12)
     
     weak var segmentedControl: UISegmentedControl?
     var groupByModes: [GroupByMode]?
@@ -73,7 +73,7 @@ class CandidateSegmentControlCell: UICollectionViewCell {
     }
     
     private func layout(_ bounds: CGRect) {
-        segmentedControl?.frame = bounds.inset(by: Self.inset)
+        segmentedControl?.frame = bounds.inset(by: Self.insets)
     }
     
     @objc private func onSegmentControlChange() {

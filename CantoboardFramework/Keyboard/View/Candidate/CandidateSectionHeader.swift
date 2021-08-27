@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class CandidateSectionHeader: UICollectionReusableView {
-    static let inset = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
+    static let insets = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
     static var reuseId: String = "CandidateSectionHeader"
     
     weak var textLayer: UILabel?
@@ -58,6 +58,6 @@ class CandidateSectionHeader: UICollectionReusableView {
     private func layout(_ bounds: CGRect) {
         guard let layoutConstants = layoutConstants?.ref else { return }
         let size = CGSize(width: bounds.width, height: layoutConstants.autoCompleteBarHeight)
-        textLayer?.frame = CGRect(origin: .zero, size: size).inset(by: Self.inset)
+        textLayer?.frame = CGRect(origin: .zero, size: size).inset(by: Self.insets)
     }
 }

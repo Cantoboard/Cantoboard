@@ -178,15 +178,17 @@ class KeyView: HighlightableButton {
         
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
-            keyHintLayer.fontSize = keyCap.buttonHintFontSize
         }
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         layoutPopupView()
-        keyHintLayer?.isHidden = popupView != nil
-        keyHintLayer?.layout(insets: KeyHintLayer.buttonInsets)
+        
+        if let keyHintLayer = keyHintLayer {
+            keyHintLayer.isHidden = popupView != nil
+            layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.topRightInsets)
+        }
     }
     
     private func layoutPopupView() {

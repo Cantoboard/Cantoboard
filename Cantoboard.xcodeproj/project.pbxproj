@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7906D6BA26D8A7F5004C3C0F /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7906D6B926D8A7F5004C3C0F /* Reference.swift */; };
+		7906D6E026D8D35E004C3C0F /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */; };
 		790839A726D0FCED00CA6B56 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */; };
 		790839B626D1053C00CA6B56 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 790839B826D1053C00CA6B56 /* Localizable.strings */; };
 		7912CC5A26D2173000BA89AB /* EastAsianWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7912CC5926D2173000BA89AB /* EastAsianWidth.swift */; };
@@ -278,6 +279,7 @@
 
 /* Begin PBXFileReference section */
 		7906D6B926D8A7F5004C3C0F /* Reference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
+		7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		790839BD26D1054400CA6B56 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		790839C226D105F000CA6B56 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -912,6 +914,7 @@
 				79B9B59425F34A1200238E80 /* UIColor+Extension.swift */,
 				79B9B59825F34A1200238E80 /* UIEdgeInsets+Extension.swift */,
 				79B9B59325F34A1200238E80 /* UITextDocumentProxy+Extension.swift */,
+				7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1304,6 +1307,7 @@
 				791DE95B263250F500AFA033 /* SwiftLCS.swift in Sources */,
 				79B9B60D25F34A1200238E80 /* InputController.swift in Sources */,
 				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
+				7906D6E026D8D35E004C3C0F /* UIView+Extension.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
 				7906D6BA26D8A7F5004C3C0F /* Reference.swift in Sources */,
 				79B9B5F925F34A1200238E80 /* FeedbackProvider.swift in Sources */,

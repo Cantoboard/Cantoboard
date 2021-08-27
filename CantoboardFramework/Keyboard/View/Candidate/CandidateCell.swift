@@ -101,7 +101,8 @@ class CandidateCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        keyHintLayer?.layout(insets: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
+        guard let keyHintLayer = keyHintLayer else { return }
+        layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.topRightInsets)
     }
     
     private func layout(_ bounds: CGRect) {
