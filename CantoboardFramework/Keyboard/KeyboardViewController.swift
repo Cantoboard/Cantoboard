@@ -161,17 +161,10 @@ open class KeyboardViewController: UIInputViewController {
         inputController?.textDidChange(textInput)
     }
     
-    /*
     public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        LayoutConstants.currentTraitCollection = traitCollection
         view.setNeedsLayout()
     }
-    
-    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        LayoutConstants.currentTraitCollection = traitCollection
-    } */
     
     public override func viewWillLayoutSubviews() {
         // Reset the size constraints to handle screen rotation.
