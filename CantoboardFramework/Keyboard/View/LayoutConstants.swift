@@ -14,7 +14,7 @@ enum LayoutIdiom {
     case phone, pad, padFloating
 }
 
-class LayoutConstants {
+struct LayoutConstants {
     // Fixed:
     static let keyViewTopInset = CGFloat(8)
     
@@ -500,33 +500,13 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
 
 extension LayoutConstants {
     static var forMainScreen: LayoutConstants {
-        let traitCollection = Self.currentTraitCollection
-        // DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue)")
-        // DDLogInfo("iPad special mode debug traitCollection \(traitCollection)")
-        let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass == .compact
-        let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
-        if isPadFloatingMode {
-            // DDLogInfo("Using isPadFloatingMode")
-            return getContants(screenSize: CGSize(width: 320, height: 254))
-        } else if isPadCompatibleMode {
-            // iPad's compatiblity mode has a bug. UIScreen doesn't return the right resolution. We canot rely on it.
-            let isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
-            let size = isLandscape ? CGSize(width: 667, height: 375) : CGSize(width: 375, height: 667)
-            // DDLogInfo("Using isPadCompatibleMode \(size)")
-            return getContants(screenSize: size)
-        } else {
-            // DDLogInfo("Using \(UIScreen.main.bounds.size)")
-            return getContants(screenSize: UIScreen.main.bounds.size)
-        }
+        return getContants(screenSize: UIScreen.main.bounds.size)
     }
-    
-    // Only used to workaround Apple's bug in isPadCompatibleMode.
-    static var currentTraitCollection: UITraitCollection = UITraitCollection.current
     
     static func getContants(screenSize: CGSize) -> LayoutConstants {
         // TODO instead of returning an exact match, return the nearest (floorKey?) match.
         guard let ret = layoutConstantsList[IntDuplet(Int(screenSize.width), Int(screenSize.height))] else {
-            DDLogInfo("Cannot find constants for (\(screenSize.width), \(screenSize.height)). Use parametric model.")
+            DDLogInfo("Cannot find constants for (\(screenSize.width), \(screenSize.height)).")
             return layoutConstantsList.first!.value
         }
         

@@ -11,7 +11,10 @@ import UIKit
 class CandidateSectionHeader: UICollectionReusableView {
     static let inset = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
     static var reuseId: String = "CandidateSectionHeader"
+    
     weak var textLayer: UILabel?
+    
+    var layoutConstants: Reference<LayoutConstants>?
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -53,7 +56,8 @@ class CandidateSectionHeader: UICollectionReusableView {
     }
     
     private func layout(_ bounds: CGRect) {
-        let size = CGSize(width: bounds.width, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        guard let layoutConstants = layoutConstants?.ref else { return }
+        let size = CGSize(width: bounds.width, height: layoutConstants.autoCompleteBarHeight)
         textLayer?.frame = CGRect(origin: .zero, size: size).inset(by: Self.inset)
     }
 }

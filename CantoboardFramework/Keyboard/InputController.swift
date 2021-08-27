@@ -111,12 +111,13 @@ class InputController: NSObject {
     }
     
     private func initKeyboardView() {
-        guard let keyboardViewPlaceholder = keyboardViewController?.keyboardViewPlaceholder else { return }
+        guard let keyboardViewController = keyboardViewController,
+              let keyboardViewPlaceholder = keyboardViewController.keyboardViewPlaceholder else { return }
         let keyboardView: BaseKeyboardView
         if shouldUseKeypad {
-            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer)
+            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: keyboardViewController.layoutConstants)
         } else {
-            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
+            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: keyboardViewController.layoutConstants)
         }
         keyboardView.delegate = self
         keyboardView.translatesAutoresizingMaskIntoConstraints = false

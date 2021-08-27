@@ -38,6 +38,7 @@ class CandidatePaneView: UIControl {
     let rowPadding = CGFloat(0)
         
     private var _keyboardState: KeyboardState
+    private weak var layoutConstants: Reference<LayoutConstants>?
     
     var keyboardState: KeyboardState {
         get { _keyboardState }
@@ -65,10 +66,6 @@ class CandidatePaneView: UIControl {
     private weak var inputModeButton: StatusButton!
     weak var delegate: CandidatePaneViewDelegate?
     
-    var sectionHeaderWidth: CGFloat {
-        LayoutConstants.forMainScreen.autoCompleteBarHeight
-    }
-    
     private(set) var mode: Mode = .row
     var statusIndicatorMode: StatusIndicatorMode {
         get {
@@ -81,10 +78,13 @@ class CandidatePaneView: UIControl {
         }
     }
     
-    init(keyboardState: KeyboardState, candidateOrganizer: CandidateOrganizer) {
+    init(keyboardState: KeyboardState, candidateOrganizer: CandidateOrganizer, layoutConstants: Reference<LayoutConstants>) {
         _keyboardState = keyboardState
         self.candidateOrganizer = candidateOrganizer
+        self.layoutConstants = layoutConstants
+        
         super.init(frame: .zero)
+        
         translatesAutoresizingMaskIntoConstraints = false
         
         candidateOrganizer.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
@@ -119,7 +119,7 @@ class CandidatePaneView: UIControl {
             
             UIView.performWithoutAnimation {
                 collectionView.scrollOnLayoutSubviews = {
-                    let y = self.groupByEnabled ? LayoutConstants.forMainScreen.autoCompleteBarHeight : 0
+                    let y = self.groupByEnabled ? self.rowHeight : 0
                     
                     collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
                     
@@ -273,8 +273,16 @@ class CandidatePaneView: UIControl {
         self.updateConstraints() // TODO revisit
     }
     
-    private var rowHeight: CGFloat {
-        return LayoutConstants.forMainScreen.autoCompleteBarHeight + rowPadding
+    var rowHeight: CGFloat {
+        layoutConstants?.ref.autoCompleteBarHeight ?? .zero
+    }
+    
+    private var expandButtonWidth: CGFloat {
+        rowHeight // Square
+    }
+    
+    var sectionHeaderWidth: CGFloat {
+        rowHeight // Square
     }
     
     @objc private func expandButtonClick() {
@@ -308,9 +316,9 @@ class CandidatePaneView: UIControl {
     
     override func layoutSubviews() {
         guard let superview = superview else { return }
-        let layoutConstants = LayoutConstants.forMainScreen
-        let height = mode == .row ? layoutConstants.autoCompleteBarHeight : superview.bounds.height
-        let buttonWidth = layoutConstants.autoCompleteBarHeight
+        
+        let height = mode == .row ? rowHeight : superview.bounds.height
+        let buttonWidth = expandButtonWidth
         let candidateViewWidth = superview.bounds.width - buttonWidth
         
         collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
@@ -326,7 +334,7 @@ class CandidatePaneView: UIControl {
                 continue
             }
             button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: buttonWidth, height: buttonWidth))
-            buttonY += layoutConstants.autoCompleteBarHeight
+            buttonY += rowHeight
         }
     }
     
@@ -361,7 +369,7 @@ extension CandidatePaneView {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top
             if mode == .table && groupByEnabled && scrollToIndexPath.section <= 1 && scrollToIndexPath.row == 0 {
                 collectionView.scrollOnLayoutSubviews = {
-                    let candindateBarHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
+                    let candindateBarHeight = self.rowHeight
                     
                     self.collectionView.setContentOffset(CGPoint(x: 0, y: candindateBarHeight), animated: false)
                     self.collectionView.showsVerticalScrollIndicator = true
@@ -415,10 +423,10 @@ extension CandidatePaneView {
     }
     
     func getFirstVisibleIndexPath() -> IndexPath? {
-        let candidateCharSize = CGSize(width: LayoutConstants.forMainScreen.autoCompleteBarHeight, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        let candidateCharSize = CGSize(width: rowHeight, height: rowHeight)
         let firstAttempt = self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2), to: self.collectionView))
         if firstAttempt != nil { return firstAttempt }
-        return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2 + 2 * rowPadding), to: self.collectionView))
+        return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2 + 2 * rowHeight), to: self.collectionView))
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -499,6 +507,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         
         let section = translateCollectionViewSectionToCandidateSection(indexPath.section)
         let text = candidateOrganizer.getSectionHeader(section: section) ?? ""
+        header.layoutConstants = layoutConstants
         header.setup(text)
         
         return header
@@ -509,13 +518,13 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
             if groupByEnabled {
-                let height = LayoutConstants.forMainScreen.autoCompleteBarHeight
+                // TODO revisit could we remove this.
+                let height = rowHeight
                 let width = collectionView.bounds.width
                 return CGSize(width: width, height: height)
             } else {
                 return .zero
             }
-
         } else {
             return computeCellSize(candidateIndexPath: translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
         }
@@ -555,8 +564,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private func computeCellSize(candidateIndexPath: IndexPath) -> CGSize {
-        let layoutConstant = LayoutConstants.forMainScreen
-        
+        guard let layoutConstants = layoutConstants?.ref else { return .zero }
         guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
             return .zero
@@ -564,9 +572,9 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
         
         let comment = showComment ? candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath) : nil
         
-        let numOfSingleCharCandidateInRow = CGFloat(layoutConstant.numOfSingleCharCandidateInRow)
+        let numOfSingleCharCandidateInRow = CGFloat(layoutConstants.numOfSingleCharCandidateInRow)
         return CandidateCell.computeCellSize(
-            cellHeight: layoutConstant.autoCompleteBarHeight, minWidth: (bounds.width - layoutConstant.autoCompleteBarHeight) / numOfSingleCharCandidateInRow,
+            cellHeight: rowHeight, minWidth: (bounds.width - expandButtonWidth) / numOfSingleCharCandidateInRow,
             candidateText: text, comment: comment)
     }
     

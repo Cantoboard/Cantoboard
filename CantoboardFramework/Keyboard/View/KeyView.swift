@@ -21,7 +21,7 @@ class KeyView: HighlightableButton {
             }
         }
     }
-    private var action: KeyboardAction = KeyboardAction.none
+    private var action: KeyboardAction = .none
     
     var isKeyEnabled: Bool = true {
         didSet {
@@ -48,15 +48,19 @@ class KeyView: HighlightableButton {
         popupView?.keyCaps.count ?? 0 > 1
     }
     
+    // TODO Remove
     var shouldDisablePopup: Bool = false
     
     var heightClearance: CGFloat?
+    
+    private weak var layoutConstants: Reference<LayoutConstants>?
     
     required init?(coder: NSCoder) {
         fatalError("NSCoder is not supported")
     }
     
-    init() {
+    init(layoutConstants: Reference<LayoutConstants>) {
+        self.layoutConstants = layoutConstants
         super.init(frame: .zero)
         setupUIButton()
     }
@@ -269,8 +273,9 @@ extension KeyView {
     }
     
     private func createPopupViewIfNecessary() {
+        guard let layoutConstants = layoutConstants else { return }
         if popupView == nil {
-            let popup = KeyPopupView()
+            let popup = KeyPopupView(layoutConstants: layoutConstants)
             addSubview(popup)
             self.popupView = popup
         }
@@ -279,7 +284,7 @@ extension KeyView {
     private func computePopupDirection() -> KeyPopupView.PopupDirection {
         guard let superview = superview else { return .middle }
         
-        let screenEdgeThreshold = LayoutConstants.forMainScreen.keyButtonWidth / 2
+        let screenEdgeThreshold = bounds.width / 2
 
         let keyViewFrame = convert(bounds, to: superview)
         if keyViewFrame.minX < screenEdgeThreshold {

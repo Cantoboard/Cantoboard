@@ -11,6 +11,10 @@ import UIKit
 class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
     private weak var candidatePaneView: CandidatePaneView?
     
+    private var rowHeight: CGFloat {
+        candidatePaneView?.rowHeight ?? .zero
+    }
+    
     init(candidatePaneView: CandidatePaneView) {
         self.candidatePaneView = candidatePaneView
         super.init()
@@ -23,13 +27,12 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     override var collectionViewContentSize: CGSize {
         var contentSize = super.collectionViewContentSize
-        let segmentControlHeight = LayoutConstants.forMainScreen.autoCompleteBarHeight
         if let collectionView = collectionView,
            let candidatePaneView = candidatePaneView,
            candidatePaneView.mode == .table && candidatePaneView.groupByEnabled &&
-           contentSize.height <= collectionView.bounds.height + segmentControlHeight {
+           contentSize.height <= collectionView.bounds.height + rowHeight {
             // Expand the content size to let user to scroll upward to see the segment control.
-            contentSize.height = collectionView.bounds.height + segmentControlHeight
+            contentSize.height = collectionView.bounds.height + rowHeight
         }
         return contentSize
     }
@@ -42,7 +45,7 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
                 fixHeaderPosition(attributes)
             }
             if attributes.indexPath == [0, 0], let collectionViewSize = collectionView?.bounds {
-                attributes.frame = CGRect(origin: .zero, size: CGSize(width: collectionViewSize.width, height: LayoutConstants.forMainScreen.autoCompleteBarHeight))
+                attributes.frame = CGRect(origin: .zero, size: CGSize(width: collectionViewSize.width, height: rowHeight))
             }
         }
         
@@ -65,7 +68,7 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
         let section = headerAttributes.indexPath.section
         guard section < collectionView.numberOfSections else { return }
         
-        var headerSize = CGSize(width: candidatePaneView.sectionHeaderWidth, height: LayoutConstants.forMainScreen.autoCompleteBarHeight)
+        var headerSize = CGSize(width: candidatePaneView.sectionHeaderWidth, height: rowHeight)
         let numOfItemsInSection = collectionView.numberOfItems(inSection: section)
         var origin = headerAttributes.frame.origin
         if numOfItemsInSection > 0,

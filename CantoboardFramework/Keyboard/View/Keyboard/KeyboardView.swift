@@ -36,6 +36,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
+    private weak var layoutConstants: Reference<LayoutConstants>?
     private weak var newLineKey: KeyView?
     private weak var spaceKey: KeyView?
     private weak var loadingIndicatorView: UIActivityIndicatorView?
@@ -49,9 +50,10 @@ class KeyboardView: UIView, BaseKeyboardView {
         self.loadingIndicatorView = loadingIndicatorView
     }
     
-    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer) {
+    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer, layoutConstants: Reference<LayoutConstants>) {
         self._state = state
         self.candidateOrganizer = candidateOrganizer
+        self.layoutConstants = layoutConstants
         super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
@@ -59,19 +61,17 @@ class KeyboardView: UIView, BaseKeyboardView {
         isMultipleTouchEnabled = true
         preservesSuperviewLayoutMargins = false
 
-        switch LayoutConstants.forMainScreen.idiom {
+        keyRows = (0..<4).map { i in KeyRowView(layoutConstants: layoutConstants) }
+        switch layoutConstants.ref.idiom {
         case .phone, .padFloating:
-            keyRows = (0..<4).map { i in KeyRowView() }
             keyRows[0].rowLayoutMode = .phoneRowTop
             keyRows[3].rowLayoutMode = .phoneRowBottom
             keyRows.forEach { addSubview($0) }
         case .pad:
-            keyRows = (0..<4).map { i in
-                let keyRowView = KeyRowView()
-                keyRowView.rowLayoutMode = .padRow(i)
-                return keyRowView
-            }
-            keyRows.forEach { addSubview($0) }
+            keyRows.enumerated().forEach({ i, row in
+                row.rowLayoutMode = .padRow(i)
+                addSubview(row)
+            })
         }
         
         initTouchHandler()
@@ -131,7 +131,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         super.layoutSubviews()
         
         // DDLogInfo("layoutSubviews screen size \(UIScreen.main.bounds.size)")
-        let layoutConstants = LayoutConstants.forMainScreen
+        guard let layoutConstants = self.layoutConstants?.ref else { return }
         
         layoutKeyboardSubviews(layoutConstants)
         layoutCandidateSubviews(layoutConstants)
@@ -201,8 +201,10 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func refreshKeys() {
+        guard let layoutConstants = self.layoutConstants?.ref else { return }
+        
         let layout: KeyboardViewLayout.Type
-        switch LayoutConstants.forMainScreen.idiom {
+        switch layoutConstants.idiom {
         case .phone, .padFloating:
             layout = PhoneKeyboardViewLayout.self
         case .pad:
@@ -315,9 +317,9 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func createCandidatePaneView() {
-        guard candidatePaneView == nil else { return }
+        guard candidatePaneView == nil, let layoutConstants = layoutConstants else { return }
         
-        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer)
+        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
         candidatePaneView.delegate = self        
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)
@@ -398,11 +400,11 @@ extension KeyboardView: CandidatePaneViewDelegate, StatusMenuHandler {
     }
     
     var statusMenuOriginY: CGFloat {
-        LayoutConstants.forMainScreen.autoCompleteBarHeight
+        layoutConstants?.ref.autoCompleteBarHeight ?? .zero
     }
     
     var keyboardSize: CGSize {
-        LayoutConstants.forMainScreen.keyboardSize
+        layoutConstants?.ref.keyboardSize ?? .zero
     }
 }
 

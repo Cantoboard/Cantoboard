@@ -30,6 +30,7 @@ class KeyPopupView: UIView {
     private(set) var leftAnchorX: CGFloat = 0
     private var defaultKeyCapIndex = 0
     private var highlightedLabelIndex: Int?
+    private weak var layoutConstants: Reference<LayoutConstants>?
     
     var selectedAction: KeyboardAction {
         actions[safe: highlightedLabelIndex ?? 0] ?? .none
@@ -38,8 +39,11 @@ class KeyPopupView: UIView {
     // These clearance values are used to keep the popup view within keyboard view boundary.
     var heightClearance: CGFloat?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(layoutConstants: Reference<LayoutConstants>) {
+        self.layoutConstants = layoutConstants
+        
+        super.init(frame: .zero)
+        
         backgroundColor = ButtonColor.popupBackgroundColor // ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).
         layer.contentsFormat = .gray8Uint
 
@@ -119,15 +123,17 @@ class KeyPopupView: UIView {
     }
     
     func layoutView() {
+        guard let layoutConstants = layoutConstants?.ref else { return }
+        
         var buttonSize: CGSize
         if actions.count < 10 {
             buttonSize = CGSize(
-                width: KeyPopupView.Inset.wrap(width: LayoutConstants.forMainScreen.keyButtonWidth),
-                height: LayoutConstants.forMainScreen.keyHeight)
+                width: KeyPopupView.Inset.wrap(width: layoutConstants.keyButtonWidth),
+                height: layoutConstants.keyHeight)
         } else {
             buttonSize = CGSize(
-                width: LayoutConstants.forMainScreen.keyboardSize.width / CGFloat(actions.count),
-                height: LayoutConstants.forMainScreen.keyHeight)
+                width: layoutConstants.keyboardSize.width / CGFloat(actions.count),
+                height: layoutConstants.keyHeight)
         }
         
         var bodySize = KeyPopupView.Inset.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))

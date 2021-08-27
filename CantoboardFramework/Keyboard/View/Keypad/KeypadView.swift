@@ -41,6 +41,8 @@ class KeypadView: UIView, BaseKeyboardView {
     ]
     
     private weak var candidatePaneView: CandidatePaneView?
+    private weak var layoutConstants: Reference<LayoutConstants>?
+    
     internal weak var statusMenu: StatusMenu?
     
     private var touchHandler: TouchHandler!
@@ -54,9 +56,10 @@ class KeypadView: UIView, BaseKeyboardView {
         set { changeState(prevState: _state, newState: newValue) }
     }
     
-    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer) {
+    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer, layoutConstants: Reference<LayoutConstants>) {
         self._state = state
         self.candidateOrganizer = candidateOrganizer
+        self.layoutConstants = layoutConstants
         super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
@@ -73,10 +76,12 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func initView() {
+        guard let layoutConstants = layoutConstants else { return }
+        
         leftButtons = initButtons(buttonLayouts: leftButtonProps)
         rightButtons = initButtons(buttonLayouts: rightButtonProps)
         
-        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer)
+        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
         candidatePaneView.delegate = self
         addSubview(candidatePaneView)
         self.candidatePaneView = candidatePaneView
@@ -117,9 +122,10 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     override func layoutSubviews() {
+        guard let layoutConstants = layoutConstants?.ref else { return }
+        
         super.layoutSubviews()
         
-        let layoutConstants = LayoutConstants.forMainScreen
         layoutButtons(leftButtons, initialX: layoutConstants.edgeHorizontalInset, layoutConstants: layoutConstants)
         layoutButtons(rightButtons, initialX: layoutConstants.edgeHorizontalInset + layoutConstants.buttonGap + layoutConstants.keypadButtonUnitSize.width, layoutConstants: layoutConstants)
         
@@ -198,11 +204,11 @@ extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
     }
     
     var statusMenuOriginY: CGFloat {
-        get { LayoutConstants.forMainScreen.autoCompleteBarHeight }
+        layoutConstants?.ref.autoCompleteBarHeight ?? .zero
     }
     
     var keyboardSize: CGSize {
-        LayoutConstants.forMainScreen.keyboardSize
+        layoutConstants?.ref.keyboardSize ?? .zero
     }
 }
 

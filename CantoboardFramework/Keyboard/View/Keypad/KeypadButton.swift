@@ -8,17 +8,21 @@
 import Foundation
 import UIKit
 
+// TODO Don't use KeyView here
 class KeypadButton: KeyView {
     let colRowOrigin: CGPoint
     let colRowSize: CGSize
     var props: KeypadButtonProps
+    
+    // TODO HACK Remove
+    private let layoutConstants = Reference(LayoutConstants.forMainScreen)
     
     init(props: KeypadButtonProps, colRowOrigin: CGPoint, colRowSize: CGSize) {
         self.colRowOrigin = colRowOrigin
         self.colRowSize = colRowSize
         self.props = props
         
-        super.init()
+        super.init(layoutConstants: layoutConstants)
         shouldDisablePopup = true
         keyCap = props.keyCap
     }

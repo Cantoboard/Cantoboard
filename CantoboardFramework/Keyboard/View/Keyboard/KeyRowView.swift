@@ -19,6 +19,8 @@ class KeyRowView: UIView {
     var rowLayoutMode: RowLayoutMode = .phoneRowNormal
     var needsInputModeSwitchKey = false
     
+    private weak var layoutConstants: Reference<LayoutConstants>?
+    
     var isEnabled: Bool = true {
         didSet {
             leftKeys.forEach { $0.isKeyEnabled = isEnabled }
@@ -27,7 +29,8 @@ class KeyRowView: UIView {
         }
     }
     
-    init() {
+    init(layoutConstants: Reference<LayoutConstants>) {
+        self.layoutConstants = layoutConstants
         super.init(frame: .zero)
         
         insetsLayoutMarginsFromSafeArea = false
@@ -64,13 +67,15 @@ class KeyRowView: UIView {
     }
     
     private func prepareKeys(keyCaps: [KeyCap]?, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
-        guard let keyCaps = keyCaps else { return }
+        guard let keyCaps = keyCaps,
+              let layoutConstants = layoutConstants
+            else { return }
         
         // Reuse keys. Only create/remove keys if necessary.
         
         // Create new keys if necessary.
         while keyCaps.count > keys.count {
-            let newKey = KeyView()
+            let newKey = KeyView(layoutConstants: layoutConstants)
             addSubview(newKey)
             if reuseKeyFromLeft {
                 keys.append(newKey)
@@ -118,7 +123,7 @@ extension KeyRowView {
     }
     
     private func layoutPhoneSubviews() {
-        let layoutConstants = LayoutConstants.forMainScreen
+        guard let layoutConstants = self.layoutConstants?.ref else { return }
         
         // First, put the keys to where they should be.
         let leftKeyFrames = layoutPhoneKeys(leftKeys, direction: .left, layoutConstants: layoutConstants)
@@ -167,7 +172,7 @@ extension KeyRowView {
     }
     
     private func layoutPadSubviews() {
-        let layoutConstants = LayoutConstants.forMainScreen
+        guard let layoutConstants = layoutConstants?.ref else { return }
         
         let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
         let row3LeftGroupWidth = availableWidth - layoutConstants.shiftButtonWidth - layoutConstants.buttonGap
