@@ -15,8 +15,10 @@ internal extension UIView {
               let superlayerBounds = textLayer.superlayer?.bounds
             else { return }
         
-        let wightAdjustmentRatio: CGFloat = UIScreen.main.bounds.size.isPortrait ? 1 : 1.25
-        let height = bounds.height * KeyHintLayer.recommendedHeightRatio * wightAdjustmentRatio
+        // let wightAdjustmentRatio: CGFloat = UIScreen.main.bounds.size.isPortrait && bounds ? 1 : 1.25
+        var height = bounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
+        let minHeight: CGFloat = 10
+        height = max(height, minHeight)
         
         textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height
         
