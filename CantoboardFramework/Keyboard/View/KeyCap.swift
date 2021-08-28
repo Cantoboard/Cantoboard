@@ -79,6 +79,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     switchToEnglishMode,
     exportFile(String, String),
     currency,
+    dismissKeyboard,
     exit
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
@@ -113,6 +114,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
         case .currency: return .character(SessionState.main.currencySymbol)
+        case .dismissKeyboard: return .dismissKeyboard
         }
     }
     
@@ -198,6 +200,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.lowercased): return ButtonImage.shift
         case .shift(.uppercased): return ButtonImage.shiftFilled
         case .shift(.capsLocked): return ButtonImage.capLockFilled
+        case .dismissKeyboard: return ButtonImage.dissmissKeyboard
         // case .keyboardType(.numeric): return ButtonImage.oneTwoThree
         default: return nil
         }
@@ -492,6 +495,7 @@ class ButtonImage {
     static let emojiKeyboardDark = UIImage(named: "face.smiling.fill", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))
     static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)
     static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)
+    static let dissmissKeyboard = UIImage(named: "keyboard.chevron.compact.down", in: Bundle(for: ButtonImage.self), with: nil)
     // static let oneTwoThree = UIImage(systemName: "textformat.123", in: Bundle(for: ButtonImage.self), with: nil)
 }
 

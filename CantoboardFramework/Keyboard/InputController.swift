@@ -368,6 +368,8 @@ class InputController: NSObject {
         case .enableKeyboard(let e):
             state.enableState = e ? .enabled : .disabled
             keyboardView?.state = state
+        case .dismissKeyboard:
+            keyboardViewController?.dismissKeyboard()
         case .exit: exit(0)
         default: ()
         }

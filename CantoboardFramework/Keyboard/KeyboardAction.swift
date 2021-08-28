@@ -81,6 +81,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     longPressCandidate(IndexPath),
     exportFile(String, String),
     enableKeyboard(Bool),
+    dismissKeyboard,
     exit
     
     public init(stringLiteral value: String) {
