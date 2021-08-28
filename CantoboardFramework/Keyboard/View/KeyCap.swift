@@ -52,6 +52,10 @@ enum ReturnKeyType: Int {
     }
 }
 
+enum KeyCapType {
+    case input, system, returnKey, space
+}
+
 enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
@@ -132,19 +136,36 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .stroke, .space, .contextualSymbols, .currency: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
-        default: return ButtonColor.systemKeyBackgroundColor
+        default:
+            if keyCapType == .input || keyCapType == .space {
+                 return ButtonColor.inputKeyBackgroundColor
+            }
+            return ButtonColor.systemKeyBackgroundColor
         }
     }
     
     var buttonBgHighlightedColor: UIColor? {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked), .currency: return nil
+        case .shift(.uppercased), .shift(.capsLocked): return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
-        default: return ButtonColor.systemHighlightedKeyBackgroundColor
+        default:
+            if keyCapType == .input {
+                return nil
+            }
+            return ButtonColor.systemHighlightedKeyBackgroundColor
+        }
+    }
+    
+    var keyCapType: KeyCapType {
+        switch self {
+        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols, .currency, .stroke:
+            return .input
+        case .space: return .space
+        case .returnKey: return .returnKey
+        default: return .system
         }
     }
     
@@ -252,9 +273,12 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .character, .characterWithConditioanlPopup, .currency: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         case .cangjieMixedMode: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        default: return UIEdgeInsets.zero
+        default:
+            if keyCapType == .input {
+                return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+            }
+            return UIEdgeInsets.zero
         }
 
     }
@@ -309,10 +333,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie, .cangjieMixedMode, .currency: return true
         // For debugging
         case .keyboardType(.emojis): return true
-        default: return false
+        default: return self.keyCapType == .input
         }
     }
     
@@ -451,10 +474,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var defaultChildKeyCap: KeyCap? {
         switch self {
-        case .currency:
-            return .character(SessionState.main.currencySymbol)
-        default:
-            return self
+        case .currency: return .character(SessionState.main.currencySymbol)
+        default: return self
         }
     }
 }
