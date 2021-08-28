@@ -127,6 +127,9 @@ open class KeyboardViewController: UIInputViewController {
             keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor),
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        
+        reloadSettings()
+        createKeyboardIfNeeded()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
