@@ -79,8 +79,10 @@ speller:
     - xform/jy?/y/
     - derive/yu(?!ng|k)/y/
     - erase/^y\d$/
-    - derive/aa/r/
     - derive/oe|eo/eu/
+    - derive/aa/r/
+    - derive/eu/v/
+    - derive/ng/x/
     - derive/aa(?=\d)/a/
     - derive/z/j/
     - derive/c/ch/
@@ -131,6 +133,7 @@ translator:
   preedit_format:
     - xform/j|dz/z/
     - xform/ts/c/
+    - xform/x/ng/
     - xform/ee|(?<=[aeou])y/i/
     - xform/oo|(?<=[aeio])w/u/
     - xform/(?!^)(?<![ '])h|q(?=[aeiou])//
@@ -138,9 +141,9 @@ translator:
     - xform/r|(?<!a)a(?=$|[ '\d])/aa/
     - xform/(^|[ '])(y(?=$|[aeio '\d]|ue?(ng|k)|ui)|(?=y))/$1j/
     - xform/y?ue|(?<=[zcsj])u(?=$|[ '\d])|y(?!u)/yu/
-    - xform/((?<=[dtnlzcsjh])u|oe|eu)(?!$|ng|[k '\d])/eo/
-    - xform/(eo|eu)(?=$|ng|[k '\d])/oe/
-    - xform/(^|[ '])eot/$1oet/
+    - xform/((?<=[dtnlzcsjh])u|oe|eu|v)(?!$|ng|[k '\d])/eo/
+    - xform/(eo|eu|v)(?=$|ng|[k '\d])/oe/
+    - xform/(^|[ ']|ng)eot/$1oet/
     - xform/(^|[bpmfdtnlgkh '])i(?=$|[ '\d])/$1ei/
     - xform/(^|[bpmdtnlh ']|ng)u(?=$|[ '\d])/$1ou/
 
