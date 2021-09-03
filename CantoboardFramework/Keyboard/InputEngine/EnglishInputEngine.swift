@@ -96,7 +96,7 @@ class EnglishInputEngine: InputEngine {
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
     private var inputTextBuffer = InputTextBuffer()
-    var textBeforeInput: String?
+    var textBeforeInput, textAfterInput: String?
     
     private(set) var candidates: [String] = []
     private(set) var isWord: Bool = false
@@ -161,8 +161,7 @@ class EnglishInputEngine: InputEngine {
             return
         }
         
-        let documentContextBeforeInput = textBeforeInput
-        let combined = (documentContextBeforeInput ?? "") + text
+        let combined = (textBeforeInput ?? "") + text
         let wordRange = combined.index(combined.endIndex, offsetBy: -text.count)..<combined.endIndex
         let nsWordRange = NSRange(wordRange, in: combined)
         
@@ -183,7 +182,7 @@ class EnglishInputEngine: InputEngine {
         
         var performCaseCorrection = false
         
-        if text == "i" {
+        if text == "i" && textBeforeInput?.hasSuffix(" ") ?? true && textAfterInput?.hasPrefix(" ") ?? true {
             inputTextBuffer.textOverride = "I"
             performCaseCorrection = true
         }
@@ -208,7 +207,7 @@ class EnglishInputEngine: InputEngine {
         
         // If the user is typing a word after an English word, run autocomplete.
         let autoCompleteCandidates: [String]
-        if documentContextBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
+        if textBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
             autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         } else {
             autoCompleteCandidates = []
