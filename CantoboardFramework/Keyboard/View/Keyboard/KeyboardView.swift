@@ -224,71 +224,98 @@ class KeyboardView: UIView, BaseKeyboardView {
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
             }
-        default:
-            ()
+        default: ()
+        }
+        refreshSpaceAndReturnKeys()
+    }
+    
+    private func refreshSpaceAndReturnKeys() {
+        if let lastRow = keyRows[safe: 3] {
+            if let lastRowRightKeys = lastRow.rightKeys,
+               let newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1],
+               case .returnKey = newLineKey.keyCap {
+                self.newLineKey = newLineKey
+                newLineKey.keyCap = .returnKey(state.returnKeyType)
+            }
+            
+            if let lastRowMiddleKeys = lastRow.middleKeys,
+               let spaceKey = lastRowMiddleKeys[safe: 0],
+               case .space = spaceKey.keyCap {
+                self.spaceKey = spaceKey
+                spaceKey.keyCap = .space(state.spaceKeyMode)
+            }
         }
     }
     
     private func refreshAlphabeticKeys(_ layout: KeyboardViewLayout.Type, _ shiftState: (KeyboardShiftState)) {
         for (index, var keyCaps) in layout.letters.enumerated() {
-            if shiftState != .lowercased {
-                keyCaps = keyCaps.map { $0.map {
-                    switch $0 {
-                    case .character(let c, _, _):
-                        return KeyCap(c.uppercased())
-                    case .shift:
-                        return .shift(shiftState)
-                    default:
-                        return $0
-                    }
-                } }
-            }
-            
-            let isInEnglishMode = state.inputMode == .english
-            // let rimeSchema = state.rimeSchema
             keyCaps = keyCaps.map { $0.map {
-                switch $0 {
-                case .character(let c, _, _) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && !isInEnglishMode:
-                    return state.inputMode == .mixed ? .cangjieMixedMode(c) : .cangjie(c)
-                case .character("F", _, _), .character("G", _, _), .character("H", _, _),
-                     .character("C", _, _), .character("V", _, _), .character("B", _, _),
-                     .character("f", _, _), .character("g", _, _), .character("h", _, _),
-                     .character("c", _, _), .character("v", _, _), .character("b", _, _):
-                    switch state.keyboardContextualType {
-                    case .rime, .url(true):
-                        if case .character(let c, _, _) = $0,
-                           !isInEnglishMode &&
-                            (state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale) {
-                            // Show tone keys.
-                            return .characterWithConditioanlPopup(c)
-                        } else {
-                            return $0
-                        }
-                    default:
-                        return $0
-                    }
-                case "R", "r":
-                    if !isInEnglishMode && state.activeSchema.isCantonese, case .character(let c, _, _) = $0 {
-                        return .characterWithConditioanlPopup(c)
-                    }
-                    return $0
-                case .contextualSymbols:
-                    return .contextualSymbols(isInEnglishMode ? .english : state.keyboardContextualType)
-                case .returnKey: return .returnKey(state.returnKeyType)
-                case .space: return .space(state.spaceKeyMode)
-                default: return $0
-                }
+                return configureAlphabeticKeyCap($0, shiftState: shiftState)
             } }
-            
             keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
         }
-        if let lastRow = keyRows[safe: 3] {
-            if let lastRowRightKeys = lastRow.rightKeys {
-                newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1]
+    }
+    
+    private func configureAlphabeticKeyCap(_ keyCap: KeyCap, shiftState: (KeyboardShiftState)) -> KeyCap {
+        let isInEnglishMode = state.inputMode == .english
+        let isInCangjieMode = state.activeSchema.isCangjieFamily
+        let isInMixedMode = state.inputMode == .mixed
+        let isInLongPressMode = state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale
+        
+        switch keyCap {
+        case .character(let c, _, _):
+            var hint: String? = nil
+            var keyCaps: [KeyCap]? = nil
+            
+            let isLetterKey = c.first?.isEnglishLetter ?? false
+            let keyChar = shiftState != .lowercased ? c.uppercased() : c
+            
+            if isInCangjieMode && !isInEnglishMode && isLetterKey {
+                return isInMixedMode ? .cangjieMixedMode(keyChar) : .cangjie(keyChar)
             }
-            if let lastRowMiddleKeys = lastRow.middleKeys {
-                spaceKey = lastRowMiddleKeys[safe: 0]
+            
+            if !isInEnglishMode && state.activeSchema.isCantonese {
+                if c == "r" {
+                    hint = "反"
+                    keyCaps = [KeyCap(keyChar), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+                } else if state.returnKeyType == .confirm {
+                    if isInLongPressMode {
+                        switch c {
+                        case "f":
+                            hint = "4"
+                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone4)]
+                        case "g":
+                            hint = "5"
+                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone5)]
+                        case "h":
+                            hint = "6"
+                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone6)]
+                        case "c":
+                            hint = "1"
+                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone1)]
+                        case "v":
+                            hint = "2"
+                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone2)]
+                        case "b":
+                            hint = "3"
+                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone3)]
+                        default: ()
+                        }
+                    } else {
+                        switch c {
+                        case "v": hint = "1/4"
+                        case "x": hint = "2/5"
+                        case "q": hint = "3/6"
+                        default: ()
+                        }
+                    }
+                }
             }
+            
+            return .character(keyChar, hint, keyCaps)
+        case .shift: return .shift(shiftState)
+        case .contextualSymbols: return .contextualSymbols(isInEnglishMode ? .english : state.keyboardContextualType)
+        default: return keyCap
         }
     }
     

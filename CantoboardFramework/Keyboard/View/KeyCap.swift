@@ -62,7 +62,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     backspace,
     capsLock,
     character(String, String?, [KeyCap]?),
-    characterWithConditioanlPopup(String),
     cangjie(String),
     cangjieMixedMode(String),
     stroke(String),
@@ -98,7 +97,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .backspace: return .backspace
         case .capsLock: return .capsLock
         case .character(let c, _, _): return .character(c)
-        case .characterWithConditioanlPopup(let c): return .character(c)
         case .cangjie(let c), .cangjieMixedMode(let c): return .character(c)
         case .stroke(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
@@ -167,7 +165,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var keyCapType: KeyCapType {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .cangjieMixedMode, .contextualSymbols, .currency, .stroke:
+        case .character, .cangjie, .cangjieMixedMode, .contextualSymbols, .currency, .stroke:
             return .input
         case .space: return .space
         case .returnKey: return .returnKey
@@ -212,7 +210,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonText: String? {
         switch self {
-        case .characterWithConditioanlPopup(let text): return text
         case .returnKey(.confirm): return LocalizedStrings.keyTitleConfirm
         case .returnKey(.go): return LocalizedStrings.keyTitleGo
         case .returnKey(.next): return LocalizedStrings.keyTitleNext
@@ -291,33 +288,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     }
     
     var buttonHint: String? {
-        if Settings.cached.toneInputMode == .longPress {
-            switch self {
-            case .characterWithConditioanlPopup("F"), .characterWithConditioanlPopup("f"): return "4"
-            case .characterWithConditioanlPopup("G"), .characterWithConditioanlPopup("g"): return "5"
-            case .characterWithConditioanlPopup("H"), .characterWithConditioanlPopup("h"): return "6"
-            case .characterWithConditioanlPopup("C"), .characterWithConditioanlPopup("c"): return "1"
-            case .characterWithConditioanlPopup("V"), .characterWithConditioanlPopup("v"): return "2"
-            case .characterWithConditioanlPopup("B"), .characterWithConditioanlPopup("b"): return "3"
-            case .rime(.tone1): return "1"
-            case .rime(.tone2): return "2"
-            case .rime(.tone3): return "3"
-            case .rime(.tone4): return "4"
-            case .rime(.tone5): return "5"
-            case .rime(.tone6): return "6"
-            default: ()
-            }
-        } else {
-            switch self {
-            case "V", "v": return "1/4"
-            case "X", "x": return "2/5"
-            case "Q", "q": return "3/6"
-            default: ()
-            }
-        }
-        
         switch self {
-        case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
+        case .character(_, let hint, _) where hint != nil: return hint
         case .contextualSymbols(.chinese), .contextualSymbols(.english): return "符"
         case .contextualSymbols(.url): return "/"
         case .cangjieMixedMode(let c): return c
@@ -351,17 +323,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var childrenKeyCaps: [KeyCap] {
         switch self {
-        case .characterWithConditioanlPopup(let c):
-            switch c {
-            case "F", "f": return [KeyCap(c), .rime(RimeChar.tone4)]
-            case "G", "g": return [KeyCap(c), .rime(RimeChar.tone5)]
-            case "H", "h": return [KeyCap(c), .rime(RimeChar.tone6)]
-            case "C", "c": return [KeyCap(c), .rime(RimeChar.tone1)]
-            case "V", "v": return [KeyCap(c), .rime(RimeChar.tone2)]
-            case "B", "b": return [KeyCap(c), .rime(RimeChar.tone3)]
-            case "R", "r": return [KeyCap(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
-            default: return [self]
-            }
         case .contextualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
         case .contextualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
         case .contextualSymbols(.rime): return [self, ".", ",", "?", "!"]
@@ -475,6 +436,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
             return currencyLists
+        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         default: return [self]
         }
     }
