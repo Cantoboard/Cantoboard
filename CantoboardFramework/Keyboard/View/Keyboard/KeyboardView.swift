@@ -234,8 +234,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             if shiftState != .lowercased {
                 keyCaps = keyCaps.map { $0.map {
                     switch $0 {
-                    case .character(let c):
-                        return .character(c.uppercased())
+                    case .character(let c, _, _):
+                        return KeyCap(c.uppercased())
                     case .shift:
                         return .shift(shiftState)
                     default:
@@ -248,15 +248,15 @@ class KeyboardView: UIView, BaseKeyboardView {
             // let rimeSchema = state.rimeSchema
             keyCaps = keyCaps.map { $0.map {
                 switch $0 {
-                case .character(let c) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && !isInEnglishMode:
+                case .character(let c, _, _) where state.activeSchema.isCangjieFamily && c.first?.isEnglishLetter ?? false && !isInEnglishMode:
                     return state.inputMode == .mixed ? .cangjieMixedMode(c) : .cangjie(c)
-                case .character("F"), .character("G"), .character("H"),
-                     .character("C"), .character("V"), .character("B"),
-                     .character("f"), .character("g"), .character("h"),
-                     .character("c"), .character("v"), .character("b"):
+                case .character("F", _, _), .character("G", _, _), .character("H", _, _),
+                     .character("C", _, _), .character("V", _, _), .character("B", _, _),
+                     .character("f", _, _), .character("g", _, _), .character("h", _, _),
+                     .character("c", _, _), .character("v", _, _), .character("b", _, _):
                     switch state.keyboardContextualType {
                     case .rime, .url(true):
-                        if case .character(let c) = $0,
+                        if case .character(let c, _, _) = $0,
                            !isInEnglishMode &&
                             (state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale) {
                             // Show tone keys.
@@ -268,7 +268,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                         return $0
                     }
                 case "R", "r":
-                    if !isInEnglishMode && state.activeSchema.isCantonese, case .character(let c) = $0 {
+                    if !isInEnglishMode && state.activeSchema.isCantonese, case .character(let c, _, _) = $0 {
                         return .characterWithConditioanlPopup(c)
                     }
                     return $0

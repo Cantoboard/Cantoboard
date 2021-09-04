@@ -263,11 +263,7 @@ extension KeyView {
         let popupDirection = computePopupDirection()
         let keyCaps = computeKeyCap(isLongPress: isLongPress)
         let defaultKeyCapIndex: Int
-        if let defaultChildKeyCap = keyCap.defaultChildKeyCap {
-            defaultKeyCapIndex = keyCaps.firstIndex(of: defaultChildKeyCap) ?? 0
-        } else {
-            defaultKeyCapIndex = 0
-        }
+        defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == keyCap.defaultChildKeyCapTitle }) ?? 0
         popup.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
         
         isPopupInLongPressMode = isLongPress

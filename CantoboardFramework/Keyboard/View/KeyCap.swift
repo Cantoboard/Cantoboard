@@ -61,7 +61,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     none,
     backspace,
     capsLock,
-    character(String),
+    character(String, String?, [KeyCap]?),
     characterWithConditioanlPopup(String),
     cangjie(String),
     cangjieMixedMode(String),
@@ -85,7 +85,11 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
     public init(stringLiteral value: String) {
-        self = .character(value)
+        self = .character(value, nil, nil)
+    }
+    
+    public init(_ char: String) {
+        self = .character(char, nil, nil)
     }
     
     var action: KeyboardAction {
@@ -93,7 +97,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .none: return .none
         case .backspace: return .backspace
         case .capsLock: return .capsLock
-        case .character(let c): return .character(c)
+        case .character(let c, _, _): return .character(c)
         case .characterWithConditioanlPopup(let c): return .character(c)
         case .cangjie(let c), .cangjieMixedMode(let c): return .character(c)
         case .stroke(let c): return .character(c)
@@ -253,7 +257,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "］": return "]"
         case "｛": return "{"
         case "｝": return "}"
-        case .character(let text): return text
+        case .character(let text, _, _): return text
         case .cangjie(let c), .cangjieMixedMode(let c):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
@@ -349,13 +353,13 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .characterWithConditioanlPopup(let c):
             switch c {
-            case "F", "f": return [.character(c), .rime(RimeChar.tone4)]
-            case "G", "g": return [.character(c), .rime(RimeChar.tone5)]
-            case "H", "h": return [.character(c), .rime(RimeChar.tone6)]
-            case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
-            case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
-            case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
-            case "R", "r": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+            case "F", "f": return [KeyCap(c), .rime(RimeChar.tone4)]
+            case "G", "g": return [KeyCap(c), .rime(RimeChar.tone5)]
+            case "H", "h": return [KeyCap(c), .rime(RimeChar.tone6)]
+            case "C", "c": return [KeyCap(c), .rime(RimeChar.tone1)]
+            case "V", "v": return [KeyCap(c), .rime(RimeChar.tone2)]
+            case "B", "b": return [KeyCap(c), .rime(RimeChar.tone3)]
+            case "R", "r": return [KeyCap(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
             default: return [self]
             }
         case .contextualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
@@ -467,7 +471,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "·": return ["·", "．", "•", "°"]
         case .currency:
             var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
-            let localCurrencySymbolKeyCap: KeyCap = .character(SessionState.main.currencySymbol)
+            let localCurrencySymbolKeyCap: KeyCap = KeyCap(SessionState.main.currencySymbol)
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
             return currencyLists
@@ -475,10 +479,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var defaultChildKeyCap: KeyCap? {
+    var defaultChildKeyCapTitle: String? {
         switch self {
-        case .currency: return .character(SessionState.main.currencySymbol)
-        default: return self
+        default: return self.buttonText
         }
     }
 }
