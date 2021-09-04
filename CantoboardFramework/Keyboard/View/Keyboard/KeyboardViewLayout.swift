@@ -77,14 +77,14 @@ class PadKeyboardViewLayout : KeyboardViewLayout {
     static let symbolsHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
-        [[.keyboardType(.symbolic), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.symbolic)]],
+        [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
-        [[.keyboardType(.symbolic), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.symbolic)]],
+        [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
 }
