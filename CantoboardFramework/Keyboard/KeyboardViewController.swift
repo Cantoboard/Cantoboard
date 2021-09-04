@@ -76,19 +76,26 @@ open class KeyboardViewController: UIInputViewController {
         let isWindowSmall = (view.superview?.window?.bounds.width ?? 320 + 1) <= 320
         let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && isWindowSmall
         let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
+        let newLayoutConstants: LayoutConstants
         if isPadFloatingMode {
             // DDLogInfo("Using isPadFloatingMode")
-            layoutConstants.ref = LayoutConstants.getContants(screenSize: CGSize(width: 320, height: 254))
+            newLayoutConstants = LayoutConstants.getContants(screenSize: CGSize(width: 320, height: 254))
         } else if isPadCompatibleMode {
             // iPad's compatiblity mode has a bug. UIScreen doesn't return the right resolution.
             // We cannot rely on the size. We could only infer the screen direction from it.
             let isPortrait = UIScreen.main.bounds.size.isPortrait
             let size = isPortrait ? CGSize(width: 375, height: 667) : CGSize(width: 667, height: 375)
             // DDLogInfo("Using isPadCompatibleMode \(size)")
-            layoutConstants.ref = LayoutConstants.getContants(screenSize: size)
+            newLayoutConstants = LayoutConstants.getContants(screenSize: size)
         } else {
             // DDLogInfo("Using \(UIScreen.main.bounds.size)")
-            layoutConstants.ref = LayoutConstants.forMainScreen
+            newLayoutConstants = LayoutConstants.forMainScreen
+        }
+        
+        let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom
+        layoutConstants.ref = newLayoutConstants
+        if hasLayoutChanged {
+            inputController?.onIdiomChanged()
         }
     }
     

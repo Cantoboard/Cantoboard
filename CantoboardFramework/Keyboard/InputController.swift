@@ -34,6 +34,8 @@ struct KeyboardState: Equatable {
     var needsInputModeSwitchKey: Bool
     var spaceKeyMode: SpaceKeyMode
     
+    var keyboardIdiom: LayoutIdiom
+    
     var mainSchema: RimeSchema, reverseLookupSchema: RimeSchema?
     var inputMode: InputMode {
         didSet { SessionState.main.lastInputMode = inputMode }
@@ -50,6 +52,7 @@ struct KeyboardState: Equatable {
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         keyboardContextualType = .english
+        keyboardIdiom = LayoutConstants.forMainScreen.idiom
         
         enableState = .enabled
         
@@ -214,6 +217,12 @@ class InputController: NSObject {
             state.enableState = .enabled
             keyboardView?.state = state
         }
+    }
+    
+    func onIdiomChanged() {
+        guard let newIdiom = keyboardViewController?.layoutConstants.ref.idiom else { return }
+        state.keyboardIdiom = newIdiom
+        keyboardView?.state = state
     }
     
     func handleKey(_ action: KeyboardAction) {

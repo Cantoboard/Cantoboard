@@ -62,17 +62,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         preservesSuperviewLayoutMargins = false
 
         keyRows = (0..<4).map { i in KeyRowView(layoutConstants: layoutConstants) }
-        switch layoutConstants.ref.idiom {
-        case .phone, .padFloating:
-            keyRows[0].rowLayoutMode = .phoneRowTop
-            keyRows[3].rowLayoutMode = .phoneRowBottom
-            keyRows.forEach { addSubview($0) }
-        case .pad:
-            keyRows.enumerated().forEach({ i, row in
-                row.rowLayoutMode = .padRow(i)
-                addSubview(row)
-            })
-        }
+        keyRows.forEach { addSubview($0) }
         
         initTouchHandler()
         createCandidatePaneView()
@@ -98,7 +88,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.keyboardContextualType != newState.keyboardContextualType ||
             prevState.symbolShape != newState.symbolShape ||
             prevState.activeSchema != newState.activeSchema ||
-            prevState.inputMode != newState.inputMode // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
+            prevState.inputMode != newState.inputMode || // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
+            prevState.keyboardIdiom != newState.keyboardIdiom
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
@@ -217,12 +208,12 @@ class KeyboardView: UIView, BaseKeyboardView {
         case .numeric:
             let rows = state.symbolShape == .full ? layout.numbersFull : layout.numbersHalf
             for (index, keyCaps) in rows.enumerated() {
-                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
+                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
             }
         case .symbolic:
             let rows = state.symbolShape == .full ? layout.symbolsFull : layout.symbolsHalf
             for (index, keyCaps) in rows.enumerated() {
-                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
+                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
             }
         default: ()
         }
@@ -252,7 +243,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             keyCaps = keyCaps.map { $0.map {
                 return configureAlphabeticKeyCap($0, shiftState: shiftState)
             } }
-            keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps)
+            keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
         }
     }
     
