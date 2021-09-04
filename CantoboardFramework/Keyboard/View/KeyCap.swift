@@ -62,8 +62,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     backspace,
     capsLock,
     character(String, String?, [KeyCap]?),
-    cangjie(String),
-    cangjieMixedMode(String),
+    cangjie(String, Bool),
     stroke(String),
     emoji(String),
     keyboardType(KeyboardType),
@@ -97,7 +96,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .backspace: return .backspace
         case .capsLock: return .capsLock
         case .character(let c, _, _): return .character(c)
-        case .cangjie(let c), .cangjieMixedMode(let c): return .character(c)
+        case .cangjie(let c, _): return .character(c)
         case .stroke(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
@@ -124,7 +123,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
         case .rime, "^_^", .keyboardType, .returnKey, .space, .contextualSymbols(.rime): return .systemFont(ofSize: 16)
-        case .cangjieMixedMode: return .systemFont(ofSize: 20)
+        case .cangjie(_, true): return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
         }
     }
@@ -165,7 +164,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var keyCapType: KeyCapType {
         switch self {
-        case .character, .cangjie, .cangjieMixedMode, .contextualSymbols, .currency, .stroke:
+        case .character, .cangjie, .contextualSymbols, .currency, .stroke:
             return .input
         case .space: return .space
         case .returnKey: return .returnKey
@@ -255,7 +254,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "｛": return "{"
         case "｝": return "}"
         case .character(let text, _, _): return text
-        case .cangjie(let c), .cangjieMixedMode(let c):
+        case .cangjie(let c, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
@@ -277,7 +276,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .cangjieMixedMode: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         default:
             if keyCapType == .input {
                 return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
@@ -292,7 +291,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character(_, let hint, _) where hint != nil: return hint
         case .contextualSymbols(.chinese), .contextualSymbols(.english): return "符"
         case .contextualSymbols(.url): return "/"
-        case .cangjieMixedMode(let c): return c
+        case .cangjie(let c, true): return c
         case .space: return "Cantoboard"
         default: return barHint
         }

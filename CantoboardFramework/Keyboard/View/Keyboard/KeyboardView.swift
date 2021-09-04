@@ -271,7 +271,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             let keyChar = shiftState != .lowercased ? c.uppercased() : c
             
             if isInCangjieMode && !isInEnglishMode && isLetterKey {
-                return isInMixedMode ? .cangjieMixedMode(keyChar) : .cangjie(keyChar)
+                return .cangjie(keyChar, isInMixedMode)
             }
             
             if !isInEnglishMode && state.activeSchema.isCantonese {

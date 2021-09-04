@@ -249,7 +249,7 @@ extension KeyRowView {
             return layoutConstants.shiftButtonWidth
         case .returnKey:
             return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .cangjie, .cangjieMixedMode, .contextualSymbols, .currency:
+        case .character, .cangjie, .contextualSymbols, .currency:
             return layoutConstants.keyButtonWidth
         default:
             return layoutConstants.systemButtonWidth
