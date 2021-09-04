@@ -39,7 +39,6 @@ class KeyHintLayer: CATextLayer {
     
     func setup(keyCap: KeyCap, hintText: String) {
         string = hintText
-        contentSize = hintText.size(withFont: .systemFont(ofSize: fontSize))
     }
     
     override init(layer: Any) {

@@ -16,7 +16,7 @@ internal extension UIView {
             else { return }
         
         // let wightAdjustmentRatio: CGFloat = UIScreen.main.bounds.size.isPortrait && bounds ? 1 : 1.25
-        var height = bounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
+        var height = superlayerBounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
         let minHeight: CGFloat = 10
         height = max(height, minHeight)
         
