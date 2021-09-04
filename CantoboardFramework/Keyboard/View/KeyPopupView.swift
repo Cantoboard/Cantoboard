@@ -126,17 +126,22 @@ class KeyPopupView: UIView {
     }
     
     func layoutView() {
-        guard let layoutConstants = layoutConstants?.ref else { return }
+        guard let layoutConstants = layoutConstants?.ref,
+              let parentKeyView = superview else { return }
+        
+        let keyWidth = parentKeyView.bounds.width
+        let keyHeight = parentKeyView.bounds.height
+        let keyboardWidth = layoutConstants.keyboardSize.width
         
         var buttonSize: CGSize
         if actions.count < 10 {
             buttonSize = CGSize(
-                width: KeyPopupView.bodyInsets.wrap(width: layoutConstants.keyButtonWidth),
-                height: layoutConstants.keyHeight)
+                width: KeyPopupView.bodyInsets.wrap(width: keyWidth),
+                height: keyHeight)
         } else {
             buttonSize = CGSize(
-                width: layoutConstants.keyboardSize.width / CGFloat(actions.count),
-                height: layoutConstants.keyHeight)
+                width: keyboardWidth / CGFloat(actions.count),
+                height: keyHeight)
         }
         
         var bodySize = KeyPopupView.bodyInsets.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))
