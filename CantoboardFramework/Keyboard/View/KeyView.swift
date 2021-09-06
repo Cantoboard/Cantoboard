@@ -117,6 +117,7 @@ class KeyView: HighlightableButton {
             titleLabel?.font = keyCap.buttonFont
             titleLabel?.baselineAdjustment = .alignCenters
             titleLabel?.lineBreakMode = .byClipping
+            titleLabel?.adjustsFontSizeToFitWidth = true
             highlightedColor = keyCap.buttonBgHighlightedColor
         } else {
             var buttonImage = keyCap.buttonImage

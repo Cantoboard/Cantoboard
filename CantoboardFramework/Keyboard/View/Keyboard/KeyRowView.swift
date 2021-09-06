@@ -153,16 +153,16 @@ extension KeyRowView {
             x = directionalLayoutMargins.leading
         case .middle:
             let middleKeysCount = CGFloat(keys.count)
-            let middleKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (middleKeysCount - 1) * layoutConstants.buttonGapX
+            let middleKeysWidth = keys.reduce(0, { $0 + getPhoneKeyWidth($1, layoutConstants) }) + (middleKeysCount - 1) * layoutConstants.buttonGapX
             x = (bounds.width - middleKeysWidth) / 2
         case .right:
             let rightKeysCount = CGFloat(keys.count)
-            let rightKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (rightKeysCount - 1) * layoutConstants.buttonGapX
+            let rightKeysWidth = keys.reduce(0, { $0 + getPhoneKeyWidth($1, layoutConstants) }) + (rightKeysCount - 1) * layoutConstants.buttonGapX
             x = bounds.maxX - directionalLayoutMargins.trailing - rightKeysWidth
         }
         
         let frames: [CGRect] = keys.map { key in
-            let keyWidth = getKeyWidth(key, layoutConstants)
+            let keyWidth = getPhoneKeyWidth(key, layoutConstants)
             let rect = CGRect(x: x, y: layoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
             x += keyWidth + layoutConstants.buttonGapX
             
@@ -175,7 +175,8 @@ extension KeyRowView {
         guard let layoutConstants = layoutConstants?.ref else { return }
         
         let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
-        let row3LeftGroupWidth = availableWidth - layoutConstants.shiftButtonWidth - layoutConstants.buttonGapX
+        let rightShiftKeyWidth = layoutConstants.padLayoutConstants!.rightShiftKeyWidth
+        let row3LeftGroupWidth = availableWidth - rightShiftKeyWidth - layoutConstants.buttonGapX
         let keyWidthRow3n4 = (row3LeftGroupWidth - 9 * layoutConstants.buttonGapX) / 10
         
         let allKeys: [KeyView]
@@ -190,7 +191,7 @@ extension KeyRowView {
             allFrames = layoutPadKeys(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, x: &x)
         case 1:
             let leftInset: CGFloat = keyWidthRow3n4 / 2
-            let lastKeyWidth = layoutConstants.systemButtonWidth
+            let lastKeyWidth = layoutConstants.padLayoutConstants!.returnKeyWidth
             let keyWidth = (availableWidth - leftInset - lastKeyWidth - 9 * layoutConstants.buttonGapX) / 9
             var x = directionalLayoutMargins.leading + leftInset
             
@@ -203,7 +204,7 @@ extension KeyRowView {
             allKeys = leftKeys + middleKeys + rightKeys
             allFrames = layoutPadKeys(keys: allKeys, keyWidth: keyWidthRow3n4, layoutConstants: layoutConstants, x: &x)
             
-            overrideLastFrame(frames: &allFrames, width: layoutConstants.shiftButtonWidth)
+            overrideLastFrame(frames: &allFrames, width: rightShiftKeyWidth)
         case 3:
             let leftRightGroupWidth: CGFloat = 3 * keyWidthRow3n4 + 2 * layoutConstants.buttonGapX
             var x = directionalLayoutMargins.leading
@@ -243,16 +244,16 @@ extension KeyRowView {
         }
     }
     
-    private func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
+    private func getPhoneKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
         switch key.keyCap {
         case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
-            return layoutConstants.shiftButtonWidth
+            return layoutConstants.phoneLayoutConstants!.shiftKeyWidth
         case .returnKey:
-            return 1.5 * layoutConstants.systemButtonWidth
+            return 1.5 * layoutConstants.phoneLayoutConstants!.systemKeyWidth
         case .character, .cangjie, .contextualSymbols, .currency:
-            return layoutConstants.keyButtonWidth
+            return layoutConstants.phoneLayoutConstants!.letterKeyWidth
         default:
-            return layoutConstants.systemButtonWidth
+            return layoutConstants.phoneLayoutConstants!.systemKeyWidth
         }
     }
     
