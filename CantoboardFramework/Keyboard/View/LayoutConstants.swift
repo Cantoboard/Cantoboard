@@ -150,7 +150,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 62,
         shiftKeyWidth: 84,
         keyHeight: 32,
-        autoCompleteBarHeight: 36,
+        autoCompleteBarHeight: 38,
         edgeHorizontalInset: 3,
         superviewWidth: 926),
     
@@ -174,7 +174,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 62,
         shiftKeyWidth: 84,
         keyHeight: 32,
-        autoCompleteBarHeight: 36,
+        autoCompleteBarHeight: 38,
         edgeHorizontalInset: 3,
         superviewWidth: 844),
     
@@ -198,7 +198,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 59,
         shiftKeyWidth: 80,
         keyHeight: 30,
-        autoCompleteBarHeight: 36,
+        autoCompleteBarHeight: 38,
         edgeHorizontalInset: 3,
         superviewWidth: 812),
     
@@ -222,8 +222,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 59,
         shiftKeyWidth: 80,
         keyHeight: 30,
-        autoCompleteBarHeight: 107/3,
-        edgeHorizontalInset: 4,
+        autoCompleteBarHeight: 38,
+        edgeHorizontalInset: 3,
         superviewWidth: 896),
     
     // iPhone 8+, 7+, 6s+, 6+
@@ -246,7 +246,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 69,
         shiftKeyWidth: 69,
         keyHeight: 32,
-        autoCompleteBarHeight: 36,
+        autoCompleteBarHeight: 38,
         edgeHorizontalInset: 2,
         superviewWidth: 736),
     
@@ -270,8 +270,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 63,
         shiftKeyWidth: 63,
         keyHeight: 32,
-        autoCompleteBarHeight: 36,
-        edgeHorizontalInset: 2,
+        autoCompleteBarHeight: 38,
+        edgeHorizontalInset: 3,
         superviewWidth: 667),
     
     // iPhone SE (1st gen), 5c, 5s, 5
@@ -283,7 +283,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 34,
         shiftKeyWidth: 36,
         keyHeight: 38,
-        autoCompleteBarHeight: 42,
+        autoCompleteBarHeight: 38,
         edgeHorizontalInset: 3,
         superviewWidth: 320),
     // Landscape:
@@ -294,8 +294,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         systemKeyWidth: 50,
         shiftKeyWidth: 68,
         keyHeight: 32,
-        autoCompleteBarHeight: 36,
-        edgeHorizontalInset: 2,
+        autoCompleteBarHeight: 38,
+        edgeHorizontalInset: 3,
         superviewWidth: 568),
     
     // iPad 1024x1366 iPad Pro 12.9"
