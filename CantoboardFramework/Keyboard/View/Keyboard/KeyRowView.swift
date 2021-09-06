@@ -117,7 +117,7 @@ extension KeyRowView {
     override func layoutSubviews() {
         guard let layoutIdiom = layoutConstants?.ref.idiom else { return }
         switch layoutIdiom {
-        case .phone, .padFloating: layoutPhoneSubviews()
+        case .phone: layoutPhoneSubviews()
         case .pad: layoutPadSubviews()
         }
     }

@@ -196,7 +196,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         
         let layout: KeyboardViewLayout.Type
         switch layoutConstants.idiom {
-        case .phone, .padFloating:
+        case .phone:
             layout = PhoneKeyboardViewLayout.self
         case .pad:
             layout = PadKeyboardViewLayout.self

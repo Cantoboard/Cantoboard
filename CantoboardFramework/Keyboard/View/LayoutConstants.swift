@@ -11,7 +11,7 @@ import UIKit
 import CocoaLumberjackSwift
 
 enum LayoutIdiom {
-    case phone, pad, padFloating
+    case phone, pad
 }
 
 struct LayoutConstants {
@@ -45,7 +45,7 @@ struct LayoutConstants {
     
     var numOfSingleCharCandidateInRow: Int {
         switch idiom {
-        case .phone, .padFloating:
+        case .phone:
             return isPortrait ? 8 : 15
         case .pad:
             return isPortrait ? 15 : 20
@@ -92,10 +92,9 @@ struct LayoutConstants {
                                           keyHeight: CGFloat,
                                           autoCompleteBarHeight: CGFloat,
                                           keyboardViewLeftRightInset: CGFloat,
-                                          keyboardSuperviewWidth: CGFloat,
-                                          isPadFloating: Bool = false) -> LayoutConstants {
+                                          keyboardSuperviewWidth: CGFloat) -> LayoutConstants {
         return LayoutConstants(
-            idiom: isPadFloating ? .padFloating : .phone,
+            idiom: .phone,
             isPortrait: isPortrait,
             keyboardSize: keyboardSize,
             buttonGap: buttonGap,
@@ -481,8 +480,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyHeight: 39,
         autoCompleteBarHeight: 38,
         keyboardViewLeftRightInset: 3,
-        keyboardSuperviewWidth: 320,
-        isPadFloating: true),
+        keyboardSuperviewWidth: 320),
 ]
 
 extension LayoutConstants {
