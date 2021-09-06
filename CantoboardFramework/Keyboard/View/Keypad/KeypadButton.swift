@@ -36,8 +36,8 @@ class KeypadButton: KeyView {
         let numOfColumns = colRowSize.width
         let numOfRows = colRowSize.height
         return CGSize(
-            width: unitSize.width * numOfColumns + layoutConstants.buttonGap * (numOfColumns - 1),
-            height: unitSize.height * numOfRows + layoutConstants.buttonGap * (numOfRows - 1))
+            width: unitSize.width * numOfColumns + layoutConstants.buttonGapX * (numOfColumns - 1),
+            height: unitSize.height * numOfRows + layoutConstants.buttonGapX * (numOfRows - 1))
     }
     
     override internal func setupView() {

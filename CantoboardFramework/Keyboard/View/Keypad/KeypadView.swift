@@ -127,7 +127,7 @@ class KeypadView: UIView, BaseKeyboardView {
         super.layoutSubviews()
         
         layoutButtons(leftButtons, initialX: layoutConstants.keyboardViewInsets.left, layoutConstants: layoutConstants)
-        layoutButtons(rightButtons, initialX: layoutConstants.keyboardViewInsets.left + layoutConstants.buttonGap + layoutConstants.keypadButtonUnitSize.width, layoutConstants: layoutConstants)
+        layoutButtons(rightButtons, initialX: layoutConstants.keyboardViewInsets.left + layoutConstants.buttonGapX + layoutConstants.keypadButtonUnitSize.width, layoutConstants: layoutConstants)
         
         layoutCandidateSubviews(layoutConstants)
         layoutStatusMenu()
@@ -142,9 +142,9 @@ class KeypadView: UIView, BaseKeyboardView {
                 let origin = CGPoint(x: x, y: y)
                 let size = button.getSize(layoutConstants: layoutConstants)
                 button.frame = CGRect(origin: origin, size: size)
-                x += size.width + layoutConstants.buttonGap
+                x += size.width + layoutConstants.buttonGapX
             }
-            y += layoutConstants.keypadButtonUnitSize.height + layoutConstants.buttonGap
+            y += layoutConstants.keypadButtonUnitSize.height + layoutConstants.buttonGapX
         }
     }
 

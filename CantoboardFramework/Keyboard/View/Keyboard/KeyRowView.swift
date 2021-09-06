@@ -136,8 +136,8 @@ extension KeyRowView {
         // Special case, widen the space key to fill the empty space.
         if rowId == 3 && middleKeys.count == 1, case .space = middleKeys.first!.keyCap {
             let thisKeyFrame = allFrames[leftKeyFrames.count]
-            let spaceStartX = allFrames[leftKeyFrames.count - 1].maxX + layoutConstants.buttonGap
-            let spaceEndX = allFrames[leftKeyFrames.count + middleKeyFrames.count].minX - layoutConstants.buttonGap
+            let spaceStartX = allFrames[leftKeyFrames.count - 1].maxX + layoutConstants.buttonGapX
+            let spaceEndX = allFrames[leftKeyFrames.count + middleKeyFrames.count].minX - layoutConstants.buttonGapX
             allFrames[leftKeyFrames.count] = CGRect(x: spaceStartX, y: thisKeyFrame.minY, width: spaceEndX - spaceStartX, height: thisKeyFrame.maxY - thisKeyFrame.minY)
         }
         
@@ -153,18 +153,18 @@ extension KeyRowView {
             x = directionalLayoutMargins.leading
         case .middle:
             let middleKeysCount = CGFloat(keys.count)
-            let middleKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (middleKeysCount - 1) * layoutConstants.buttonGap
+            let middleKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (middleKeysCount - 1) * layoutConstants.buttonGapX
             x = (bounds.width - middleKeysWidth) / 2
         case .right:
             let rightKeysCount = CGFloat(keys.count)
-            let rightKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (rightKeysCount - 1) * layoutConstants.buttonGap
+            let rightKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (rightKeysCount - 1) * layoutConstants.buttonGapX
             x = bounds.maxX - directionalLayoutMargins.trailing - rightKeysWidth
         }
         
         let frames: [CGRect] = keys.map { key in
             let keyWidth = getKeyWidth(key, layoutConstants)
             let rect = CGRect(x: x, y: layoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
-            x += keyWidth + layoutConstants.buttonGap
+            x += keyWidth + layoutConstants.buttonGapX
             
             return rect
         }
@@ -175,15 +175,15 @@ extension KeyRowView {
         guard let layoutConstants = layoutConstants?.ref else { return }
         
         let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
-        let row3LeftGroupWidth = availableWidth - layoutConstants.shiftButtonWidth - layoutConstants.buttonGap
-        let keyWidthRow3n4 = (row3LeftGroupWidth - 9 * layoutConstants.buttonGap) / 10
+        let row3LeftGroupWidth = availableWidth - layoutConstants.shiftButtonWidth - layoutConstants.buttonGapX
+        let keyWidthRow3n4 = (row3LeftGroupWidth - 9 * layoutConstants.buttonGapX) / 10
         
         let allKeys: [KeyView]
         var allFrames: [CGRect]
         
         switch rowId {
         case 0:
-            let keyWidth = (availableWidth - 10 * layoutConstants.buttonGap) / 11
+            let keyWidth = (availableWidth - 10 * layoutConstants.buttonGapX) / 11
             var x = directionalLayoutMargins.leading
             
             allKeys = leftKeys + middleKeys + rightKeys
@@ -191,7 +191,7 @@ extension KeyRowView {
         case 1:
             let leftInset: CGFloat = keyWidthRow3n4 / 2
             let lastKeyWidth = layoutConstants.systemButtonWidth
-            let keyWidth = (availableWidth - leftInset - lastKeyWidth - 9 * layoutConstants.buttonGap) / 9
+            let keyWidth = (availableWidth - leftInset - lastKeyWidth - 9 * layoutConstants.buttonGapX) / 9
             var x = directionalLayoutMargins.leading + leftInset
             
             allKeys = leftKeys + middleKeys + rightKeys
@@ -205,17 +205,17 @@ extension KeyRowView {
             
             overrideLastFrame(frames: &allFrames, width: layoutConstants.shiftButtonWidth)
         case 3:
-            let leftRightGroupWidth: CGFloat = 3 * keyWidthRow3n4 + 2 * layoutConstants.buttonGap
+            let leftRightGroupWidth: CGFloat = 3 * keyWidthRow3n4 + 2 * layoutConstants.buttonGapX
             var x = directionalLayoutMargins.leading
             
-            let leftKeyWidth = (leftRightGroupWidth - CGFloat(leftKeys.count - 1) * layoutConstants.buttonGap) / CGFloat(leftKeys.count)
+            let leftKeyWidth = (leftRightGroupWidth - CGFloat(leftKeys.count - 1) * layoutConstants.buttonGapX) / CGFloat(leftKeys.count)
             let leftFrames = layoutPadKeys(keys: leftKeys, keyWidth: leftKeyWidth, layoutConstants: layoutConstants, x: &x)
             
-            let middleGroupWidth: CGFloat = availableWidth - 2 * leftRightGroupWidth - 2 * layoutConstants.buttonGap
-            let middleKeyWidth = (middleGroupWidth - CGFloat(middleKeys.count - 1) * layoutConstants.buttonGap) / CGFloat(middleKeys.count)
+            let middleGroupWidth: CGFloat = availableWidth - 2 * leftRightGroupWidth - 2 * layoutConstants.buttonGapX
+            let middleKeyWidth = (middleGroupWidth - CGFloat(middleKeys.count - 1) * layoutConstants.buttonGapX) / CGFloat(middleKeys.count)
             let middleFrames = layoutPadKeys(keys: middleKeys, keyWidth: middleKeyWidth, layoutConstants: layoutConstants, x: &x)
             
-            let rightKeyWidth: CGFloat = (leftRightGroupWidth - CGFloat(rightKeys.count - 1) * layoutConstants.buttonGap) / CGFloat(rightKeys.count)
+            let rightKeyWidth: CGFloat = (leftRightGroupWidth - CGFloat(rightKeys.count - 1) * layoutConstants.buttonGapX) / CGFloat(rightKeys.count)
             let rightFrames = layoutPadKeys(keys: rightKeys, keyWidth: rightKeyWidth, layoutConstants: layoutConstants, x: &x)
             
             allKeys = leftKeys + middleKeys + rightKeys
@@ -231,7 +231,7 @@ extension KeyRowView {
     private func layoutPadKeys(keys: [KeyView], keyWidth: CGFloat, layoutConstants: LayoutConstants, x: inout CGFloat) -> [CGRect] {
         return keys.map { key in
             let rect = CGRect(x: x, y: layoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
-            x += rect.width + layoutConstants.buttonGap
+            x += rect.width + layoutConstants.buttonGapX
             
             return rect
         }
