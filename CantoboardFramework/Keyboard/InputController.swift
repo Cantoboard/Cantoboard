@@ -187,7 +187,7 @@ class InputController: NSObject {
     private func handleSpace() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        if state.inputMode != .mixed && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
+        if state.inputMode == .chinese && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
             if Settings.cached.spaceAction == .insertText {
                 candidateSelected(choice: [0, 0], enableSmartSpace: true)
             } else {
@@ -748,7 +748,6 @@ class InputController: NSObject {
     }
 }
 
-// TODO remove this
 extension InputController: KeyboardViewDelegate {
     func handleInputModeList(from: UIView, with: UIEvent) {
         keyboardViewController?.handleInputModeList(from: from, with: with)
