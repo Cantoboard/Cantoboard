@@ -135,16 +135,16 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func layoutKeyboardSubviews(_ layoutConstants: LayoutConstants) {
-        directionalLayoutMargins = NSDirectionalEdgeInsets(top: LayoutConstants.keyViewTopInset,
-                                                           leading: layoutConstants.edgeHorizontalInset,
-                                                           bottom: layoutConstants.keyViewBottomInset,
-                                                           trailing: layoutConstants.edgeHorizontalInset)
+        directionalLayoutMargins = NSDirectionalEdgeInsets(top: layoutConstants.keyboardViewInsets.top,
+                                                           leading: layoutConstants.keyboardViewInsets.left,
+                                                           bottom: layoutConstants.keyboardViewInsets.bottom,
+                                                           trailing: layoutConstants.keyboardViewInsets.right)
         let keyRowsMargin: [NSDirectionalEdgeInsets] = (0..<keyRows.count).map {
             switch $0 {
             case 0: // First key row
-                return NSDirectionalEdgeInsets(top: LayoutConstants.keyViewTopInset, leading: 0, bottom: layoutConstants.keyRowGap / 2, trailing: 0)
+                return NSDirectionalEdgeInsets(top: LayoutConstants.keyboardViewTopInset, leading: 0, bottom: layoutConstants.keyRowGap / 2, trailing: 0)
             case keyRows.count - 1: // Last key row
-                return NSDirectionalEdgeInsets(top: layoutConstants.keyRowGap / 2, leading: 0, bottom: layoutConstants.keyViewBottomInset, trailing: 0)
+                return NSDirectionalEdgeInsets(top: layoutConstants.keyRowGap / 2, leading: 0, bottom: layoutConstants.keyboardViewInsets.bottom, trailing: 0)
             default: // Middle rows
                 return NSDirectionalEdgeInsets(top: layoutConstants.keyRowGap / 2, leading: 0, bottom: layoutConstants.keyRowGap / 2, trailing: 0)
             }

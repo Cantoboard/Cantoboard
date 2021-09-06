@@ -113,7 +113,7 @@ open class KeyboardViewController: UIInputViewController {
         heightConstraint.isActive = true
         self.heightConstraint = heightConstraint
     
-        let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.superviewSize.width)
+        let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.keyboardSuperviewSize.width)
         widthConstraint.priority = .required
         widthConstraint.isActive = true
         self.widthConstraint = widthConstraint
@@ -183,7 +183,7 @@ open class KeyboardViewController: UIInputViewController {
         let layoutConstants = self.layoutConstants.ref
         keyboardWidthConstraint?.constant = layoutConstants.keyboardSize.width
         heightConstraint?.constant = layoutConstants.keyboardSize.height
-        widthConstraint?.constant = layoutConstants.superviewSize.width
+        widthConstraint?.constant = layoutConstants.keyboardSuperviewSize.width
         
         super.viewWillLayoutSubviews()
         

@@ -16,26 +16,32 @@ enum LayoutIdiom {
 
 struct LayoutConstants {
     // Fixed:
-    static let keyViewTopInset = CGFloat(8)
+    static let keyboardViewTopInset = CGFloat(8)
     
     // Provided:
+    // Keyboard size
     let idiom: LayoutIdiom
     let isPortrait: Bool
     let keyboardSize: CGSize
+    let keyboardViewInsets: UIEdgeInsets
+    
+    // General
+    let keyHeight: CGFloat
+    let autoCompleteBarHeight: CGFloat
+    
+    // iPhone specific
     let keyButtonWidth: CGFloat
     let systemButtonWidth: CGFloat
     let shiftButtonWidth: CGFloat
-    let keyHeight: CGFloat
-    let autoCompleteBarHeight: CGFloat
-    let edgeHorizontalInset: CGFloat
-    let keyViewBottomInset: CGFloat
-
+    
     // Computed:
+    let keyboardViewHeight: CGFloat
+    let keyboardSuperviewSize: CGSize
+    
     let buttonGap: CGFloat
-    let keyViewHeight: CGFloat
     let keyRowGap: CGFloat
+    
     let keypadButtonUnitSize: CGSize
-    var superviewSize: CGSize
     
     var numOfSingleCharCandidateInRow: Int {
         switch idiom {
@@ -61,21 +67,20 @@ struct LayoutConstants {
         self.isPortrait = isPortrait
         self.keyboardSize = keyboardSize
         self.buttonGap = buttonGap
-        self.edgeHorizontalInset = edgeHorizontalInset
-        self.keyViewBottomInset = keyViewBottomInset
+        self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: edgeHorizontalInset, bottom: keyViewBottomInset, right: edgeHorizontalInset)
         self.shiftButtonWidth = shiftKeyWidth
         self.systemButtonWidth = systemKeyWidth
         self.keyHeight = keyHeight
         self.autoCompleteBarHeight = autoCompleteBarHeight
         
         keyButtonWidth = (keyboardSize.width - 2 * edgeHorizontalInset - 9 * buttonGap) / 10
-        keyViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyViewTopInset - keyViewBottomInset
-        keyRowGap = (keyViewHeight - 4 * keyHeight) / 3
+        keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyViewBottomInset
+        keyRowGap = (keyboardViewHeight - 4 * keyHeight) / 3
         
-        superviewSize = CGSize(width: superviewWidth, height: keyboardSize.height)
+        keyboardSuperviewSize = CGSize(width: superviewWidth, height: keyboardSize.height)
         
         let width = (keyboardSize.width - 2 * edgeHorizontalInset - 4 * buttonGap) / 5
-        let height = ((keyboardSize.height - Self.keyViewTopInset - keyViewBottomInset - autoCompleteBarHeight) - 3 * buttonGap) / 4
+        let height = ((keyboardSize.height - Self.keyboardViewTopInset - keyViewBottomInset - autoCompleteBarHeight) - 3 * buttonGap) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
     }
     
@@ -86,8 +91,8 @@ struct LayoutConstants {
                                           shiftKeyWidth: CGFloat,
                                           keyHeight: CGFloat,
                                           autoCompleteBarHeight: CGFloat,
-                                          edgeHorizontalInset: CGFloat,
-                                          superviewWidth: CGFloat,
+                                          keyboardViewLeftRightInset: CGFloat,
+                                          keyboardSuperviewWidth: CGFloat,
                                           isPadFloating: Bool = false) -> LayoutConstants {
         return LayoutConstants(
             idiom: isPadFloating ? .padFloating : .phone,
@@ -98,9 +103,9 @@ struct LayoutConstants {
             shiftKeyWidth: shiftKeyWidth,
             keyHeight: keyHeight,
             autoCompleteBarHeight: autoCompleteBarHeight,
-            edgeHorizontalInset: edgeHorizontalInset,
+            edgeHorizontalInset: keyboardViewLeftRightInset,
             keyViewBottomInset: 4,
-            superviewWidth: superviewWidth)
+            superviewWidth: keyboardSuperviewWidth)
     }
     
     internal static func makeiPadLayout(isPortrait: Bool,
@@ -117,7 +122,7 @@ struct LayoutConstants {
         return LayoutConstants(
             idiom: .pad,
             isPortrait: isPortrait,
-            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyViewTopInset + keyViewBottomInset),
+            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyViewBottomInset),
             buttonGap: buttonGapX,
             systemKeyWidth: returnKeyWidth,
             shiftKeyWidth: rightShiftKeyWidth,
@@ -140,8 +145,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 47,
         keyHeight: 45,
         autoCompleteBarHeight: 45,
-        edgeHorizontalInset: 3,
-        superviewWidth: 428),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 428),
     // Landscape:
     IntDuplet(926, 428): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -151,8 +156,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 84,
         keyHeight: 32,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 926),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 926),
     
     // iPhone 12, 12 Pro
     // Portrait:
@@ -164,8 +169,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 44,
         keyHeight: 42,
         autoCompleteBarHeight: 45,
-        edgeHorizontalInset: 3,
-        superviewWidth: 390),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 390),
     // Landscape:
     IntDuplet(844, 390): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -175,8 +180,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 84,
         keyHeight: 32,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 844),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 844),
     
     // iPhone 12 mini, 11 Pro, X, Xs
     // Portrait:
@@ -188,8 +193,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 42,
         keyHeight: 42,
         autoCompleteBarHeight: 45,
-        edgeHorizontalInset: 3,
-        superviewWidth: 375),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 375),
     // Landscape:
     IntDuplet(812, 375): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -199,8 +204,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 80,
         keyHeight: 30,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 812),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 812),
     
     // iPhone 11 Pro Max, Xs Max, 11, Xr
     // Portrait:
@@ -212,8 +217,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 46,
         keyHeight: 45,
         autoCompleteBarHeight: 45,
-        edgeHorizontalInset: 4,
-        superviewWidth: 414),
+        keyboardViewLeftRightInset: 4,
+        keyboardSuperviewWidth: 414),
     // Landscape:
     IntDuplet(896, 414): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -223,8 +228,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 80,
         keyHeight: 30,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 896),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 896),
     
     // iPhone 8+, 7+, 6s+, 6+
     // Portrait:
@@ -236,8 +241,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 45,
         keyHeight: 45,
         autoCompleteBarHeight: 45,
-        edgeHorizontalInset: 4,
-        superviewWidth: 414),
+        keyboardViewLeftRightInset: 4,
+        keyboardSuperviewWidth: 414),
     // Landscape:
     IntDuplet(736, 414): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -247,8 +252,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 69,
         keyHeight: 32,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 2,
-        superviewWidth: 736),
+        keyboardViewLeftRightInset: 2,
+        keyboardSuperviewWidth: 736),
     
     // iPhone SE (2nd gen), 8, 7, 6s, 6
     // Portrait:
@@ -260,8 +265,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 42,
         keyHeight: 42,
         autoCompleteBarHeight: 44,
-        edgeHorizontalInset: 3,
-        superviewWidth: 375),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 375),
     // Landscape:
     IntDuplet(667, 375): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -271,8 +276,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 63,
         keyHeight: 32,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 667),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 667),
     
     // iPhone SE (1st gen), 5c, 5s, 5
     // Portrait:
@@ -284,8 +289,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 36,
         keyHeight: 38,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 320),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 320),
     // Landscape:
     IntDuplet(568, 320): LayoutConstants.makeiPhoneLayout(
         isPortrait: false,
@@ -295,8 +300,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 68,
         keyHeight: 32,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 568),
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 568),
     
     // iPad 1024x1366 iPad Pro 12.9"
     // Portrait:
@@ -475,8 +480,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         shiftKeyWidth: 36,
         keyHeight: 39,
         autoCompleteBarHeight: 38,
-        edgeHorizontalInset: 3,
-        superviewWidth: 320,
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 320,
         isPadFloating: true),
 ]
 

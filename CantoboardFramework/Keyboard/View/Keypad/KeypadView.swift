@@ -126,15 +126,15 @@ class KeypadView: UIView, BaseKeyboardView {
         
         super.layoutSubviews()
         
-        layoutButtons(leftButtons, initialX: layoutConstants.edgeHorizontalInset, layoutConstants: layoutConstants)
-        layoutButtons(rightButtons, initialX: layoutConstants.edgeHorizontalInset + layoutConstants.buttonGap + layoutConstants.keypadButtonUnitSize.width, layoutConstants: layoutConstants)
+        layoutButtons(leftButtons, initialX: layoutConstants.keyboardViewInsets.left, layoutConstants: layoutConstants)
+        layoutButtons(rightButtons, initialX: layoutConstants.keyboardViewInsets.left + layoutConstants.buttonGap + layoutConstants.keypadButtonUnitSize.width, layoutConstants: layoutConstants)
         
         layoutCandidateSubviews(layoutConstants)
         layoutStatusMenu()
     }
     
     private func layoutButtons(_ buttons: [[KeypadButton]], initialX: CGFloat, layoutConstants: LayoutConstants) {
-        var x: CGFloat = initialX, y: CGFloat = LayoutConstants.keyViewTopInset + layoutConstants.autoCompleteBarHeight
+        var x: CGFloat = initialX, y: CGFloat = LayoutConstants.keyboardViewTopInset + layoutConstants.autoCompleteBarHeight
         
         for row in buttons {
             x = initialX
