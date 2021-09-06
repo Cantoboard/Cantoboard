@@ -442,6 +442,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var defaultChildKeyCapTitle: String? {
         switch self {
+        case .contextualSymbols(.url): return nil
         default: return self.buttonText
         }
     }
