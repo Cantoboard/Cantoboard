@@ -109,4 +109,8 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
             return layoutConstants.phoneLayoutConstants!.systemKeyWidth
         }
     }
+    
+    static func keyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
+        return layoutConstants.keyHeight
+    }
 }

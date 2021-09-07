@@ -119,4 +119,8 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         
         return totalFixedKeyWidth
     }
+    
+    static func keyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
+        return layoutConstants.keyHeight
+    }
 }

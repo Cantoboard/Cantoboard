@@ -18,6 +18,7 @@ protocol KeyboardViewLayout {
     static var symbolsFull: [[[KeyCap]]] { get };
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect]
+    static func keyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
 }
 
 extension LayoutIdiom {

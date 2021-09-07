@@ -116,4 +116,8 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
             frames.append(lastFrame.with(width: width))
         }
     }
+    
+    static func keyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
+        return layoutConstants.keyHeight
+    }
 }
