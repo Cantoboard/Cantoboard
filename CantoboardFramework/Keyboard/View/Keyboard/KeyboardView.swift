@@ -194,24 +194,18 @@ class KeyboardView: UIView, BaseKeyboardView {
     private func refreshKeys() {
         guard let layoutConstants = self.layoutConstants?.ref else { return }
         
-        let layout: KeyboardViewLayout.Type
-        switch layoutConstants.idiom {
-        case .phone:
-            layout = PhoneKeyboardViewLayout.self
-        case .pad:
-            layout = PadKeyboardViewLayout.self
-        }
+        let keyboardViewLayout = layoutConstants.idiom.keyboardViewLayout
         
         switch state.keyboardType {
         case let .alphabetic(shiftState):
-            refreshAlphabeticKeys(layout, shiftState)
+            refreshAlphabeticKeys(keyboardViewLayout, shiftState)
         case .numeric:
-            let rows = state.symbolShape == .full ? layout.numbersFull : layout.numbersHalf
+            let rows = state.symbolShape == .full ? keyboardViewLayout.numbersFull : keyboardViewLayout.numbersHalf
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
             }
         case .symbolic:
-            let rows = state.symbolShape == .full ? layout.symbolsFull : layout.symbolsHalf
+            let rows = state.symbolShape == .full ? keyboardViewLayout.symbolsFull : keyboardViewLayout.symbolsHalf
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
             }

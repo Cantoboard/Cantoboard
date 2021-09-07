@@ -122,7 +122,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFont: UIFont {
         switch self {
         case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
-        case .rime, "^_^", .keyboardType, .returnKey, .space, .contextualSymbols(.rime): return .systemFont(ofSize: 16)
+        case .rime, "^_^", .keyboardType, .returnKey, .space, .contextualSymbols(.rime), .character("\t", _, _), .capsLock: return .systemFont(ofSize: 16)
         case .cangjie(_, true): return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
         }
@@ -143,7 +143,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
         default:
-            if keyCapType == .input || keyCapType == .space {
+            if keyCapType == .input && action != .character("\t") || keyCapType == .space {
                  return ButtonColor.inputKeyBackgroundColor
             }
             return ButtonColor.systemKeyBackgroundColor
@@ -155,7 +155,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.uppercased), .shift(.capsLocked): return nil
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default:
-            if keyCapType == .input {
+            if keyCapType == .input && action != .character("\t") {
                 return nil
             }
             return ButtonColor.systemHighlightedKeyBackgroundColor
@@ -253,6 +253,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "］": return "]"
         case "｛": return "{"
         case "｝": return "}"
+        case "\t": return "tab"
+        case .capsLock: return "caps lock"
         case .character(let text, _, _): return text
         case .cangjie(let c, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
