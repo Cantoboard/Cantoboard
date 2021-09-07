@@ -18,7 +18,7 @@ protocol KeyboardViewLayout {
     static var symbolsFull: [[[KeyCap]]] { get };
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect]
-    static func keyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
+    static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
 }
 
 extension LayoutIdiom {
@@ -27,6 +27,7 @@ extension LayoutIdiom {
         case .phone: return PhoneKeyboardViewLayout.self
         case .pad(.padShort): return PadShortKeyboardViewLayout.self
         case .pad(.padFull4Rows): return PadFull4RowsKeyboardViewLayout.self
+        case .pad(.padFull5Rows): return PadFull5RowsKeyboardViewLayout.self
         }
     }
 }

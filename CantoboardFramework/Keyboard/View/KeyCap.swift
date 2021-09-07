@@ -56,7 +56,7 @@ enum KeyCapType {
     case input, system, returnKey, space
 }
 
-enum KeyCap: Equatable, ExpressibleByStringLiteral {
+indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
     backspace,
@@ -78,7 +78,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     exportFile(String, String),
     currency,
     dismissKeyboard,
-    exit
+    exit,
+    placeholder(KeyCap)
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
@@ -116,6 +117,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .exit: return .exit
         case .currency: return .character(SessionState.main.currencySymbol)
         case .dismissKeyboard: return .dismissKeyboard
+        case .placeholder: return .none
         }
     }
     

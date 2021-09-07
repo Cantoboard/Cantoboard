@@ -139,6 +139,12 @@ class KeyView: HighlightableButton {
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
         
+        if case .placeholder = keyCap {
+            isHidden = true
+        } else {
+            isHidden = false
+        }
+        
         // isUserInteractionEnabled = action == .nextKeyboard
         // layoutPopupView()
         setNeedsLayout()

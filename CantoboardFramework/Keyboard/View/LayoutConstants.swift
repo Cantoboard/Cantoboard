@@ -11,7 +11,7 @@ import UIKit
 import CocoaLumberjackSwift
 
 enum PadLayoutIdiom {
-    case padShort, padFull4Rows //, pad_full_5_rows
+    case padShort, padFull4Rows, padFull5Rows
 }
 
 enum LayoutIdiom: Equatable {
@@ -40,22 +40,58 @@ class PadShortLayoutConstants {
     }
 }
 
-class PadFullLayoutConstants {
+class PadFull4RowsLayoutConstants {
     let tabDeleteKeyWidth: CGFloat
+    
     let capLockKeyWidth: CGFloat
     let leftShiftKeyWidth: CGFloat
+    let leftSystemKeyWidth: CGFloat
+    
     let returnKeyWidth: CGFloat
     let rightShiftKeyWidth: CGFloat
-    let leftSystemKeyWidth: CGFloat
     let rightSystemKeyWidth: CGFloat
     
-    init(tabDeleteKeyWidth: CGFloat, capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, leftSystemKeyWidth: CGFloat, rightSystemKeyWidth: CGFloat) {
+    init(tabDeleteKeyWidth: CGFloat,
+         capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, leftSystemKeyWidth: CGFloat,
+         returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, rightSystemKeyWidth: CGFloat) {
         self.tabDeleteKeyWidth = tabDeleteKeyWidth
+        
         self.capLockKeyWidth = capLockKeyWidth
         self.leftShiftKeyWidth = leftShiftKeyWidth
+        self.leftSystemKeyWidth = leftSystemKeyWidth
+        
         self.returnKeyWidth = returnKeyWidth
         self.rightShiftKeyWidth = rightShiftKeyWidth
+        self.rightSystemKeyWidth = rightSystemKeyWidth
+    }
+}
+
+class PadFull5RowsLayoutConstants {
+    let topRowKeyHeight: CGFloat
+    
+    let tabKeyWidth: CGFloat
+    let capLockKeyWidth: CGFloat
+    let leftShiftKeyWidth: CGFloat
+    let leftSystemKeyWidth: CGFloat
+    
+    let deleteKeyWidth: CGFloat
+    let returnKeyWidth: CGFloat
+    let rightShiftKeyWidth: CGFloat
+    let rightSystemKeyWidth: CGFloat
+    
+    init(topRowKeyHeight: CGFloat,
+         tabKeyWidth: CGFloat, capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, leftSystemKeyWidth: CGFloat,
+         deleteKeyWidth: CGFloat, returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, rightSystemKeyWidth: CGFloat) {
+        self.topRowKeyHeight = topRowKeyHeight
+        
+        self.tabKeyWidth = tabKeyWidth
+        self.capLockKeyWidth = capLockKeyWidth
+        self.leftShiftKeyWidth = leftShiftKeyWidth
         self.leftSystemKeyWidth = leftSystemKeyWidth
+        
+        self.deleteKeyWidth = deleteKeyWidth
+        self.returnKeyWidth = returnKeyWidth
+        self.rightShiftKeyWidth = rightShiftKeyWidth
         self.rightSystemKeyWidth = rightSystemKeyWidth
     }
 }
@@ -78,8 +114,9 @@ class LayoutConstants {
     // Idiom specific constants
     let phoneLayoutConstants: PhoneLayoutConstants?
     let padShortLayoutConstants: PadShortLayoutConstants?
-    let padFullLayoutConstants: PadFullLayoutConstants?
-    
+    let padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants?
+    let padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants?
+
     // Computed:
     let keyboardViewHeight: CGFloat
     let keyboardSuperviewSize: CGSize
@@ -107,9 +144,11 @@ class LayoutConstants {
                   keyboardViewLeftRightInset: CGFloat,
                   keyboardViewBottomInset: CGFloat,
                   keyboardSuperviewWidth: CGFloat,
+                  keyRowGapY: CGFloat? = nil,
                   phoneLayoutConstants: PhoneLayoutConstants? = nil,
                   padShortLayoutConstants: PadShortLayoutConstants? = nil,
-                  padFullLayoutConstants: PadFullLayoutConstants? = nil) {
+                  padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants? = nil,
+                  padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants? = nil) {
         self.idiom = idiom
         self.isPortrait = isPortrait
         self.keyboardSize = keyboardSize
@@ -118,8 +157,9 @@ class LayoutConstants {
         self.keyHeight = keyHeight
         self.autoCompleteBarHeight = autoCompleteBarHeight
         
-        keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset
-        keyRowGapY = (keyboardViewHeight - 4 * keyHeight) / 3
+        let keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset
+        self.keyboardViewHeight = keyboardViewHeight
+        self.keyRowGapY = keyRowGapY ?? (keyboardViewHeight - 4 * keyHeight) / 3
         
         keyboardSuperviewSize = CGSize(width: keyboardSuperviewWidth, height: keyboardSize.height)
         
@@ -129,7 +169,8 @@ class LayoutConstants {
         
         self.phoneLayoutConstants = phoneLayoutConstants
         self.padShortLayoutConstants = padShortLayoutConstants
-        self.padFullLayoutConstants = padFullLayoutConstants
+        self.padFull4RowsLayoutConstants = padFull4RowsLayoutConstants
+        self.padFull5RowsLayoutConstants = padFull5RowsLayoutConstants
     }
     
     internal static func makeiPhoneLayout(isPortrait: Bool,
@@ -179,7 +220,7 @@ class LayoutConstants {
             padShortLayoutConstants: PadShortLayoutConstants(rightShiftKeyWidth: rightShiftKeyWidth, returnKeyWidth: returnKeyWidth))
     }
     
-    internal static func makeiPadFullLayout(isPortrait: Bool,
+    internal static func makeiPadFull4RowsLayout(isPortrait: Bool,
                                             keyboardWidth: CGFloat,
                                             keyboardViewLeftRightInset: CGFloat,
                                             keyboardViewBottomInset: CGFloat,
@@ -191,9 +232,9 @@ class LayoutConstants {
                                             tabDeleteKeyWidth: CGFloat,
                                             capLockKeyWidth: CGFloat,
                                             leftShiftKeyWidth: CGFloat,
+                                            leftSystemKeyWidth: CGFloat,
                                             returnKeyWidth: CGFloat,
                                             rightShiftKeyWidth: CGFloat,
-                                            leftSystemKeyWidth: CGFloat,
                                             rightSystemKeyWidth: CGFloat) -> LayoutConstants {
         return LayoutConstants(
             idiom: .pad(.padFull4Rows),
@@ -205,7 +246,45 @@ class LayoutConstants {
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: keyboardViewBottomInset,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
-            padFullLayoutConstants: PadFullLayoutConstants(tabDeleteKeyWidth: tabDeleteKeyWidth, capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, leftSystemKeyWidth: leftSystemKeyWidth, rightSystemKeyWidth: rightSystemKeyWidth))
+            padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants(
+                tabDeleteKeyWidth: tabDeleteKeyWidth,
+                capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, leftSystemKeyWidth: leftSystemKeyWidth,
+                returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, rightSystemKeyWidth: rightSystemKeyWidth))
+    }
+    
+    internal static func makeiPadFull5RowsLayout(isPortrait: Bool,
+                                                 keyboardWidth: CGFloat,
+                                                 keyboardViewLeftRightInset: CGFloat,
+                                                 keyboardViewBottomInset: CGFloat,
+                                                 keyboardSuperviewWidth: CGFloat,
+                                                 buttonGapX: CGFloat,
+                                                 rowGapY: CGFloat,
+                                                 autoCompleteBarHeight: CGFloat,
+                                                 keyHeight: CGFloat,
+                                                 topRowKeyHeight: CGFloat,
+                                                 tabKeyWidth: CGFloat,
+                                                 capLockKeyWidth: CGFloat,
+                                                 leftShiftKeyWidth: CGFloat,
+                                                 leftSystemKeyWidth: CGFloat,
+                                                 deleteKeyWidth: CGFloat,
+                                                 returnKeyWidth: CGFloat,
+                                                 rightShiftKeyWidth: CGFloat,
+                                                 rightSystemKeyWidth: CGFloat) -> LayoutConstants {
+        return LayoutConstants(
+            idiom: .pad(.padFull5Rows),
+            isPortrait: isPortrait,
+            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + topRowKeyHeight + rowGapY * 4 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
+            buttonGapX: buttonGapX,
+            keyHeight: keyHeight,
+            autoCompleteBarHeight: autoCompleteBarHeight,
+            keyboardViewLeftRightInset: keyboardViewLeftRightInset,
+            keyboardViewBottomInset: keyboardViewBottomInset,
+            keyboardSuperviewWidth: keyboardSuperviewWidth,
+            keyRowGapY: rowGapY,
+            padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants(
+                topRowKeyHeight: topRowKeyHeight,
+                tabKeyWidth: tabKeyWidth, capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, leftSystemKeyWidth: leftSystemKeyWidth,
+                deleteKeyWidth: deleteKeyWidth, returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, rightSystemKeyWidth: rightSystemKeyWidth))
     }
 }
 
@@ -380,35 +459,49 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 1024x1366 iPad Pro 12.9"
     // Portrait:
-    IntDuplet(1024, 1366): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(1024, 1366): LayoutConstants.makeiPadFull5RowsLayout(
         isPortrait: true,
         keyboardWidth: 1024,
-        buttonGapX: 7,
-        rowGapY: 7,
-        returnKeyWidth: 100,
-        rightShiftKeyWidth: 147,
-        keyHeight: 62,
-        autoCompleteBarHeight: 55,
-        keyboardViewLeftRightInset: 3,
+        keyboardViewLeftRightInset: 4,
         keyboardViewBottomInset: 3,
-        keyboardSuperviewWidth: 1024),
+        keyboardSuperviewWidth: 1024,
+        buttonGapX: 7,
+        rowGapY: 6,
+        autoCompleteBarHeight: 55,
+        keyHeight: 62,
+        topRowKeyHeight: 47,
+        tabKeyWidth: 106,
+        capLockKeyWidth: 119,
+        leftShiftKeyWidth: 154,
+        leftSystemKeyWidth: 94,
+        deleteKeyWidth: 106,
+        returnKeyWidth: 120,
+        rightShiftKeyWidth: 155,
+        rightSystemKeyWidth: 133),
     // Landscape:
-    IntDuplet(1366, 1024): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(1366, 1024): LayoutConstants.makeiPadFull5RowsLayout(
         isPortrait: false,
         keyboardWidth: 1366,
-        buttonGapX: 9,
-        rowGapY: 9,
-        returnKeyWidth: 132,
-        rightShiftKeyWidth: 194,
-        keyHeight: 80,
-        autoCompleteBarHeight: 55,
-        keyboardViewLeftRightInset: 7,
+        keyboardViewLeftRightInset: 4.5,
         keyboardViewBottomInset: 3,
-        keyboardSuperviewWidth: 1366),
+        keyboardSuperviewWidth: 1366,
+        buttonGapX: 9,
+        rowGapY: 8,
+        autoCompleteBarHeight: 55,
+        keyHeight: 80,
+        topRowKeyHeight: 60,
+        tabKeyWidth: 135,
+        capLockKeyWidth: 157,
+        leftShiftKeyWidth: 204,
+        leftSystemKeyWidth: 126,
+        deleteKeyWidth: 135,
+        returnKeyWidth: 157,
+        rightShiftKeyWidth: 204,
+        rightSystemKeyWidth: 192),
     
     // iPad 834×1194 iPad Pro 11"
     // Portrait:
-    IntDuplet(834, 1194): LayoutConstants.makeiPadFullLayout(
+    IntDuplet(834, 1194): LayoutConstants.makeiPadFull4RowsLayout(
         isPortrait: true,
         keyboardWidth: 834,
         keyboardViewLeftRightInset: 10,
@@ -421,12 +514,12 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 59.5,
         capLockKeyWidth: 86,
         leftShiftKeyWidth: 112.5,
+        leftSystemKeyWidth: 59.5,
         returnKeyWidth: 106,
         rightShiftKeyWidth: 89.5,
-        leftSystemKeyWidth: 59.5,
         rightSystemKeyWidth: 94),
     // Landscape:
-    IntDuplet(1194, 834): LayoutConstants.makeiPadFullLayout(
+    IntDuplet(1194, 834): LayoutConstants.makeiPadFull4RowsLayout(
         isPortrait: false,
         keyboardWidth: 1194,
         keyboardViewLeftRightInset: 14,
@@ -439,14 +532,14 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 103,
         capLockKeyWidth: 136,
         leftShiftKeyWidth: 179,
+        leftSystemKeyWidth: 82.5,
         returnKeyWidth: 164.5,
         rightShiftKeyWidth: 121.5,
-        leftSystemKeyWidth: 82.5,
         rightSystemKeyWidth: 121.5),
     
     // iPad 820×1180 iPad Air (gen 4) 10.9"
     // Portrait:
-    IntDuplet(820, 1180): LayoutConstants.makeiPadFullLayout(
+    IntDuplet(820, 1180): LayoutConstants.makeiPadFull4RowsLayout(
         isPortrait: true,
         keyboardWidth: 820,
         keyboardViewLeftRightInset: 10,
@@ -459,12 +552,12 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 58,
         capLockKeyWidth: 85,
         leftShiftKeyWidth: 110.5,
+        leftSystemKeyWidth: 58.5,
         returnKeyWidth: 102,
         rightShiftKeyWidth: 86,
-        leftSystemKeyWidth: 58.5,
         rightSystemKeyWidth: 94),
     // Landscape:
-    IntDuplet(1180, 820): LayoutConstants.makeiPadFullLayout(
+    IntDuplet(1180, 820): LayoutConstants.makeiPadFull4RowsLayout(
         isPortrait: false,
         keyboardWidth: 1180,
         keyboardViewLeftRightInset: 14,
@@ -477,9 +570,9 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 101,
         capLockKeyWidth: 134,
         leftShiftKeyWidth: 176,
+        leftSystemKeyWidth: 81.5,
         returnKeyWidth: 161,
         rightShiftKeyWidth: 120,
-        leftSystemKeyWidth: 81.5,
         rightSystemKeyWidth: 121.5),
     
     // iPad 810×1080 iPad (gen 8/7) 10.2"

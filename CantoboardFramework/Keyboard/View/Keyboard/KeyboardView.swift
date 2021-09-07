@@ -149,7 +149,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
         
         let keyboardLayout = layoutConstants.idiom.keyboardViewLayout
-        let keyRowsHeight: [CGFloat] = (0..<keyRows.count).map { keyRowsMargin[$0].top + keyboardLayout.keyHeight(atRow: $0, layoutConstants: layoutConstants) + keyRowsMargin[$0].bottom }
+        let keyRowsHeight: [CGFloat] = (0..<keyRows.count).map { keyRowsMargin[$0].top + keyboardLayout.getKeyHeight(atRow: $0, layoutConstants: layoutConstants) + keyRowsMargin[$0].bottom }
         
         var currentY: CGFloat = layoutConstants.autoCompleteBarHeight
         let keyRowsY: [CGFloat] = (0..<keyRows.count).map { (currentY, currentY += keyRowsHeight[$0]).0 }

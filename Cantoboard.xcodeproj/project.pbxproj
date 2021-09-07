@@ -35,6 +35,7 @@
 		796E53E526E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53E426E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift */; };
 		796E53EB26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */; };
 		796E53F126E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */; };
+		796E53FB26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */; };
 		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
 		799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */; };
@@ -316,6 +317,7 @@
 		796E53E426E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadShortKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull4RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
+		796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull5RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuHandler.swift; sourceTree = "<group>"; };
 		799AE20126792F4C00286530 /* KeypadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadButton.swift; sourceTree = "<group>"; };
@@ -885,6 +887,7 @@
 				7922EF2E26D61029007E1699 /* KeyboardViewLayout.swift */,
 				79B9B5A125F34A1200238E80 /* KeyRowView.swift */,
 				796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */,
+				796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */,
 				796E53E426E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift */,
 				796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */,
 			);
@@ -1331,6 +1334,7 @@
 				79B9B60525F34A1200238E80 /* CandidatePaneView.swift in Sources */,
 				790839A726D0FCED00CA6B56 /* LocalizedStrings.swift in Sources */,
 				79B9B5FD25F34A1200238E80 /* Character+Extension.swift in Sources */,
+				796E53FB26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift in Sources */,
 				79B9B5F525F34A1200238E80 /* EnglishInputEngine.swift in Sources */,
 				798032A52645F6AF008DC703 /* Logging.swift in Sources */,
 				79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */,

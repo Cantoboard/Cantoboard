@@ -24,28 +24,28 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
         [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
         [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
         [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
         [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {
@@ -83,7 +83,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     private static func getFixedKeyWidth(keys: [KeyView], layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
-        let padFullLayoutConstants = layoutConstants.padFullLayoutConstants!
+        let padFull4RowsLayoutConstants = layoutConstants.padFull4RowsLayoutConstants!
         
         let totalFixedKeyWidth = keys.enumerated().reduce(CGFloat(0)) {sum, indexAndKey in
             let index = indexAndKey.offset
@@ -91,20 +91,20 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
             
             var width: CGFloat
             switch key.keyCap {
-            case "\t", .backspace: width = padFullLayoutConstants.tabDeleteKeyWidth
-            case .capsLock: width = padFullLayoutConstants.capLockKeyWidth
+            case "\t", .backspace: width = padFull4RowsLayoutConstants.tabDeleteKeyWidth
+            case .capsLock: width = padFull4RowsLayoutConstants.capLockKeyWidth
             case .shift:
                 if index == 0 {
-                    width = padFullLayoutConstants.leftShiftKeyWidth
+                    width = padFull4RowsLayoutConstants.leftShiftKeyWidth
                 } else {
-                    width = padFullLayoutConstants.rightShiftKeyWidth
+                    width = padFull4RowsLayoutConstants.rightShiftKeyWidth
                 }
-            case .returnKey: width = padFullLayoutConstants.returnKeyWidth
+            case .returnKey: width = padFull4RowsLayoutConstants.returnKeyWidth
             case .nextKeyboard, .contextualSymbols,
                  .keyboardType where index <= 2:
-                width = padFullLayoutConstants.leftSystemKeyWidth
+                width = padFull4RowsLayoutConstants.leftSystemKeyWidth
             case .keyboardType, .dismissKeyboard:
-                width = padFullLayoutConstants.rightSystemKeyWidth
+                width = padFull4RowsLayoutConstants.rightSystemKeyWidth
             default:
                 width = 0
                 numFlexibleWidthKeys += 1
@@ -120,7 +120,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         return totalFixedKeyWidth
     }
     
-    static func keyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
+    static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
         return layoutConstants.keyHeight
     }
 }
