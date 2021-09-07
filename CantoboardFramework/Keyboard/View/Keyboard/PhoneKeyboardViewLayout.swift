@@ -52,9 +52,9 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {
         // First, put the keys to where they should be.
-        let leftKeyFrames = layoutPhoneKeys(keyRowView: keyRowView, leftKeys, direction: .left, layoutConstants: layoutConstants)
-        let middleKeyFrames = layoutPhoneKeys(keyRowView: keyRowView, middleKeys, direction: .middle, layoutConstants: layoutConstants)
-        let rightKeyFrames = layoutPhoneKeys(keyRowView: keyRowView, rightKeys, direction: .right, layoutConstants: layoutConstants)
+        let leftKeyFrames = layoutKeyGroup(keyRowView: keyRowView, leftKeys, direction: .left, layoutConstants: layoutConstants)
+        let middleKeyFrames = layoutKeyGroup(keyRowView: keyRowView, middleKeys, direction: .middle, layoutConstants: layoutConstants)
+        let rightKeyFrames = layoutKeyGroup(keyRowView: keyRowView, rightKeys, direction: .right, layoutConstants: layoutConstants)
         
         var allFrames = leftKeyFrames + middleKeyFrames + rightKeyFrames
         
@@ -69,7 +69,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         return allFrames
     }
     
-    private static func layoutPhoneKeys(keyRowView: KeyRowView, _ keys: [KeyView], direction: GroupLayoutDirection, layoutConstants: LayoutConstants) -> [CGRect] {
+    private static func layoutKeyGroup(keyRowView: KeyRowView, _ keys: [KeyView], direction: GroupLayoutDirection, layoutConstants: LayoutConstants) -> [CGRect] {
         let directionalLayoutMargins = keyRowView.directionalLayoutMargins
         let bounds = keyRowView.bounds
         
@@ -79,16 +79,16 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
             x = directionalLayoutMargins.leading
         case .middle:
             let middleKeysCount = CGFloat(keys.count)
-            let middleKeysWidth = keys.reduce(0, { $0 + getPhoneKeyWidth($1, layoutConstants) }) + (middleKeysCount - 1) * layoutConstants.buttonGapX
+            let middleKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (middleKeysCount - 1) * layoutConstants.buttonGapX
             x = (bounds.width - middleKeysWidth) / 2
         case .right:
             let rightKeysCount = CGFloat(keys.count)
-            let rightKeysWidth = keys.reduce(0, { $0 + getPhoneKeyWidth($1, layoutConstants) }) + (rightKeysCount - 1) * layoutConstants.buttonGapX
+            let rightKeysWidth = keys.reduce(0, { $0 + getKeyWidth($1, layoutConstants) }) + (rightKeysCount - 1) * layoutConstants.buttonGapX
             x = bounds.maxX - directionalLayoutMargins.trailing - rightKeysWidth
         }
         
         let frames: [CGRect] = keys.map { key in
-            let keyWidth = getPhoneKeyWidth(key, layoutConstants)
+            let keyWidth = getKeyWidth(key, layoutConstants)
             let rect = CGRect(x: x, y: directionalLayoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
             x += keyWidth + layoutConstants.buttonGapX
             
@@ -97,7 +97,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         return frames
     }
     
-    private static func getPhoneKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
+    private static func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
         switch key.keyCap {
         case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
             return layoutConstants.phoneLayoutConstants!.shiftKeyWidth

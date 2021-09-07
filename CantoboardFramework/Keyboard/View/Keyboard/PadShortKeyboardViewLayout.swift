@@ -64,7 +64,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
             var x = directionalLayoutMargins.leading
             
             allKeys = leftKeys + middleKeys + rightKeys
-            allFrames = layoutPadShortKeys(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
+            allFrames = layoutKeyViews(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
         case 1:
             let leftInset: CGFloat = keyWidthRow3n4 / 2
             let lastKeyWidth = layoutConstants.padShortLayoutConstants!.returnKeyWidth
@@ -72,13 +72,13 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
             var x = directionalLayoutMargins.leading + leftInset
             
             allKeys = leftKeys + middleKeys + rightKeys
-            allFrames = layoutPadShortKeys(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
+            allFrames = layoutKeyViews(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
             
             overrideLastFrame(frames: &allFrames, width: lastKeyWidth)
         case 2:
             var x = directionalLayoutMargins.leading
             allKeys = leftKeys + middleKeys + rightKeys
-            allFrames = layoutPadShortKeys(keys: allKeys, keyWidth: keyWidthRow3n4, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
+            allFrames = layoutKeyViews(keys: allKeys, keyWidth: keyWidthRow3n4, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
             
             overrideLastFrame(frames: &allFrames, width: rightShiftKeyWidth)
         case 3:
@@ -86,14 +86,14 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
             var x = directionalLayoutMargins.leading
             
             let leftKeyWidth = (leftRightGroupWidth - CGFloat(leftKeys.count - 1) * layoutConstants.buttonGapX) / CGFloat(leftKeys.count)
-            let leftFrames = layoutPadShortKeys(keys: leftKeys, keyWidth: leftKeyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
+            let leftFrames = layoutKeyViews(keys: leftKeys, keyWidth: leftKeyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
             
             let middleGroupWidth: CGFloat = availableWidth - 2 * leftRightGroupWidth - 2 * layoutConstants.buttonGapX
             let middleKeyWidth = (middleGroupWidth - CGFloat(middleKeys.count - 1) * layoutConstants.buttonGapX) / CGFloat(middleKeys.count)
-            let middleFrames = layoutPadShortKeys(keys: middleKeys, keyWidth: middleKeyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
+            let middleFrames = layoutKeyViews(keys: middleKeys, keyWidth: middleKeyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
             
             let rightKeyWidth: CGFloat = (leftRightGroupWidth - CGFloat(rightKeys.count - 1) * layoutConstants.buttonGapX) / CGFloat(rightKeys.count)
-            let rightFrames = layoutPadShortKeys(keys: rightKeys, keyWidth: rightKeyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
+            let rightFrames = layoutKeyViews(keys: rightKeys, keyWidth: rightKeyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
             
             allKeys = leftKeys + middleKeys + rightKeys
             allFrames = leftFrames + middleFrames + rightFrames
@@ -102,7 +102,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         return allFrames
     }
     
-    private static func layoutPadShortKeys(keys: [KeyView], keyWidth: CGFloat, layoutConstants: LayoutConstants, marginTop: CGFloat, x: inout CGFloat) -> [CGRect] {
+    private static func layoutKeyViews(keys: [KeyView], keyWidth: CGFloat, layoutConstants: LayoutConstants, marginTop: CGFloat, x: inout CGFloat) -> [CGRect] {
         return keys.map { key in
             let rect = CGRect(x: x, y: marginTop, width: keyWidth, height: layoutConstants.keyHeight)
             x += rect.width + layoutConstants.buttonGapX
