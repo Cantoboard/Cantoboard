@@ -408,31 +408,41 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 834×1194 iPad Pro 11"
     // Portrait:
-    IntDuplet(834, 1194): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(834, 1194): LayoutConstants.makeiPadFullLayout(
         isPortrait: true,
         keyboardWidth: 834,
-        buttonGapX: 11,
-        rowGapY: 11,
-        returnKeyWidth: 59,
-        rightShiftKeyWidth: 115,
-        keyHeight: 55,
+        keyboardViewLeftRightInset: 10,
+        keyboardViewBottomInset: 8,
+        keyboardSuperviewWidth: 834,
+        buttonGapX: 10,
+        rowGapY: 8,
         autoCompleteBarHeight: 55,
-        keyboardViewLeftRightInset: 3,
-        keyboardViewBottomInset: 3,
-        keyboardSuperviewWidth: 834),
+        keyHeight: 56,
+        tabDeleteKeyWidth: 59.5,
+        capLockKeyWidth: 86,
+        leftShiftKeyWidth: 112.5,
+        returnKeyWidth: 106,
+        rightShiftKeyWidth: 89.5,
+        leftSystemKeyWidth: 59.5,
+        rightSystemKeyWidth: 94),
     // Landscape:
-    IntDuplet(1194, 834): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(1194, 834): LayoutConstants.makeiPadFullLayout(
         isPortrait: false,
         keyboardWidth: 1194,
-        buttonGapX: 11,
+        keyboardViewLeftRightInset: 14,
+        keyboardViewBottomInset: 10,
+        keyboardSuperviewWidth: 1180,
+        buttonGapX: 14,
         rowGapY: 11,
-        returnKeyWidth: 81.5,
-        rightShiftKeyWidth: 165,
-        keyHeight: 75,
         autoCompleteBarHeight: 55,
-        keyboardViewLeftRightInset: 7,
-        keyboardViewBottomInset: 3,
-        keyboardSuperviewWidth: 1194),
+        keyHeight: 75,
+        tabDeleteKeyWidth: 103,
+        capLockKeyWidth: 136,
+        leftShiftKeyWidth: 179,
+        returnKeyWidth: 164.5,
+        rightShiftKeyWidth: 121.5,
+        leftSystemKeyWidth: 82.5,
+        rightSystemKeyWidth: 121.5),
     
     // iPad 820×1180 iPad Air (gen 4) 10.9"
     // Portrait:
