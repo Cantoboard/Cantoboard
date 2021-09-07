@@ -36,7 +36,7 @@ class CandidatePaneView: UIControl {
     }
     
     let rowPadding = CGFloat(0)
-        
+    
     private var _keyboardState: KeyboardState
     private weak var layoutConstants: Reference<LayoutConstants>?
     
@@ -316,7 +316,7 @@ class CandidatePaneView: UIControl {
         
         let height = mode == .row ? rowHeight : superview.bounds.height
         let buttonWidth = expandButtonWidth
-        let candidateViewWidth = superview.bounds.width - buttonWidth
+        let candidateViewWidth = superview.bounds.width - buttonWidth - directionalLayoutMargins.trailing
         
         collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
         collectionView.collectionViewLayout.invalidateLayout()
@@ -327,7 +327,7 @@ class CandidatePaneView: UIControl {
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
-                button.frame = CGRect(origin: CGPoint(x: bounds.size.width - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
+                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth + buttonWidth - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
                 continue
             }
             button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: buttonWidth, height: buttonWidth))

@@ -54,15 +54,13 @@ class KeyboardView: UIView, BaseKeyboardView {
         self._state = state
         self.candidateOrganizer = candidateOrganizer
         self.layoutConstants = layoutConstants
+        self.keyRows = []
         super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
         insetsLayoutMarginsFromSafeArea = false
         isMultipleTouchEnabled = true
         preservesSuperviewLayoutMargins = false
-
-        keyRows = (0..<4).map { i in KeyRowView(layoutConstants: layoutConstants) }
-        keyRows.forEach { addSubview($0) }
         
         initTouchHandler()
         createCandidatePaneView()
@@ -165,6 +163,10 @@ class KeyboardView: UIView, BaseKeyboardView {
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
         let height = candidatePaneView.mode == .row ? layoutConstants.autoCompleteBarHeight : bounds.height
+        candidatePaneView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0,
+                                                                             leading: layoutConstants.keyboardViewInsets.left,
+                                                                             bottom: 0,
+                                                                             trailing: layoutConstants.keyboardViewInsets.right)
         candidatePaneView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: bounds.width, height: height))
     }
     
@@ -215,7 +217,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func refreshSpaceAndReturnKeys() {
-        if let lastRow = keyRows[safe: 3] {
+        if let lastRow = keyRows[safe: keyRows.count - 1] {
             if let lastRowRightKeys = lastRow.rightKeys,
                let newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1],
                case .returnKey = newLineKey.keyCap {
@@ -305,11 +307,27 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func setupView() {
+        createKeyRows()
         refreshCandidatePaneViewVisibility()
         candidatePaneView?.setupButtons()
         refreshKeyRowsVisibility()
         refreshKeys()
         refreshEmojiView()
+    }
+    
+    private func createKeyRows() {
+        guard let layoutConstants = layoutConstants else { return }
+        let numOfKeyRows = layoutConstants.ref.idiom.keyboardViewLayout.numOfRows
+        
+        while keyRows.count < numOfKeyRows {
+            let newKeyRow = KeyRowView(layoutConstants: layoutConstants)
+            addSubview(newKeyRow)
+            keyRows.append(newKeyRow)
+        }
+        
+        while numOfKeyRows > keyRows.count {
+            keyRows.removeLast().removeFromSuperview()
+        }
     }
     
     private func refreshEmojiView() {
