@@ -17,35 +17,37 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .backspace]],
         [[.capsLock, "a", "s", "d", "f", "g", "h", "j", "k", "l", .returnKey(.default)]],
         [[.shift(.lowercased), "z", "x", "c", "v", "b", "n", "m", ",", ".", .shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numeric)], [.contextualSymbols(.english), .space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numeric), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
+        [["\t", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
+        [[.placeholder(.capsLock), "@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
         [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
+    // FIXME
     static let numbersFull: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
+        [["\t", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
+        [[.placeholder(.capsLock), "@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
         [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
+        [["\t", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
+        [[.placeholder(.capsLock), "€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
         [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
+    // FIXME
     static let symbolsFull: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
+        [["\t", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
+        [[.placeholder(.capsLock), "€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
         [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.contextualSymbols(.english), .keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {

@@ -23,23 +23,23 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">", .backspace]],
-        [["\t", "[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "~"]],
-        [[.placeholder(.capsLock), "-", "/", ":", ";", "(", ")", "$", "&", "@", "£", "¥", .returnKey(.default)]],
-        [[.placeholder(.shift(.lowercased)), .placeholder("BUG"), "…", ".", ",", "?", "!", "’", "”", "_", "€"]],
+        [["\t", "[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"]],
+        [[.placeholder(.capsLock), "-", "/", ":", ";", "(", ")", .currency, "&", "@", "’", "¥", .returnKey(.default)]],
+        [[.placeholder(.shift(.lowercased)), "^_^", "…", ".", ",", "、", "?", "!", "~", "”", "”", "€", "£"]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
-        [["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", .backspace]],
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
-        [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
+        [["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">", .backspace]],
+        [["\t", "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "＼", "｜", "＿"]],
+        [[.placeholder(.capsLock), "－", "／", "：", "；", "（", "）", .currency, "＆", "＠", "’", "¥", .returnKey(.default)]],
+        [[.placeholder(.shift(.lowercased)), "^_^", "⋯", "。", "，", "、", "？", "！", "～", "＂", "＇", "「", "」"]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
-    static let symbolsHalf: [[[KeyCap]]] = []
+    static let symbolsHalf: [[[KeyCap]]] = numbersHalf
     
-    static let symbolsFull: [[[KeyCap]]] = []
+    static let symbolsFull: [[[KeyCap]]] = numbersFull
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {
         let directionalLayoutMargins = keyRowView.directionalLayoutMargins
@@ -110,7 +110,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                 width = padFull5RowsLayoutConstants.leftSystemKeyWidth
             case .keyboardType, .dismissKeyboard:
                 width = padFull5RowsLayoutConstants.rightSystemKeyWidth
-            case .character, .cangjie: width = inputKeyWidth
+            case .character, .cangjie, .currency: width = inputKeyWidth
             default:
                 width = 0
                 numFlexibleWidthKeys += 1
