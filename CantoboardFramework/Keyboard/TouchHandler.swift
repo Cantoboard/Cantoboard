@@ -77,9 +77,9 @@ class TouchHandler {
         case .keyboardType:
             callKeyHandler(key.selectedAction)
         case .nextKeyboard:
-            guard let event = event else { return }
+            guard let event = event, let touchView = touch.view else { return }
             inputMode = .nextKeyboard
-            keyboardView?.delegate?.handleInputModeList(from: key, with: event)
+            keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
         case .shift:
             if touch.tapCount % 2 == 1 {
                 // Single tapping shift.
@@ -135,8 +135,8 @@ class TouchHandler {
             self.cursorMoveStartPosition = point
             self.cursorMoveStartPosition!.x -= isLeft ? -dX : dX
         case .nextKeyboard:
-            guard let event = event, let currentTouch = currentTouch else { return }
-            keyboardView?.delegate?.handleInputModeList(from: currentTouch.1, with: event)
+            guard let event = event, let touchView = touch.view else { return }
+            keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
         case .typing:
             guard touch == currentTouch?.0 else { return } // Ignore shift touch.
             
@@ -210,8 +210,8 @@ class TouchHandler {
             callKeyHandler(.moveCursorEnded)
             inputMode = .typing
         case .nextKeyboard:
-            guard let event = event, let currentTouch = currentTouch else { return }
-            keyboardView?.delegate?.handleInputModeList(from: currentTouch.1, with: event)
+            guard let event = event, let touchView = touch.view else { return }
+            keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
         case .typing:
             var inputKey = key
             // If we are forwarding move events to a popup, we should input the source key of the popup, not the key being touched.
