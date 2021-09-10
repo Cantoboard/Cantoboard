@@ -157,7 +157,7 @@ class TouchHandler {
             
             // If there's an popup accepting touch, forward all events to it.
             // On iPad, forward all events to the initial key to support swipe down input.
-            if currentTouchState.activeKeyView.hasInputAcceptingPopup || keyboardIdiom.isPad {
+            if currentTouchState.activeKeyView.hasInputAcceptingPopup || keyboardIdiom.isPad && (!currentTouchState.initialAction.isShift && !currentTouchState.initialAction.isKeyboardType) {
                 currentTouchState.activeKeyView.keyTouchMoved(touch)
                 return
             }

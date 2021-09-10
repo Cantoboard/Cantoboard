@@ -94,4 +94,11 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
         default: return false
         }
     }
+    
+    var isKeyboardType: Bool {
+        switch self {
+        case .keyboardType: return true
+        default: return false
+        }
+    }
 }
