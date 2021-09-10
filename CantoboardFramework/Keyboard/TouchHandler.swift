@@ -4,31 +4,47 @@ import UIKit
 
 import CocoaLumberjackSwift
 
+class TouchState {
+    let touch: UITouch
+    var activeKeyView: KeyView
+    var cursorMoveStartPosition: CGPoint
+    var initialAction: KeyboardAction
+    var hasTakenAction: Bool
+
+    init(touch: UITouch, cursorMoveStartPosition: CGPoint, activeKeyView: KeyView, initialAction: KeyboardAction) {
+        self.touch = touch
+        self.activeKeyView = activeKeyView
+        self.cursorMoveStartPosition = cursorMoveStartPosition
+        self.initialAction = initialAction
+        hasTakenAction = false
+    }
+}
+
 class TouchHandler {
     enum InputMode: Equatable {
         case typing, backspacing, nextKeyboard, cursorMoving
     }
-    static let keyRepeatInitialDelay = 7 // 5 * KeyRepeatInterval
+    static let keyRepeatInitialDelay = 7 // Unit is keyRepeatInterval
     static let longPressDelay = 3
     static let keyRepeatInterval = 0.08
     static let cursorMovingStepX: CGFloat = 8
     static let initialCursorMovingThreshold = cursorMovingStepX * 1.25
     static let swipeXThreshold: CGFloat = 30
+    static let capsLockDoubleTapDelay = 0.2
     
-    private var currentTouch, shiftTouch: (UITouch, /*_ currentKeyView:*/ KeyView, /*_ initialAction:*/ KeyboardAction)?
-    private var cursorMoveStartPosition: CGPoint?
-    private var hasTakenAction = false
+    private var touches: [UITouch: TouchState] = [:]
+    private var touchQueue: [UITouch] = []
+    private var lastTouchTimestamp: TimeInterval?
+    private var lastTouchAction: KeyboardAction?
+    
     private var _inputMode: InputMode = .typing
     private var inputMode: InputMode {
         get { _inputMode }
         set {
             if _inputMode != newValue {
+                // Enable keyboard when we exit cursor moving.
                 callKeyHandler(.enableKeyboard(newValue != .cursorMoving))
                 if newValue == .cursorMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
-                
-                if _inputMode == .typing {
-                    currentTouch?.1.keyTouchEnded()
-                }
                 
                 _inputMode = newValue
             }
@@ -45,33 +61,33 @@ class TouchHandler {
     
     func touchBegan(_ touch: UITouch, key: KeyView, with event: UIEvent?) {
         guard key.isKeyEnabled &&
-              inputMode == .typing && // Ignore new touches if we are not in typing mode.
-              currentTouch?.0 != touch // Dedup began events coming from gesture recognizer and touch event.
+              inputMode == .typing // Ignore new touches if we are not in typing mode.
             else { return }
         
         if Settings.cached.isTapHapticFeedbackEnabled {
             FeedbackProvider.lightImpact.impactOccurred()
         }
-        
-        let touchTuple = (touch, key, key.selectedAction)
-        
+                
         // DDLogInfo("touchBegan \(key.keyCap) \(touch) \(currentTouch?.0)")
         
         keyRepeatCounter = 0
         
         setupKeyRepeatTimer()
         
-        if currentTouch?.0 != shiftTouch?.0, let lastTouch = currentTouch {
-            // The the user is multi-touching multiple characters, end the older touch if it isn't shift related.
-            // Ignore any non character touch.
-            touchEnded(lastTouch.0, key: lastTouch.1, with: event)
-        }
+        // On iPhone, touching new key commits previous keys except the shift key.
+        endTouches(commit: true, except: touch, exceptShiftKey: true)
         
         key.keyTouchBegan(touch)
         
-        hasTakenAction = false
+        let action = key.selectedAction
+        beginTouch(touch, activeKeyView: key, initialAction: action)
+        defer {
+            lastTouchTimestamp = touch.timestamp
+            lastTouchAction = action
+        }
+        
         FeedbackProvider.play(keyboardAction: key.selectedAction)
-        switch key.selectedAction {
+        switch action {
         case .backspace:
             inputMode = .backspacing
         case .keyboardType:
@@ -80,21 +96,21 @@ class TouchHandler {
             guard let event = event, let touchView = touch.view else { return }
             inputMode = .nextKeyboard
             keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
-        case .shift:
-            if touch.tapCount % 2 == 1 {
-                // Single tapping shift.
-                shiftTouch = touchTuple
-                callKeyHandler(.shiftDown)
-            } else {
-                // Double tapping shift.
+        case .shift(.lowercased), .shift(.uppercased):
+            if let lastTouchTimestamp = lastTouchTimestamp, let lastTouchAction = lastTouchAction,
+               case .shift = lastTouchAction,
+               (touch.timestamp - lastTouchTimestamp).isLess(than: Self.capsLockDoubleTapDelay) {
+                // Double tap, switch to caps locked.
                 callKeyHandler(.keyboardType(.alphabetic(.capsLocked)))
+            } else {
+                // Single tag, hold shift.
+                callKeyHandler(.shiftDown)
             }
+        case .shift(.capsLocked):
+            touches[touch]?.initialAction = .shift(.uppercased)
+            callKeyHandler(.shiftDown)
         default: () // Ignore other keys on key down.
         }
-        
-        // print(Date(), Thread.current, "touchBegan currentTouch = ", touchTuple.0)
-        currentTouch = touchTuple
-        cursorMoveStartPosition = touch.location(in: keyboardView)
     }
     
     func touchMoved(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
@@ -102,26 +118,21 @@ class TouchHandler {
         
         // DDLogInfo("touchMoved \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
+        guard let currentTouchState = touches[touch] else { return }
+        let cursorMoveStartPosition = currentTouchState.cursorMoveStartPosition
+        
         switch inputMode {
         case .backspacing:
             // Swipe left to delete word.
-            guard let cursorMoveStartPosition = cursorMoveStartPosition else {
-                DDLogInfo("TouchHandler is backspacing in but cursorMoveStartPosition is nil.")
-                return
-            }
             let point = touch.location(in: keyboardView)
             let dX = point.x - cursorMoveStartPosition.x
-            if dX < -Self.swipeXThreshold && !hasTakenAction {
+            if dX < -Self.swipeXThreshold && !currentTouchState.hasTakenAction {
                 cancelKeyRepeatTimer()
-                hasTakenAction = true
+                currentTouchState.hasTakenAction = true
                 callKeyHandler(.deleteWordSwipe)
                 FeedbackProvider.mediumImpact.impactOccurred()
             }
         case .cursorMoving:
-            guard let cursorMoveStartPosition = cursorMoveStartPosition else {
-                DDLogInfo("TouchHandler is cursorMoving in but cursorMoveStartPosition is nil.")
-                return
-            }
             let point = touch.location(in: keyboardView)
             var dX = point.x - cursorMoveStartPosition.x
             let isLeft = dX < 0
@@ -130,81 +141,71 @@ class TouchHandler {
             while dX > threshold {
                 dX -= threshold
                 callKeyHandler(isLeft ? .moveCursorBackward : .moveCursorForward)
-                hasTakenAction = true
+                currentTouchState.hasTakenAction = true
             }
-            self.cursorMoveStartPosition = point
-            self.cursorMoveStartPosition!.x -= isLeft ? -dX : dX
+            currentTouchState.cursorMoveStartPosition = point
+            currentTouchState.cursorMoveStartPosition.x -= isLeft ? -dX : dX
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }
             keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
         case .typing:
-            guard touch == currentTouch?.0 else { return } // Ignore shift touch.
-            
-            guard let currentTouch = currentTouch, let key = key else { return }
+            guard let key = key else { return }
             
             // If there's an popup accepting touch, forward all events to it.
-            if currentTouch.1.hasInputAcceptingPopup {
-                currentTouch.1.keyTouchMoved(touch)
+            if currentTouchState.activeKeyView.hasInputAcceptingPopup {
+                currentTouchState.activeKeyView.keyTouchMoved(touch)
                 return
             }
             
             defer {
-                self.currentTouch = (touch, key, currentTouch.2)
+                currentTouchState.activeKeyView = key
             }
+            
             // Reset key repeat long press timer if we moved to another key.
-            if currentTouch.1 != key {
+            if currentTouchState.activeKeyView != key {
                 cancelKeyRepeatTimer()
                 setupKeyRepeatTimer()
-                currentTouch.1.keyTouchEnded()
+                currentTouchState.activeKeyView.keyTouchEnded()
+                currentTouchState.activeKeyView = key
                 key.keyTouchBegan(touch)
                 return
             }
             
             // Ignore short swipe.
-            guard let cursorMoveStartPosition = cursorMoveStartPosition else { return }
             let point = touch.location(in: keyboardView), deltaX = abs(point.x - cursorMoveStartPosition.x)
             guard deltaX >= Self.initialCursorMovingThreshold else { return }
             
             // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
-            let tapStartAction = currentTouch.2
+            let tapStartAction = currentTouchState.initialAction
             let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2 && deltaX > Self.swipeXThreshold
             switch tapStartAction {
             case .space,
                  .character(_) where isForceSwiping:
-                self.cursorMoveStartPosition = point
+                currentTouchState.cursorMoveStartPosition = cursorMoveStartPosition
+                currentTouchState.hasTakenAction = false
+                key.keyTouchEnded()
+                
+                endTouches(commit: false, except: touch, exceptShiftKey: false)
                 inputMode = .cursorMoving
-                hasTakenAction = false
-                currentTouch.1.keyTouchEnded()
             default: ()
             }
         }
     }
     
     func touchEnded(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
-        let isCurrentTouch = currentTouch?.0 == touch
-        let isShiftTouch = shiftTouch?.0 == touch
+        guard let currentTouchState = touches[touch] else { return }
                
         // DDLogInfo("touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
-        guard isCurrentTouch || isShiftTouch else { return }
         defer {
-            if isCurrentTouch {
-                // print(Date(), "touchEnded keyTouchEnded()", currentTouch?.1.keyCap)
-                currentTouch?.1.keyTouchEnded()
-                self.currentTouch = nil
-                inputMode = .typing
-            }
-            if isShiftTouch {
-                shiftTouch?.1.keyTouchEnded()
-                self.shiftTouch = nil
-            }
+            endTouch(touch)
         }
         
         cancelKeyRepeatTimer()
         
         switch inputMode {
         case .backspacing:
-            if !hasTakenAction { callKeyHandler(.backspace) }
+            if !currentTouchState.hasTakenAction { callKeyHandler(.backspace) }
             inputMode = .typing
         case .cursorMoving:
             callKeyHandler(.moveCursorEnded)
@@ -215,33 +216,24 @@ class TouchHandler {
         case .typing:
             var inputKey = key
             // If we are forwarding move events to a popup, we should input the source key of the popup, not the key being touched.
-            if let currentTouch = currentTouch, currentTouch.1.hasInputAcceptingPopup {
-                inputKey = currentTouch.1
+            if currentTouchState.activeKeyView.hasInputAcceptingPopup {
+                inputKey = currentTouchState.activeKeyView
             }
             guard let action = inputKey?.selectedAction else { return }
             
             switch action {
-            case .shift:
-                // Ignore the "bounce back" touch ended event when the hollow shift key just changed to filled shift.
-                if let currentTouch = currentTouch, action == .shift(.uppercased) {
-                    if currentTouch.2 == .shift(.lowercased) {
-                        callKeyHandler(.shiftRelax)
-                    } else {
-                        callKeyHandler(.shiftUp)
-                    }
-                }
-                if shiftTouch?.0 == touch && currentTouch?.0 != touch {
-                    // If the user holds the shift key and type, when the user releases the shift key, shift up.
+            case .shift(.uppercased):
+                if case .shift(.lowercased) = lastTouchAction {
+                    callKeyHandler(.shiftRelax)
+                } else {
                     callKeyHandler(.shiftUp)
                 }
-            //case .keyboardType(.emojis), .character, .space, .newLine, .rime, .setCharForm:
-            case .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic): ()
+            case .shift(.capsLocked), .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic): ()
             default:
                 callKeyHandler(action)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
-                if case .character(_) = action,
-                   let startingKeyAction = currentTouch?.2,
-                   case .shift(_) = startingKeyAction {
+                if case .shift = currentTouchState.initialAction,
+                   case .character = action { // cangjie?
                     callKeyHandler(.shiftUp)
                 }
             }
@@ -253,32 +245,74 @@ class TouchHandler {
         
         cancelKeyRepeatTimer()
         
-        currentTouch?.1.keyTouchEnded()
-        currentTouch = nil
-        
-        shiftTouch?.1.keyTouchEnded()
-        shiftTouch = nil
+        endTouch(touch)
         
         inputMode = .typing
+    }
+    
+    private func beginTouch(_ touch: UITouch, activeKeyView: KeyView, initialAction: KeyboardAction) {
+        guard !touches.keys.contains(touch) else { return }
+        
+        let cursorMoveStartPosition = touch.location(in: keyboardView)
+        touches[touch] = TouchState(touch: touch, cursorMoveStartPosition: cursorMoveStartPosition, activeKeyView: activeKeyView, initialAction: initialAction)
+        touchQueue.append(touch)
+    }
+    
+    private func endTouch(_ touch: UITouch) {
+        _ = touches.removeValue(forKey: touch)?.activeKeyView.keyTouchEnded()
+        if let touchIndex = touchQueue.firstIndex(of: touch) {
+            touchQueue.remove(at: touchIndex)
+        }
+    }
+    
+    private func endTouches(commit: Bool, except: UITouch, exceptShiftKey: Bool) {
+        let touchesToRemove: Set<UITouch> = Set(touchQueue.compactMap { touch in
+            let touchState = touches[touch]
+            if touch != except, let touchState = touchState {
+                if !exceptShiftKey || !touchState.initialAction.isShift {
+                    if commit {
+                        touchEnded(touch, key: touchState.activeKeyView, with: nil)
+                    } else {
+                        touchState.activeKeyView.keyTouchEnded()
+                    }
+                    return touch
+                }
+            }
+            return nil
+        })
+        
+        touchQueue = touchQueue.filter { !touchesToRemove.contains($0) }
+        touches = touches.filter { !touchesToRemove.contains($0.key) }
+    }
+    
+    private func cancelAllTouches() {
+        touches.forEach { _, touchState in
+            touchState.activeKeyView.keyTouchEnded()
+        }
+        touches = [:]
+        touchQueue = []
     }
     
     private func onKeyRepeat(_ timer: Timer) {
         guard timer == self.keyRepeatTimer else { timer.invalidate(); return } // Timer was overwritten.
         keyRepeatCounter += 1
-        if self.inputMode == .backspacing && keyRepeatCounter > Self.keyRepeatInitialDelay {
-            let action: KeyboardAction
-            if keyRepeatCounter <= 20 {
-                action = .backspace
-            } else {
-                action = .deleteWord
+        
+        for touchState in touches.values {
+            if touchState.initialAction == .backspace {
+                guard self.inputMode == .backspacing && keyRepeatCounter > Self.keyRepeatInitialDelay else { continue }
+                let action: KeyboardAction
+                if keyRepeatCounter <= 20 {
+                    action = .backspace
+                } else {
+                    action = .deleteWord
+                }
+                callKeyHandler(action)
+                touchState.hasTakenAction = true
+                FeedbackProvider.play(keyboardAction: action)
+            } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay {
+                touchState.activeKeyView.keyLongPressed(touchState.touch)
+                cancelKeyRepeatTimer()
             }
-            callKeyHandler(action)
-            hasTakenAction = true
-            FeedbackProvider.play(keyboardAction: action)
-        } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay,
-            let currentTouch = currentTouch {
-            currentTouch.1.keyLongPressed(currentTouch.0)
-            cancelKeyRepeatTimer()
         }
     }
     

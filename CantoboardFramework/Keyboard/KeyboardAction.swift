@@ -84,7 +84,14 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     dismissKeyboard,
     exit
     
-    public init(stringLiteral value: String) {
+    init(stringLiteral value: String) {
         self = .character(value)
+    }
+    
+    var isShift: Bool {
+        switch self {
+        case .shift: return true
+        default: return false
+        }
     }
 }
