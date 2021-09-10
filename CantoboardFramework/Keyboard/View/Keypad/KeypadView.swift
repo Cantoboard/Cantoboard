@@ -68,7 +68,7 @@ class KeypadView: UIView, BaseKeyboardView {
         preservesSuperviewLayoutMargins = false
         
         initView()
-        touchHandler = TouchHandler(keyboardView: self)
+        touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
     }
     
     required init?(coder: NSCoder) {

@@ -50,13 +50,15 @@ class TouchHandler {
             }
         }
     }
+    var keyboardIdiom: LayoutIdiom
     
     private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
     private var keyRepeatCounter: Int = 0
     
-    init(keyboardView: BaseKeyboardView) {
+    init(keyboardView: BaseKeyboardView, keyboardIdiom: LayoutIdiom) {
         self.keyboardView = keyboardView
+        self.keyboardIdiom = keyboardIdiom
     }
     
     func touchBegan(_ touch: UITouch, key: KeyView, with event: UIEvent?) {
@@ -75,7 +77,9 @@ class TouchHandler {
         setupKeyRepeatTimer()
         
         // On iPhone, touching new key commits previous keys except the shift key.
-        endTouches(commit: true, except: touch, exceptShiftKey: true)
+        if keyboardIdiom == .phone {
+            endTouches(commit: true, except: touch, exceptShiftKey: true)
+        }
         
         key.keyTouchBegan(touch)
         
@@ -198,7 +202,7 @@ class TouchHandler {
         // DDLogInfo("touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
         defer {
-            endTouch(touch)
+            endTouch(touch, commit: false)
         }
         
         cancelKeyRepeatTimer()
@@ -230,6 +234,10 @@ class TouchHandler {
                 }
             case .shift(.capsLocked), .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic): ()
             default:
+                // On iPad, on key up, it commits all previous key presses to make sure text is inserted in order.
+                if case .pad = keyboardIdiom {
+                    endTouchesUpTo(touch)
+                }
                 callKeyHandler(action)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 if case .shift = currentTouchState.initialAction,
@@ -240,12 +248,22 @@ class TouchHandler {
         }
     }
     
+    private func endTouchesUpTo(_ touch: UITouch) {
+        let touchIndex = touchQueue.firstIndex(of: touch) ?? 0
+        touchQueue
+            .prefix(upTo: touchIndex)
+            .filter { !(touches[$0]?.activeKeyView.selectedAction.isShift ?? false) }
+            .forEach {
+                endTouch($0, commit: true)
+            }
+    }
+    
     func touchCancelled(_ touch: UITouch, with event: UIEvent?) {
         // DDLogInfo("touchCancelled \(currentTouch?.0) \(touch)")
         
         cancelKeyRepeatTimer()
         
-        endTouch(touch)
+        endTouch(touch, commit: false)
         
         inputMode = .typing
     }
@@ -258,8 +276,14 @@ class TouchHandler {
         touchQueue.append(touch)
     }
     
-    private func endTouch(_ touch: UITouch) {
-        _ = touches.removeValue(forKey: touch)?.activeKeyView.keyTouchEnded()
+    private func endTouch(_ touch: UITouch, commit: Bool) {
+        guard let endingTouch = touches[touch] else { return }
+        if commit {
+            touchEnded(touch, key: endingTouch.activeKeyView, with: nil)
+        } else {
+            endingTouch.activeKeyView.keyTouchEnded()
+        }
+        _ = touches.removeValue(forKey: touch)
         if let touchIndex = touchQueue.firstIndex(of: touch) {
             touchQueue.remove(at: touchIndex)
         }

@@ -74,7 +74,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         longPressGestureRecognizer.delegate = self
         addGestureRecognizer(longPressGestureRecognizer)
         
-        touchHandler = TouchHandler(keyboardView: self)
+        touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
     }
     
     required init?(coder: NSCoder) {
@@ -108,6 +108,10 @@ class KeyboardView: UIView, BaseKeyboardView {
         
         if prevState.enableState != newState.enableState {
             changeKeyboardEnabled(isEnabled: newState.enableState == .enabled, isLoading: newState.enableState == .loading)
+        }
+        
+        if prevState.keyboardIdiom != newState.keyboardIdiom {
+            touchHandler.keyboardIdiom = newState.keyboardIdiom
         }
         
         _state = newState
