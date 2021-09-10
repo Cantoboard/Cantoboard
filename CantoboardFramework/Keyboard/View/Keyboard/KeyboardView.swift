@@ -398,6 +398,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             loadingIndicatorView = nil
             candidatePaneView?.isHidden = false
         }
+        touchHandler.cancelAllTouches()
     }
 }
 

@@ -240,8 +240,13 @@ class TouchHandler {
                 }
                 callKeyHandler(action)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
-                if case .shift = currentTouchState.initialAction,
-                   case .character = action { // cangjie?
+                let supportDrag: Bool
+                switch currentTouchState.initialAction {
+                case .shift, .keyboardType: supportDrag = true
+                default: supportDrag = false
+                }
+                if supportDrag,
+                   case .character = action { // FIX ME cangjie?
                     callKeyHandler(.shiftUp)
                 }
             }
@@ -309,7 +314,7 @@ class TouchHandler {
         touches = touches.filter { !touchesToRemove.contains($0.key) }
     }
     
-    private func cancelAllTouches() {
+    func cancelAllTouches() {
         touches.forEach { _, touchState in
             touchState.activeKeyView.keyTouchEnded()
         }
