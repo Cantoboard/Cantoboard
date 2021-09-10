@@ -450,6 +450,26 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         default: return self.buttonText
         }
     }
+    
+    var padSwipeDownKeyCap: KeyCap? {
+        switch self {
+        case .character(let c, _, _), .cangjie(let c, _):
+            switch c {
+            case "q", "Q": return "1"
+            case "w", "W": return "2"
+            case "e", "E": return "3"
+            case "r", "R": return "4"
+            case "t", "T": return "5"
+            case "y", "Y": return "6"
+            case "u", "U": return "7"
+            case "i", "I": return "8"
+            case "o", "O": return "9"
+            case "p", "P": return "0"
+            default: return nil
+            }
+        default: return nil
+        }
+    }
 }
 
 let FrameworkBundle = Bundle(for: KeyView.self)

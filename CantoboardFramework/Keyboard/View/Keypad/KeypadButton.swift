@@ -24,7 +24,7 @@ class KeypadButton: KeyView {
         
         super.init(layoutConstants: layoutConstants)
         shouldDisablePopup = true
-        keyCap = props.keyCap
+        setKeyCap(props.keyCap, keyboardIdiom: layoutConstants.ref.idiom)
     }
     
     required init?(coder: NSCoder) {

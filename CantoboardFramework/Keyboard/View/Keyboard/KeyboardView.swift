@@ -99,11 +99,11 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
         
         if prevState.returnKeyType != newState.returnKeyType {
-            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType))
+            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardIdiom: state.keyboardIdiom)
         }
         
         if prevState.spaceKeyMode != newState.spaceKeyMode {
-            spaceKey?.setKeyCap(.space(newState.spaceKeyMode))
+            spaceKey?.setKeyCap(.space(newState.spaceKeyMode), keyboardIdiom: state.keyboardIdiom)
         }
         
         if prevState.enableState != newState.enableState {
@@ -227,14 +227,14 @@ class KeyboardView: UIView, BaseKeyboardView {
                let newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1],
                case .returnKey = newLineKey.keyCap {
                 self.newLineKey = newLineKey
-                newLineKey.keyCap = .returnKey(state.returnKeyType)
+                newLineKey.setKeyCap(.returnKey(state.returnKeyType), keyboardIdiom: state.keyboardIdiom)
             }
             
             if let lastRowMiddleKeys = lastRow.middleKeys,
                let spaceKey = lastRowMiddleKeys[safe: 0],
                case .space = spaceKey.keyCap {
                 self.spaceKey = spaceKey
-                spaceKey.keyCap = .space(state.spaceKeyMode)
+                spaceKey.setKeyCap(.space(state.spaceKeyMode), keyboardIdiom: state.keyboardIdiom)
             }
         }
     }
@@ -392,13 +392,13 @@ class KeyboardView: UIView, BaseKeyboardView {
         if isLoading && loadingIndicatorView == nil {
             createLoadingIndicatorView()
             candidatePaneView?.isHidden = true
+            touchHandler.cancelAllTouches()
         } else if !isLoading {
             loadingIndicatorView?.stopAnimating()
             loadingIndicatorView?.removeFromSuperview()
             loadingIndicatorView = nil
             candidatePaneView?.isHidden = false
         }
-        touchHandler.cancelAllTouches()
     }
 }
 

@@ -16,6 +16,13 @@ enum PadLayoutIdiom {
 
 enum LayoutIdiom: Equatable {
     case phone, pad(PadLayoutIdiom)
+    
+    var isPad: Bool {
+        switch self {
+        case .phone: return false
+        case .pad: return true
+        }
+    }
 }
 
 class PhoneLayoutConstants {

@@ -101,7 +101,7 @@ class KeyRowView: UIView {
                 default: ()
             }
             
-            keys[i].keyCap = keyCap
+            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom)
         }
     }
 }

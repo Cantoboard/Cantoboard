@@ -12,15 +12,12 @@ class KeyView: HighlightableButton {
     private var keyHintLayer: KeyHintLayer?
     private var popupView: KeyPopupView?
     private var isPopupInLongPressMode: Bool?
-    private var _keyCap: KeyCap = .none
-    var keyCap: KeyCap {
-        get { _keyCap }
-        set {
-            if _keyCap != newValue {
-                setKeyCap(newValue)
-            }
-        }
-    }
+    private var touchBeginPosition: CGPoint?
+    private var shouldAcceptLongPress: Bool = false
+    
+    private(set) var keyCap: KeyCap = .none
+    private var keyboardIdiom: LayoutIdiom = LayoutConstants.forMainScreen.idiom
+    
     private var action: KeyboardAction = .none
     
     var isKeyEnabled: Bool = true {
@@ -29,13 +26,7 @@ class KeyView: HighlightableButton {
         }
     }
     
-    var selectedAction: KeyboardAction {
-        if keyCap.childrenKeyCaps.count > 1 {
-            return popupView?.selectedAction ?? action
-        } else {
-            return action
-        }
-    }
+    var selectedAction: KeyboardAction = .none
     
     var hitTestFrame: CGRect?
     
@@ -77,9 +68,12 @@ class KeyView: HighlightableButton {
         layer.cornerRadius = 5
     }
     
-    internal func setKeyCap(_ keyCap: KeyCap) {
-        self._keyCap = keyCap
+    func setKeyCap(_ keyCap: KeyCap, keyboardIdiom: LayoutIdiom) {
+        guard keyCap != self.keyCap || keyboardIdiom != self.keyboardIdiom else { return }
+        self.keyCap = keyCap
+        self.keyboardIdiom = keyboardIdiom
         self.action = keyCap.action
+        self.selectedAction = keyCap.action
         setupView()
     }
         
@@ -234,25 +228,55 @@ extension KeyView {
     func keyTouchBegan(_ touch: UITouch) {
         isHighlighted = true
         updatePopup(isLongPress: false)
+        
+        touchBeginPosition = touch.location(in: self)
+        shouldAcceptLongPress = true
     }
     
     func keyTouchMoved(_ touch: UITouch) {
-        popupView?.updateSelectedAction(touch)
+        if keyboardIdiom.isPad,
+           let padSwipeDownKeyCap = keyCap.padSwipeDownKeyCap,
+           let touchBeginPosition = touchBeginPosition {
+            // Handle iPad swipe down.
+            let point = touch.location(in: self)
+            let delta = point - touchBeginPosition
+            
+            // TODO update UI
+            if delta.y > bounds.height * 0.25 /* && abs(delta.x) <= bounds.width */ {
+                shouldAcceptLongPress = false
+                removePopup()
+                
+                selectedAction = point.y >= bounds.height ? padSwipeDownKeyCap.action : keyCap.action
+                return
+            }
+        }
+        
+        if let popupView = popupView {
+            popupView.updateSelectedAction(touch)
+            selectedAction = popupView.selectedAction
+        }
     }
     
     func keyTouchEnded() {
         isHighlighted = false
-        popupView?.removeFromSuperview()
-        popupView = nil
+        touchBeginPosition = nil
         
-        isPopupInLongPressMode = nil
-        
-        // Restore lables and rounded corners.
-        setupView()
+        removePopup()
     }
     
     func keyLongPressed(_ touch: UITouch) {
+        guard shouldAcceptLongPress else { return }
         updatePopup(isLongPress: true)
+    }
+    
+    private func createPopupViewIfNecessary() {
+        guard let layoutConstants = layoutConstants else { return }
+        if popupView == nil {
+            let popupView = KeyPopupView(layoutConstants: layoutConstants)
+            addSubview(popupView)
+            
+            self.popupView = popupView
+        }
     }
     
     private func updatePopup(isLongPress: Bool) {
@@ -264,26 +288,27 @@ extension KeyView {
         }
                 
         createPopupViewIfNecessary()
-        guard let popup = popupView else { return }
+        guard let popupView = popupView else { return }
         guard isLongPress != isPopupInLongPressMode else { return }
         
         let popupDirection = computePopupDirection()
         let keyCaps = computeKeyCap(isLongPress: isLongPress)
         let defaultKeyCapIndex: Int
         defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == keyCap.defaultChildKeyCapTitle }) ?? 0
-        popup.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
+        popupView.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
+        selectedAction = popupView.selectedAction
         
         isPopupInLongPressMode = isLongPress
         setupView()
     }
     
-    private func createPopupViewIfNecessary() {
-        guard let layoutConstants = layoutConstants else { return }
-        if popupView == nil {
-            let popup = KeyPopupView(layoutConstants: layoutConstants)
-            addSubview(popup)
-            self.popupView = popup
-        }
+    private func removePopup() {
+        isPopupInLongPressMode = nil
+        popupView?.removeFromSuperview()
+        popupView = nil
+        
+        // Restore lables and rounded corners.
+        setupView()
     }
     
     private func computePopupDirection() -> KeyPopupView.PopupDirection {

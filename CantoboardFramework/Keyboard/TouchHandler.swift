@@ -156,7 +156,8 @@ class TouchHandler {
             guard let key = key else { return }
             
             // If there's an popup accepting touch, forward all events to it.
-            if currentTouchState.activeKeyView.hasInputAcceptingPopup {
+            // On iPad, forward all events to the initial key to support swipe down input.
+            if currentTouchState.activeKeyView.hasInputAcceptingPopup || keyboardIdiom.isPad {
                 currentTouchState.activeKeyView.keyTouchMoved(touch)
                 return
             }
@@ -197,7 +198,12 @@ class TouchHandler {
     }
     
     func touchEnded(_ touch: UITouch, key: KeyView?, with event: UIEvent?) {
-        guard let currentTouchState = touches[touch] else { return }
+        guard let currentTouchState = touches[touch] else {
+            DDLogError("TouchHandler.touchEnded() BUG CHECK MISSING touch \(touch) touches \(touches)")
+            // Defensive programming. Switch back to typing mode if there's a bug.
+            self.inputMode = .typing
+            return
+        }
                
         // DDLogInfo("touchEnded \(key?.keyCap ?? "nil") \(touch) \(currentTouch?.0)")
         
@@ -218,14 +224,10 @@ class TouchHandler {
             guard let event = event, let touchView = touch.view else { return }
             keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
         case .typing:
-            var inputKey = key
-            // If we are forwarding move events to a popup, we should input the source key of the popup, not the key being touched.
-            if currentTouchState.activeKeyView.hasInputAcceptingPopup {
-                inputKey = currentTouchState.activeKeyView
-            }
-            guard let action = inputKey?.selectedAction else { return }
+            let chosenKey = currentTouchState.activeKeyView
+            let chosenAction = chosenKey.selectedAction
             
-            switch action {
+            switch chosenAction {
             case .shift(.uppercased):
                 if case .shift(.lowercased) = lastTouchAction {
                     callKeyHandler(.shiftRelax)
@@ -238,7 +240,7 @@ class TouchHandler {
                 if case .pad = keyboardIdiom {
                     endTouchesUpTo(touch)
                 }
-                callKeyHandler(action)
+                callKeyHandler(chosenAction)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 let supportDrag: Bool
                 switch currentTouchState.initialAction {
@@ -246,7 +248,7 @@ class TouchHandler {
                 default: supportDrag = false
                 }
                 if supportDrag,
-                   case .character = action { // FIX ME cangjie?
+                   case .character = chosenAction { // FIX ME cangjie?
                     callKeyHandler(.shiftUp)
                 }
             }
@@ -320,6 +322,7 @@ class TouchHandler {
         }
         touches = [:]
         touchQueue = []
+        inputMode = .typing
     }
     
     private func onKeyRepeat(_ timer: Timer) {
