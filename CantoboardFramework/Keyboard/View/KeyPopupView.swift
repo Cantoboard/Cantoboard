@@ -11,7 +11,7 @@ import UIKit
 class KeyPopupView: UIView {
     private static let keyHintInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0.75)
     private static let bodyInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-    static let linkHeight: CGFloat = 15
+    static let phoneLinkHeight: CGFloat = 15, padGapHeight: CGFloat = 5
     
     enum PopupDirection {
         case left
@@ -99,6 +99,10 @@ class KeyPopupView: UIView {
         }
     }
     
+    private var linkHeight: CGFloat {
+        layoutConstants?.ref.idiom.isPad ?? false ? Self.padGapHeight : Self.phoneLinkHeight
+    }
+    
     func setup(keyCaps: [KeyCap], defaultKeyCapIndex: Int, direction: PopupDirection = .middle) {
         self.direction = direction
 
@@ -145,7 +149,7 @@ class KeyPopupView: UIView {
         }
         
         var bodySize = KeyPopupView.bodyInsets.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))
-        var contentSize = bodySize.extend(height: KeyPopupView.linkHeight)
+        var contentSize = bodySize.extend(height: linkHeight)
         
         if let heightClearance = heightClearance, contentSize.height > heightClearance {
             let ratio = heightClearance / contentSize.height
@@ -210,13 +214,15 @@ class KeyPopupView: UIView {
         
         path.addRoundedRect(in: bodyRect, cornerWidth: 5, cornerHeight: 5)
         
-        path.move(to: anchorLeft)
-        let yVector = CGPoint(x: 0, y: KeyPopupView.linkHeight / 2)
-        path.addCurve(to: neckLeft, control1: anchorLeft - yVector, control2: neckLeft + yVector)
-        path.addLine(to: neckRight)
-        path.addCurve(to: anchorRight, control1: neckRight + yVector, control2: anchorRight - yVector)
-        
-        path.closeSubpath()
+        if !(layoutConstants?.ref.idiom.isPad ?? true) {
+            path.move(to: anchorLeft)
+            let yVector = CGPoint(x: 0, y: linkHeight / 2)
+            path.addCurve(to: neckLeft, control1: anchorLeft - yVector, control2: neckLeft + yVector)
+            path.addLine(to: neckRight)
+            path.addCurve(to: anchorRight, control1: neckRight + yVector, control2: anchorRight - yVector)
+            
+            path.closeSubpath()
+        }
         
         shapeLayer.path = path
     }
