@@ -453,17 +453,35 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var padSwipeDownKeyCap: KeyCap? {
         switch self {
         case .character(let c, _, _), .cangjie(let c, _):
-            switch c {
-            case "q", "Q": return "1"
-            case "w", "W": return "2"
-            case "e", "E": return "3"
-            case "r", "R": return "4"
-            case "t", "T": return "5"
-            case "y", "Y": return "6"
-            case "u", "U": return "7"
-            case "i", "I": return "8"
-            case "o", "O": return "9"
-            case "p", "P": return "0"
+            switch c.lowercased() {
+            case "q": return "1"
+            case "w": return "2"
+            case "e": return "3"
+            case "r": return "4"
+            case "t": return "5"
+            case "y": return "6"
+            case "u": return "7"
+            case "i": return "8"
+            case "o": return "9"
+            case "p": return "0"
+            case "a": return "@"
+            case "s": return "#"
+            case "d": return "$"
+            case "f": return "&"
+            case "g": return "*"
+            case "h": return "("
+            case "j": return ")"
+            case "k": return "’"
+            case "l": return "\""
+            case "z": return "%"
+            case "x": return "-"
+            case "c": return "+"
+            case "v": return "="
+            case "b": return "/"
+            case "n": return ";"
+            case "m": return ":"
+            case ",": return "!"
+            case ".": return "?"
             default: return nil
             }
         default: return nil
