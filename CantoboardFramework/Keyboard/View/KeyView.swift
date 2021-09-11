@@ -28,7 +28,7 @@ class KeyView: HighlightableButton {
     
     private(set) var keyCap: KeyCap = .none
     private var keyboardIdiom: LayoutIdiom = LayoutConstants.forMainScreen.idiom
-    
+    private var isPadTopRowButton = false
     private var action: KeyboardAction = .none
     
     var isKeyEnabled: Bool = true {
@@ -79,12 +79,13 @@ class KeyView: HighlightableButton {
         layer.cornerRadius = 5
     }
     
-    func setKeyCap(_ keyCap: KeyCap, keyboardIdiom: LayoutIdiom) {
+    func setKeyCap(_ keyCap: KeyCap, keyboardIdiom: LayoutIdiom, isPadTopRowButton: Bool = false) {
         guard keyCap != self.keyCap || keyboardIdiom != self.keyboardIdiom else { return }
         self.keyCap = keyCap
         self.keyboardIdiom = keyboardIdiom
         self.action = keyCap.action
         self.selectedAction = keyCap.action
+        self.isPadTopRowButton = isPadTopRowButton
         setupView()
     }
         
@@ -137,7 +138,7 @@ class KeyView: HighlightableButton {
             setHighlightedBackground = true
         }
         
-        if keyboardIdiom.isPad, let padSwipeDownKeyCap = keyCap.padSwipeDownKeyCap {
+        if keyboardIdiom.isPad, let padSwipeDownKeyCap = keyCap.getPadSwipeDownKeyCap(keyboardIdiom: keyboardIdiom) {
             if swipeDownHintLayer == nil {
                 let swipeDownHintLayer = KeyHintLayer()
                 layer.addSublayer(swipeDownHintLayer)
@@ -149,6 +150,10 @@ class KeyView: HighlightableButton {
         } else {
             swipeDownHintLayer?.removeFromSuperlayer()
             swipeDownHintLayer = nil
+        }
+        
+        if isPadTopRowButton {
+            titleLabel?.font = titleLabel?.font.withSize(15)
         }
         
         if setHighlightedBackground {
@@ -295,7 +300,7 @@ extension KeyView {
     
     func keyTouchMoved(_ touch: UITouch) {
         if keyboardIdiom.isPad,
-           let padSwipeDownKeyCap = keyCap.padSwipeDownKeyCap,
+           let padSwipeDownKeyCap = keyCap.getPadSwipeDownKeyCap(keyboardIdiom: keyboardIdiom),
            let touchBeginPosition = touchBeginPosition {
             // Handle iPad swipe down.
             let point = touch.location(in: self)

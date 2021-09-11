@@ -101,7 +101,7 @@ class KeyRowView: UIView {
                 default: ()
             }
             
-            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom)
+            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom, isPadTopRowButton: rowId == 0 && layoutConstants.ref.idiom == .pad(.padFull5Rows))
         }
     }
 }
