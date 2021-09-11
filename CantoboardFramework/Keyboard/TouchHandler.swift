@@ -209,6 +209,7 @@ class TouchHandler {
         
         defer {
             endTouch(touch, commit: false)
+            inputMode = .typing
         }
         
         cancelKeyRepeatTimer()
@@ -216,10 +217,8 @@ class TouchHandler {
         switch inputMode {
         case .backspacing:
             if !currentTouchState.hasTakenAction { callKeyHandler(.backspace) }
-            inputMode = .typing
         case .cursorMoving:
             callKeyHandler(.moveCursorEnded)
-            inputMode = .typing
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }
             keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
