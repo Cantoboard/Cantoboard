@@ -25,6 +25,7 @@ struct KeyboardState: Equatable {
             symbolShapeOverride = nil
         }
     }
+    var lastKeyboardTypeChangeFromAutoCap: Bool
     var keyboardContextualType: ContextualType
     var symbolShapeOverride: SymbolShape?
     
@@ -51,6 +52,7 @@ struct KeyboardState: Equatable {
     
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
+        lastKeyboardTypeChangeFromAutoCap = false
         keyboardContextualType = .english
         keyboardIdiom = LayoutConstants.forMainScreen.idiom
         
@@ -264,6 +266,7 @@ class InputController: NSObject {
             }
             if !isHoldingShift && state.keyboardType == .some(.alphabetic(.uppercased)) {
                 state.keyboardType = .alphabetic(.lowercased)
+                state.lastKeyboardTypeChangeFromAutoCap = false
             }
         case .rime(let rc):
             guard isComposing || rc == .sym else { return }
@@ -307,9 +310,11 @@ class InputController: NSObject {
         case .shiftDown:
             isHoldingShift = true
             state.keyboardType = .alphabetic(.uppercased)
+            state.lastKeyboardTypeChangeFromAutoCap = false
             return
         case .shiftUp:
             state.keyboardType = .alphabetic(.lowercased)
+            state.lastKeyboardTypeChangeFromAutoCap = false
             isHoldingShift = false
             return
         case .shiftRelax:
@@ -317,6 +322,7 @@ class InputController: NSObject {
             return
         case .keyboardType(let type):
             state.keyboardType = type
+            state.lastKeyboardTypeChangeFromAutoCap = false
             self.checkAutoCap()
             return
         case .setCharForm(let cs):
@@ -424,6 +430,7 @@ class InputController: NSObject {
                 (state.keyboardType == .alphabetic(.lowercased) || state.keyboardType == .alphabetic(.uppercased))
             else { return }
         state.keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
+        state.lastKeyboardTypeChangeFromAutoCap = true
     }
     
     private func changeSchema() {
