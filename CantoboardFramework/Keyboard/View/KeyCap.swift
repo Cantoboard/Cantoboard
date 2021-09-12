@@ -145,7 +145,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
         default:
-            if keyCapType == .input && action != .character("\t") || keyCapType == .space {
+            if keyCapType == .input || keyCapType == .space {
                  return ButtonColor.inputKeyBackgroundColor
             }
             return ButtonColor.systemKeyBackgroundColor
@@ -157,7 +157,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.uppercased), .shift(.capsLocked): return buttonBgColor
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
         default:
-            if keyCapType == .input && action != .character("\t") {
+            if keyCapType == .input {
                 return nil
             }
             return ButtonColor.systemHighlightedKeyBackgroundColor
@@ -166,6 +166,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var keyCapType: KeyCapType {
         switch self {
+        case .character("\t", _, _): return .system
         case .character, .cangjie, .contextualSymbols, .currency, .stroke: return .input
         case .space: return .space
         case .returnKey: return .returnKey

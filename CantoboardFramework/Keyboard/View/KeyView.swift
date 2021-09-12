@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class KeyView: HighlightableButton {
-    private static let contentEdgeInsets = UIEdgeInsets(top: 6, left: 4, bottom: 4, right: 4)
+    private static let contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 4, right: 6)
     private static let swipeDownMinCutOffYRatio: CGFloat = 0.25
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.6
     
@@ -241,7 +241,8 @@ class KeyView: HighlightableButton {
             layout(textLayer: swipeDownHintLayer, centeredWithYOffset: yOffset, height: swipeDownHintLayerHeight)
             contentVerticalAlignment = .bottom
         } else {
-            contentVerticalAlignment = .center
+            let isPadFull = keyboardIdiom == .pad(.padFull4Rows) || keyboardIdiom == .pad(.padFull5Rows)
+            contentVerticalAlignment = isPadFull && !(keyCap.keyCapType == .input || keyCap.keyCapType == .space || isPadTopRowButton) ? .bottom : .center 
         }
         
         super.layoutSubviews()

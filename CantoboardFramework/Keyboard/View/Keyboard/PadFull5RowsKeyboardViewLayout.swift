@@ -14,26 +14,26 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numOfRows = 5
     
     static let letters: [[[KeyCap]]] = [
-        [["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", .backspace]],
-        [["\t", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"]],
-        [[.capsLock, "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "’", .returnKey(.default)]],
-        [[.shift(.lowercased), "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", .shift(.lowercased)]],
+        [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
+        [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"], []],
+        [[.capsLock], ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "’"], [.returnKey(.default)]],
+        [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"], [.shift(.lowercased)]],
         [[.nextKeyboard, .keyboardType(.numeric)], [.contextualSymbols(.english), .space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
-        [["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">", .backspace]],
-        [["\t", "[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"]],
-        [[.placeholder(.capsLock), "-", "/", ":", ";", "(", ")", .currency, "&", "@", "’", "¥", .returnKey(.default)]],
-        [[.placeholder(.shift(.lowercased)), "^_^", "…", ".", ",", "、", "?", "!", "~", "”", "”", "€", "£"]],
+        [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
+        [["\t"], ["[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"], []],
+        [[.placeholder(.capsLock)], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", "’", "¥"], [.returnKey(.default)]],
+        [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "、", "?", "!", "~", "”", "”", "€", "£"], []],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
-        [["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">", .backspace]],
-        [["\t", "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "＼", "｜", "＿"]],
-        [[.placeholder(.capsLock), "－", "／", "：", "；", "（", "）", .currency, "＆", "＠", "’", "¥", .returnKey(.default)]],
-        [[.placeholder(.shift(.lowercased)), "^_^", "⋯", "。", "，", "、", "？", "！", "～", "＂", "＇", "「", "」"]],
+        [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
+        [["\t"], ["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "＼", "｜", "＿"], []],
+        [[.placeholder(.capsLock)], ["－", "／", "：", "；", "（", "）", .currency, "＆", "＠", "’", "¥"], [.returnKey(.default)]],
+        [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "＂", "＇", "「", "」"], []],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     

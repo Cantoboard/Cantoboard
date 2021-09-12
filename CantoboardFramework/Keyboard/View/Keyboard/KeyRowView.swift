@@ -9,11 +9,6 @@ import Foundation
 import UIKit
 
 class KeyRowView: UIView {
-    enum RowLayoutMode: Equatable {
-        case phoneRowTop, phoneRowNormal, phoneRowBottom
-        case padRow(Int)
-    }
-    
     private(set) var leftKeys, middleKeys, rightKeys: [KeyView]!
     private(set) var rowId: Int = -1
     var needsInputModeSwitchKey = false
@@ -63,6 +58,17 @@ class KeyRowView: UIView {
         prepareKeys(keyCaps: leftKeyCaps, keys: &leftKeys)
         prepareKeys(keyCaps: middleKeyCaps, keys: &middleKeys)
         prepareKeys(keyCaps: rightKepCaps, keys: &rightKeys, reuseKeyFromLeft: false)
+        
+        guard let layoutConstants = layoutConstants?.ref else { return }
+        if layoutConstants.idiom == .pad(.padFull4Rows) || layoutConstants.idiom == .pad(.padFull5Rows) {
+            leftKeys.forEach { $0.contentHorizontalAlignment = $0.keyCap.keyCapType == .input ? .center : .left }
+            middleKeys.forEach { $0.contentHorizontalAlignment = .center }
+            rightKeys.forEach { $0.contentHorizontalAlignment = $0.keyCap.keyCapType == .input ? .center : .right }
+        } else {
+            leftKeys.forEach { $0.contentHorizontalAlignment = .center }
+            middleKeys.forEach { $0.contentHorizontalAlignment = .center }
+            rightKeys.forEach { $0.contentHorizontalAlignment = .center }
+        }
     }
     
     private func prepareKeys(keyCaps: [KeyCap]?, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
@@ -93,6 +99,7 @@ class KeyRowView: UIView {
             }
         }
         
+        let isPadTopRow = rowId == 0 && layoutConstants.ref.idiom == .pad(.padFull5Rows)
         for i in 0..<keyCaps.count {
             var keyCap = keyCaps[i]
             
@@ -101,7 +108,7 @@ class KeyRowView: UIView {
                 default: ()
             }
             
-            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom, isPadTopRowButton: rowId == 0 && layoutConstants.ref.idiom == .pad(.padFull5Rows))
+            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom, isPadTopRowButton: isPadTopRow)
         }
     }
 }
