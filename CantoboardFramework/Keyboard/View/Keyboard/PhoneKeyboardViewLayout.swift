@@ -19,7 +19,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contextualSymbols(.english), .returnKey(.default)]]
+        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contextual(.symbol), .returnKey(.default)]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -97,13 +97,17 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         return frames
     }
     
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+        return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
+    }
+    
     private static func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
         switch key.keyCap {
         case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
             return layoutConstants.phoneLayoutConstants!.shiftKeyWidth
         case .returnKey:
             return 1.5 * layoutConstants.phoneLayoutConstants!.systemKeyWidth
-        case .character, .cangjie, .contextualSymbols, .currency:
+        case .character, .cangjie, .contextual, .currency:
             return layoutConstants.phoneLayoutConstants!.letterKeyWidth
         default:
             return layoutConstants.phoneLayoutConstants!.systemKeyWidth

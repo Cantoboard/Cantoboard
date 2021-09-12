@@ -56,6 +56,10 @@ enum KeyCapType {
     case input, system, returnKey, space
 }
 
+enum ContextualKey {
+    case symbol
+}
+
 indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
@@ -70,8 +74,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     nextKeyboard,
     space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
-    rime(RimeChar),
-    contextualSymbols(ContextualType),
+    rime(RimeChar, String?, [KeyCap]?),
+    contextual(ContextualKey),
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
     switchToEnglishMode,
@@ -91,6 +95,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         self = .character(char, nil, nil)
     }
     
+    public init(rime char: RimeChar) {
+        self = .rime(char, nil, nil)
+    }
+    
     var action: KeyboardAction {
         switch self {
         case .none: return .none
@@ -105,11 +113,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .nextKeyboard: return .nextKeyboard
         case .space: return .space
         case .shift(let shiftState): return .shift(shiftState)
-        case .rime(let rc): return .rime(rc)
-        case .contextualSymbols(.chinese): return "，"
-        case .contextualSymbols(.english): return ","
-        case .contextualSymbols(.rime): return .rime(.delimiter)
-        case .contextualSymbols(.url): return "."
+        case .rime(let rc, _, _): return .rime(rc)
         case .reverseLookup(let s): return .reverseLookup(s)
         case .changeSchema(let s): return .changeSchema(s)
         case .switchToEnglishMode: return .toggleInputMode
@@ -117,14 +121,14 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .exit: return .exit
         case .currency: return .character(SessionState.main.currencySymbol)
         case .dismissKeyboard: return .dismissKeyboard
-        case .placeholder: return .none
+        default: return .none
         }
     }
     
     var buttonFont: UIFont {
         switch self {
         case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
-        case .rime, "^_^", .keyboardType, .returnKey, .space, .contextualSymbols(.rime), .character("\t", _, _), .capsLock: return .systemFont(ofSize: 16)
+        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .capsLock: return .systemFont(ofSize: 16)
         case .cangjie(_, true): return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
         }
@@ -132,7 +136,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var popupFont: UIFont {
         switch self {
-        case .reverseLookup, .rime(.delimiter), .rime(.sym): return .systemFont(ofSize: 24)
+        case .reverseLookup, .rime(.delimiter, _, _), .rime(.sym, _, _): return .systemFont(ofSize: 24)
         case .exportFile, .exit: return .systemFont(ofSize: 12)
         case .rime, "……", "⋯⋯", "——", "^_^", ".com", ".net", ".org", ".edu": return .systemFont(ofSize: 16)
         default: return .systemFont(ofSize: 30)
@@ -167,7 +171,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapType: KeyCapType {
         switch self {
         case .character("\t", _, _): return .system
-        case .character, .cangjie, .contextualSymbols, .currency, .stroke: return .input
+        case .character, .cangjie, .contextual, .currency, .stroke, .rime: return .input
         case .space: return .space
         case .returnKey: return .returnKey
         default: return .system
@@ -228,21 +232,17 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
         case .keyboardType(.alphabetic): return "ABC"
-        case .rime(.tone1): return "陰平"
-        case .rime(.tone2): return "陰上"
-        case .rime(.tone3): return "陰去"
-        case .rime(.tone4): return "陽平"
-        case .rime(.tone5): return "陽上"
-        case .rime(.tone6): return "陽去"
-        case .rime(.delimiter): return "分"
-        case .rime(.sym): return "符"
+        case .rime(.tone1, _, _): return "陰平"
+        case .rime(.tone2, _, _): return "陰上"
+        case .rime(.tone3, _, _): return "陰去"
+        case .rime(.tone4, _, _): return "陽平"
+        case .rime(.tone5, _, _): return "陽上"
+        case .rime(.tone6, _, _): return "陽去"
+        case .rime(.delimiter, _, _): return "分"
+        case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
         case .changeSchema(let schema): return schema.shortName
         case .switchToEnglishMode: return "英文"
-        case .contextualSymbols(.chinese): return "，"
-        case .contextualSymbols(.english): return ","
-        case .contextualSymbols(.rime): return "分"
-        case .contextualSymbols(.url): return "."
         case "（": return "("
         case "）": return ")"
         case "「": return "「　"
@@ -293,8 +293,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonHint: String? {
         switch self {
         case .character(_, let hint, _) where hint != nil: return hint
-        case .contextualSymbols(.chinese), .contextualSymbols(.english): return "符"
-        case .contextualSymbols(.url): return "/"
+        case .rime(_, let hint, _) where hint != nil: return hint
         case .cangjie(let c, true): return c
         case .space: return "Cantoboard"
         default: return barHint
@@ -326,11 +325,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var childrenKeyCaps: [KeyCap] {
         switch self {
-        case .contextualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
-        case .contextualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
-        case .contextualSymbols(.rime): return [self, ".", ",", "?", "!"]
-        case .contextualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
+        // For debugging
         case .keyboardType(.emojis): return [.exportFile("user", Self.userDataPath), .exportFile("logs", Self.logsPath), .exit]
+        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
@@ -439,14 +437,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
             return currencyLists
-        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         default: return [self]
         }
     }
     
     var defaultChildKeyCapTitle: String? {
         switch self {
-        case .contextualSymbols(.url): return nil
+        case .character(".", "/", _): return nil // Contextual sym key in url mode
         default: return self.buttonText
         }
     }

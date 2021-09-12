@@ -248,17 +248,21 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
     }
     
-    private func configureAlphabeticKeyCap(_ keyCap: KeyCap, shiftState: (KeyboardShiftState)) -> KeyCap {
+    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, shiftState: (KeyboardShiftState)) -> KeyCap {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
         let isInLongPressMode = state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale
         
+        var keyCap: KeyCap
+        if case .contextual(let contextualKey) = hardcodedKeyCap {
+            keyCap = state.keyboardIdiom.keyboardViewLayout.getContextualKeys(key: contextualKey, keyboardState: state)
+        } else {
+            keyCap = hardcodedKeyCap
+        }
+        
         switch keyCap {
-        case .character(let c, _, _):
-            var hint: String? = nil
-            var keyCaps: [KeyCap]? = nil
-            
+        case .character(let c, var hint, var childrenKeyCaps):
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased ? c.uppercased() : c
             
@@ -274,28 +278,28 @@ class KeyboardView: UIView, BaseKeyboardView {
             if !isInEnglishMode && state.activeSchema.isCantonese {
                 if c == "r" {
                     hint = "反"
-                    keyCaps = [KeyCap(keyChar), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+                    childrenKeyCaps = [KeyCap(keyChar), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
                 } else if state.returnKeyType == .confirm {
                     if isInLongPressMode {
                         switch c {
                         case "f":
                             hint = "4"
-                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone4)]
+                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone4)]
                         case "g":
                             hint = "5"
-                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone5)]
+                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone5)]
                         case "h":
                             hint = "6"
-                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone6)]
+                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone6)]
                         case "c":
                             hint = "1"
-                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone1)]
+                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone1)]
                         case "v":
                             hint = "2"
-                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone2)]
+                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone2)]
                         case "b":
                             hint = "3"
-                            keyCaps = [KeyCap(keyChar), .rime(RimeChar.tone3)]
+                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone3)]
                         default: ()
                         }
                     } else {
@@ -309,9 +313,9 @@ class KeyboardView: UIView, BaseKeyboardView {
                 }
             }
             
-            return .character(keyChar, hint, keyCaps)
+            return .character(keyChar, hint, childrenKeyCaps)
         case .shift: return .shift(shiftState)
-        case .contextualSymbols: return .contextualSymbols(isInEnglishMode ? .english : state.keyboardContextualType)
+        case .contextual: fatalError("Contextual isn't being translated properly. \(keyCap) \(state)")
         default: return keyCap
         }
     }

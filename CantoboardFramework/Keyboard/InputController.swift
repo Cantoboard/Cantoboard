@@ -11,12 +11,19 @@ import UIKit
 import CocoaLumberjackSwift
 import ZIPFoundation
 
-enum ContextualType: Equatable {
-    case english, chinese, rime, url(isRimeComposing: Bool)
-}
-
 enum KeyboardEnableState: Equatable {
     case enabled, disabled, loading
+}
+
+enum ContextualType: Equatable {
+    case english, chinese, rime, url(isRimeComposing: Bool)
+    
+    var isEnglish: Bool {
+        switch self {
+        case .english, .url: return true
+        default: return false
+        }
+    }
 }
 
 struct KeyboardState: Equatable {

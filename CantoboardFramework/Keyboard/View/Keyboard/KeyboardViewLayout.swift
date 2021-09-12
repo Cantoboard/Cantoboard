@@ -18,7 +18,24 @@ protocol KeyboardViewLayout {
     static var symbolsFull: [[[KeyCap]]] { get };
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect]
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
+}
+
+class CommonContextualKeys {
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+        switch key {
+        case .symbol:
+            let keyHint = "符"
+            switch keyboardState.keyboardContextualType {
+            case .chinese: return .character("，", keyHint, ["。", "，", "？", "！", ".", ",", KeyCap(rime: .sym)])
+            case .english: return .character(",", keyHint, [".", ",", "?", "!", "。", "，", KeyCap(rime: .sym)])
+            case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
+            case .url: return .character(".", "/", ["/", ".", ".com", ".net", ".org", ".edu", KeyCap(rime: .delimiter)])
+            }
+        default: fatalError("Unexpected ContextualKey \(key) for \(keyboardState)")
+        }
+    }
 }
 
 extension LayoutIdiom {

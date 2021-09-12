@@ -17,14 +17,14 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
         [[.capsLock], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", ",", "."], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numeric), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numeric), .contextual(.symbol)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
         [[.placeholder(.capsLock)], ["@", "#", "$", "&", "*", "(", ")", "’", "”"], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "+", "=", "/", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     // FIXME
@@ -32,14 +32,14 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
         [[.placeholder(.capsLock)], ["@", "#", "$", "&", "*", "(", ")", "’", "”"], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "+", "=", "/", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
         [[.placeholder(.capsLock)], ["€", "£", "¥", "_", "^", "[", "]", "{", "}"], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["§", "|", "~", "…", "\\", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     // FIXME
@@ -47,7 +47,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
         [[.placeholder(.capsLock)], ["€", "£", "¥", "_", "^", "[", "]", "{", "}"], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["§", "|", "~", "…", "\\", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextualSymbols(.english)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {
@@ -102,7 +102,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
                     width = padFull4RowsLayoutConstants.rightShiftKeyWidth
                 }
             case .returnKey: width = padFull4RowsLayoutConstants.returnKeyWidth
-            case .nextKeyboard, .contextualSymbols,
+            case .nextKeyboard, .contextual,
                  .keyboardType where index <= 2:
                 width = padFull4RowsLayoutConstants.leftSystemKeyWidth
             case .keyboardType, .dismissKeyboard:
@@ -120,6 +120,10 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         }
         
         return totalFixedKeyWidth
+    }
+    
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+        return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
     }
     
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
