@@ -150,6 +150,7 @@
 		79B9B6D925F34B2D00238E80 /* EmojiCollectionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A525F34B2D00238E80 /* EmojiCollectionView.xib */; };
 		79B9B6DA25F34B2D00238E80 /* CategoriesBottomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A625F34B2D00238E80 /* CategoriesBottomView.xib */; };
 		79B9B6DB25F34B2D00238E80 /* ISEmojiList_iOS11.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A725F34B2D00238E80 /* ISEmojiList_iOS11.plist */; };
+		79BBD36226ED97A7007AC427 /* CGColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BBD36126ED97A7007AC427 /* CGColor+Extension.swift */; };
 		79BE974F26D73D680059E58A /* BaseKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE974E26D73D680059E58A /* BaseKeyboardView.swift */; };
 		79BE975926D748260059E58A /* CandidateSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE975826D748260059E58A /* CandidateSectionHeader.swift */; };
 		79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */; };
@@ -431,6 +432,7 @@
 		79B9B6A625F34B2D00238E80 /* CategoriesBottomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CategoriesBottomView.xib; sourceTree = "<group>"; };
 		79B9B6A725F34B2D00238E80 /* ISEmojiList_iOS11.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS11.plist; sourceTree = "<group>"; };
 		79B9B70725F43D0E00238E80 /* Cantoboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cantoboard.entitlements; sourceTree = "<group>"; };
+		79BBD36126ED97A7007AC427 /* CGColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGColor+Extension.swift"; sourceTree = "<group>"; };
 		79BE974E26D73D680059E58A /* BaseKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseKeyboardView.swift; sourceTree = "<group>"; };
 		79BE975826D748260059E58A /* CandidateSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateSectionHeader.swift; sourceTree = "<group>"; };
 		79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateSegmentControlCell.swift; sourceTree = "<group>"; };
@@ -917,6 +919,7 @@
 			isa = PBXGroup;
 			children = (
 				795B22C3261EBA3D00271D9F /* Array+Extension.swift */,
+				79BBD36126ED97A7007AC427 /* CGColor+Extension.swift */,
 				79B9B59725F34A1200238E80 /* CGPoints+Extension.swift */,
 				7922EF3426D61A99007E1699 /* CGRect+Extension.swift */,
 				79B9B59A25F34A1200238E80 /* CGSize+Extension.swift */,
@@ -1321,6 +1324,7 @@
 				79B9B60D25F34A1200238E80 /* InputController.swift in Sources */,
 				79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */,
 				7906D6E026D8D35E004C3C0F /* UIView+Extension.swift in Sources */,
+				79BBD36226ED97A7007AC427 /* CGColor+Extension.swift in Sources */,
 				796E53EB26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift in Sources */,
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
 				7906D6BA26D8A7F5004C3C0F /* Reference.swift in Sources */,

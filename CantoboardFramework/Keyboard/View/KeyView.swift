@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class KeyView: HighlightableButton {
-    private static let swipeDownHintYOffset: CGFloat = 8
+    private static let contentEdgeInsets = UIEdgeInsets(top: 6, left: 4, bottom: 4, right: 4)
     private static let swipeDownDragDownCutOffYRatio: CGFloat = 0.25
     
     private var keyHintLayer: KeyHintLayer?
@@ -95,6 +95,8 @@ class KeyView: HighlightableButton {
         let foregroundColor = keyCap.buttonFgColor
         setTitleColor(foregroundColor, for: .normal)
         tintColor = foregroundColor
+        contentEdgeInsets = Self.contentEdgeInsets
+        titleEdgeInsets = keyCap.buttonTitleInset
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
@@ -142,7 +144,8 @@ class KeyView: HighlightableButton {
             if swipeDownHintLayer == nil {
                 let swipeDownHintLayer = KeyHintLayer()
                 layer.addSublayer(swipeDownHintLayer)
-                swipeDownHintLayer.foregroundColor = UIColor.systemGray.resolvedColor(with: traitCollection).cgColor
+                let foregroundColor = keyCap.getPadSwipeDownKeyCapForegroundColor(keyboardIdiom: keyboardIdiom)
+                swipeDownHintLayer.foregroundColor = foregroundColor.resolvedColor(with: traitCollection).cgColor
                 self.swipeDownHintLayer = swipeDownHintLayer
             }
 
@@ -232,14 +235,12 @@ class KeyView: HighlightableButton {
             let swipeDownHintLayerHeight = (1 - swipeDownPercentage) * bounds.height * 0.3 + swipeDownPercentage * bounds.height * 0.5
             
             let fullySwipedDownYOffset = bounds.height / 2 - swipeDownHintLayerHeight / 2
-            let yOffset = (1 - swipeDownPercentage) * Self.swipeDownHintYOffset + swipeDownPercentage * fullySwipedDownYOffset
+            let yOffset = (1 - swipeDownPercentage) * contentEdgeInsets.top + swipeDownPercentage * fullySwipedDownYOffset
             
             layout(textLayer: swipeDownHintLayer, centeredWithYOffset: yOffset, height: swipeDownHintLayerHeight)
-            var titleInsets = keyCap.buttonTitleInset
-            titleInsets.top = bounds.height * 0.3
-            titleEdgeInsets = titleInsets
+            contentVerticalAlignment = .bottom
         } else {
-            titleEdgeInsets = keyCap.buttonTitleInset
+            contentVerticalAlignment = .center
         }
         
         super.layoutSubviews()
@@ -251,7 +252,8 @@ class KeyView: HighlightableButton {
             setTitleColor(originalTextColor.withAlphaComponent(originalTextColor.alpha * (1 - swipeDownPercentage)), for: .highlighted)
             
             if let swipeDownHintLayer = swipeDownHintLayer {
-                swipeDownHintLayer.foregroundColor = UIColor.systemGray.interpolateRGBColorTo(originalTextColor, fraction: swipeDownPercentage)?.cgColor
+                let foregroundColor = keyCap.getPadSwipeDownKeyCapForegroundColor(keyboardIdiom: keyboardIdiom)
+                swipeDownHintLayer.foregroundColor = foregroundColor.interpolateRGBColorTo(originalTextColor, fraction: swipeDownPercentage)?.cgColor
             }
         }
     }
