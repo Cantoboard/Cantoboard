@@ -308,7 +308,7 @@ extension KeyView {
             let point = touch.location(in: self)
             let delta = point - touchBeginPosition
             
-            swipeDownPercentage = min(max(0, delta.y / (bounds.height - touchBeginPosition.y)), 1)
+            swipeDownPercentage = min(max(0, delta.y / bounds.height), 1)
             
             if delta.y > bounds.height * Self.swipeDownDragDownCutOffYRatio {
                 shouldAcceptLongPress = false
