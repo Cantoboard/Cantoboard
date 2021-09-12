@@ -10,7 +10,8 @@ import UIKit
 
 class KeyView: HighlightableButton {
     private static let contentEdgeInsets = UIEdgeInsets(top: 6, left: 4, bottom: 4, right: 4)
-    private static let swipeDownDragDownCutOffYRatio: CGFloat = 0.25
+    private static let swipeDownMinCutOffYRatio: CGFloat = 0.25
+    private static let swipeDownMaxCutOffYRatio: CGFloat = 0.6
     
     private var keyHintLayer: KeyHintLayer?
     private var swipeDownHintLayer: KeyHintLayer?
@@ -310,11 +311,12 @@ extension KeyView {
             
             swipeDownPercentage = min(max(0, delta.y / bounds.height), 1)
             
-            if delta.y > bounds.height * Self.swipeDownDragDownCutOffYRatio {
+            let swipeDownThreshold = bounds.height * Self.swipeDownMaxCutOffYRatio
+            if delta.y > bounds.height * Self.swipeDownMinCutOffYRatio {
                 shouldAcceptLongPress = false
                 removePopup()
                 
-                selectedAction = point.y >= bounds.height ? padSwipeDownKeyCap.action : keyCap.action
+                selectedAction = delta.y >= swipeDownThreshold ? padSwipeDownKeyCap.action : keyCap.action
                 return
             }
         }
@@ -357,18 +359,18 @@ extension KeyView {
         if keyCap == .keyboardType(.emojis) && !isLongPress {
             return
         }
-                
+        
+        let keyCaps = computeKeyCap(isLongPress: isLongPress)
+        // On iPad, shows popup only in long press mode and if there are multiple choices.
+        if keyboardIdiom.isPad && keyCaps.count == 1 {
+            return
+        }
+        
         createPopupViewIfNecessary()
         guard let popupView = popupView else { return }
         guard isLongPress != isPopupInLongPressMode else { return }
         
         let popupDirection = computePopupDirection()
-        let keyCaps = computeKeyCap(isLongPress: isLongPress)
-        
-        // On iPad, shows popup only in long press mode and if there are multiple choices.
-        if keyboardIdiom.isPad && keyCaps.count == 1 {
-            return
-        }
         
         let defaultKeyCapIndex: Int
         defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == keyCap.defaultChildKeyCapTitle }) ?? 0
