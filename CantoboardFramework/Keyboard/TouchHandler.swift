@@ -75,7 +75,6 @@ class TouchHandler {
         keyRepeatCounter = 0
         
         setupKeyRepeatTimer()
-        
         // On iPhone, touching new key commits previous keys except the shift key.
         if keyboardIdiom == .phone {
             endTouches(commit: true, except: touch, exceptShiftKey: true)
@@ -239,7 +238,9 @@ class TouchHandler {
                 if case .pad = keyboardIdiom {
                     endTouchesUpTo(touch)
                 }
-                callKeyHandler(chosenAction)
+                // We cannot use chosenAction as endTouchesUpTo() might have changed the keyboard type and hence selectedActions of KeyViews.
+                // We have use the latest selectedAction of the keyView.
+                callKeyHandler(currentTouchState.activeKeyView.selectedAction)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 let supportDrag: Bool
                 switch currentTouchState.initialAction {
