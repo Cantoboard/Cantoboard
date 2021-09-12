@@ -262,6 +262,11 @@ class KeyboardView: UIView, BaseKeyboardView {
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased ? c.uppercased() : c
             
+            if shiftState != .lowercased && state.keyboardIdiom.isPadFull,
+               let swipeDownKeyCap = keyCap.getPadSwipeDownKeyCap(keyboardIdiom: state.keyboardIdiom) {
+                return swipeDownKeyCap
+            }
+            
             if isInCangjieMode && !isInEnglishMode && isLetterKey {
                 return .cangjie(keyChar, isInMixedMode)
             }

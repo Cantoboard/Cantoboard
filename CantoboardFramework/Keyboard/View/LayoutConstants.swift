@@ -23,6 +23,13 @@ enum LayoutIdiom: Equatable {
         case .pad: return true
         }
     }
+    
+    var isPadFull: Bool {
+        switch self {
+        case .pad(.padFull4Rows), .pad(.padFull5Rows): return true
+        default: return false
+        }
+    }
 }
 
 class PhoneLayoutConstants {

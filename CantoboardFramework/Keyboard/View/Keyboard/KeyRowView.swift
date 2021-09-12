@@ -60,7 +60,7 @@ class KeyRowView: UIView {
         prepareKeys(keyCaps: rightKepCaps, keys: &rightKeys, reuseKeyFromLeft: false)
         
         guard let layoutConstants = layoutConstants?.ref else { return }
-        if layoutConstants.idiom == .pad(.padFull4Rows) || layoutConstants.idiom == .pad(.padFull5Rows) {
+        if layoutConstants.idiom.isPadFull {
             leftKeys.forEach { $0.contentHorizontalAlignment = $0.keyCap.keyCapType == .input ? .center : .left }
             middleKeys.forEach { $0.contentHorizontalAlignment = .center }
             rightKeys.forEach { $0.contentHorizontalAlignment = $0.keyCap.keyCapType == .input ? .center : .right }

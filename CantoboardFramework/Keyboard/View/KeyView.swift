@@ -241,8 +241,8 @@ class KeyView: HighlightableButton {
             layout(textLayer: swipeDownHintLayer, centeredWithYOffset: yOffset, height: swipeDownHintLayerHeight)
             contentVerticalAlignment = .bottom
         } else {
-            let isPadFull = keyboardIdiom == .pad(.padFull4Rows) || keyboardIdiom == .pad(.padFull5Rows)
-            contentVerticalAlignment = isPadFull && !(keyCap.keyCapType == .input || keyCap.keyCapType == .space || isPadTopRowButton) ? .bottom : .center 
+            contentVerticalAlignment = keyboardIdiom.isPadFull &&
+                !(keyCap.keyCapType == .input || keyCap.keyCapType == .space || isPadTopRowButton) ? .bottom : .center
         }
         
         super.layoutSubviews()
