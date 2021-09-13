@@ -15,10 +15,10 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static let letters: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
-        [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\"], []],
-        [[.capsLock], ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "’"], [.returnKey(.default)]],
-        [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numeric)], [.contextual(.symbol), .space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
+        [[.capsLock], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .contextual("’")], [.returnKey(.default)]],
+        [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
+        [[.nextKeyboard, .keyboardType(.numeric)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -26,7 +26,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"], []],
         [[.placeholder(.capsLock)], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", "’", "¥"], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "、", "?", "!", "~", "”", "”", "€", "£"], []],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
@@ -34,7 +34,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "＼", "｜", "＿"], []],
         [[.placeholder(.capsLock)], ["－", "／", "：", "；", "（", "）", .currency, "＆", "＠", "’", "¥"], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "＂", "＇", "「", "」"], []],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = numbersHalf
@@ -102,7 +102,6 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                 } else {
                     width = padFull5RowsLayoutConstants.rightShiftKeyWidth
                 }
-                
             case .backspace: width = padFull5RowsLayoutConstants.deleteKeyWidth
             case .returnKey: width = padFull5RowsLayoutConstants.returnKeyWidth
             case .nextKeyboard, .contextual,
@@ -127,6 +126,18 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+        if keyboardState.keyboardContextualType.isEnglish, case .character(let c) = key {
+            return KeyCap(String(c))
+        }
+        switch key {
+        case "[": return "「"
+        case "]": return "」"
+        case "\\": return "、"
+        case ";": return "；"
+        case "’": return "‘"
+        case "/": return "/"
+        default: ()
+        }
         return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
     }
     

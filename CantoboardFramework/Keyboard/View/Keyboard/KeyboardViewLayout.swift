@@ -33,15 +33,9 @@ class CommonContextualKeys {
             case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
             case .url: return .character(".", "/", ["/", ".", ".com", ".net", ".org", ".edu", KeyCap(rime: .delimiter)])
             }
+        case ",": return keyboardState.keyboardContextualType.isEnglish ? "," : "，"
+        case ".": return keyboardState.keyboardContextualType.isEnglish ? "." : "。"
         default: fatalError("Unexpected ContextualKey \(key) for \(keyboardState)")
-        }
-    }
-    
-    static func getShortAndFull4RowsContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
-        switch key {
-        case .comma: return keyboardState.keyboardContextualType.isEnglish ? "," : "，"
-        case .fullStop: return keyboardState.keyboardContextualType.isEnglish ? "." : "。"
-        default: return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
         }
     }
 }

@@ -56,8 +56,13 @@ enum KeyCapType {
     case input, system, returnKey, space
 }
 
-enum ContextualKey {
-    case symbol, comma, fullStop
+enum ContextualKey: Equatable, ExpressibleByStringLiteral {
+    case symbol
+    case character(Character)
+    
+    public init(stringLiteral value: String) {
+        self = .character(value.first!)
+    }
 }
 
 indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
@@ -245,8 +250,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .switchToEnglishMode: return "英文"
         case "（": return "("
         case "）": return ")"
-        case "「": return "「　"
-        case "」": return "  」"
+        case "「": return "「"
+        case "」": return " 」"
         case "〈": return "〈　"
         case "〉": return "  〉"
         case "《": return "《　"
@@ -514,6 +519,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case ",": return "<"
             case ".": return ">"
             case "/": return "?"
+            case "，": return "《 "
+            case "。": return " 》"
+            case "「": return "『 "
+            case "」": return " 』"
+            case "、": return "｜"
+            case "；": return "："
+            case "‘": return "“"
             default: ()
             }
         default: ()
