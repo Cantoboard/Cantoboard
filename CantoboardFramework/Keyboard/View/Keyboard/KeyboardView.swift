@@ -241,14 +241,16 @@ class KeyboardView: UIView, BaseKeyboardView {
     
     private func refreshAlphabeticKeys(_ layout: KeyboardViewLayout.Type, _ shiftState: (KeyboardShiftState)) {
         for (index, var keyCaps) in layout.letters.enumerated() {
-            keyCaps = keyCaps.map { $0.map {
-                return configureAlphabeticKeyCap($0, shiftState: shiftState)
-            } }
+            keyCaps = keyCaps.enumerated().map { groupId, keyCapGroup in
+                keyCapGroup.map {
+                    return configureAlphabeticKeyCap($0, groupId: groupId, shiftState: shiftState)
+                }
+            }
             keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
         }
     }
     
-    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, shiftState: (KeyboardShiftState)) -> KeyCap {
+    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
@@ -266,7 +268,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased ? c.uppercased() : c
             
-            if shiftState != .lowercased && state.keyboardIdiom.isPadFull && !state.lastKeyboardTypeChangeFromAutoCap,
+            if shiftState != .lowercased && state.keyboardIdiom.isPad && !state.lastKeyboardTypeChangeFromAutoCap && hardcodedKeyCap.isContextual,
                let swipeDownKeyCap = keyCap.getPadSwipeDownKeyCap(keyboardIdiom: state.keyboardIdiom) {
                 return swipeDownKeyCap
             }
@@ -315,6 +317,12 @@ class KeyboardView: UIView, BaseKeyboardView {
             
             return .character(keyChar, hint, childrenKeyCaps)
         case .shift: return .shift(shiftState)
+        case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
+            if state.keyboardContextualType == .rime {
+                return CommonContextualKeys.getContextualKeys(key: .symbol, keyboardState: state)
+            } else {
+                return keyCap
+            }
         case .contextual: fatalError("Contextual isn't being translated properly. \(keyCap) \(state)")
         default: return keyCap
         }

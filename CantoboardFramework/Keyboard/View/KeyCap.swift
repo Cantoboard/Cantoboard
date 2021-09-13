@@ -532,6 +532,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
         return UIColor.systemGray
     }
+    
+    var isContextual: Bool {
+        switch self {
+        case .contextual: return true
+        default: return false
+        }
+    }
 }
 
 let FrameworkBundle = Bundle(for: KeyView.self)

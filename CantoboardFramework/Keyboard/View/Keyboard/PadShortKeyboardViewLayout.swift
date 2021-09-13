@@ -15,14 +15,14 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .backspace]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l", .returnKey(.default)]],
         [[.shift(.lowercased), "z", "x", "c", "v", "b", "n", "m", .contextual(.comma), .contextual(.fullStop), .shift(.lowercased)]],
-        [[.keyboardType(.numeric), .nextKeyboard, .contextual(.symbol)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
         [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard, .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     // FIXME
@@ -30,14 +30,14 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
         [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard, .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
         [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard, .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     // FIXME
@@ -45,7 +45,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
         [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
         [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard, .contextual(.symbol)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {
