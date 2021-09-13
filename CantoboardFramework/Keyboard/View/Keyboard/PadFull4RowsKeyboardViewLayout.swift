@@ -27,11 +27,10 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
-    // FIXME
     static let numbersFull: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.capsLock)], ["@", "#", "$", "&", "*", "(", ")", "’", "”"], [.returnKey(.default)]],
-        [[.keyboardType(.symbolic)], ["%", "-", "+", "=", "/", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
+        [[.placeholder(.capsLock)], ["@", "#", "$", "/", "(", ")", "「", "」", "‘"], [.returnKey(.default)]],
+        [[.keyboardType(.symbolic)], ["%", "-", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
@@ -42,11 +41,10 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
-    // FIXME
     static let symbolsFull: [[[KeyCap]]] = [
-        [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.capsLock)], ["€", "£", "¥", "_", "^", "[", "]", "{", "}"], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["§", "|", "~", "…", "\\", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
+        [["\t"], ["^", "_", "|", "\\", "<", ">", "{", "}", ",", "."], [.backspace]],
+        [[.placeholder(.capsLock)], ["&", "¥", "€", "*", "【", "】", "『", "』", "“"], [.returnKey(.default)]],
+        [[.keyboardType(.numeric)], ["^_^", "—", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     

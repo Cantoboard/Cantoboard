@@ -29,7 +29,9 @@ enum ContextualType: Equatable {
 struct KeyboardState: Equatable {
     var keyboardType: KeyboardType {
         didSet {
-            symbolShapeOverride = nil
+            if case .alphabetic = keyboardType {
+                symbolShapeOverride = nil
+            }
         }
     }
     var lastKeyboardTypeChangeFromAutoCap: Bool

@@ -25,11 +25,10 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
-    // FIXME
     static let numbersFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["@", "#", "$", "&", "*", "(", ")", "’", "”", .returnKey(.default)]],
-        [[.keyboardType(.symbolic), "%", "-", "+", "=", "/", ";", ":", ",", ".", .keyboardType(.symbolic)]],
+        [["@", "#", "$", "/", "(", ")", "「", "」", "‘", .returnKey(.default)]],
+        [[.keyboardType(.symbolic), "%", "-", "～", "⋯", "、", "；", "：", "，", "。", .keyboardType(.symbolic)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
@@ -40,11 +39,10 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
-    // FIXME
     static let symbolsFull: [[[KeyCap]]] = [
-        [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", .backspace]],
-        [["€", "£", "¥", "_", "^", "[", "]", "{", "}", .returnKey(.default)]],
-        [[.keyboardType(.numeric), "§", "|", "~", "…", "\\", "<", ">", "!", "?", .keyboardType(.numeric)]],
+        [["^", "_", "|", "\\", "<", ">", "{", "}", ",", ".", .backspace]],
+        [["&", "¥", "€", "*", "【", "】", "『", "』", "“", .returnKey(.default)]],
+        [[.keyboardType(.numeric), "^_^", "—", "+", "=", "·", "《", "》", "！", "？", .keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
