@@ -29,6 +29,7 @@ class KeyView: HighlightableButton {
     
     private(set) var keyCap: KeyCap = .none
     private var keyboardIdiom: LayoutIdiom = LayoutConstants.forMainScreen.idiom
+    private var keyboardType: KeyboardType = .none
     private var isPadTopRowButton = false
     private var action: KeyboardAction = .none
     
@@ -80,10 +81,11 @@ class KeyView: HighlightableButton {
         layer.cornerRadius = 5
     }
     
-    func setKeyCap(_ keyCap: KeyCap, keyboardIdiom: LayoutIdiom, isPadTopRowButton: Bool = false) {
-        guard keyCap != self.keyCap || keyboardIdiom != self.keyboardIdiom else { return }
+    func setKeyCap(_ keyCap: KeyCap, keyboardIdiom: LayoutIdiom, keyboardType: KeyboardType, isPadTopRowButton: Bool = false) {
+        guard keyCap != self.keyCap || keyboardIdiom != self.keyboardIdiom || keyboardType != self.keyboardType else { return }
         self.keyCap = keyCap
         self.keyboardIdiom = keyboardIdiom
+        self.keyboardType = keyboardType
         self.action = keyCap.action
         self.selectedAction = keyCap.action
         self.isPadTopRowButton = isPadTopRowButton
@@ -143,13 +145,12 @@ class KeyView: HighlightableButton {
         }
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
-        if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap) {
+        if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: keyboardType) {
             if swipeDownHintLayer == nil {
                 let swipeDownHintLayer = KeyHintLayer()
                 layer.addSublayer(swipeDownHintLayer)
                 self.swipeDownHintLayer = swipeDownHintLayer
             }
-
             swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText
         } else {
             swipeDownHintLayer?.removeFromSuperlayer()
@@ -304,7 +305,7 @@ extension KeyView {
     }
     
     func keyTouchMoved(_ touch: UITouch) {
-        if let padSwipeDownKeyCap = keyboardIdiom.keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap),
+        if let padSwipeDownKeyCap = keyboardIdiom.keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: keyboardType),
            let touchBeginPosition = touchBeginPosition {
             // Handle iPad swipe down.
             let point = touch.location(in: self)

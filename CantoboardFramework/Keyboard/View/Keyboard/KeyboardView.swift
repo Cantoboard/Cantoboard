@@ -99,11 +99,11 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
         
         if prevState.returnKeyType != newState.returnKeyType {
-            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardIdiom: state.keyboardIdiom)
+            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardIdiom: state.keyboardIdiom, keyboardType: newState.keyboardType)
         }
         
         if prevState.spaceKeyMode != newState.spaceKeyMode {
-            spaceKey?.setKeyCap(.space(newState.spaceKeyMode), keyboardIdiom: state.keyboardIdiom)
+            spaceKey?.setKeyCap(.space(newState.spaceKeyMode), keyboardIdiom: state.keyboardIdiom, keyboardType: newState.keyboardType)
         }
         
         if prevState.enableState != newState.enableState {
@@ -227,14 +227,14 @@ class KeyboardView: UIView, BaseKeyboardView {
                let newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1],
                case .returnKey = newLineKey.keyCap {
                 self.newLineKey = newLineKey
-                newLineKey.setKeyCap(.returnKey(state.returnKeyType), keyboardIdiom: state.keyboardIdiom)
+                newLineKey.setKeyCap(.returnKey(state.returnKeyType), keyboardIdiom: state.keyboardIdiom, keyboardType: state.keyboardType)
             }
             
             if let lastRowMiddleKeys = lastRow.middleKeys,
                let spaceKey = lastRowMiddleKeys[safe: 0],
                case .space = spaceKey.keyCap {
                 self.spaceKey = spaceKey
-                spaceKey.setKeyCap(.space(state.spaceKeyMode), keyboardIdiom: state.keyboardIdiom)
+                spaceKey.setKeyCap(.space(state.spaceKeyMode), keyboardIdiom: state.keyboardIdiom, keyboardType: state.keyboardType)
             }
         }
     }
@@ -270,7 +270,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             let keyChar = shiftState != .lowercased ? c.uppercased() : c
             
             if shiftState != .lowercased && !state.lastKeyboardTypeChangeFromAutoCap && keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ,
-               let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap) {
+               let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: state.keyboardType) {
                 return swipeDownKeyCap
             }
             

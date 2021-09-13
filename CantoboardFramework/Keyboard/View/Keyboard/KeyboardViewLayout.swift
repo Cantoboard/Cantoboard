@@ -24,7 +24,7 @@ protocol KeyboardViewLayout {
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect]
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
-    static func getSwipeDownKeyCap(keyCap: KeyCap) -> KeyCap?
+    static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardType: KeyboardType) -> KeyCap?
 }
 
 extension KeyboardViewLayout {

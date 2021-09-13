@@ -116,7 +116,7 @@ class KeypadView: UIView, BaseKeyboardView {
                 case "!", "！": props.keyCap = isFullShape ? "！" : "!"
                 default: ()
                 }
-                button.setKeyCap(props.keyCap, keyboardIdiom: state.keyboardIdiom)
+                button.setKeyCap(props.keyCap, keyboardIdiom: state.keyboardIdiom, keyboardType: .alphabetic(.lowercased))
             }
         }
     }

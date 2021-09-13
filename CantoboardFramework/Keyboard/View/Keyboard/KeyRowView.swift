@@ -55,9 +55,9 @@ class KeyRowView: UIView {
             rightKepCaps = keyCapGroups[2]
         }
         
-        prepareKeys(keyCaps: leftKeyCaps, keys: &leftKeys)
-        prepareKeys(keyCaps: middleKeyCaps, keys: &middleKeys)
-        prepareKeys(keyCaps: rightKepCaps, keys: &rightKeys, reuseKeyFromLeft: false)
+        prepareKeys(keyCaps: leftKeyCaps, keyboardType: keyboardType, keys: &leftKeys)
+        prepareKeys(keyCaps: middleKeyCaps, keyboardType: keyboardType, keys: &middleKeys)
+        prepareKeys(keyCaps: rightKepCaps, keyboardType: keyboardType, keys: &rightKeys, reuseKeyFromLeft: false)
         
         guard let layoutConstants = layoutConstants?.ref else { return }
         if layoutConstants.idiom.isPadFull {
@@ -71,7 +71,7 @@ class KeyRowView: UIView {
         }
     }
     
-    private func prepareKeys(keyCaps: [KeyCap]?, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
+    private func prepareKeys(keyCaps: [KeyCap]?, keyboardType: KeyboardType, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
         guard let keyCaps = keyCaps,
               let layoutConstants = layoutConstants
             else { return }
@@ -107,8 +107,7 @@ class KeyRowView: UIView {
                 case .nextKeyboard: keyCap = needsInputModeSwitchKey ? KeyCap.nextKeyboard : KeyCap.keyboardType(.emojis)
                 default: ()
             }
-            
-            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom, isPadTopRowButton: isPadTopRow)
+            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom, keyboardType: keyboardType, isPadTopRowButton: isPadTopRow)
         }
     }
 }
