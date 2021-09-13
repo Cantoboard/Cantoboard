@@ -453,96 +453,11 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    private var keyCapChar: Character? {
+    var keyCapChar: Character? {
         switch self {
         case .character(let c, _, _), .cangjie(let c, _): return c.lowercased().first
         default: return nil
         }
-    }
-    
-    func getPadSwipeDownKeyCap(keyboardIdiom: LayoutIdiom) -> KeyCap? {
-        switch keyboardIdiom {
-        case .pad(.padShort), .pad(.padFull4Rows):
-            switch keyCapChar {
-            case "q": return "1"
-            case "w": return "2"
-            case "e": return "3"
-            case "r": return "4"
-            case "t": return "5"
-            case "y": return "6"
-            case "u": return "7"
-            case "i": return "8"
-            case "o": return "9"
-            case "p": return "0"
-            case "a": return "@"
-            case "s": return "#"
-            case "d": return "$"
-            case "f": return "&"
-            case "g": return "*"
-            case "h": return "("
-            case "j": return ")"
-            case "k": return "’"
-            case "l": return "\""
-            case "z": return "%"
-            case "x": return "-"
-            case "c": return "+"
-            case "v": return "="
-            case "b": return "/"
-            case "n": return ";"
-            case "m": return ":"
-            case ",": return "!"
-            case ".": return "?"
-            case "，": return "！"
-            case "。": return "？"
-            default: ()
-            }
-        case .pad(.padFull5Rows):
-            switch keyCapChar {
-            case "`": return "~"
-            case "1": return "!"
-            case "2": return "@"
-            case "3": return "#"
-            case "4": return "$"
-            case "5": return "%"
-            case "6": return "^"
-            case "7": return "&"
-            case "8": return "*"
-            case "9": return "("
-            case "0": return ")"
-            case "-": return "_"
-            case "=": return "+"
-            case "[": return "{"
-            case "]": return "}"
-            case "\\": return "|"
-            case ";": return ":"
-            case "’": return "\""
-            case ",": return "<"
-            case ".": return ">"
-            case "/": return "?"
-            case "，": return "《 "
-            case "。": return " 》"
-            case "「": return "『 "
-            case "」": return " 』"
-            case "、": return "｜"
-            case "；": return "："
-            case "‘": return "“"
-            default: ()
-            }
-        default: ()
-        }
-        return nil
-    }
-    
-    func getPadSwipeDownKeyCapForegroundColor(keyboardIdiom: LayoutIdiom) -> UIColor {
-        switch keyboardIdiom {
-        case .pad(.padFull5Rows): return UIColor.label
-        default:
-            switch keyCapChar {
-            case ",", ".", "，", "。": return UIColor.label
-            default: ()
-            }
-        }
-        return UIColor.systemGray
     }
     
     var isContextual: Bool {

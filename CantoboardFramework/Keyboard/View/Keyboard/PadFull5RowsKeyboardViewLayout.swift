@@ -104,9 +104,9 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                 }
             case .backspace: width = padFull5RowsLayoutConstants.deleteKeyWidth
             case .returnKey: width = padFull5RowsLayoutConstants.returnKeyWidth
-            case .nextKeyboard, .contextual,
+            case .nextKeyboard,
                  .keyboardType where index <= 2:
-                width = padFull5RowsLayoutConstants.leftSystemKeyWidth
+                width = (padFull5RowsLayoutConstants.leftSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
             case .keyboardType, .dismissKeyboard:
                 width = padFull5RowsLayoutConstants.rightSystemKeyWidth
             case .character, .cangjie, .currency: width = inputKeyWidth
@@ -143,5 +143,40 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
         return atRow == 0 ? layoutConstants.padFull5RowsLayoutConstants!.topRowKeyHeight : layoutConstants.keyHeight
+    }
+    
+    static func getSwipeDownKeyCap(keyCap: KeyCap) -> KeyCap? {
+        switch keyCap.keyCapChar {
+        case "`": return "~"
+        case "1": return "!"
+        case "2": return "@"
+        case "3": return "#"
+        case "4": return "$"
+        case "5": return "%"
+        case "6": return "^"
+        case "7": return "&"
+        case "8": return "*"
+        case "9": return "("
+        case "0": return ")"
+        case "-": return "_"
+        case "=": return "+"
+        case "[": return "{"
+        case "]": return "}"
+        case "\\": return "|"
+        case ";": return ":"
+        case "’": return "\""
+        case ",": return "<"
+        case ".": return ">"
+        case "/": return "?"
+        case "，": return "《 "
+        case "。": return " 》"
+        case "「": return "『 "
+        case "」": return " 』"
+        case "、": return "｜"
+        case "；": return "："
+        case "‘": return "“"
+        default: ()
+        }
+        return nil
     }
 }

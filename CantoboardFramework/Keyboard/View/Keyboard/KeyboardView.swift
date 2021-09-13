@@ -255,10 +255,11 @@ class KeyboardView: UIView, BaseKeyboardView {
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
         let isInLongPressMode = state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale
+        let keyboardViewLayout = state.keyboardIdiom.keyboardViewLayout
         
         var keyCap: KeyCap
         if case .contextual(let contextualKey) = hardcodedKeyCap {
-            keyCap = state.keyboardIdiom.keyboardViewLayout.getContextualKeys(key: contextualKey, keyboardState: state)
+            keyCap = keyboardViewLayout.getContextualKeys(key: contextualKey, keyboardState: state)
         } else {
             keyCap = hardcodedKeyCap
         }
@@ -268,8 +269,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased ? c.uppercased() : c
             
-            if shiftState != .lowercased && state.keyboardIdiom.isPad && !state.lastKeyboardTypeChangeFromAutoCap && hardcodedKeyCap.isContextual,
-               let swipeDownKeyCap = keyCap.getPadSwipeDownKeyCap(keyboardIdiom: state.keyboardIdiom) {
+            if shiftState != .lowercased && !state.lastKeyboardTypeChangeFromAutoCap && keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ,
+               let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap) {
                 return swipeDownKeyCap
             }
             

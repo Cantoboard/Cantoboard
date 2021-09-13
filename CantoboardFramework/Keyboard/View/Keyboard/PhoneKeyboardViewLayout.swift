@@ -9,10 +9,6 @@ import Foundation
 import UIKit
 
 class PhoneKeyboardViewLayout : KeyboardViewLayout {
-    private enum GroupLayoutDirection {
-        case left, middle, right
-    }
-    
     static let numOfRows = 4
     
     static let letters: [[[KeyCap]]] = [
@@ -116,5 +112,13 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
         return layoutConstants.keyHeight
+    }
+    
+    static func getSwipeDownKeyCap(keyCap: KeyCap) -> KeyCap? {
+        return nil
+    }
+    
+    static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool {
+        return false
     }
 }

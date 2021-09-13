@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+enum GroupLayoutDirection {
+    case left, middle, right
+}
+
 protocol KeyboardViewLayout {
     static var numOfRows: Int { get };
     
@@ -20,6 +24,16 @@ protocol KeyboardViewLayout {
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect]
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
+    static func getSwipeDownKeyCap(keyCap: KeyCap) -> KeyCap?
+}
+
+extension KeyboardViewLayout {
+    static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool {
+        switch keyCap {
+        case .character(let c, _, _): return !(c.first?.isLetter ?? false)
+        default: return true
+        }
+    }
 }
 
 class CommonContextualKeys {
@@ -37,6 +51,45 @@ class CommonContextualKeys {
         case ".": return keyboardState.keyboardContextualType.isEnglish ? "." : "。"
         default: fatalError("Unexpected ContextualKey \(key) for \(keyboardState)")
         }
+    }
+}
+
+class CommonSwipeDownKeys {
+    static func getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: KeyCap) -> KeyCap? {
+        switch keyCap.keyCapChar {
+        case "q": return "1"
+        case "w": return "2"
+        case "e": return "3"
+        case "r": return "4"
+        case "t": return "5"
+        case "y": return "6"
+        case "u": return "7"
+        case "i": return "8"
+        case "o": return "9"
+        case "p": return "0"
+        case "a": return "@"
+        case "s": return "#"
+        case "d": return "$"
+        case "f": return "&"
+        case "g": return "*"
+        case "h": return "("
+        case "j": return ")"
+        case "k": return "’"
+        case "l": return "\""
+        case "z": return "%"
+        case "x": return "-"
+        case "c": return "+"
+        case "v": return "="
+        case "b": return "/"
+        case "n": return ";"
+        case "m": return ":"
+        case ",": return "!"
+        case ".": return "?"
+        case "，": return "！"
+        case "。": return "？"
+        default: ()
+        }
+        return nil
     }
 }
 

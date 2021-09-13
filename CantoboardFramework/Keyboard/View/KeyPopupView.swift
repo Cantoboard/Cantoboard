@@ -140,11 +140,11 @@ class KeyPopupView: UIView {
         var buttonSize: CGSize
         if actions.count < 10 {
             buttonSize = CGSize(
-                width: KeyPopupView.bodyInsets.wrap(width: keyWidth),
+                width: layoutConstants.idiom.isPad ? keyWidth : KeyPopupView.bodyInsets.wrap(width: keyWidth),
                 height: keyHeight)
         } else {
             buttonSize = CGSize(
-                width: keyboardWidth / CGFloat(actions.count),
+                width: layoutConstants.idiom.isPad ? keyWidth : keyboardWidth / CGFloat(actions.count),
                 height: keyHeight)
         }
         
