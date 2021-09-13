@@ -20,7 +20,7 @@ enum ContextualType: Equatable {
     
     var isEnglish: Bool {
         switch self {
-        case .english, .url: return true
+        case .english, .rime, .url: return true
         default: return false
         }
     }

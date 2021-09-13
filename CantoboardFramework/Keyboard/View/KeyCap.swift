@@ -57,7 +57,7 @@ enum KeyCapType {
 }
 
 enum ContextualKey {
-    case symbol
+    case symbol, comma, fullStop
 }
 
 indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
@@ -487,6 +487,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "m": return ":"
             case ",": return "!"
             case ".": return "?"
+            case "，": return "！"
+            case "。": return "？"
             default: ()
             }
         case .pad(.padFull5Rows):

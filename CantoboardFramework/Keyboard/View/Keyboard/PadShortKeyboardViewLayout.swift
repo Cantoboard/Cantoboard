@@ -14,7 +14,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
     static let letters: [[[KeyCap]]] = [
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .backspace]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l", .returnKey(.default)]],
-        [[.shift(.lowercased), "z", "x", "c", "v", "b", "n", "m", ",", ".", .shift(.lowercased)]],
+        [[.shift(.lowercased), "z", "x", "c", "v", "b", "n", "m", .contextual(.comma), .contextual(.fullStop), .shift(.lowercased)]],
         [[.keyboardType(.numeric), .nextKeyboard, .contextual(.symbol)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
@@ -120,7 +120,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
-        return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
+        return CommonContextualKeys.getShortAndFull4RowsContextualKeys(key: key, keyboardState: keyboardState)
     }
     
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {

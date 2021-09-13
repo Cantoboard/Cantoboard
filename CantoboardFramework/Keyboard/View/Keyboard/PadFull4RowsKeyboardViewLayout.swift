@@ -16,7 +16,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     static let letters: [[[KeyCap]]] = [
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
         [[.capsLock], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
-        [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", ",", "."], [.shift(.lowercased)]],
+        [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(.comma), .contextual(.fullStop)], [.shift(.lowercased)]],
         [[.nextKeyboard, .keyboardType(.numeric), .contextual(.symbol)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
@@ -61,7 +61,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         var numFlexibleWidthKeys: Int = 0
         var keyWidths = Dictionary<KeyView, CGFloat>()
         
-        let takenWidth = getFixedKeyWidth(keys: allKeys, layoutConstants: layoutConstants, numFlexibleWidthKeys: &numFlexibleWidthKeys, keyWidths: &keyWidths)
+        let takenWidth = getFixedKeyWidth(keyRowView: keyRowView, keys: allKeys, layoutConstants: layoutConstants, numFlexibleWidthKeys: &numFlexibleWidthKeys, keyWidths: &keyWidths)
         
         let totalGapWidth = CGFloat(allKeys.count - 1) * layoutConstants.buttonGapX
         let flexibleKeyWidth = (availableWidth - takenWidth - totalGapWidth) / CGFloat(numFlexibleWidthKeys)
@@ -84,7 +84,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         }
     }
     
-    private static func getFixedKeyWidth(keys: [KeyView], layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
+    private static func getFixedKeyWidth(keyRowView: KeyRowView, keys: [KeyView], layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
         let padFull4RowsLayoutConstants = layoutConstants.padFull4RowsLayoutConstants!
         
         let totalFixedKeyWidth = keys.enumerated().reduce(CGFloat(0)) {sum, indexAndKey in
@@ -102,14 +102,15 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
                     width = padFull4RowsLayoutConstants.rightShiftKeyWidth
                 }
             case .returnKey: width = padFull4RowsLayoutConstants.returnKeyWidth
-            case .nextKeyboard, .contextual,
-                 .keyboardType where index <= 2:
-                width = padFull4RowsLayoutConstants.leftSystemKeyWidth
-            case .keyboardType, .dismissKeyboard:
+            case .keyboardType where index > 2, .dismissKeyboard where index > 2:
                 width = padFull4RowsLayoutConstants.rightSystemKeyWidth
             default:
-                width = 0
-                numFlexibleWidthKeys += 1
+                if keyRowView.rowId == 3 && index <= 2 {
+                    width = padFull4RowsLayoutConstants.leftSystemKeyWidth
+                } else {
+                    width = 0
+                    numFlexibleWidthKeys += 1
+                }
             }
             
             if width > 0 {
@@ -123,7 +124,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
-        return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
+        return CommonContextualKeys.getShortAndFull4RowsContextualKeys(key: key, keyboardState: keyboardState)
     }
     
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
