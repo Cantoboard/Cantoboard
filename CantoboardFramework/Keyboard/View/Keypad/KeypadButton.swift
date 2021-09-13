@@ -42,7 +42,7 @@ class KeypadButton: KeyView {
     
     override internal func setupView() {
         super.setupView()
-        if keyCap == .switchToEnglishMode {
+        if case .toggleInputMode = keyCap {
             setTitle("ABC", for: .normal)
         }
         

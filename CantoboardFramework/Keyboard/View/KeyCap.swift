@@ -69,7 +69,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
     backspace,
-    capsLock,
+    toggleInputMode(/* toMode */ InputMode, RimeSchema?),
     character(String, String?, [KeyCap]?),
     cangjie(String, Bool),
     stroke(String),
@@ -83,7 +83,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     contextual(ContextualKey),
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
-    switchToEnglishMode,
     exportFile(String, String),
     currency,
     dismissKeyboard,
@@ -108,7 +107,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .none: return .none
         case .backspace: return .backspace
-        case .capsLock: return .capsLock
+        case .toggleInputMode: return .toggleInputMode
         case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _): return .character(c)
         case .stroke(let c): return .character(c)
@@ -121,7 +120,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(let rc, _, _): return .rime(rc)
         case .reverseLookup(let s): return .reverseLookup(s)
         case .changeSchema(let s): return .changeSchema(s)
-        case .switchToEnglishMode: return .toggleInputMode
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
         case .currency: return .character(SessionState.main.currencySymbol)
@@ -133,7 +131,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFont: UIFont {
         switch self {
         case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
-        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .capsLock: return .systemFont(ofSize: 16)
+        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
         case .cangjie(_, true): return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
         }
@@ -247,7 +245,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
         case .changeSchema(let schema): return schema.shortName
-        case .switchToEnglishMode: return "英文"
+        case .toggleInputMode(.english, _): return "英文"
+        case .toggleInputMode(.chinese, let rimeSchema): return "中文 - \(rimeSchema?.shortName ?? "")"
+        case .toggleInputMode(.mixed, let rimeSchema): return "混合 - \(rimeSchema?.shortName ?? "")"
         case "（": return "("
         case "）": return ")"
         case "「": return "「"
@@ -261,7 +261,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "｛": return "{"
         case "｝": return "}"
         case "\t": return "tab"
-        case .capsLock: return "caps lock"
         case .character(let text, _, _): return text
         case .cangjie(let c, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }

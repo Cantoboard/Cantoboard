@@ -76,7 +76,7 @@ extension StatusMenuHandler where Self: UIView {
             [ .changeSchema(.mandarin), .changeSchema(.stroke) ],
         ]
         if state.activeSchema.supportMixedMode {
-            menuRows[menuRows.count - 1].append(.switchToEnglishMode)
+            menuRows[menuRows.count - 1].append(.toggleInputMode(.english, nil))
         }
         let statusMenu = StatusMenu(menuRows: menuRows)
         statusMenu.handleKey = delegate?.handleKey

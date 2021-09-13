@@ -15,35 +15,35 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static let letters: [[[KeyCap]]] = [
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
-        [[.capsLock], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
+        [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
         [[.nextKeyboard, .keyboardType(.numeric)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.capsLock)], ["@", "#", "$", "&", "*", "(", ")", "’", "”"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", "$", "&", "*", "(", ")", "’", "”"], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "+", "=", "/", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.capsLock)], ["@", "#", "$", "/", "(", ")", "「", "」", "‘"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", "$", "/", "(", ")", "「", "」", "‘"], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.capsLock)], ["€", "£", "¥", "_", "^", "[", "]", "{", "}"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["€", "£", "¥", "_", "^", "[", "]", "{", "}"], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["§", "|", "~", "…", "\\", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
         [["\t"], ["^", "_", "|", "\\", "<", ">", "{", "}", ",", "."], [.backspace]],
-        [[.placeholder(.capsLock)], ["&", "¥", "€", "*", "【", "】", "『", "』", "“"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["&", "¥", "€", "*", "【", "】", "『", "』", "“"], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["^_^", "—", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
@@ -95,7 +95,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
             var width: CGFloat
             switch key.keyCap {
             case "\t", .backspace: width = padFull4RowsLayoutConstants.tabDeleteKeyWidth
-            case .capsLock: width = padFull4RowsLayoutConstants.capLockKeyWidth
+            case .toggleInputMode: width = padFull4RowsLayoutConstants.capLockKeyWidth
             case .shift:
                 if index == 0 {
                     width = padFull4RowsLayoutConstants.leftShiftKeyWidth

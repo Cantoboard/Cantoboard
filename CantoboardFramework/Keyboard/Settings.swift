@@ -19,6 +19,14 @@ public enum InputMode: String, Codable {
     case mixed = "mixed"
     case chinese = "chinese"
     case english = "english"
+    
+    var afterToggle: InputMode {
+        switch self {
+        case .mixed: return .english
+        case .chinese: return .english
+        case .english: return Settings.cached.isMixedModeEnabled ? .mixed : .chinese
+        }
+    }
 }
 
 public enum SymbolShape: String, Codable {

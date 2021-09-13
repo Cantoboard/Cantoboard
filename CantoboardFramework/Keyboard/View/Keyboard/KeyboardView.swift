@@ -265,6 +265,8 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
         
         switch keyCap {
+        case .toggleInputMode:
+            return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
         case .character(let c, var hint, var childrenKeyCaps):
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased ? c.uppercased() : c

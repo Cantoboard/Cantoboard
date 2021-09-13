@@ -346,11 +346,7 @@ class InputController: NSObject {
                 return
             }
             
-            switch state.inputMode {
-            case .mixed: state.inputMode = .english
-            case .chinese: state.inputMode = .english
-            case .english: state.inputMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
-            }
+            state.inputMode = state.inputMode.afterToggle
             enforceInputMode()
         case .toggleSymbolShape:
             switch state.symbolShape {
