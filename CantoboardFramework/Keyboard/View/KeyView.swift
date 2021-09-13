@@ -9,7 +9,9 @@ import Foundation
 import UIKit
 
 class KeyView: HighlightableButton {
-    private static let contentEdgeInsets = UIEdgeInsets(top: 6, left: 6, bottom: 4, right: 6)
+    private static let contentEdgeInsetsPhone = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+    private static let contentEdgeInsetsPad = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    private static let contentEdgeInsetsPadTopRow = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
     private static let swipeDownMinCutOffYRatio: CGFloat = 0.25
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.6
     
@@ -99,7 +101,11 @@ class KeyView: HighlightableButton {
         let foregroundColor = keyCap.buttonFgColor
         setTitleColor(foregroundColor, for: .normal)
         tintColor = foregroundColor
-        contentEdgeInsets = Self.contentEdgeInsets
+        if keyboardIdiom == .phone {
+            contentEdgeInsets = Self.contentEdgeInsetsPhone
+        } else {
+            contentEdgeInsets = isPadTopRowButton ? Self.contentEdgeInsetsPadTopRow : Self.contentEdgeInsetsPad
+        }
         titleEdgeInsets = keyCap.buttonTitleInset
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
