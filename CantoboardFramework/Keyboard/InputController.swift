@@ -198,7 +198,7 @@ class InputController: NSObject {
     private func handleSpace() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        if state.inputMode == .chinese && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
+        if state.inputMode != .english && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
             if Settings.cached.spaceAction == .insertText {
                 candidateSelected(choice: [0, 0], enableSmartSpace: true)
             } else {
@@ -522,7 +522,7 @@ class InputController: NSObject {
         
         state.returnKeyType = hasMarkedText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
-        if !inputEngine.isComposing || state.inputMode != .chinese {
+        if !inputEngine.isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
         } else {
             state.spaceKeyMode = Settings.cached.spaceAction == .insertText ? .select : .nextPage
