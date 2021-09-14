@@ -222,7 +222,7 @@ class CandidatePaneView: UIControl {
             charFormButton.isHidden = keyboardState.activeSchema.isShapeBased
         } else {
             let cannotExpand =
-                collectionView.contentSize.width <= 1 ||
+                collectionView.visibleCells.isEmpty ||
                 collectionView.contentSize.width < collectionView.bounds.width ||
                 candidateOrganizer.cannotExpand
             
