@@ -103,7 +103,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
             return layoutConstants.phoneLayoutConstants!.shiftKeyWidth
         case .returnKey:
             return 1.5 * layoutConstants.phoneLayoutConstants!.systemKeyWidth
-        case .character, .cangjie, .contextual, .currency:
+        case .character, .cangjie, .rime, .currency:
             return layoutConstants.phoneLayoutConstants!.letterKeyWidth
         default:
             return layoutConstants.phoneLayoutConstants!.systemKeyWidth
