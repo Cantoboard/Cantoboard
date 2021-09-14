@@ -70,7 +70,14 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         default: candidateFontSize = .normal
         }
         
-        let spaceAction: SpaceAction = spaceActionControl.selectedSegmentIndex == 0 ? .nextPage : .insertText
+        let spaceAction: SpaceAction
+        switch spaceActionControl.selectedSegmentIndex {
+        case 0: spaceAction = .nextPage
+        case 1: spaceAction = .insertCandidate
+        case 2: spaceAction = .insertText
+        default: spaceAction = .insertText
+        }
+        
         let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
         let englishLocale: EnglishLocale
@@ -214,7 +221,8 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         populateSetting(toSegmentedControl: spaceActionControl, settingToIndexMapper: {
             switch $0.spaceAction {
             case .nextPage: return 0
-            case .insertText: return 1
+            case .insertCandidate: return 1
+            case .insertText: return 2
             }
         })
     }

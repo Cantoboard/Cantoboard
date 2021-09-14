@@ -195,17 +195,17 @@ class InputController: NSObject {
         }
     }
     
-    private func handleSpace() {
+    private func handleSpace(spaceKeyMode: SpaceKeyMode) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        if state.inputMode != .english && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
-            if Settings.cached.spaceAction == .insertText {
-                candidateSelected(choice: [0, 0], enableSmartSpace: true)
-            } else {
-                keyboardView?.scrollCandidatePaneToNextPageInRowMode()
-                needReloadCandidates = false
-            }
-        } else {
+        let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+        switch spaceKeyMode {
+        case .nextPage where hasCandidate:
+            keyboardView?.scrollCandidatePaneToNextPageInRowMode()
+            needReloadCandidates = false
+        case .select where hasCandidate:
+            candidateSelected(choice: [0, 0], enableSmartSpace: true)
+        default:
             if !insertComposingText() {
                 if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
@@ -280,8 +280,8 @@ class InputController: NSObject {
         case .rime(let rc):
             guard isComposing || rc == .sym else { return }
             _ = inputEngine.processRimeChar(rc.rawValue)
-        case .space:
-            handleSpace()
+        case .space(let spaceKeyMode):
+            handleSpace(spaceKeyMode: spaceKeyMode)
         case .newLine:
             if !insertComposingText(shouldDisableSmartSpace: true) {
                 insertText("\n")
@@ -525,7 +525,12 @@ class InputController: NSObject {
         if !inputEngine.isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
         } else {
-            state.spaceKeyMode = Settings.cached.spaceAction == .insertText ? .select : .nextPage
+            let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+            switch Settings.cached.spaceAction {
+            case .nextPage where hasCandidate: state.spaceKeyMode = .nextPage
+            case .insertCandidate where hasCandidate: state.spaceKeyMode = .select
+            default: state.spaceKeyMode = .space
+            }
         }
         keyboardView?.state = state
     }
@@ -625,7 +630,7 @@ class InputController: NSObject {
         if hasInsertedAutoSpace, case .selectCandidate = lastKey {
             // Mimic iOS stock behaviour. Swallow the space tap.
             return true
-        } else if hasInsertedAutoSpace || lastKey == .space,
+        } else if hasInsertedAutoSpace || lastKey?.isSpace ?? false,
            let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
            Settings.cached.isSmartFullStopEnabled &&
            (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {

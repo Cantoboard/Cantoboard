@@ -115,7 +115,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .keyboardType(let type): return .keyboardType(type)
         case .returnKey: return .newLine
         case .nextKeyboard: return .nextKeyboard
-        case .space: return .space
+        case .space(let spaceKeyMode): return .space(spaceKeyMode)
         case .shift(let shiftState): return .shift(shiftState)
         case .rime(let rc, _, _): return .rime(rc)
         case .reverseLookup(let s): return .reverseLookup(s)

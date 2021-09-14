@@ -36,6 +36,7 @@ public enum SymbolShape: String, Codable {
 }
 
 public enum SpaceAction: String, Codable {
+    case insertCandidate = "insertCandidate"
     case insertText = "insertText"
     case nextPage = "nextPage"
 }

@@ -158,7 +158,7 @@ class TouchHandler {
             // On iPad, forward all events to the initial key to support swipe down input.
             let initialAction = currentTouchState.initialAction
             if currentTouchState.activeKeyView.hasInputAcceptingPopup ||
-                keyboardIdiom.isPad && (!initialAction.isShift && !initialAction.isKeyboardType && initialAction != .space) {
+                keyboardIdiom.isPad && (!initialAction.isShift && !initialAction.isKeyboardType && !initialAction.isSpace) {
                 currentTouchState.activeKeyView.keyTouchMoved(touch)
                 return
             }
