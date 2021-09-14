@@ -438,6 +438,7 @@ extension CandidatePaneView {
            let cellAtTargetOffset = collectionView.cellForItem(at: indexPathAtTargetOffset) {
             targetOffset.x = cellAtTargetOffset.frame.minX
         }
+        targetOffset.x = max(0, min(targetOffset.x, collectionView.contentSize.width - collectionView.frame.width))
         collectionView.setContentOffset(targetOffset, animated: true)
     }
 }
