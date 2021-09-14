@@ -355,8 +355,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "「": return ["「", "『", "“", "‘"]
         case "」": return ["」", "』", "”", "’"]
         // 123 3rd row
-        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯"]
-        case ",": return [",", "，"]
+        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯", "》"]
+        case ",": return [",", "，", "《"]
         case "､": return ["､", "、"]
         case "&": return ["＆", "&", "§"]
         case "?": return ["?", "？", "¿"]
@@ -365,8 +365,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         // 123 4rd row
         case "@": return ["@", "＠"]
         // #+= 1st row
-        case "[": return ["[", "［", "【", "〔"]
-        case "]": return ["]", "］", "】", "〕"]
+        case "[": return ["[", "［", "【", "〔", "「"]
+        case "]": return ["]", "］", "】", "〕", "」"]
         case "{": return ["{", "｛"]
         case "}": return ["}", "｝"]
         case "#": return ["#", "＃"]
