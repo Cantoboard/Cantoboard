@@ -414,8 +414,10 @@ class InputController: NSObject {
     private func shouldApplyAutoCap() -> Bool {
         guard let textDocumentProxy = textDocumentProxy else { return false }
         //print("autocapitalizationType", textDocumentProxy.autocapitalizationType?.rawValue)
-        if textDocumentProxy.autocapitalizationType == .some(.none) { return false }
-        if inputEngine.composition?.text != nil { return false }
+        if textDocumentProxy.autocapitalizationType == .some(.none) ||
+            inputEngine.composition?.text != nil ||
+            isHoldingShift
+            { return false }
         
         // There are three cases we should apply auto cap:
         // - First char in the doc. nil
