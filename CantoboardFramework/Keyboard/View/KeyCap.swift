@@ -261,6 +261,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "｛": return "{"
         case "｝": return "}"
         case "\t": return "tab"
+        case "——": return "⸻"
         case .character(let text, _, _): return text
         case .cangjie(let c, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
