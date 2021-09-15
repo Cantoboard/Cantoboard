@@ -41,13 +41,7 @@ public struct SessionState: Codable, Equatable {
     }
     
     public var lastCharForm: CharForm {
-        didSet {
-            save()
-            // Replicate to settings
-            var settings = Settings.cached
-            settings.charForm = lastCharForm
-            Settings.save(settings)
-        }
+        didSet { save() }
     }
 
     private init() {

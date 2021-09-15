@@ -238,12 +238,6 @@ open class KeyboardViewController: UIInputViewController {
             DDLogInfo("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
         }
         
-        if prevSettings.charForm != settings.charForm {
-            SessionState.main.lastCharForm = settings.charForm
-            inputController?.handleKey(.setCharForm(settings.charForm))
-            DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
-        }
-        
         if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled {
             inputController?.enforceInputMode()
             DDLogInfo("Detected change in isMixedModeEnabled from \(prevSettings.isMixedModeEnabled) to \(settings.isMixedModeEnabled).")

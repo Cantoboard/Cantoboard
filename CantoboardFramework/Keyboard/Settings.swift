@@ -87,7 +87,6 @@ public struct RimeSettings: Codable, Equatable {
 
 public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
-    private static let defaultCharForm: CharForm = .traditionalTW
     private static let defaultMixedModeEnabled: Bool = true
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
@@ -102,7 +101,6 @@ public struct Settings: Codable, Equatable {
     private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultShowEnglishExactMatch: Bool = true
 
-    public var charForm: CharForm
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
     public var isSmartFullStopEnabled: Bool
@@ -118,7 +116,6 @@ public struct Settings: Codable, Equatable {
     public var shouldShowEnglishExactMatch: Bool
     
     public init() {
-        charForm = Self.defaultCharForm
         isMixedModeEnabled = Self.defaultMixedModeEnabled
         isAutoCapEnabled = Self.defaultAutoCapEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
@@ -136,7 +133,6 @@ public struct Settings: Codable, Equatable {
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.charForm = try container.decodeIfPresent(CharForm.self, forKey: .charForm) ?? Settings.defaultCharForm
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
