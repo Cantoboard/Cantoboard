@@ -71,25 +71,32 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     private func refreshLayoutConstants() {        
-        // DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue)")
-        // DDLogInfo("iPad special mode debug traitCollection \(traitCollection)")
-        let isWindowSmall = (view.superview?.window?.bounds.width ?? 320 + 1) <= 320
+        DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue)")
+        DDLogInfo("iPad special mode debug traitCollection \(traitCollection)")
+        guard let windowSize = view.superview?.window?.bounds else { return }
+        let isWindowSmall = windowSize.width <= 320
+        // On iPad, UIScreen.main.bounds isn't reliable if task switcher is used.
+        // The only reliable source of screen orientation is the window width.
+        let isPortrait = windowSize.size.width == UIScreen.main.bounds.size.minDimension
+        
         let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && isWindowSmall
         let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
+        
         let newLayoutConstants: LayoutConstants
         if isPadFloatingMode {
-            // DDLogInfo("Using isPadFloatingMode")
+            DDLogInfo("Using isPadFloatingMode")
             newLayoutConstants = LayoutConstants.getContants(screenSize: CGSize(width: 320, height: 254))
         } else if isPadCompatibleMode {
             // iPad's compatiblity mode has a bug. UIScreen doesn't return the right resolution.
             // We cannot rely on the size. We could only infer the screen direction from it.
-            let isPortrait = UIScreen.main.bounds.size.isPortrait
             let size = isPortrait ? CGSize(width: 375, height: 667) : CGSize(width: 667, height: 375)
-            // DDLogInfo("Using isPadCompatibleMode \(size)")
+            DDLogInfo("Using isPadCompatibleMode \(size)")
             newLayoutConstants = LayoutConstants.getContants(screenSize: size)
         } else {
-            // DDLogInfo("Using \(UIScreen.main.bounds.size)")
-            newLayoutConstants = LayoutConstants.forMainScreen
+            let reportedScreenSize = UIScreen.main.bounds.size
+            let correctedScreenSize = isPortrait ? reportedScreenSize.asPortrait : reportedScreenSize.asLandscape
+            DDLogInfo("Using \(correctedScreenSize) \(windowSize)")
+            newLayoutConstants = LayoutConstants.getContants(screenSize: correctedScreenSize)
         }
         
         let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom

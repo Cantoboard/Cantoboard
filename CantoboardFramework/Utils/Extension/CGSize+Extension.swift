@@ -28,4 +28,16 @@ extension CGSize {
     var isPortrait: Bool {
         height > width
     }
+    
+    var minDimension: CGFloat {
+        return min(width, height)
+    }
+    
+    var asPortrait: CGSize {
+        return CGSize(width: min(width, height), height: max(width, height))
+    }
+    
+    var asLandscape: CGSize {
+        return CGSize(width: max(width, height), height: min(width, height))
+    }
 }
