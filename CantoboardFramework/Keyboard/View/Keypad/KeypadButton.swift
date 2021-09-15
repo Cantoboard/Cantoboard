@@ -17,14 +17,14 @@ class KeypadButton: KeyView {
     // TODO HACK Remove
     private let layoutConstants = Reference(LayoutConstants.forMainScreen)
     
-    init(props: KeypadButtonProps, colRowOrigin: CGPoint, colRowSize: CGSize) {
+    init(props: KeypadButtonProps, keyboardState: KeyboardState, colRowOrigin: CGPoint, colRowSize: CGSize) {
         self.colRowOrigin = colRowOrigin
         self.colRowSize = colRowSize
         self.props = props
         
         super.init(layoutConstants: layoutConstants)
         shouldDisablePopup = true
-        setKeyCap(props.keyCap, keyboardIdiom: layoutConstants.ref.idiom, keyboardType: .alphabetic(.lowercased))
+        setKeyCap(props.keyCap, keyboardState: keyboardState)
     }
     
     required init?(coder: NSCoder) {

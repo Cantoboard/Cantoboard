@@ -39,7 +39,7 @@ class KeyRowView: UIView {
         fatalError("NSCoder is not supported")
     }
     
-    func setupRow(keyboardType: KeyboardType, _ keyCapGroups: [[KeyCap]], rowId: Int) {
+    func setupRow(keyboardState: KeyboardState, _ keyCapGroups: [[KeyCap]], rowId: Int) {
         assert(keyCapGroups.count == 1 || keyCapGroups.count == 3)
         
         self.rowId = rowId
@@ -55,9 +55,9 @@ class KeyRowView: UIView {
             rightKepCaps = keyCapGroups[2]
         }
         
-        prepareKeys(keyCaps: leftKeyCaps, keyboardType: keyboardType, keys: &leftKeys)
-        prepareKeys(keyCaps: middleKeyCaps, keyboardType: keyboardType, keys: &middleKeys)
-        prepareKeys(keyCaps: rightKepCaps, keyboardType: keyboardType, keys: &rightKeys, reuseKeyFromLeft: false)
+        prepareKeys(keyCaps: leftKeyCaps, keyboardState: keyboardState, keys: &leftKeys)
+        prepareKeys(keyCaps: middleKeyCaps, keyboardState: keyboardState, keys: &middleKeys)
+        prepareKeys(keyCaps: rightKepCaps, keyboardState: keyboardState, keys: &rightKeys, reuseKeyFromLeft: false)
         
         guard let layoutConstants = layoutConstants?.ref else { return }
         if layoutConstants.idiom.isPadFull {
@@ -71,10 +71,12 @@ class KeyRowView: UIView {
         }
     }
     
-    private func prepareKeys(keyCaps: [KeyCap]?, keyboardType: KeyboardType, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
+    private func prepareKeys(keyCaps: [KeyCap]?, keyboardState: KeyboardState, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
         guard let keyCaps = keyCaps,
               let layoutConstants = layoutConstants
             else { return }
+        
+        let keyboardType = keyboardState.keyboardType
         
         // Reuse keys. Only create/remove keys if necessary.
         
@@ -107,7 +109,7 @@ class KeyRowView: UIView {
                 case .nextKeyboard: keyCap = needsInputModeSwitchKey ? KeyCap.nextKeyboard : KeyCap.keyboardType(.emojis)
                 default: ()
             }
-            keys[i].setKeyCap(keyCap, keyboardIdiom: layoutConstants.ref.idiom, keyboardType: keyboardType, isPadTopRowButton: isPadTopRow)
+            keys[i].setKeyCap(keyCap, keyboardState: keyboardState, isPadTopRowButton: isPadTopRow)
         }
     }
 }

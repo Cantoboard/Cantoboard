@@ -125,7 +125,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         return layoutConstants.keyHeight
     }
     
-    static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardType: KeyboardType) -> KeyCap? {
+    static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap? {
         return CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap)
     }
 }

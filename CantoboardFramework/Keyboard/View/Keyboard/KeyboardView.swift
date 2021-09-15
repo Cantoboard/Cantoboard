@@ -99,11 +99,11 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
         
         if prevState.returnKeyType != newState.returnKeyType {
-            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardIdiom: state.keyboardIdiom, keyboardType: newState.keyboardType)
+            newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardState: state)
         }
         
         if prevState.spaceKeyMode != newState.spaceKeyMode {
-            spaceKey?.setKeyCap(.space(newState.spaceKeyMode), keyboardIdiom: state.keyboardIdiom, keyboardType: newState.keyboardType)
+            spaceKey?.setKeyCap(.space(newState.spaceKeyMode), keyboardState: state)
         }
         
         if prevState.enableState != newState.enableState {
@@ -209,12 +209,12 @@ class KeyboardView: UIView, BaseKeyboardView {
         case .numeric:
             let rows = state.symbolShape == .full ? keyboardViewLayout.numbersFull : keyboardViewLayout.numbersHalf
             for (index, keyCaps) in rows.enumerated() {
-                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
+                keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
             }
         case .symbolic:
             let rows = state.symbolShape == .full ? keyboardViewLayout.symbolsFull : keyboardViewLayout.symbolsHalf
             for (index, keyCaps) in rows.enumerated() {
-                keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
+                keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
             }
         default: ()
         }
@@ -227,14 +227,14 @@ class KeyboardView: UIView, BaseKeyboardView {
                let newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1],
                case .returnKey = newLineKey.keyCap {
                 self.newLineKey = newLineKey
-                newLineKey.setKeyCap(.returnKey(state.returnKeyType), keyboardIdiom: state.keyboardIdiom, keyboardType: state.keyboardType)
+                newLineKey.setKeyCap(.returnKey(state.returnKeyType), keyboardState: state)
             }
             
             if let lastRowMiddleKeys = lastRow.middleKeys,
                let spaceKey = lastRowMiddleKeys[safe: 0],
                case .space = spaceKey.keyCap {
                 self.spaceKey = spaceKey
-                spaceKey.setKeyCap(.space(state.spaceKeyMode), keyboardIdiom: state.keyboardIdiom, keyboardType: state.keyboardType)
+                spaceKey.setKeyCap(.space(state.spaceKeyMode), keyboardState: state)
             }
         }
     }
@@ -246,7 +246,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                     return configureAlphabeticKeyCap($0, groupId: groupId, shiftState: shiftState)
                 }
             }
-            keyRows[index].setupRow(keyboardType: state.keyboardType, keyCaps, rowId: index)
+            keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
         }
     }
     
@@ -273,7 +273,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             let keyChar = shiftState != .lowercased && c.count == 1 ? c.uppercased() : c
             
             if shiftState != .lowercased && !state.lastKeyboardTypeChangeFromAutoCap && keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ,
-               let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: state.keyboardType) {
+               let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: state) {
                 return swipeDownKeyCap
             }
             

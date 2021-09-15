@@ -30,8 +30,7 @@ class KeyView: HighlightableButton {
     private var shouldAcceptLongPress: Bool = false
     
     private(set) var keyCap: KeyCap = .none
-    private var keyboardIdiom: LayoutIdiom = LayoutConstants.forMainScreen.idiom
-    private var keyboardType: KeyboardType = .none
+    private var keyboardState: KeyboardState? = nil
     private var isPadTopRowButton = false
     private var action: KeyboardAction = .none
     
@@ -83,19 +82,27 @@ class KeyView: HighlightableButton {
         layer.cornerRadius = 5
     }
     
-    func setKeyCap(_ keyCap: KeyCap, keyboardIdiom: LayoutIdiom, keyboardType: KeyboardType, isPadTopRowButton: Bool = false) {
-        guard keyCap != self.keyCap || keyboardIdiom != self.keyboardIdiom || keyboardType != self.keyboardType else { return }
+    func setKeyCap(_ keyCap: KeyCap, keyboardState newState: KeyboardState, isPadTopRowButton: Bool = false) {
+        let hasStateChanged = keyboardState == nil ||
+            keyboardState?.keyboardIdiom != newState.keyboardIdiom ||
+            keyboardState?.keyboardType != newState.keyboardType ||
+            keyboardState?.keyboardContextualType != newState.keyboardContextualType
+        guard keyCap != self.keyCap || hasStateChanged else { return }
+        
         self.keyCap = keyCap
-        self.keyboardIdiom = keyboardIdiom
-        self.keyboardType = keyboardType
         self.action = keyCap.action
         self.selectedAction = keyCap.action
         self.isPadTopRowButton = isPadTopRowButton
+        self.keyboardState = newState
+
         setupView()
         swipeDownPercentage = 0
     }
         
     internal func setupView() {
+        guard let keyboardState = keyboardState else { return }
+        let keyboardIdiom = keyboardState.keyboardIdiom
+        
         backgroundColor = keyCap.buttonBgColor
         
         let foregroundColor = keyCap.buttonFgColor
@@ -151,7 +158,7 @@ class KeyView: HighlightableButton {
         }
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
-        if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: keyboardType) {
+        if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState) {
             if swipeDownHintLayer == nil {
                 let swipeDownHintLayer = KeyHintLayer()
                 layer.addSublayer(swipeDownHintLayer)
@@ -234,6 +241,9 @@ class KeyView: HighlightableButton {
     }
     
     override func layoutSubviews() {
+        guard let keyboardState = keyboardState else { return }
+        let keyboardIdiom = keyboardState.keyboardIdiom
+        
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.isHidden = popupView != nil
             layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.topRightInsets)
@@ -257,6 +267,9 @@ class KeyView: HighlightableButton {
     }
     
     private func updateColorsAccordingToSwipeDownPercentage() {
+        guard let keyboardState = keyboardState else { return }
+        let keyboardIdiom = keyboardState.keyboardIdiom
+        
         if let originalTextColor = titleColor(for: .normal) {
             setTitleColor(originalTextColor.withAlphaComponent(originalTextColor.alpha * (1 - swipeDownPercentage)), for: .highlighted)
             
@@ -311,7 +324,10 @@ extension KeyView {
     }
     
     func keyTouchMoved(_ touch: UITouch) {
-        if let padSwipeDownKeyCap = keyboardIdiom.keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: keyboardType),
+        guard let keyboardState = keyboardState else { return }
+        let keyboardIdiom = keyboardState.keyboardIdiom
+        
+        if let padSwipeDownKeyCap = keyboardIdiom.keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState),
            let touchBeginPosition = touchBeginPosition {
             // Handle iPad swipe down.
             let point = touch.location(in: self)
@@ -359,6 +375,9 @@ extension KeyView {
     }
     
     private func updatePopup(isLongPress: Bool) {
+        guard let keyboardState = keyboardState else { return }
+        let keyboardIdiom = keyboardState.keyboardIdiom
+        
         guard keyCap.hasPopup && !shouldDisablePopup else { return }
         // iPad does not have popup preview.
         if keyboardIdiom.isPad && !isLongPress { return }

@@ -93,7 +93,7 @@ class KeypadView: UIView, BaseKeyboardView {
         for row in buttonLayouts {
             var buttonRow: [KeypadButton] = []
             for props in row {
-                let button = KeypadButton(props: props, colRowOrigin: CGPoint(x: x, y: y), colRowSize: props.colRowSize)
+                let button = KeypadButton(props: props, keyboardState: state, colRowOrigin: CGPoint(x: x, y: y), colRowSize: props.colRowSize)
                 addSubview(button)
                 buttonRow.append(button)
                 x += 1
@@ -116,7 +116,7 @@ class KeypadView: UIView, BaseKeyboardView {
                 case "!", "！": props.keyCap = isFullShape ? "！" : "!"
                 default: ()
                 }
-                button.setKeyCap(props.keyCap, keyboardIdiom: state.keyboardIdiom, keyboardType: .alphabetic(.lowercased))
+                button.setKeyCap(props.keyCap, keyboardState: state)
             }
         }
     }
