@@ -130,7 +130,7 @@ class KeyView: HighlightableButton {
             }
             shadowOpacity = 0
             buttonHintTitle = nil
-        } else if popupView != nil {
+        } else if popupView != nil && keyboardIdiom == .phone {
             setImage(nil, for: .normal)
             setTitle(nil, for: .normal)
             titleLabel?.text = nil
@@ -158,13 +158,15 @@ class KeyView: HighlightableButton {
         }
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
-        if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState) {
+        if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState),
+           isKeyEnabled {
             if swipeDownHintLayer == nil {
                 let swipeDownHintLayer = KeyHintLayer()
                 layer.addSublayer(swipeDownHintLayer)
                 self.swipeDownHintLayer = swipeDownHintLayer
             }
             swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText
+            updateColorsAccordingToSwipeDownPercentage()
         } else {
             swipeDownHintLayer?.removeFromSuperlayer()
             swipeDownHintLayer = nil
