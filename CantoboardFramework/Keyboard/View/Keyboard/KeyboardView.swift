@@ -222,15 +222,15 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func refreshSpaceAndReturnKeys() {
-        if let lastRow = keyRows[safe: keyRows.count - 1] {
-            if let lastRowRightKeys = lastRow.rightKeys,
+        for row in keyRows {
+            if let lastRowRightKeys = row.rightKeys,
                let newLineKey = lastRowRightKeys[safe: lastRowRightKeys.count - 1],
                case .returnKey = newLineKey.keyCap {
                 self.newLineKey = newLineKey
                 newLineKey.setKeyCap(.returnKey(state.returnKeyType), keyboardState: state)
             }
             
-            if let lastRowMiddleKeys = lastRow.middleKeys,
+            if let lastRowMiddleKeys = row.middleKeys,
                let spaceKey = lastRowMiddleKeys[safe: 0],
                case .space = spaceKey.keyCap {
                 self.spaceKey = spaceKey
