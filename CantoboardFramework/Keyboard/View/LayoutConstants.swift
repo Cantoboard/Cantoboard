@@ -113,6 +113,9 @@ class PadFull5RowsLayoutConstants {
 class LayoutConstants {
     // Fixed:
     static let keyboardViewTopInset = CGFloat(8)
+    private static let contentEdgeInsetsPhone = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+    private static let contentEdgeInsetsPadShortAndFull = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6 )
+    private static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     
     // Provided:
     // Keyboard size
@@ -124,6 +127,7 @@ class LayoutConstants {
     // General
     let keyHeight: CGFloat
     let autoCompleteBarHeight: CGFloat
+    let keyViewInsets: UIEdgeInsets
     
     // Idiom specific constants
     let phoneLayoutConstants: PhoneLayoutConstants?
@@ -155,6 +159,7 @@ class LayoutConstants {
                   buttonGapX: CGFloat,
                   keyHeight: CGFloat,
                   autoCompleteBarHeight: CGFloat,
+                  keyViewInsets: UIEdgeInsets,
                   keyboardViewLeftRightInset: CGFloat,
                   keyboardViewBottomInset: CGFloat,
                   keyboardSuperviewWidth: CGFloat,
@@ -170,7 +175,7 @@ class LayoutConstants {
         self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
         self.keyHeight = keyHeight
         self.autoCompleteBarHeight = autoCompleteBarHeight
-        
+        self.keyViewInsets = keyViewInsets
         let keyboardViewHeight = keyboardSize.height - autoCompleteBarHeight - Self.keyboardViewTopInset - keyboardViewBottomInset
         self.keyboardViewHeight = keyboardViewHeight
         self.keyRowGapY = keyRowGapY ?? (keyboardViewHeight - 4 * keyHeight) / 3
@@ -204,6 +209,7 @@ class LayoutConstants {
             buttonGapX: buttonGapX,
             keyHeight: keyHeight,
             autoCompleteBarHeight: autoCompleteBarHeight,
+            keyViewInsets: Self.contentEdgeInsetsPhone,
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: 4,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
@@ -228,6 +234,7 @@ class LayoutConstants {
             buttonGapX: buttonGapX,
             keyHeight: keyHeight,
             autoCompleteBarHeight: autoCompleteBarHeight,
+            keyViewInsets: Self.contentEdgeInsetsPadShortAndFull,
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: keyboardViewBottomInset,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
@@ -257,6 +264,7 @@ class LayoutConstants {
             buttonGapX: buttonGapX,
             keyHeight: keyHeight,
             autoCompleteBarHeight: autoCompleteBarHeight,
+            keyViewInsets: Self.contentEdgeInsetsPadShortAndFull,
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: keyboardViewBottomInset,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
@@ -291,6 +299,7 @@ class LayoutConstants {
             buttonGapX: buttonGapX,
             keyHeight: keyHeight,
             autoCompleteBarHeight: autoCompleteBarHeight,
+            keyViewInsets: Self.contentEdgeInsetsPad5Rows,
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: keyboardViewBottomInset,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
