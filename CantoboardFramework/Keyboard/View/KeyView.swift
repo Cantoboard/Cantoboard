@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 class KeyView: HighlightableButton {
-    private static let contentEdgeInsetsPadTopRow = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
     private static let swipeDownMinCutOffYRatio: CGFloat = 0.25
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.6
     
@@ -107,7 +106,7 @@ class KeyView: HighlightableButton {
         let foregroundColor = keyCap.buttonFgColor
         setTitleColor(foregroundColor, for: .normal)
         tintColor = foregroundColor
-        contentEdgeInsets = isPadTopRowButton ? Self.contentEdgeInsetsPadTopRow : layoutConstants.ref.keyViewInsets
+        contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
@@ -161,6 +160,10 @@ class KeyView: HighlightableButton {
                 self.swipeDownHintLayer = swipeDownHintLayer
             }
             swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText
+            if let titleLabel = titleLabel {
+                swipeDownHintLayer?.fontSize = titleLabel.font.pointSize
+            }
+            contentEdgeInsets = UIEdgeInsets(top: contentEdgeInsets.top / 2, left: contentEdgeInsets.left / 2, bottom: contentEdgeInsets.bottom / 2, right: contentEdgeInsets.right / 2)
             updateColorsAccordingToSwipeDownPercentage()
         } else {
             swipeDownHintLayer?.removeFromSuperlayer()
