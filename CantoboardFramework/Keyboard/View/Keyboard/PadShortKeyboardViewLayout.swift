@@ -117,7 +117,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         }
     }
     
-    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
         return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
     }
     

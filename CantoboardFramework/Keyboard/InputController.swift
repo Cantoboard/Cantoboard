@@ -16,7 +16,7 @@ enum KeyboardEnableState: Equatable {
 }
 
 enum ContextualType: Equatable {
-    case english, chinese, rime, url(isRimeComposing: Bool)
+    case english, chinese, rime, url
     
     var isEnglish: Bool {
         switch self {
@@ -704,7 +704,7 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         if textDocumentProxy.keyboardType == .some(.URL) || textDocumentProxy.keyboardType == .some(.webSearch) {
-            state.keyboardContextualType = .url(isRimeComposing: inputEngine.composition?.text != nil)
+            state.keyboardContextualType = .url
         } else if inputEngine.composition?.text != nil {
             state.keyboardContextualType = .rime
         } else {

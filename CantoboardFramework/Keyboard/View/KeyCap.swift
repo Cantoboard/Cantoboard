@@ -58,10 +58,10 @@ enum KeyCapType {
 
 enum ContextualKey: Equatable, ExpressibleByStringLiteral {
     case symbol
-    case character(Character)
+    case character(String)
     
     public init(stringLiteral value: String) {
-        self = .character(value.first!)
+        self = .character(value)
     }
 }
 
@@ -452,10 +452,17 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var keyCapChar: Character? {
+    var keyCapCharacter: String? {
         switch self {
-        case .character(let c, _, _), .cangjie(let c, _): return c.lowercased().first
+        case .character(let c, _, _), .cangjie(let c, _): return c.lowercased()
         default: return nil
+        }
+    }
+    
+    var isCharacter: Bool {
+        switch self {
+        case .character, .cangjie: return true
+        default: return false
         }
     }
     

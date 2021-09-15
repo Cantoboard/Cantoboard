@@ -59,24 +59,24 @@ class PadFull4RowsLayoutConstants {
     
     let capLockKeyWidth: CGFloat
     let leftShiftKeyWidth: CGFloat
-    let leftSystemKeyWidth: CGFloat
+    let smallSystemKeyWidth: CGFloat
     
     let returnKeyWidth: CGFloat
     let rightShiftKeyWidth: CGFloat
-    let rightSystemKeyWidth: CGFloat
+    let largeSystemKeyWidth: CGFloat
     
     init(tabDeleteKeyWidth: CGFloat,
-         capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, leftSystemKeyWidth: CGFloat,
-         returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, rightSystemKeyWidth: CGFloat) {
+         capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, smallSystemKeyWidth: CGFloat,
+         returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, largeSystemKeyWidth: CGFloat) {
         self.tabDeleteKeyWidth = tabDeleteKeyWidth
         
         self.capLockKeyWidth = capLockKeyWidth
         self.leftShiftKeyWidth = leftShiftKeyWidth
-        self.leftSystemKeyWidth = leftSystemKeyWidth
+        self.smallSystemKeyWidth = smallSystemKeyWidth
         
         self.returnKeyWidth = returnKeyWidth
         self.rightShiftKeyWidth = rightShiftKeyWidth
-        self.rightSystemKeyWidth = rightSystemKeyWidth
+        self.largeSystemKeyWidth = largeSystemKeyWidth
     }
 }
 
@@ -86,27 +86,27 @@ class PadFull5RowsLayoutConstants {
     let tabKeyWidth: CGFloat
     let capLockKeyWidth: CGFloat
     let leftShiftKeyWidth: CGFloat
-    let leftSystemKeyWidth: CGFloat
+    let smallSystemKeyWidth: CGFloat
     
     let deleteKeyWidth: CGFloat
     let returnKeyWidth: CGFloat
     let rightShiftKeyWidth: CGFloat
-    let rightSystemKeyWidth: CGFloat
+    let largeSystemKeyWidth: CGFloat
     
     init(topRowKeyHeight: CGFloat,
-         tabKeyWidth: CGFloat, capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, leftSystemKeyWidth: CGFloat,
-         deleteKeyWidth: CGFloat, returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, rightSystemKeyWidth: CGFloat) {
+         tabKeyWidth: CGFloat, capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, smallSystemKeyWidth: CGFloat,
+         deleteKeyWidth: CGFloat, returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, largeSystemKeyWidth: CGFloat) {
         self.topRowKeyHeight = topRowKeyHeight
         
         self.tabKeyWidth = tabKeyWidth
         self.capLockKeyWidth = capLockKeyWidth
         self.leftShiftKeyWidth = leftShiftKeyWidth
-        self.leftSystemKeyWidth = leftSystemKeyWidth
+        self.smallSystemKeyWidth = smallSystemKeyWidth
         
         self.deleteKeyWidth = deleteKeyWidth
         self.returnKeyWidth = returnKeyWidth
         self.rightShiftKeyWidth = rightShiftKeyWidth
-        self.rightSystemKeyWidth = rightSystemKeyWidth
+        self.largeSystemKeyWidth = largeSystemKeyWidth
     }
 }
 
@@ -246,10 +246,10 @@ class LayoutConstants {
                                             tabDeleteKeyWidth: CGFloat,
                                             capLockKeyWidth: CGFloat,
                                             leftShiftKeyWidth: CGFloat,
-                                            leftSystemKeyWidth: CGFloat,
+                                            smallSystemKeyWidth: CGFloat,
                                             returnKeyWidth: CGFloat,
                                             rightShiftKeyWidth: CGFloat,
-                                            rightSystemKeyWidth: CGFloat) -> LayoutConstants {
+                                            largeSystemKeyWidth: CGFloat) -> LayoutConstants {
         return LayoutConstants(
             idiom: .pad(.padFull4Rows),
             isPortrait: isPortrait,
@@ -262,8 +262,8 @@ class LayoutConstants {
             keyboardSuperviewWidth: keyboardSuperviewWidth,
             padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants(
                 tabDeleteKeyWidth: tabDeleteKeyWidth,
-                capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, leftSystemKeyWidth: leftSystemKeyWidth,
-                returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, rightSystemKeyWidth: rightSystemKeyWidth))
+                capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, smallSystemKeyWidth: smallSystemKeyWidth,
+                returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, largeSystemKeyWidth: largeSystemKeyWidth))
     }
     
     internal static func makeiPadFull5RowsLayout(isPortrait: Bool,
@@ -279,11 +279,11 @@ class LayoutConstants {
                                                  tabKeyWidth: CGFloat,
                                                  capLockKeyWidth: CGFloat,
                                                  leftShiftKeyWidth: CGFloat,
-                                                 leftSystemKeyWidth: CGFloat,
+                                                 smallSystemKeyWidth: CGFloat,
                                                  deleteKeyWidth: CGFloat,
                                                  returnKeyWidth: CGFloat,
                                                  rightShiftKeyWidth: CGFloat,
-                                                 rightSystemKeyWidth: CGFloat) -> LayoutConstants {
+                                                 largeSystemKeyWidth: CGFloat) -> LayoutConstants {
         return LayoutConstants(
             idiom: .pad(.padFull5Rows),
             isPortrait: isPortrait,
@@ -297,8 +297,8 @@ class LayoutConstants {
             keyRowGapY: rowGapY,
             padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants(
                 topRowKeyHeight: topRowKeyHeight,
-                tabKeyWidth: tabKeyWidth, capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, leftSystemKeyWidth: leftSystemKeyWidth,
-                deleteKeyWidth: deleteKeyWidth, returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, rightSystemKeyWidth: rightSystemKeyWidth))
+                tabKeyWidth: tabKeyWidth, capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, smallSystemKeyWidth: smallSystemKeyWidth,
+                deleteKeyWidth: deleteKeyWidth, returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, largeSystemKeyWidth: largeSystemKeyWidth))
     }
 }
 
@@ -487,11 +487,11 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabKeyWidth: 106,
         capLockKeyWidth: 119,
         leftShiftKeyWidth: 154,
-        leftSystemKeyWidth: 94,
+        smallSystemKeyWidth: 94,
         deleteKeyWidth: 106,
         returnKeyWidth: 120,
         rightShiftKeyWidth: 155,
-        rightSystemKeyWidth: 133),
+        largeSystemKeyWidth: 143),
     // Landscape:
     IntDuplet(1366, 1024): LayoutConstants.makeiPadFull5RowsLayout(
         isPortrait: false,
@@ -507,11 +507,11 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabKeyWidth: 135,
         capLockKeyWidth: 157,
         leftShiftKeyWidth: 204,
-        leftSystemKeyWidth: 126,
+        smallSystemKeyWidth: 126,
         deleteKeyWidth: 135,
         returnKeyWidth: 157,
         rightShiftKeyWidth: 204,
-        rightSystemKeyWidth: 192),
+        largeSystemKeyWidth: 192),
     
     // iPad 834×1194 iPad Pro 11"
     // Portrait:
@@ -528,10 +528,10 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 59.5,
         capLockKeyWidth: 86,
         leftShiftKeyWidth: 112.5,
-        leftSystemKeyWidth: 59.5,
+        smallSystemKeyWidth: 59.5,
         returnKeyWidth: 106,
         rightShiftKeyWidth: 89.5,
-        rightSystemKeyWidth: 94),
+        largeSystemKeyWidth: 94),
     // Landscape:
     IntDuplet(1194, 834): LayoutConstants.makeiPadFull4RowsLayout(
         isPortrait: false,
@@ -546,10 +546,10 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 103,
         capLockKeyWidth: 136,
         leftShiftKeyWidth: 179,
-        leftSystemKeyWidth: 82.5,
+        smallSystemKeyWidth: 82.5,
         returnKeyWidth: 164.5,
         rightShiftKeyWidth: 121.5,
-        rightSystemKeyWidth: 121.5),
+        largeSystemKeyWidth: 121.5),
     
     // iPad 820×1180 iPad Air (gen 4) 10.9"
     // Portrait:
@@ -566,10 +566,10 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 58,
         capLockKeyWidth: 85,
         leftShiftKeyWidth: 110.5,
-        leftSystemKeyWidth: 58.5,
+        smallSystemKeyWidth: 58.5,
         returnKeyWidth: 102,
         rightShiftKeyWidth: 86,
-        rightSystemKeyWidth: 94),
+        largeSystemKeyWidth: 94),
     // Landscape:
     IntDuplet(1180, 820): LayoutConstants.makeiPadFull4RowsLayout(
         isPortrait: false,
@@ -584,10 +584,10 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         tabDeleteKeyWidth: 101,
         capLockKeyWidth: 134,
         leftShiftKeyWidth: 176,
-        leftSystemKeyWidth: 81.5,
+        smallSystemKeyWidth: 81.5,
         returnKeyWidth: 161,
         rightShiftKeyWidth: 120,
-        rightSystemKeyWidth: 121.5),
+        largeSystemKeyWidth: 121.5),
     
     // iPad 810×1080 iPad (gen 8/7) 10.2"
     // Portrait:

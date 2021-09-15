@@ -18,7 +18,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .contextual("’")], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numeric)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numeric)], [.space(.space)], [.contextual(".com"), .keyboardType(.numeric), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -53,7 +53,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         var keyWidths = Dictionary<KeyView, CGFloat>()
         
         let inputKeyWidth = (availableWidth - layoutConstants.padFull5RowsLayoutConstants!.deleteKeyWidth - 13 * layoutConstants.buttonGapX) / CGFloat(13)
-        let takenWidth = getFixedKeyWidth(keys: allKeys, inputKeyWidth: inputKeyWidth, layoutConstants: layoutConstants, numFlexibleWidthKeys: &numFlexibleWidthKeys, keyWidths: &keyWidths)
+        let takenWidth = getFixedKeyWidth(keyRowView: keyRowView, keys: allKeys, inputKeyWidth: inputKeyWidth, layoutConstants: layoutConstants, numFlexibleWidthKeys: &numFlexibleWidthKeys, keyWidths: &keyWidths)
         
         let totalGapWidth = CGFloat(allKeys.count - 1) * layoutConstants.buttonGapX
         let flexibleKeyWidth = (availableWidth - takenWidth - totalGapWidth) / CGFloat(numFlexibleWidthKeys)
@@ -78,7 +78,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         }
     }
     
-    private static func getFixedKeyWidth(keys: [KeyView], inputKeyWidth: CGFloat, layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
+    private static func getFixedKeyWidth(keyRowView: KeyRowView, keys: [KeyView], inputKeyWidth: CGFloat, layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
         let padFull5RowsLayoutConstants = layoutConstants.padFull5RowsLayoutConstants!
         
         let totalFixedKeyWidth = keys.enumerated().reduce(CGFloat(0)) {sum, indexAndKey in
@@ -106,9 +106,13 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case .returnKey: width = padFull5RowsLayoutConstants.returnKeyWidth
             case .nextKeyboard,
                  .keyboardType where index <= 2:
-                width = (padFull5RowsLayoutConstants.leftSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
+                width = (padFull5RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
             case .keyboardType, .dismissKeyboard:
-                width = padFull5RowsLayoutConstants.rightSystemKeyWidth
+                if keyRowView.rowId == 4 && keys.contains(where: { $0.keyCap.isCharacter }) {
+                    width = padFull5RowsLayoutConstants.smallSystemKeyWidth
+                } else {
+                    width = padFull5RowsLayoutConstants.largeSystemKeyWidth
+                }
             case .character, .cangjie, .currency: width = inputKeyWidth
             default:
                 width = 0
@@ -125,18 +129,19 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         return totalFixedKeyWidth
     }
     
-    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
-        if keyboardState.keyboardContextualType.isEnglish, case .character(let c) = key {
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
+        if !keyboardState.keyboardContextualType.isEnglish {
+            switch key {
+            case "[": return "「"
+            case "]": return "」"
+            case "\\": return "、"
+            case ";": return "；"
+            case "’": return "‘"
+            case "/": return "/"
+            default: ()
+            }
+        } else if case .character(let c) = key, c != ".com" {
             return KeyCap(String(c))
-        }
-        switch key {
-        case "[": return "「"
-        case "]": return "」"
-        case "\\": return "、"
-        case ";": return "；"
-        case "’": return "‘"
-        case "/": return "/"
-        default: ()
         }
         return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
     }
@@ -147,7 +152,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardType: KeyboardType) -> KeyCap? {
         if case .alphabetic = keyboardType {
-            switch keyCap.keyCapChar {
+            switch keyCap.keyCapCharacter {
             case "`": return "~"
             case "1": return "!"
             case "2": return "@"

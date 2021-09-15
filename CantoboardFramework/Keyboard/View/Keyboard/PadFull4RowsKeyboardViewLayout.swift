@@ -105,9 +105,9 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
             case .returnKey: width = padFull4RowsLayoutConstants.returnKeyWidth
             default:
                 if keyRowView.rowId == 3 && groupLayoutDirection == .left {
-                    width = ((padFull4RowsLayoutConstants.leftSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX) - layoutConstants.buttonGapX) / 2
+                    width = ((padFull4RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX) - layoutConstants.buttonGapX) / 2
                 } else if keyRowView.rowId == 3 && groupLayoutDirection == .right {
-                    width = padFull4RowsLayoutConstants.rightSystemKeyWidth
+                    width = padFull4RowsLayoutConstants.largeSystemKeyWidth
                 } else {
                     width = 0
                     numFlexibleWidthKeys += 1
@@ -124,7 +124,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         return totalFixedKeyWidth
     }
     
-    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
         return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
     }
     

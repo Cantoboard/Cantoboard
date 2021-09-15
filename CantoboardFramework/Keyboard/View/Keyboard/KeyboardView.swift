@@ -242,7 +242,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     private func refreshAlphabeticKeys(_ layout: KeyboardViewLayout.Type, _ shiftState: (KeyboardShiftState)) {
         for (index, var keyCaps) in layout.letters.enumerated() {
             keyCaps = keyCaps.enumerated().map { groupId, keyCapGroup in
-                keyCapGroup.map {
+                keyCapGroup.compactMap {
                     return configureAlphabeticKeyCap($0, groupId: groupId, shiftState: shiftState)
                 }
             }
@@ -250,7 +250,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
     }
     
-    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap {
+    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap? {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
@@ -259,17 +259,18 @@ class KeyboardView: UIView, BaseKeyboardView {
         
         var keyCap: KeyCap
         if case .contextual(let contextualKey) = hardcodedKeyCap {
-            keyCap = keyboardViewLayout.getContextualKeys(key: contextualKey, keyboardState: state)
+            guard let contextualTranslatedKey = keyboardViewLayout.getContextualKeys(key: contextualKey, keyboardState: state) else { return nil }
+            keyCap = contextualTranslatedKey
         } else {
             keyCap = hardcodedKeyCap
         }
-        
+                
         switch keyCap {
         case .toggleInputMode:
             return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
         case .character(let c, var hint, var childrenKeyCaps):
             let isLetterKey = c.first?.isEnglishLetter ?? false
-            let keyChar = shiftState != .lowercased ? c.uppercased() : c
+            let keyChar = shiftState != .lowercased && c.count == 1 ? c.uppercased() : c
             
             if shiftState != .lowercased && !state.lastKeyboardTypeChangeFromAutoCap && keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ,
                let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardType: state.keyboardType) {

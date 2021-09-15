@@ -22,7 +22,7 @@ protocol KeyboardViewLayout {
     static var symbolsFull: [[[KeyCap]]] { get };
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect]
-    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap?
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardType: KeyboardType) -> KeyCap?
 }
@@ -37,7 +37,7 @@ extension KeyboardViewLayout {
 }
 
 class CommonContextualKeys {
-    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap {
+    static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
         switch key {
         case .symbol:
             let keyHint = "符"
@@ -49,14 +49,16 @@ class CommonContextualKeys {
             }
         case ",": return keyboardState.keyboardContextualType.isEnglish ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.isEnglish ? "." : "。"
-        default: fatalError("Unexpected ContextualKey \(key) for \(keyboardState)")
+        case ".com" where keyboardState.keyboardContextualType == .url: // For iPad Pro 12.9"
+            return .character(".com", nil, [".net", ".org", ".edu", ".com", ".hk", ".tw", ".mo", ".cn", ".us"])
+        default: return nil
         }
     }
 }
 
 class CommonSwipeDownKeys {
     static func getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: KeyCap) -> KeyCap? {
-        switch keyCap.keyCapChar {
+        switch keyCap.keyCapCharacter {
         case "q": return "1"
         case "w": return "2"
         case "e": return "3"
