@@ -473,6 +473,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         default: return false
         }
     }
+    
+    var isShift: Bool {
+        switch self {
+        case .shift: return true
+        default: return false
+        }
+    }
 }
 
 let FrameworkBundle = Bundle(for: KeyView.self)
