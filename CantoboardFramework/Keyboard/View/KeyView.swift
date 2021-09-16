@@ -315,19 +315,12 @@ extension KeyView {
 
 extension KeyView {
     func keyTouchBegan(_ touch: UITouch) {
-        guard let keyboardState = keyboardState else { return }
-        let isDraggingInputFromShift = (touch.view as? KeyView)?.action.isShift ?? false
         isHighlighted = true
         selectedAction = keyCap.action
         updatePopup(isLongPress: false)
         
         touchBeginPosition = touch.location(in: self)
-        shouldAcceptLongPress = isDraggingInputFromShift ? false : true
-        
-        if isDraggingInputFromShift,
-           let padSwipeDownKeyCap = keyboardState.keyboardIdiom.keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState) {
-            selectedAction = padSwipeDownKeyCap.action
-        }
+        shouldAcceptLongPress = true
     }
     
     func keyTouchMoved(_ touch: UITouch) {
