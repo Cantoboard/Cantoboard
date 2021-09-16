@@ -97,6 +97,8 @@ class EnglishInputEngine: InputEngine {
     
     private var inputTextBuffer = InputTextBuffer()
     var textBeforeInput, textAfterInput: String?
+    // HACK FIXME Remove this. We should not override the text for auto correction. But to show and preselect the auto correct candidate.
+    var disableTextOverride = false
     
     private(set) var candidates: [String] = []
     private(set) var isWord: Bool = false
@@ -182,12 +184,15 @@ class EnglishInputEngine: InputEngine {
         
         var performCaseCorrection = false
         
-        if text == "i" && textBeforeInput?.hasSuffix(" ") ?? true && textAfterInput?.hasPrefix(" ") ?? true {
+        if !disableTextOverride && text == "i" && textBeforeInput?.hasSuffix(" ") ?? true && textAfterInput?.hasPrefix(" ") ?? true {
             inputTextBuffer.textOverride = "I"
+            candidates.append("i")
+            prefectCandidatesStartIndex += 1
             performCaseCorrection = true
         }
         
-        if let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+        if !disableTextOverride,
+           let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
             if isInAppleDictionary {
                 text = firstCaseCorrectedCandidate
             } else {

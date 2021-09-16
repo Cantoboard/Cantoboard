@@ -70,6 +70,7 @@ class BilingualInputEngine: InputEngine {
             }
             englishInputEngine.textBeforeInput = inputController?.textDocumentProxy?.documentContextBeforeInput
             englishInputEngine.textAfterInput = inputController?.textDocumentProxy?.documentContextAfterInput
+            englishInputEngine.disableTextOverride = SessionState.main.lastInputMode == .chinese
             queue.async(group: group) {
                 updateEnglishEngineState = self.englishInputEngine.processChar(char)
             }
