@@ -537,7 +537,7 @@ class InputController: NSObject {
     
     private func updateMarkedText() {
         switch state.inputMode {
-        case .chinese: setMarkedText(inputEngine.rimeComposition)
+        case .chinese: setMarkedText(inputEngine.composition)
         case .english: setMarkedText(inputEngine.englishComposition)
         case .mixed:
             if state.activeSchema.isCangjieFamily {

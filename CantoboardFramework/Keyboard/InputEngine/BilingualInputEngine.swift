@@ -128,7 +128,7 @@ class BilingualInputEngine: InputEngine {
     private func updateComposition() {
         if !isComposing {
             composition = nil
-        } else if !isForcingRimeMode && englishInputEngine.isWord && rimeSchema.supportMixedMode {
+        } else if !isForcingRimeMode && englishInputEngine.isWord && rimeSchema.supportMixedMode && Settings.cached.isMixedModeEnabled {
             composition = englishComposition
         } else {
             guard let rimeComposition = rimeComposition else {
