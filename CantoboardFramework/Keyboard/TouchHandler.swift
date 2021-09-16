@@ -331,6 +331,8 @@ class TouchHandler {
         guard timer == self.keyRepeatTimer else { timer.invalidate(); return } // Timer was overwritten.
         keyRepeatCounter += 1
         
+        // On iPad, long press is disabled if shift is being held or touch was dragged from the shift key.
+        let shouldDisableLongPress = keyboardIdiom.isPad && touches.values.contains(where: { $0.initialAction.isShift })
         for touchState in touches.values {
             if touchState.initialAction == .backspace {
                 guard self.inputMode == .backspacing && keyRepeatCounter > Self.keyRepeatInitialDelay else { continue }
@@ -343,7 +345,7 @@ class TouchHandler {
                 callKeyHandler(action)
                 touchState.hasTakenAction = true
                 FeedbackProvider.play(keyboardAction: action)
-            } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay {
+            } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay && !shouldDisableLongPress {
                 touchState.activeKeyView.keyLongPressed(touchState.touch)
                 cancelKeyRepeatTimer()
             }
