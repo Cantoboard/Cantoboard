@@ -87,7 +87,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.symbolShape != newState.symbolShape ||
             prevState.activeSchema != newState.activeSchema ||
             prevState.inputMode != newState.inputMode || // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
-            prevState.keyboardIdiom != newState.keyboardIdiom
+            prevState.keyboardIdiom != newState.keyboardIdiom ||
+            prevState.lastKeyboardTypeChangeFromAutoCap != newState.lastKeyboardTypeChangeFromAutoCap
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
