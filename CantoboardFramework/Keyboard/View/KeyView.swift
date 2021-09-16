@@ -270,13 +270,13 @@ class KeyView: HighlightableButton {
         guard let keyboardState = keyboardState else { return }
         let keyboardIdiom = keyboardState.keyboardIdiom
         
-        if let originalTextColor = titleColor(for: .normal) {
-            setTitleColor(originalTextColor.withAlphaComponent(originalTextColor.alpha * (1 - swipeDownPercentage)), for: .highlighted)
+        if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
+            setTitleColor(mainTextColor.withAlphaComponent(mainTextColor.alpha * (1 - swipeDownPercentage)), for: .highlighted)
             
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
-                let foregroundColor = isSwipeDownKeyShiftMorphing ? UIColor.label : UIColor.systemGray
-                swipeDownHintLayer.foregroundColor = foregroundColor.interpolateRGBColorTo(originalTextColor, fraction: swipeDownPercentage)?.cgColor
+                let swipeDownKeyCapTextColor = (isSwipeDownKeyShiftMorphing ? UIColor.label : UIColor.systemGray).resolvedColor(with: traitCollection).cgColor
+                swipeDownHintLayer.foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage)
             }
         }
     }
