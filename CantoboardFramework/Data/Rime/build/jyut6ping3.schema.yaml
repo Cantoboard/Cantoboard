@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 0
-    default: 1631084368
-    default.custom: 1631084368
-    jyut6ping3.schema: 1631084368
-    symbols: 1631084368
+    common.custom: 1631866494
+    default: 1631866489
+    default.custom: 1631866489
+    jyut6ping3.schema: 1631866489
+    symbols: 1631866489
     symbols.custom: 0
-    symbols_cantonese: 1631084368
+    symbols_cantonese: 1631866489
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -366,6 +366,8 @@ switches:
 translator:
   always_show_comments: true
   dictionary: jyut6ping3
+  enable_correction: true
+  max_homophones: 10
   spelling_hints: 256
 variants_hk:
   opencc_config: t2hk.json
