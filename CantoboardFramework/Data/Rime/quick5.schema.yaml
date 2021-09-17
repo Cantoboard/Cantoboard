@@ -56,7 +56,7 @@ translator:
   dictionary: quick5
   enable_charset_filter: false
   enable_completion: false
-
+  max_homophones: 10
   prism: quick5
   preedit_format:
     - "xlit|abcdefghijklmnopqrstuvwxyz;'|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符··|"
