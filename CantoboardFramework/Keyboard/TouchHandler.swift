@@ -93,7 +93,7 @@ class TouchHandler {
         switch action {
         case .backspace:
             inputMode = .backspacing
-        case .keyboardType:
+        case .keyboardType where action != .keyboardType(.emojis):
             callKeyHandler(key.selectedAction)
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }

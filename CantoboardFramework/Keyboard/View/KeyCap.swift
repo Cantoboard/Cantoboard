@@ -331,7 +331,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var childrenKeyCaps: [KeyCap] {
         switch self {
         // For debugging
-        case .keyboardType(.emojis): return [.exportFile("user", Self.userDataPath), .exportFile("logs", Self.logsPath), .exit]
+        case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exit]
         case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
