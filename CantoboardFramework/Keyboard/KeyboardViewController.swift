@@ -70,17 +70,20 @@ open class KeyboardViewController: UIInputViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func refreshLayoutConstants() {        
-        DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue)")
-        DDLogInfo("iPad special mode debug traitCollection \(traitCollection)")
+    private func refreshLayoutConstants() {
         guard let windowSize = view.superview?.window?.bounds else { return }
         let isWindowSmall = windowSize.width <= 320
+        
+        DDLogInfo("refreshLayoutConstants Screen size \(UIScreen.main.bounds.size) superview size \(windowSize)")
+
         // On iPad, UIScreen.main.bounds isn't reliable if task switcher is used.
         // The only reliable source of screen orientation is the window width.
         let isPortrait = windowSize.size.width == UIScreen.main.bounds.size.minDimension
         
         let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && isWindowSmall
         let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
+        
+        DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue) traitCollection \(traitCollection)")
         
         let newLayoutConstants: LayoutConstants
         if isPadFloatingMode {
@@ -95,7 +98,8 @@ open class KeyboardViewController: UIInputViewController {
         } else {
             let reportedScreenSize = UIScreen.main.bounds.size
             let correctedScreenSize = isPortrait ? reportedScreenSize.asPortrait : reportedScreenSize.asLandscape
-            DDLogInfo("Using \(correctedScreenSize) \(windowSize)")
+            DDLogInfo("refreshLayoutConstants reportedScreenSize \(reportedScreenSize) correctedScreenSize \(correctedScreenSize)")
+            DDLogInfo("Using \(correctedScreenSize)")
             newLayoutConstants = LayoutConstants.getContants(screenSize: correctedScreenSize)
         }
         
