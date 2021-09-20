@@ -84,7 +84,7 @@ open class KeyboardViewController: UIInputViewController {
 
         // On iPad, UIScreen.main.bounds isn't reliable if task switcher is used.
         // The only reliable source of screen orientation is the window width.
-        let isPortrait = windowSize.size.width == UIScreen.main.bounds.size.minDimension
+        let isPortrait = windowSize.size.width <= UIScreen.main.bounds.size.minDimension
         
         let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && isWindowSmall
         let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
