@@ -196,8 +196,8 @@ extension EmojiView: PageControlBottomViewDelegate {
 
 extension EmojiView: CategoriesBottomViewDelegate {
     
-    func categoriesBottomViewDidSelecteCategory(_ category: Category, bottomView: CategoriesBottomView) {
-        emojiCollectionView?.scrollToCategory(category)
+    func categoriesBottomViewDidSelecteCategory(_ category: Category, percentage: Double, bottomView: CategoriesBottomView) {
+        emojiCollectionView?.scrollToCategory(category, percentage: percentage)
     }
     
     func categoriesBottomViewDidPressChangeKeyboardButton(_ bottomView: CategoriesBottomView) {

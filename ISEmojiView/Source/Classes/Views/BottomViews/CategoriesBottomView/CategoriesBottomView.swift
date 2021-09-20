@@ -11,7 +11,7 @@ private let MinCellSize = CGFloat(35)
 
 internal protocol CategoriesBottomViewDelegate: class {
     
-    func categoriesBottomViewDidSelecteCategory(_ category: Category, bottomView: CategoriesBottomView)
+    func categoriesBottomViewDidSelecteCategory(_ category: Category, percentage: Double, bottomView: CategoriesBottomView)
     func categoriesBottomViewDidPressChangeKeyboardButton(_ bottomView: CategoriesBottomView)
     func categoriesBottomViewDidPressDeleteBackwardButton(_ bottomView: CategoriesBottomView)
     
@@ -55,11 +55,15 @@ final internal class CategoriesBottomView: UIView {
     
     @IBOutlet private weak var collectionView: UICollectionView! {
         didSet {
+            collectionView.isUserInteractionEnabled = false
             collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: "CategoryCell")
         }
     }
     
     @IBOutlet private var collectionViewToSuperViewLeadingConstraint: NSLayoutConstraint!
+    
+    private var selectPercentage: Double = 0
+    private var touchBeganPoint: CGPoint? = nil
     
     // MARK: - Init functions
     
@@ -138,7 +142,6 @@ final internal class CategoriesBottomView: UIView {
     @IBAction private func deleteBackward() {
         delegate?.categoriesBottomViewDidPressDeleteBackwardButton(self)
     }
-    
 }
 
 // MARK: - UICollectionViewDataSource
@@ -155,6 +158,56 @@ extension CategoriesBottomView: UICollectionViewDataSource {
         return cell
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        selectPercentage = 0
+        for touch in touches {
+            touchBeganPoint = touch.location(in: self)
+        }
+        
+        super.touchesBegan(touches, with: event)
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touchBeganPoint = touchBeganPoint else { return }
+        for touch in touches {
+            let point = touch.location(in: self)
+            if abs(point.x - touchBeganPoint.x) < 4 { continue }
+            if let touchingIndexPath = collectionView?.indexPathForItem(at: touch.location(in: collectionView)) {
+                collectionView(collectionView, didSelectItemAt: touchingIndexPath)
+                if !(collectionView.indexPathsForSelectedItems?.contains(touchingIndexPath) ?? false) {
+                    collectionView.indexPathsForSelectedItems?.forEach {
+                        collectionView.deselectItem(at: $0, animated: true)
+                    }
+                    collectionView.selectItem(at: touchingIndexPath, animated: true, scrollPosition: .centeredHorizontally)
+                }
+                
+                if let touchingCell = collectionView.cellForItem(at: touchingIndexPath) {
+                    let xInTouchingCell = touch.location(in: touchingCell).x
+                    let leftRightInset: CGFloat = 1
+                    
+                    selectPercentage = max(0, min(1, Double((xInTouchingCell - leftRightInset) / (touchingCell.bounds.maxX - 2 * leftRightInset))))
+                }
+                
+                return
+            }
+        }
+        super.touchesMoved(touches, with: event)
+    }
+    
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            if let touchingIndexPath = collectionView?.indexPathForItem(at: touch.location(in: collectionView)) {
+                collectionView(collectionView, didSelectItemAt: touchingIndexPath)
+                collectionView.selectItem(at: touchingIndexPath, animated: true, scrollPosition: .centeredHorizontally)
+                return
+            }
+        }
+        collectionView.indexPathsForSelectedItems?.forEach {
+            collectionView.deselectItem(at: $0, animated: true)
+        }
+        super.touchesEnded(touches, with: event)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -162,7 +215,7 @@ extension CategoriesBottomView: UICollectionViewDataSource {
 extension CategoriesBottomView: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.categoriesBottomViewDidSelecteCategory(categories[indexPath.item], bottomView: self)
+        delegate?.categoriesBottomViewDidSelecteCategory(categories[indexPath.item], percentage: selectPercentage, bottomView: self)
     }
     
 }

@@ -114,7 +114,7 @@ internal class EmojiCollectionView: UIView {
         collectionView.reloadSections(IndexSet(integer: 0))
     }
     
-    internal func scrollToCategory(_ category: Category) {
+    internal func scrollToCategory(_ category: Category, percentage: Double) {
         guard var section = emojis.firstIndex(where: { $0.category == category }) else {
             return
         }
@@ -123,8 +123,11 @@ internal class EmojiCollectionView: UIView {
             section = emojis.firstIndex(where: { $0.category == Category.smileysAndPeople })!
         }
         
-        let indexPath = IndexPath(item: 0, section: section)
-        collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
+        let itemsCountInSection = collectionView(collectionView, numberOfItemsInSection: section)
+        let targetItemIndex = Int(round(percentage * Double((itemsCountInSection - 1))))
+        
+        let indexPath = IndexPath(item: targetItemIndex, section: section)
+        collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
     }
     
 }
