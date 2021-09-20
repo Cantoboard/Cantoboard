@@ -22,6 +22,8 @@ open class KeyboardViewController: UIInputViewController {
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var logView: UITextView?
     
+    private(set) var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
+    
     public override init(nibName: String?, bundle: Bundle?) {
         _ = Self.isLoggerInited
         
@@ -68,20 +70,67 @@ open class KeyboardViewController: UIInputViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // To make sure keyboard layout is updated in the test app. This isn't for the keyboard extension.
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        view.setNeedsLayout()
+    }
+    
+    private func refreshLayoutConstants() {
+        guard let windowSize = view.superview?.window?.bounds else { return }
+        let isWindowSmall = windowSize.width <= 320
+        
+        DDLogInfo("refreshLayoutConstants Screen size \(UIScreen.main.bounds.size) superview size \(windowSize)")
+
+        // On iPad, UIScreen.main.bounds isn't reliable if task switcher is used.
+        // The only reliable source of screen orientation is the window width.
+        let isPortrait = windowSize.size.width <= UIScreen.main.bounds.size.minDimension
+        
+        let isPadFloatingMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .pad && isWindowSmall
+        let isPadCompatibleMode = UIDevice.current.userInterfaceIdiom == .pad && traitCollection.userInterfaceIdiom == .phone
+        
+        DDLogInfo("iPad special mode debug UIDevice userInterfaceIdiom \(UIDevice.current.userInterfaceIdiom.rawValue) traitCollection \(traitCollection)")
+        
+        let newLayoutConstants: LayoutConstants
+        if isPadFloatingMode {
+            DDLogInfo("Using isPadFloatingMode")
+            newLayoutConstants = LayoutConstants.getContants(screenSize: CGSize(width: 320, height: 254))
+        } else if isPadCompatibleMode {
+            // iPad's compatiblity mode has a bug. UIScreen doesn't return the right resolution.
+            // We cannot rely on the size. We could only infer the screen direction from it.
+            let size = isPortrait ? CGSize(width: 375, height: 667) : CGSize(width: 667, height: 375)
+            DDLogInfo("Using isPadCompatibleMode \(size)")
+            newLayoutConstants = LayoutConstants.getContants(screenSize: size)
+        } else {
+            let reportedScreenSize = UIScreen.main.bounds.size
+            let correctedScreenSize = isPortrait ? reportedScreenSize.asPortrait : reportedScreenSize.asLandscape
+            DDLogInfo("refreshLayoutConstants reportedScreenSize \(reportedScreenSize) correctedScreenSize \(correctedScreenSize)")
+            DDLogInfo("Using \(correctedScreenSize)")
+            newLayoutConstants = LayoutConstants.getContants(screenSize: correctedScreenSize)
+        }
+        
+        let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom
+        layoutConstants.ref = newLayoutConstants
+        if hasLayoutChanged {
+            inputController?.onIdiomChanged()
+        }
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
+        refreshLayoutConstants()
+        
         view.translatesAutoresizingMaskIntoConstraints = false
-        LayoutConstants.currentTraitCollection = traitCollection
         
         Settings.hasFullAccess = hasFullAccess
         
-        let layoutConstants = LayoutConstants.forMainScreen
-        let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.height)
+        let layoutConstants = self.layoutConstants.ref
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardHeight)
         heightConstraint.priority = .required
         heightConstraint.isActive = true
         self.heightConstraint = heightConstraint
     
-        let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.superviewSize.width)
+        let widthConstraint = view.widthAnchor.constraint(equalToConstant: 1) // Just a placeholder. Value will be reset on viewWillLayoutSubviews()
         widthConstraint.priority = .required
         widthConstraint.isActive = true
         self.widthConstraint = widthConstraint
@@ -91,7 +140,7 @@ open class KeyboardViewController: UIInputViewController {
         view.addSubview(keyboardViewPlaceholder)
         self.keyboardViewPlaceholder = keyboardViewPlaceholder
         
-        let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.width)
+        let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
         keyboardWidthConstraint.priority = .required
         keyboardWidthConstraint.isActive = true
         self.keyboardWidthConstraint = keyboardWidthConstraint
@@ -107,9 +156,9 @@ open class KeyboardViewController: UIInputViewController {
         createKeyboardIfNeeded()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        LayoutConstants.currentTraitCollection = traitCollection
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        refreshLayoutConstants()
         
         if superviewCenterXConstraint == nil, let superview = view.superview {
             let superviewCenterXConstraint = view.centerXAnchor.constraint(equalTo: superview.centerXAnchor)
@@ -139,23 +188,16 @@ open class KeyboardViewController: UIInputViewController {
         inputController?.textDidChange(textInput)
     }
     
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        LayoutConstants.currentTraitCollection = traitCollection
-        view.setNeedsLayout()
-    }
-    
-    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        LayoutConstants.currentTraitCollection = traitCollection
-    }
-    
     public override func viewWillLayoutSubviews() {
+        guard let hostWindow = view.superview?.window else { return }
         // Reset the size constraints to handle screen rotation.
-        let layoutConstants = LayoutConstants.forMainScreen
-        keyboardWidthConstraint?.constant = layoutConstants.keyboardSize.width
-        heightConstraint?.constant = layoutConstants.keyboardSize.height
-        widthConstraint?.constant = layoutConstants.superviewSize.width
+        refreshLayoutConstants()
+        
+        let layoutConstants = self.layoutConstants.ref
+        let hostWindowWidth = hostWindow.bounds.width
+        layoutConstants.keyboardWidth = hostWindowWidth
+        heightConstraint?.constant = layoutConstants.keyboardHeight
+        widthConstraint?.constant = hostWindowWidth
         
         super.viewWillLayoutSubviews()
         
@@ -201,12 +243,6 @@ open class KeyboardViewController: UIInputViewController {
         if prevSettings.englishLocale != settings.englishLocale {
             EnglishInputEngine.language = settings.englishLocale.rawValue
             DDLogInfo("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
-        }
-        
-        if prevSettings.charForm != settings.charForm {
-            SessionState.main.lastCharForm = settings.charForm
-            inputController?.handleKey(.setCharForm(settings.charForm))
-            DDLogInfo("Detected change in char form from \(prevSettings.charForm) to \(settings.charForm).")
         }
         
         if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled {

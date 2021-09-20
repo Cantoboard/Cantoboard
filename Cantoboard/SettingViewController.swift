@@ -9,7 +9,6 @@ import UIKit
 import CantoboardFramework
 
 class SettingViewController: UITableViewController, UIGestureRecognizerDelegate {
-    @IBOutlet weak private var charFormControl: UISegmentedControl!
     @IBOutlet weak private var enableMixedModeControl: UISwitch!
     @IBOutlet weak private var autoCapControl: UISwitch!
     @IBOutlet weak private var smartFullStopControl: UISwitch!
@@ -30,7 +29,6 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         
         populateSettings()
         
-        charFormControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         enableMixedModeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         autoCapControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -54,8 +52,6 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     }
     
     @objc func updateSettings(_ sender: Any) {
-        let selectedCharForm: CharForm = charFormControl.selectedSegmentIndex == 1 ? .traditionalHK : .simplified
-        
         let selectedSymbolShape: SymbolShape
         switch symbolShapeControl.selectedSegmentIndex {
         case 0: selectedSymbolShape = .half
@@ -70,7 +66,14 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         default: candidateFontSize = .normal
         }
         
-        let spaceAction: SpaceAction = spaceActionControl.selectedSegmentIndex == 0 ? .nextPage : .insertText
+        let spaceAction: SpaceAction
+        switch spaceActionControl.selectedSegmentIndex {
+        case 0: spaceAction = .nextPage
+        case 1: spaceAction = .insertCandidate
+        case 2: spaceAction = .insertText
+        default: spaceAction = .insertText
+        }
+        
         let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
         let englishLocale: EnglishLocale
@@ -91,7 +94,6 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         }
         
         var settings = Settings()
-        settings.charForm = selectedCharForm
         settings.isMixedModeEnabled = enableMixedModeControl.isOn
         settings.isAutoCapEnabled = autoCapControl.isOn
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
@@ -150,20 +152,10 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     
     private func populateSettings() {
         let settings = Settings.reload()
-        populateCharFormSetting(settings)
         populateSmartInputSettings(settings)
         populateSymbolShape(settings)
         populateSpaceOutputMode(settings)
         populateToneInput(settings)
-    }
-    
-    private func populateCharFormSetting(_ settings: Settings) {
-        populateSetting(toSegmentedControl: charFormControl, settingToIndexMapper: {
-            switch $0.charForm {
-            case .traditionalHK, .traditionalTW: return 1
-            case .simplified: return 0
-            }
-        })
     }
     
     private func populateSmartInputSettings(_ settings: Settings) {
@@ -214,7 +206,8 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         populateSetting(toSegmentedControl: spaceActionControl, settingToIndexMapper: {
             switch $0.spaceAction {
             case .nextPage: return 0
-            case .insertText: return 1
+            case .insertCandidate: return 1
+            case .insertText: return 2
             }
         })
     }

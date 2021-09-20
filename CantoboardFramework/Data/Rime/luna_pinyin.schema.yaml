@@ -67,6 +67,7 @@ speller:
 
 translator:
   dictionary: luna_pinyin
+  max_homophones: 10
   preedit_format:
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/

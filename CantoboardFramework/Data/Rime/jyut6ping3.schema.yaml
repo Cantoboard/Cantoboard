@@ -61,7 +61,7 @@ engine:
 
 menu:
   alternative_select_keys: "          " # Change select key to 0x7f to allow us to type number keys for tone input.
-  
+
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba654321
   delimiter: " '"
@@ -97,6 +97,7 @@ speller:
 translator:
   dictionary: jyut6ping3
   spelling_hints: 256
+  max_homophones: 10
   always_show_comments: true
 
 variants_hk:

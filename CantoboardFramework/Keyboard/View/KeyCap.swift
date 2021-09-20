@@ -52,14 +52,26 @@ enum ReturnKeyType: Int {
     }
 }
 
-enum KeyCap: Equatable, ExpressibleByStringLiteral {
+enum KeyCapType {
+    case input, system, returnKey, space
+}
+
+enum ContextualKey: Equatable, ExpressibleByStringLiteral {
+    case symbol
+    case character(String)
+    
+    public init(stringLiteral value: String) {
+        self = .character(value)
+    }
+}
+
+indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
     backspace,
-    capsLock,
-    character(String),
-    characterWithConditioanlPopup(String),
-    cangjie(String),
+    toggleInputMode(/* toMode */ InputMode, RimeSchema?),
+    character(String, String?, [KeyCap]?),
+    cangjie(String, Bool),
     stroke(String),
     emoji(String),
     keyboardType(KeyboardType),
@@ -67,89 +79,105 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     nextKeyboard,
     space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
-    rime(RimeChar),
-    contextualSymbols(ContextualType),
+    rime(RimeChar, String?, [KeyCap]?),
+    contextual(ContextualKey),
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
-    switchToEnglishMode,
     exportFile(String, String),
     currency,
-    exit
+    dismissKeyboard,
+    exit,
+    placeholder(KeyCap)
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
     public init(stringLiteral value: String) {
-        self = .character(value)
+        self = .character(value, nil, nil)
+    }
+    
+    public init(_ char: String) {
+        self = .character(char, nil, nil)
+    }
+    
+    public init(rime char: RimeChar) {
+        self = .rime(char, nil, nil)
     }
     
     var action: KeyboardAction {
         switch self {
         case .none: return .none
         case .backspace: return .backspace
-        case .capsLock: return .capsLock
-        case .character(let c): return .character(c)
-        case .characterWithConditioanlPopup(let c): return .character(c)
-        case .cangjie(let c): return .character(c)
+        case .toggleInputMode: return .toggleInputMode
+        case .character(let c, _, _): return .character(c)
+        case .cangjie(let c, _): return .character(c)
         case .stroke(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
         case .returnKey: return .newLine
         case .nextKeyboard: return .nextKeyboard
-        case .space: return .space
+        case .space(let spaceKeyMode): return .space(spaceKeyMode)
         case .shift(let shiftState): return .shift(shiftState)
-        case .rime(let rc): return .rime(rc)
-        case .contextualSymbols(.chinese): return "，"
-        case .contextualSymbols(.english): return ","
-        case .contextualSymbols(.rime): return .rime(.delimiter)
-        case .contextualSymbols(.url): return "."
+        case .rime(let rc, _, _): return .rime(rc)
         case .reverseLookup(let s): return .reverseLookup(s)
         case .changeSchema(let s): return .changeSchema(s)
-        case .switchToEnglishMode: return .toggleInputMode
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
-        case .currency: return .character("BUG")
+        case .currency: return .character(SessionState.main.currencySymbol)
+        case .dismissKeyboard: return .dismissKeyboard
+        default: return .none
         }
     }
     
     var buttonFont: UIFont {
         switch self {
-        case .rime, "^_^": return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        default: return .preferredFont(forTextStyle: buttonFontStyle)
+        case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
+        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
+        case .cangjie(_, true): return .systemFont(ofSize: 20)
+        default: return .systemFont(ofSize: 22)
         }
     }
     
     var popupFont: UIFont {
         switch self {
-        case .reverseLookup, .rime(.delimiter), .rime(.sym): return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(24)
-        case .rime, "⋯⋯", "^_^", ".com", ".net", ".org", ".edu", .exportFile, .exit:
-            return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(16)
-        default: return UIFont.preferredFont(forTextStyle: buttonFontStyle).withSize(30)
-        }
-    }
-    
-    var buttonFontStyle: UIFont.TextStyle {
-        switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .emoji, .contextualSymbols: return .title2
-        case .keyboardType(.emojis): return .title1
-        default: return .body
+        case .reverseLookup, .rime(.delimiter, _, _), .rime(.sym, _, _): return .systemFont(ofSize: 24)
+        case .exportFile, .exit: return .systemFont(ofSize: 12)
+        case .rime, "……", "⋯⋯", "——", "^_^", ".com", ".net", ".org", ".edu": return .systemFont(ofSize: 16)
+        default: return .systemFont(ofSize: 30)
         }
     }
     
     var buttonBgColor: UIColor {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .stroke, .space, .contextualSymbols: return ButtonColor.inputKeyBackgroundColor
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
-        default: return ButtonColor.systemKeyBackgroundColor
+        default:
+            if keyCapType == .input || keyCapType == .space {
+                 return ButtonColor.inputKeyBackgroundColor
+            }
+            return ButtonColor.systemKeyBackgroundColor
         }
     }
     
     var buttonBgHighlightedColor: UIColor? {
         switch self {
-        case .character, .characterWithConditioanlPopup, .cangjie, .contextualSymbols, .shift(.uppercased), .shift(.capsLocked): return nil
+        case .shift(.uppercased), .shift(.capsLocked): return buttonBgColor
         case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
-        default: return ButtonColor.systemHighlightedKeyBackgroundColor
+        default:
+            if keyCapType == .input {
+                return nil
+            }
+            return ButtonColor.systemHighlightedKeyBackgroundColor
+        }
+    }
+    
+    var keyCapType: KeyCapType {
+        switch self {
+        case .character("\t", _, _): return .system
+        case .character, .cangjie, .contextual, .currency, .stroke, .rime: return .input
+        case .space: return .space
+        case .returnKey: return .returnKey
+        default: return .system
         }
     }
     
@@ -182,6 +210,7 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.lowercased): return ButtonImage.shift
         case .shift(.uppercased): return ButtonImage.shiftFilled
         case .shift(.capsLocked): return ButtonImage.capLockFilled
+        case .dismissKeyboard: return ButtonImage.dissmissKeyboard
         // case .keyboardType(.numeric): return ButtonImage.oneTwoThree
         default: return nil
         }
@@ -189,7 +218,6 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonText: String? {
         switch self {
-        case .characterWithConditioanlPopup(let text): return text
         case .returnKey(.confirm): return LocalizedStrings.keyTitleConfirm
         case .returnKey(.go): return LocalizedStrings.keyTitleGo
         case .returnKey(.next): return LocalizedStrings.keyTitleNext
@@ -207,33 +235,35 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
         case .keyboardType(.alphabetic): return "ABC"
-        case .rime(.tone1): return "陰平"
-        case .rime(.tone2): return "陰上"
-        case .rime(.tone3): return "陰去"
-        case .rime(.tone4): return "陽平"
-        case .rime(.tone5): return "陽上"
-        case .rime(.tone6): return "陽去"
-        case .rime(.delimiter): return "分"
-        case .rime(.sym): return "符"
+        case .rime(.tone1, _, _): return "陰平"
+        case .rime(.tone2, _, _): return "陰上"
+        case .rime(.tone3, _, _): return "陰去"
+        case .rime(.tone4, _, _): return "陽平"
+        case .rime(.tone5, _, _): return "陽上"
+        case .rime(.tone6, _, _): return "陽去"
+        case .rime(.delimiter, _, _): return "分"
+        case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
         case .changeSchema(let schema): return schema.shortName
-        case .switchToEnglishMode: return "英文"
-        case .contextualSymbols(.chinese): return "，"
-        case .contextualSymbols(.english): return ","
-        case .contextualSymbols(.rime): return "分"
-        case .contextualSymbols(.url): return "."
+        case .toggleInputMode(.english, _): return "英文"
+        case .toggleInputMode(.chinese, let rimeSchema): return "中文 - \(rimeSchema?.shortName ?? "")"
+        case .toggleInputMode(.mixed, let rimeSchema): return "混合 - \(rimeSchema?.shortName ?? "")"
         case "（": return "("
         case "）": return ")"
-        case "「": return "「　"
-        case "」": return "  」"
+        case "「": return "「"
+        case "」": return " 」"
+        case "〈": return "〈　"
+        case "〉": return "  〉"
         case "《": return "《　"
         case "》": return "  》"
         case "［": return "["
         case "］": return "]"
         case "｛": return "{"
         case "｝": return "}"
-        case .character(let text): return text
-        case .cangjie(let c):
+        case "\t": return "tab"
+        case "——": return "⸻"
+        case .character(let text, _, _): return text
+        case .cangjie(let c, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
@@ -247,41 +277,29 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
             default: return nil
             }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
+        case .currency: return SessionState.main.currencySymbol
         case .exit: return "Exit"
         default: return nil
         }
     }
     
-    var buttonHint: String? {
-        if Settings.cached.toneInputMode == .longPress {
-            switch self {
-            case .characterWithConditioanlPopup("F"), .characterWithConditioanlPopup("f"): return "4"
-            case .characterWithConditioanlPopup("G"), .characterWithConditioanlPopup("g"): return "5"
-            case .characterWithConditioanlPopup("H"), .characterWithConditioanlPopup("h"): return "6"
-            case .characterWithConditioanlPopup("C"), .characterWithConditioanlPopup("c"): return "1"
-            case .characterWithConditioanlPopup("V"), .characterWithConditioanlPopup("v"): return "2"
-            case .characterWithConditioanlPopup("B"), .characterWithConditioanlPopup("b"): return "3"
-            case .rime(.tone1): return "1"
-            case .rime(.tone2): return "2"
-            case .rime(.tone3): return "3"
-            case .rime(.tone4): return "4"
-            case .rime(.tone5): return "5"
-            case .rime(.tone6): return "6"
-            default: ()
-            }
-        } else {
-            switch self {
-            case "V", "v": return "1/4"
-            case "X", "x": return "2/5"
-            case "Q", "q": return "3/6"
-            default: ()
-            }
-        }
-        
+    var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .characterWithConditioanlPopup("R"), .characterWithConditioanlPopup("r"): return "反"
-        case .contextualSymbols(.chinese), .contextualSymbols(.english): return "符"
-        case .contextualSymbols(.url): return "/"
+        case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        default:
+            if keyCapType == .input {
+                return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+            }
+            return UIEdgeInsets.zero
+        }
+
+    }
+    
+    var buttonHint: String? {
+        switch self {
+        case .character(_, let hint, _) where hint != nil: return hint
+        case .rime(_, let hint, _) where hint != nil: return hint
+        case .cangjie(let c, true): return c
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -299,40 +317,11 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonHintFontSize: CGFloat {
-        let layoutConstants = LayoutConstants.forMainScreen
-        if Settings.cached.toneInputMode == .vxq {
-            switch self {
-            case .character("V"), .character("v"),
-                 .character("X"), .character("x"),
-                 .character("Q"), .character("q"):
-                return layoutConstants.smallKeyHintFontSize
-            default: ()
-            }
-        }
-        
-        return layoutConstants.mediumKeyHintFontSize
-    }
-    
-    func buttonWidth(_ layoutConstants: LayoutConstants) -> CGFloat {
-        switch self {
-        case .shift, .capsLock, .keyboardType(.symbolic), .backspace:
-            return layoutConstants.shiftButtonWidth
-        case .returnKey:
-            return 1.5 * layoutConstants.systemButtonWidth
-        case .character, .characterWithConditioanlPopup, .cangjie, .contextualSymbols:
-            return layoutConstants.keyButtonWidth
-        default:
-            return layoutConstants.systemButtonWidth
-        }
-    }
-    
     var hasPopup: Bool {
         switch self {
-        case .character, .characterWithConditioanlPopup, .contextualSymbols, .cangjie: return true
         // For debugging
         case .keyboardType(.emojis): return true
-        default: return false
+        default: return self.keyCapType == .input
         }
     }
     
@@ -341,22 +330,10 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var childrenKeyCaps: [KeyCap] {
         switch self {
-        case .characterWithConditioanlPopup(let c):
-            switch c {
-            case "F", "f": return [.character(c), .rime(RimeChar.tone4)]
-            case "G", "g": return [.character(c), .rime(RimeChar.tone5)]
-            case "H", "h": return [.character(c), .rime(RimeChar.tone6)]
-            case "C", "c": return [.character(c), .rime(RimeChar.tone1)]
-            case "V", "v": return [.character(c), .rime(RimeChar.tone2)]
-            case "B", "b": return [.character(c), .rime(RimeChar.tone3)]
-            case "R", "r": return [.character(c), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
-            default: return [self]
-            }
-        case .contextualSymbols(.chinese): return ["。", "，", "？", "！", ".", ",", .rime(.sym)]
-        case .contextualSymbols(.english): return [".", ",", "?", "!", "。", "，", .rime(.sym)]
-        case .contextualSymbols(.rime): return [self, ".", ",", "?", "!"]
-        case .contextualSymbols(.url): return ["/", ".", ".com", ".net", ".org", ".edu", .rime(.delimiter)]
-        case .keyboardType(.emojis): return [.exportFile("user", Self.userDataPath), .exportFile("logs", Self.logsPath), .exit]
+        // For debugging
+        case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exit]
+        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "2": return ["貳", "2", "二", "２", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
@@ -379,8 +356,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "「": return ["「", "『", "“", "‘"]
         case "」": return ["」", "』", "”", "’"]
         // 123 3rd row
-        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯"]
-        case ",": return [",", "，"]
+        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯", "》"]
+        case ",": return [",", "，", "《"]
         case "､": return ["､", "、"]
         case "&": return ["＆", "&", "§"]
         case "?": return ["?", "？", "¿"]
@@ -389,8 +366,8 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         // 123 4rd row
         case "@": return ["@", "＠"]
         // #+= 1st row
-        case "[": return ["[", "［", "【", "〔"]
-        case "]": return ["]", "］", "】", "〕"]
+        case "[": return ["[", "［", "【", "〔", "「"]
+        case "]": return ["]", "］", "】", "〕", "」"]
         case "{": return ["{", "｛"]
         case "}": return ["}", "｝"]
         case "#": return ["#", "＃"]
@@ -459,9 +436,9 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "·": return ["·", "．", "•", "°"]
-        case .character(let c) where c.first?.isCurrencySymbol ?? false:
+        case .currency:
             var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
-            let localCurrencySymbolKeyCap: KeyCap = .character(NSLocale.current.currencySymbol ?? "$")
+            let localCurrencySymbolKeyCap: KeyCap = KeyCap(SessionState.main.currencySymbol)
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
             return currencyLists
@@ -469,8 +446,32 @@ enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var defaultChildKeyCap: KeyCap? {
-        self
+    var defaultChildKeyCapTitle: String? {
+        switch self {
+        case .character(".", "/", _): return nil // Contextual sym key in url mode
+        default: return self.buttonText
+        }
+    }
+    
+    var keyCapCharacter: String? {
+        switch self {
+        case .character(let c, _, _), .cangjie(let c, _): return c.lowercased()
+        default: return nil
+        }
+    }
+    
+    var isCharacter: Bool {
+        switch self {
+        case .character, .cangjie: return true
+        default: return false
+        }
+    }
+    
+    var isContextual: Bool {
+        switch self {
+        case .contextual: return true
+        default: return false
+        }
     }
 }
 
@@ -486,6 +487,7 @@ class ButtonImage {
     static let emojiKeyboardDark = UIImage(named: "face.smiling.fill", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))
     static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)
     static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)
+    static let dissmissKeyboard = UIImage(named: "keyboard.chevron.compact.down", in: Bundle(for: ButtonImage.self), with: nil)
     // static let oneTwoThree = UIImage(systemName: "textformat.123", in: Bundle(for: ButtonImage.self), with: nil)
 }
 

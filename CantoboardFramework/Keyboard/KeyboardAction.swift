@@ -66,7 +66,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     moveCursorEnded,
     newLine,
     nextKeyboard,
-    space,
+    space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
     shiftDown, // TODO remove
     shiftUp, // TODO remove
@@ -81,9 +81,31 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     longPressCandidate(IndexPath),
     exportFile(String, String),
     enableKeyboard(Bool),
+    dismissKeyboard,
     exit
     
-    public init(stringLiteral value: String) {
+    init(stringLiteral value: String) {
         self = .character(value)
+    }
+    
+    var isShift: Bool {
+        switch self {
+        case .shift: return true
+        default: return false
+        }
+    }
+    
+    var isSpace: Bool {
+        switch self {
+        case .space: return true
+        default: return false
+        }
+    }
+    
+    var isKeyboardType: Bool {
+        switch self {
+        case .keyboardType: return true
+        default: return false
+        }
     }
 }
