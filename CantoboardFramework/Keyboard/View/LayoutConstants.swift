@@ -32,6 +32,11 @@ enum LayoutIdiom: Equatable {
     }
 }
 
+protocol Copyable {
+    init(copyOf: Self)
+    func copy() -> Self
+}
+
 class PhoneLayoutConstants: LayoutConstants {
     private static let contentEdgeInsetsPhone = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
     
@@ -74,6 +79,17 @@ class PhoneLayoutConstants: LayoutConstants {
                    keyboardViewBottomInset: 4,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
     }
+    
+    required init(copyOf: LayoutConstants) {
+        guard let copyOfTypeCorrected = copyOf as? Self else {
+            fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
+        }
+        
+        self.systemKeyWidthRatio = copyOfTypeCorrected.systemKeyWidthRatio
+        self.shiftKeyWidthRatio = copyOfTypeCorrected.shiftKeyWidthRatio
+        
+        super.init(copyOf: copyOf)
+    }
 }
 
 class PadShortLayoutConstants: LayoutConstants {
@@ -104,6 +120,17 @@ class PadShortLayoutConstants: LayoutConstants {
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
+    }
+    
+    required init(copyOf: LayoutConstants) {
+        guard let copyOfTypeCorrected = copyOf as? Self else {
+            fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
+        }
+        
+        self.rightShiftKeyWidth = copyOfTypeCorrected.rightShiftKeyWidth
+        self.returnKeyWidth = copyOfTypeCorrected.returnKeyWidth
+        
+        super.init(copyOf: copyOf)
     }
 }
 
@@ -154,7 +181,25 @@ class PadFull4RowsLayoutConstants: LayoutConstants {
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
+    }
+    
+    required init(copyOf: LayoutConstants) {
+        guard let copyOfTypeCorrected = copyOf as? Self else {
+            fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
         }
+        
+        self.tabDeleteKeyWidth = copyOfTypeCorrected.tabDeleteKeyWidth
+        
+        self.capLockKeyWidth = copyOfTypeCorrected.capLockKeyWidth
+        self.leftShiftKeyWidth = copyOfTypeCorrected.leftShiftKeyWidth
+        self.smallSystemKeyWidth = copyOfTypeCorrected.smallSystemKeyWidth
+        
+        self.returnKeyWidth = copyOfTypeCorrected.returnKeyWidth
+        self.rightShiftKeyWidth = copyOfTypeCorrected.rightShiftKeyWidth
+        self.largeSystemKeyWidth = copyOfTypeCorrected.largeSystemKeyWidth
+        
+        super.init(copyOf: copyOf)
+    }
 }
 
 class PadFull5RowsLayoutConstants: LayoutConstants {
@@ -213,9 +258,29 @@ class PadFull5RowsLayoutConstants: LayoutConstants {
             keyboardSuperviewWidth: keyboardSuperviewWidth,
             keyRowGapY: rowGapY)
     }
+    
+    required init(copyOf: LayoutConstants) {
+        guard let copyOfTypeCorrected = copyOf as? Self else {
+            fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
+        }
+        
+        self.topRowKeyHeight = copyOfTypeCorrected.topRowKeyHeight
+        
+        self.tabKeyWidth = copyOfTypeCorrected.tabKeyWidth
+        self.capLockKeyWidth = copyOfTypeCorrected.capLockKeyWidth
+        self.leftShiftKeyWidth = copyOfTypeCorrected.leftShiftKeyWidth
+        self.smallSystemKeyWidth = copyOfTypeCorrected.smallSystemKeyWidth
+        
+        self.deleteKeyWidth = copyOfTypeCorrected.deleteKeyWidth
+        self.returnKeyWidth = copyOfTypeCorrected.returnKeyWidth
+        self.rightShiftKeyWidth = copyOfTypeCorrected.rightShiftKeyWidth
+        self.largeSystemKeyWidth = copyOfTypeCorrected.largeSystemKeyWidth
+        
+        super.init(copyOf: copyOf)
+    }
 }
 
-class LayoutConstants {
+class LayoutConstants: Copyable {
     // Fixed:
     static let keyboardViewTopInset = CGFloat(8)
     static let contentEdgeInsetsPadShortAndFull = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6 )
@@ -308,7 +373,7 @@ class LayoutConstants {
         keypadButtonUnitSize = CGSize(width: width, height: height)
     }
     
-    internal init(copyOf: LayoutConstants) {
+    required init(copyOf: LayoutConstants) {
         self.idiom = copyOf.idiom
         self.isPortrait = copyOf.isPortrait
         self.keyboardWidth = copyOf.keyboardWidth
@@ -321,6 +386,13 @@ class LayoutConstants {
         self.buttonGapX = copyOf.buttonGapX
         self.keyRowGapY = copyOf.keyRowGapY
         self.keypadButtonUnitSize = copyOf.keypadButtonUnitSize
+    }
+    
+    func copy() -> Self {
+        if type(of: Self.self) == LayoutConstants.Type.self {
+            fatalError("LayoutConstants is an abstract class and should not be copied.")
+        }
+        return Self.init(copyOf: self)
     }
 }
 
@@ -714,12 +786,26 @@ extension LayoutConstants {
     }
     
     static func getContants(screenSize: CGSize) -> LayoutConstants {
-        // TODO instead of returning an exact match, return the nearest (floorKey?) match.
         guard let ret = layoutConstantsList[IntDuplet(Int(screenSize.width), Int(screenSize.height))] else {
             DDLogInfo("Cannot find constants for (\(screenSize.width), \(screenSize.height)).")
-            return LayoutConstants(copyOf: layoutConstantsList.first!.value)
+            
+            var currentBestMatchResolution: IntDuplet? = nil
+            for resolution in layoutConstantsList.keys {
+                if CGFloat(resolution.a) <= screenSize.width && resolution.a > (currentBestMatchResolution?.a ?? -1) {
+                    currentBestMatchResolution = resolution
+                }
+            }
+            
+            guard currentBestMatchResolution != nil else {
+                let errorMessage = "Unsupported screen size: \(screenSize)."
+                DDLogError(errorMessage)
+                fatalError(errorMessage)
+            }
+            
+            DDLogInfo("Best matching screen size for \(screenSize) is \(currentBestMatchResolution!).")
+            return layoutConstantsList[currentBestMatchResolution!]!.copy()
         }
         
-        return ret
+        return ret.copy()
     }
 }
