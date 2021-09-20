@@ -104,7 +104,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         case .returnKey:
             return 1.5 * layoutConstants.phoneLayoutConstants!.systemKeyWidth
         case .character, .cangjie, .rime, .currency:
-            return layoutConstants.phoneLayoutConstants!.letterKeyWidth
+            return layoutConstants.phoneLayoutConstants!.letterKeyWidth(layoutConstants)
         default:
             return layoutConstants.phoneLayoutConstants!.systemKeyWidth
         }

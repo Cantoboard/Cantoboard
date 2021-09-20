@@ -124,7 +124,7 @@ open class KeyboardViewController: UIInputViewController {
         heightConstraint.isActive = true
         self.heightConstraint = heightConstraint
     
-        let widthConstraint = view.widthAnchor.constraint(equalToConstant: layoutConstants.keyboardSuperviewSize.width)
+        let widthConstraint = view.widthAnchor.constraint(equalToConstant: 1) // Just a placeholder. Value will be reset on viewWillLayoutSubviews()
         widthConstraint.priority = .required
         widthConstraint.isActive = true
         self.widthConstraint = widthConstraint
@@ -134,7 +134,7 @@ open class KeyboardViewController: UIInputViewController {
         view.addSubview(keyboardViewPlaceholder)
         self.keyboardViewPlaceholder = keyboardViewPlaceholder
         
-        let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.width)
+        let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
         keyboardWidthConstraint.priority = .required
         keyboardWidthConstraint.isActive = true
         self.keyboardWidthConstraint = keyboardWidthConstraint
@@ -182,19 +182,16 @@ open class KeyboardViewController: UIInputViewController {
         inputController?.textDidChange(textInput)
     }
     
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        view.setNeedsLayout()
-    }
-    
     public override func viewWillLayoutSubviews() {
+        guard let hostWindow = view.superview?.window else { return }
         // Reset the size constraints to handle screen rotation.
         refreshLayoutConstants()
         
         let layoutConstants = self.layoutConstants.ref
-        keyboardWidthConstraint?.constant = layoutConstants.keyboardSize.width
+        let hostWindowWidth = hostWindow.bounds.width
+        layoutConstants.keyboardWidthOverride = hostWindowWidth
         heightConstraint?.constant = layoutConstants.keyboardSize.height
-        widthConstraint?.constant = layoutConstants.keyboardSuperviewSize.width
+        widthConstraint?.constant = hostWindowWidth
         
         super.viewWillLayoutSubviews()
         

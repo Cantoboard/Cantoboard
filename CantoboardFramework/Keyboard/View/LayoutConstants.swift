@@ -33,12 +33,17 @@ enum LayoutIdiom: Equatable {
 }
 
 class PhoneLayoutConstants {
-    let letterKeyWidth: CGFloat
     let systemKeyWidth: CGFloat
     let shiftKeyWidth: CGFloat
     
-    init(letterKeyWidth: CGFloat, systemKeyWidth: CGFloat, shiftKeyWidth: CGFloat) {
-        self.letterKeyWidth = letterKeyWidth
+    func letterKeyWidth(_ layoutConstants: LayoutConstants) -> CGFloat {
+        let keyboardWidth = layoutConstants.keyboardSize.width
+        let keyboardViewLeftRightInset = layoutConstants.keyboardViewInsets.left + layoutConstants.keyboardViewInsets.right
+        let buttonGapX = layoutConstants.buttonGapX
+        return (keyboardWidth - keyboardViewLeftRightInset - 9 * buttonGapX) / 10
+    }
+    
+    init(systemKeyWidth: CGFloat, shiftKeyWidth: CGFloat) {
         self.systemKeyWidth = systemKeyWidth
         self.shiftKeyWidth = shiftKeyWidth
     }
@@ -121,7 +126,7 @@ class LayoutConstants {
     // Keyboard size
     let idiom: LayoutIdiom
     let isPortrait: Bool
-    let keyboardSize: CGSize
+    let stockKeyboardSize: CGSize
     let keyboardViewInsets: UIEdgeInsets
     
     // General
@@ -137,12 +142,22 @@ class LayoutConstants {
 
     // Computed:
     let keyboardViewHeight: CGFloat
-    let keyboardSuperviewSize: CGSize
+    private let keyboardSuperviewSize: CGSize
     
     let buttonGapX: CGFloat
     let keyRowGapY: CGFloat
     
     let keypadButtonUnitSize: CGSize
+    
+    var keyboardWidthOverride: CGFloat?
+    var keyboardSize: CGSize {
+        get {
+            if let keyboardWidthOverride = keyboardWidthOverride {
+                return stockKeyboardSize.with(newWidth: keyboardWidthOverride)
+            }
+            return stockKeyboardSize
+        }
+    }
     
     var numOfSingleCharCandidateInRow: Int {
         switch idiom {
@@ -170,7 +185,7 @@ class LayoutConstants {
                   padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants? = nil) {
         self.idiom = idiom
         self.isPortrait = isPortrait
-        self.keyboardSize = keyboardSize
+        self.stockKeyboardSize = keyboardSize
         self.buttonGapX = buttonGapX
         self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
         self.keyHeight = keyHeight
@@ -201,7 +216,6 @@ class LayoutConstants {
                                           autoCompleteBarHeight: CGFloat,
                                           keyboardViewLeftRightInset: CGFloat,
                                           keyboardSuperviewWidth: CGFloat) -> LayoutConstants {
-        let letterKeyWidth = (keyboardSize.width - 2 * keyboardViewLeftRightInset - 9 * buttonGapX) / 10
         return LayoutConstants(
             idiom: .phone,
             isPortrait: isPortrait,
@@ -213,7 +227,7 @@ class LayoutConstants {
             keyboardViewLeftRightInset: keyboardViewLeftRightInset,
             keyboardViewBottomInset: 4,
             keyboardSuperviewWidth: keyboardSuperviewWidth,
-            phoneLayoutConstants: PhoneLayoutConstants(letterKeyWidth: letterKeyWidth, systemKeyWidth: systemKeyWidth, shiftKeyWidth: shiftKeyWidth))
+            phoneLayoutConstants: PhoneLayoutConstants(systemKeyWidth: systemKeyWidth, shiftKeyWidth: shiftKeyWidth))
     }
     
     internal static func makeiPadShortLayout(isPortrait: Bool,
