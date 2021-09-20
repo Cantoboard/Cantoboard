@@ -32,34 +32,82 @@ enum LayoutIdiom: Equatable {
     }
 }
 
-class PhoneLayoutConstants {
-    let systemKeyWidth: CGFloat
-    let shiftKeyWidth: CGFloat
+class PhoneLayoutConstants: LayoutConstants {
+    private static let contentEdgeInsetsPhone = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
     
-    func letterKeyWidth(_ layoutConstants: LayoutConstants) -> CGFloat {
-        let keyboardWidth = layoutConstants.keyboardSize.width
-        let keyboardViewLeftRightInset = layoutConstants.keyboardViewInsets.left + layoutConstants.keyboardViewInsets.right
-        let buttonGapX = layoutConstants.buttonGapX
+    let systemKeyWidthRatio: CGFloat
+    let shiftKeyWidthRatio: CGFloat
+    
+    var letterKeyWidth: CGFloat {
+        let keyboardViewLeftRightInset = keyboardViewInsets.left + keyboardViewInsets.right
         return (keyboardWidth - keyboardViewLeftRightInset - 9 * buttonGapX) / 10
     }
     
-    init(systemKeyWidth: CGFloat, shiftKeyWidth: CGFloat) {
-        self.systemKeyWidth = systemKeyWidth
-        self.shiftKeyWidth = shiftKeyWidth
+    var systemKeyWidth: CGFloat {
+        return systemKeyWidthRatio * keyboardWidth
+    }
+    
+    var shiftKeyWidth: CGFloat {
+        return shiftKeyWidthRatio * keyboardWidth
+    }
+    
+    init(isPortrait: Bool,
+         keyboardSize: CGSize,
+         buttonGapX: CGFloat,
+         systemKeyWidth: CGFloat,
+         shiftKeyWidth: CGFloat,
+         keyHeight: CGFloat,
+         autoCompleteBarHeight: CGFloat,
+         keyboardViewLeftRightInset: CGFloat,
+         keyboardSuperviewWidth: CGFloat) {
+        self.systemKeyWidthRatio = systemKeyWidth / keyboardSize.width
+        self.shiftKeyWidthRatio = shiftKeyWidth / keyboardSize.width
+        
+        super.init(idiom: .phone,
+                   isPortrait: isPortrait,
+                   keyboardSize: keyboardSize,
+                   buttonGapX: buttonGapX,
+                   keyHeight: keyHeight,
+                   autoCompleteBarHeight: autoCompleteBarHeight,
+                   keyViewInsets: Self.contentEdgeInsetsPhone,
+                   keyboardViewLeftRightInset: keyboardViewLeftRightInset,
+                   keyboardViewBottomInset: 4,
+                   keyboardSuperviewWidth: keyboardSuperviewWidth)
     }
 }
 
-class PadShortLayoutConstants {
+class PadShortLayoutConstants: LayoutConstants {
     let rightShiftKeyWidth: CGFloat
     let returnKeyWidth: CGFloat
     
-    init(rightShiftKeyWidth: CGFloat, returnKeyWidth: CGFloat) {
+    init(isPortrait: Bool,
+         keyboardWidth: CGFloat,
+         buttonGapX: CGFloat,
+         rowGapY: CGFloat,
+         returnKeyWidth: CGFloat,
+         rightShiftKeyWidth: CGFloat,
+         keyHeight: CGFloat,
+         autoCompleteBarHeight: CGFloat,
+         keyboardViewLeftRightInset: CGFloat,
+         keyboardViewBottomInset: CGFloat,
+         keyboardSuperviewWidth: CGFloat) {
         self.rightShiftKeyWidth = rightShiftKeyWidth
         self.returnKeyWidth = returnKeyWidth
+        
+        super.init(idiom: .pad(.padShort),
+                   isPortrait: isPortrait,
+                   keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + LayoutConstants.keyboardViewTopInset + keyboardViewBottomInset),
+                   buttonGapX: buttonGapX,
+                   keyHeight: keyHeight,
+                   autoCompleteBarHeight: autoCompleteBarHeight,
+                   keyViewInsets: LayoutConstants.contentEdgeInsetsPadShortAndFull,
+                   keyboardViewLeftRightInset: keyboardViewLeftRightInset,
+                   keyboardViewBottomInset: keyboardViewBottomInset,
+                   keyboardSuperviewWidth: keyboardSuperviewWidth)
     }
 }
 
-class PadFull4RowsLayoutConstants {
+class PadFull4RowsLayoutConstants: LayoutConstants {
     let tabDeleteKeyWidth: CGFloat
     
     let capLockKeyWidth: CGFloat
@@ -70,9 +118,22 @@ class PadFull4RowsLayoutConstants {
     let rightShiftKeyWidth: CGFloat
     let largeSystemKeyWidth: CGFloat
     
-    init(tabDeleteKeyWidth: CGFloat,
-         capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, smallSystemKeyWidth: CGFloat,
-         returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, largeSystemKeyWidth: CGFloat) {
+    init(isPortrait: Bool,
+         keyboardWidth: CGFloat,
+         keyboardViewLeftRightInset: CGFloat,
+         keyboardViewBottomInset: CGFloat,
+         keyboardSuperviewWidth: CGFloat,
+         buttonGapX: CGFloat,
+         rowGapY: CGFloat,
+         autoCompleteBarHeight: CGFloat,
+         keyHeight: CGFloat,
+         tabDeleteKeyWidth: CGFloat,
+         capLockKeyWidth: CGFloat,
+         leftShiftKeyWidth: CGFloat,
+         smallSystemKeyWidth: CGFloat,
+         returnKeyWidth: CGFloat,
+         rightShiftKeyWidth: CGFloat,
+         largeSystemKeyWidth: CGFloat) {
         self.tabDeleteKeyWidth = tabDeleteKeyWidth
         
         self.capLockKeyWidth = capLockKeyWidth
@@ -82,10 +143,21 @@ class PadFull4RowsLayoutConstants {
         self.returnKeyWidth = returnKeyWidth
         self.rightShiftKeyWidth = rightShiftKeyWidth
         self.largeSystemKeyWidth = largeSystemKeyWidth
-    }
+
+        super.init(idiom: .pad(.padFull4Rows),
+                   isPortrait: isPortrait,
+                   keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
+                   buttonGapX: buttonGapX,
+                   keyHeight: keyHeight,
+                   autoCompleteBarHeight: autoCompleteBarHeight,
+                   keyViewInsets: Self.contentEdgeInsetsPadShortAndFull,
+                   keyboardViewLeftRightInset: keyboardViewLeftRightInset,
+                   keyboardViewBottomInset: keyboardViewBottomInset,
+                   keyboardSuperviewWidth: keyboardSuperviewWidth)
+        }
 }
 
-class PadFull5RowsLayoutConstants {
+class PadFull5RowsLayoutConstants: LayoutConstants {
     let topRowKeyHeight: CGFloat
     
     let tabKeyWidth: CGFloat
@@ -98,9 +170,24 @@ class PadFull5RowsLayoutConstants {
     let rightShiftKeyWidth: CGFloat
     let largeSystemKeyWidth: CGFloat
     
-    init(topRowKeyHeight: CGFloat,
-         tabKeyWidth: CGFloat, capLockKeyWidth: CGFloat, leftShiftKeyWidth: CGFloat, smallSystemKeyWidth: CGFloat,
-         deleteKeyWidth: CGFloat, returnKeyWidth: CGFloat, rightShiftKeyWidth: CGFloat, largeSystemKeyWidth: CGFloat) {
+    init(isPortrait: Bool,
+         keyboardWidth: CGFloat,
+         keyboardViewLeftRightInset: CGFloat,
+         keyboardViewBottomInset: CGFloat,
+         keyboardSuperviewWidth: CGFloat,
+         buttonGapX: CGFloat,
+         rowGapY: CGFloat,
+         autoCompleteBarHeight: CGFloat,
+         keyHeight: CGFloat,
+         topRowKeyHeight: CGFloat,
+         tabKeyWidth: CGFloat,
+         capLockKeyWidth: CGFloat,
+         leftShiftKeyWidth: CGFloat,
+         smallSystemKeyWidth: CGFloat,
+         deleteKeyWidth: CGFloat,
+         returnKeyWidth: CGFloat,
+         rightShiftKeyWidth: CGFloat,
+         largeSystemKeyWidth: CGFloat) {
         self.topRowKeyHeight = topRowKeyHeight
         
         self.tabKeyWidth = tabKeyWidth
@@ -112,21 +199,34 @@ class PadFull5RowsLayoutConstants {
         self.returnKeyWidth = returnKeyWidth
         self.rightShiftKeyWidth = rightShiftKeyWidth
         self.largeSystemKeyWidth = largeSystemKeyWidth
+        
+        super.init(
+            idiom: .pad(.padFull5Rows),
+            isPortrait: isPortrait,
+            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + topRowKeyHeight + rowGapY * 4 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
+            buttonGapX: buttonGapX,
+            keyHeight: keyHeight,
+            autoCompleteBarHeight: autoCompleteBarHeight,
+            keyViewInsets: Self.contentEdgeInsetsPad5Rows,
+            keyboardViewLeftRightInset: keyboardViewLeftRightInset,
+            keyboardViewBottomInset: keyboardViewBottomInset,
+            keyboardSuperviewWidth: keyboardSuperviewWidth,
+            keyRowGapY: rowGapY)
     }
 }
 
 class LayoutConstants {
     // Fixed:
     static let keyboardViewTopInset = CGFloat(8)
-    private static let contentEdgeInsetsPhone = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
-    private static let contentEdgeInsetsPadShortAndFull = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6 )
-    private static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    static let contentEdgeInsetsPadShortAndFull = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6 )
+    static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     
     // Provided:
     // Keyboard size
     let idiom: LayoutIdiom
     let isPortrait: Bool
-    let stockKeyboardSize: CGSize
+    // let stockKeyboardSize: CGSize
+    let keyboardHeight: CGFloat
     let keyboardViewInsets: UIEdgeInsets
     
     // General
@@ -134,28 +234,35 @@ class LayoutConstants {
     let autoCompleteBarHeight: CGFloat
     let keyViewInsets: UIEdgeInsets
     
-    // Idiom specific constants
-    let phoneLayoutConstants: PhoneLayoutConstants?
-    let padShortLayoutConstants: PadShortLayoutConstants?
-    let padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants?
-    let padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants?
+    // Downcast helpers
+    var phoneLayoutConstants: PhoneLayoutConstants? {
+        return self as? PhoneLayoutConstants
+    }
+    
+    var padShortLayoutConstants: PadShortLayoutConstants? {
+        return self as? PadShortLayoutConstants
+    }
+    
+    var padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants? {
+        return self as? PadFull4RowsLayoutConstants
+    }
+    
+    var padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants? {
+        return self as? PadFull5RowsLayoutConstants
+    }
 
     // Computed:
     let keyboardViewHeight: CGFloat
-    private let keyboardSuperviewSize: CGSize
     
     let buttonGapX: CGFloat
     let keyRowGapY: CGFloat
     
     let keypadButtonUnitSize: CGSize
     
-    var keyboardWidthOverride: CGFloat?
+    var keyboardWidth: CGFloat
     var keyboardSize: CGSize {
         get {
-            if let keyboardWidthOverride = keyboardWidthOverride {
-                return stockKeyboardSize.with(newWidth: keyboardWidthOverride)
-            }
-            return stockKeyboardSize
+            return CGSize(width: keyboardWidth, height: keyboardHeight)
         }
     }
     
@@ -185,7 +292,8 @@ class LayoutConstants {
                   padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants? = nil) {
         self.idiom = idiom
         self.isPortrait = isPortrait
-        self.stockKeyboardSize = keyboardSize
+        self.keyboardWidth = keyboardSize.width
+        self.keyboardHeight = keyboardSize.height
         self.buttonGapX = buttonGapX
         self.keyboardViewInsets = UIEdgeInsets(top: Self.keyboardViewTopInset, left: keyboardViewLeftRightInset, bottom: keyboardViewBottomInset, right: keyboardViewLeftRightInset)
         self.keyHeight = keyHeight
@@ -195,140 +303,31 @@ class LayoutConstants {
         self.keyboardViewHeight = keyboardViewHeight
         self.keyRowGapY = keyRowGapY ?? (keyboardViewHeight - 4 * keyHeight) / 3
         
-        keyboardSuperviewSize = CGSize(width: keyboardSuperviewWidth, height: keyboardSize.height)
-        
         let width = (keyboardSize.width - 2 * keyboardViewLeftRightInset - 4 * buttonGapX) / 5
         let height = ((keyboardSize.height - Self.keyboardViewTopInset - keyboardViewBottomInset - autoCompleteBarHeight) - 3 * buttonGapX) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
-        
-        self.phoneLayoutConstants = phoneLayoutConstants
-        self.padShortLayoutConstants = padShortLayoutConstants
-        self.padFull4RowsLayoutConstants = padFull4RowsLayoutConstants
-        self.padFull5RowsLayoutConstants = padFull5RowsLayoutConstants
     }
     
-    internal static func makeiPhoneLayout(isPortrait: Bool,
-                                          keyboardSize: CGSize,
-                                          buttonGapX: CGFloat,
-                                          systemKeyWidth: CGFloat,
-                                          shiftKeyWidth: CGFloat,
-                                          keyHeight: CGFloat,
-                                          autoCompleteBarHeight: CGFloat,
-                                          keyboardViewLeftRightInset: CGFloat,
-                                          keyboardSuperviewWidth: CGFloat) -> LayoutConstants {
-        return LayoutConstants(
-            idiom: .phone,
-            isPortrait: isPortrait,
-            keyboardSize: keyboardSize,
-            buttonGapX: buttonGapX,
-            keyHeight: keyHeight,
-            autoCompleteBarHeight: autoCompleteBarHeight,
-            keyViewInsets: Self.contentEdgeInsetsPhone,
-            keyboardViewLeftRightInset: keyboardViewLeftRightInset,
-            keyboardViewBottomInset: 4,
-            keyboardSuperviewWidth: keyboardSuperviewWidth,
-            phoneLayoutConstants: PhoneLayoutConstants(systemKeyWidth: systemKeyWidth, shiftKeyWidth: shiftKeyWidth))
-    }
-    
-    internal static func makeiPadShortLayout(isPortrait: Bool,
-                                             keyboardWidth: CGFloat,
-                                             buttonGapX: CGFloat,
-                                             rowGapY: CGFloat,
-                                             returnKeyWidth: CGFloat,
-                                             rightShiftKeyWidth: CGFloat,
-                                             keyHeight: CGFloat,
-                                             autoCompleteBarHeight: CGFloat,
-                                             keyboardViewLeftRightInset: CGFloat,
-                                             keyboardViewBottomInset: CGFloat,
-                                             keyboardSuperviewWidth: CGFloat) -> LayoutConstants {
-        return LayoutConstants(
-            idiom: .pad(.padShort),
-            isPortrait: isPortrait,
-            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
-            buttonGapX: buttonGapX,
-            keyHeight: keyHeight,
-            autoCompleteBarHeight: autoCompleteBarHeight,
-            keyViewInsets: Self.contentEdgeInsetsPadShortAndFull,
-            keyboardViewLeftRightInset: keyboardViewLeftRightInset,
-            keyboardViewBottomInset: keyboardViewBottomInset,
-            keyboardSuperviewWidth: keyboardSuperviewWidth,
-            padShortLayoutConstants: PadShortLayoutConstants(rightShiftKeyWidth: rightShiftKeyWidth, returnKeyWidth: returnKeyWidth))
-    }
-    
-    internal static func makeiPadFull4RowsLayout(isPortrait: Bool,
-                                            keyboardWidth: CGFloat,
-                                            keyboardViewLeftRightInset: CGFloat,
-                                            keyboardViewBottomInset: CGFloat,
-                                            keyboardSuperviewWidth: CGFloat,
-                                            buttonGapX: CGFloat,
-                                            rowGapY: CGFloat,
-                                            autoCompleteBarHeight: CGFloat,
-                                            keyHeight: CGFloat,
-                                            tabDeleteKeyWidth: CGFloat,
-                                            capLockKeyWidth: CGFloat,
-                                            leftShiftKeyWidth: CGFloat,
-                                            smallSystemKeyWidth: CGFloat,
-                                            returnKeyWidth: CGFloat,
-                                            rightShiftKeyWidth: CGFloat,
-                                            largeSystemKeyWidth: CGFloat) -> LayoutConstants {
-        return LayoutConstants(
-            idiom: .pad(.padFull4Rows),
-            isPortrait: isPortrait,
-            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + rowGapY * 3 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
-            buttonGapX: buttonGapX,
-            keyHeight: keyHeight,
-            autoCompleteBarHeight: autoCompleteBarHeight,
-            keyViewInsets: Self.contentEdgeInsetsPadShortAndFull,
-            keyboardViewLeftRightInset: keyboardViewLeftRightInset,
-            keyboardViewBottomInset: keyboardViewBottomInset,
-            keyboardSuperviewWidth: keyboardSuperviewWidth,
-            padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants(
-                tabDeleteKeyWidth: tabDeleteKeyWidth,
-                capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, smallSystemKeyWidth: smallSystemKeyWidth,
-                returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, largeSystemKeyWidth: largeSystemKeyWidth))
-    }
-    
-    internal static func makeiPadFull5RowsLayout(isPortrait: Bool,
-                                                 keyboardWidth: CGFloat,
-                                                 keyboardViewLeftRightInset: CGFloat,
-                                                 keyboardViewBottomInset: CGFloat,
-                                                 keyboardSuperviewWidth: CGFloat,
-                                                 buttonGapX: CGFloat,
-                                                 rowGapY: CGFloat,
-                                                 autoCompleteBarHeight: CGFloat,
-                                                 keyHeight: CGFloat,
-                                                 topRowKeyHeight: CGFloat,
-                                                 tabKeyWidth: CGFloat,
-                                                 capLockKeyWidth: CGFloat,
-                                                 leftShiftKeyWidth: CGFloat,
-                                                 smallSystemKeyWidth: CGFloat,
-                                                 deleteKeyWidth: CGFloat,
-                                                 returnKeyWidth: CGFloat,
-                                                 rightShiftKeyWidth: CGFloat,
-                                                 largeSystemKeyWidth: CGFloat) -> LayoutConstants {
-        return LayoutConstants(
-            idiom: .pad(.padFull5Rows),
-            isPortrait: isPortrait,
-            keyboardSize: CGSize(width: keyboardWidth, height: keyHeight * 4 + topRowKeyHeight + rowGapY * 4 + autoCompleteBarHeight + Self.keyboardViewTopInset + keyboardViewBottomInset),
-            buttonGapX: buttonGapX,
-            keyHeight: keyHeight,
-            autoCompleteBarHeight: autoCompleteBarHeight,
-            keyViewInsets: Self.contentEdgeInsetsPad5Rows,
-            keyboardViewLeftRightInset: keyboardViewLeftRightInset,
-            keyboardViewBottomInset: keyboardViewBottomInset,
-            keyboardSuperviewWidth: keyboardSuperviewWidth,
-            keyRowGapY: rowGapY,
-            padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants(
-                topRowKeyHeight: topRowKeyHeight,
-                tabKeyWidth: tabKeyWidth, capLockKeyWidth: capLockKeyWidth, leftShiftKeyWidth: leftShiftKeyWidth, smallSystemKeyWidth: smallSystemKeyWidth,
-                deleteKeyWidth: deleteKeyWidth, returnKeyWidth: returnKeyWidth, rightShiftKeyWidth: rightShiftKeyWidth, largeSystemKeyWidth: largeSystemKeyWidth))
+    internal init(copyOf: LayoutConstants) {
+        self.idiom = copyOf.idiom
+        self.isPortrait = copyOf.isPortrait
+        self.keyboardWidth = copyOf.keyboardWidth
+        self.keyboardHeight = copyOf.keyboardHeight
+        self.keyboardViewInsets = copyOf.keyboardViewInsets
+        self.keyHeight = copyOf.keyHeight
+        self.autoCompleteBarHeight = copyOf.autoCompleteBarHeight
+        self.keyViewInsets = copyOf.keyViewInsets
+        self.keyboardViewHeight = copyOf.keyboardViewHeight
+        self.buttonGapX = copyOf.buttonGapX
+        self.keyRowGapY = copyOf.keyRowGapY
+        self.keypadButtonUnitSize = copyOf.keypadButtonUnitSize
     }
 }
 
 let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     // iPhone 12 Pro Max
     // Portrait:
-    IntDuplet(428, 926): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(428, 926): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 428, height: 175+49+45),
         buttonGapX: 6,
@@ -339,7 +338,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 428),
     // Landscape:
-    IntDuplet(926, 428): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(926, 428): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 692, height: 160+38),
         buttonGapX: 5,
@@ -352,7 +351,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPhone 12, 12 Pro
     // Portrait:
-    IntDuplet(390, 844): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(390, 844): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 390, height: 216+45),
         buttonGapX: 6,
@@ -363,7 +362,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 390),
     // Landscape:
-    IntDuplet(844, 390): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(844, 390): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 694, height: 160+38),
         buttonGapX: 5,
@@ -376,7 +375,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPhone 12 mini, 11 Pro, X, Xs
     // Portrait:
-    IntDuplet(375, 812): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(375, 812): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 375, height: 216+45),
         buttonGapX: 6,
@@ -387,7 +386,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 375),
     // Landscape:
-    IntDuplet(812, 375): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(812, 375): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 662, height: 150+38),
         buttonGapX: 5,
@@ -400,7 +399,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPhone 11 Pro Max, Xs Max, 11, Xr
     // Portrait:
-    IntDuplet(414, 896): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(414, 896): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 414, height: 226+45),
         buttonGapX: 6,
@@ -411,7 +410,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 4,
         keyboardSuperviewWidth: 414),
     // Landscape:
-    IntDuplet(896, 414): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(896, 414): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 662, height: 150+38),
         buttonGapX: 5,
@@ -424,7 +423,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPhone 8+, 7+, 6s+, 6+
     // Portrait:
-    IntDuplet(414, 736): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(414, 736): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 414, height: 226+45),
         buttonGapX: 6,
@@ -435,7 +434,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 4,
         keyboardSuperviewWidth: 414),
     // Landscape:
-    IntDuplet(736, 414): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(736, 414): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 588, height: 162+38),
         buttonGapX: 6,
@@ -448,7 +447,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPhone SE (2nd gen), 8, 7, 6s, 6
     // Portrait:
-    IntDuplet(375, 667): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(375, 667): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 375, height: 216+44),
         buttonGapX: 6,
@@ -459,7 +458,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 375),
     // Landscape:
-    IntDuplet(667, 375): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(667, 375): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 526, height: 162+38),
         buttonGapX: 6,
@@ -472,7 +471,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPhone SE (1st gen), 5c, 5s, 5
     // Portrait:
-    IntDuplet(320, 568): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(320, 568): PhoneLayoutConstants(
         isPortrait: true,
         keyboardSize: CGSize(width: 320, height: 216+38),
         buttonGapX: 6,
@@ -483,7 +482,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 320),
     // Landscape:
-    IntDuplet(568, 320): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(568, 320): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 568, height: 162+38),
         buttonGapX: 5,
@@ -496,7 +495,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 1024x1366 iPad Pro 12.9"
     // Portrait:
-    IntDuplet(1024, 1366): LayoutConstants.makeiPadFull5RowsLayout(
+    IntDuplet(1024, 1366): PadFull5RowsLayoutConstants(
         isPortrait: true,
         keyboardWidth: 1024,
         keyboardViewLeftRightInset: 4,
@@ -516,7 +515,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 155,
         largeSystemKeyWidth: 143),
     // Landscape:
-    IntDuplet(1366, 1024): LayoutConstants.makeiPadFull5RowsLayout(
+    IntDuplet(1366, 1024): PadFull5RowsLayoutConstants(
         isPortrait: false,
         keyboardWidth: 1366,
         keyboardViewLeftRightInset: 4.5,
@@ -538,7 +537,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 834×1194 iPad Pro 11"
     // Portrait:
-    IntDuplet(834, 1194): LayoutConstants.makeiPadFull4RowsLayout(
+    IntDuplet(834, 1194): PadFull4RowsLayoutConstants(
         isPortrait: true,
         keyboardWidth: 834,
         keyboardViewLeftRightInset: 10,
@@ -556,7 +555,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 89.5,
         largeSystemKeyWidth: 94),
     // Landscape:
-    IntDuplet(1194, 834): LayoutConstants.makeiPadFull4RowsLayout(
+    IntDuplet(1194, 834): PadFull4RowsLayoutConstants(
         isPortrait: false,
         keyboardWidth: 1194,
         keyboardViewLeftRightInset: 14,
@@ -576,7 +575,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 820×1180 iPad Air (gen 4) 10.9"
     // Portrait:
-    IntDuplet(820, 1180): LayoutConstants.makeiPadFull4RowsLayout(
+    IntDuplet(820, 1180): PadFull4RowsLayoutConstants(
         isPortrait: true,
         keyboardWidth: 820,
         keyboardViewLeftRightInset: 10,
@@ -594,7 +593,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 86,
         largeSystemKeyWidth: 94),
     // Landscape:
-    IntDuplet(1180, 820): LayoutConstants.makeiPadFull4RowsLayout(
+    IntDuplet(1180, 820): PadFull4RowsLayoutConstants(
         isPortrait: false,
         keyboardWidth: 1180,
         keyboardViewLeftRightInset: 14,
@@ -614,7 +613,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 810×1080 iPad (gen 8/7) 10.2"
     // Portrait:
-    IntDuplet(810, 1080): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(810, 1080): PadShortLayoutConstants(
         isPortrait: true,
         keyboardWidth: 810,
         buttonGapX: 12,
@@ -627,7 +626,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewBottomInset: 8,
         keyboardSuperviewWidth: 810),
     // Landscape:
-    IntDuplet(1080, 810): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(1080, 810): PadShortLayoutConstants(
         isPortrait: false,
         keyboardWidth: 1080,
         buttonGapX: 14.5,
@@ -642,7 +641,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 834×1112 iPad Air (gen 3) iPad Pro 10.5"
     // Portrait:
-    IntDuplet(834, 1112): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(834, 1112): PadShortLayoutConstants(
         isPortrait: true,
         keyboardWidth: 834,
         buttonGapX: 12,
@@ -655,7 +654,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewBottomInset: 8,
         keyboardSuperviewWidth: 834),
     // Landscape:
-    IntDuplet(1112, 834): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(1112, 834): PadShortLayoutConstants(
         isPortrait: false,
         keyboardWidth: 1112,
         buttonGapX: 14.5,
@@ -670,7 +669,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
     
     // iPad 768x1024 iPad (gen 6/5/4/3/2/1) iPad Pro 9.7" iPad Air (gen 2/1) iPad mini (gen 5/4/3/2/1) 7.9"
     // Portrait:
-    IntDuplet(768, 1024): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(768, 1024): PadShortLayoutConstants(
         isPortrait: true,
         keyboardWidth: 768,
         buttonGapX: 12,
@@ -683,7 +682,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewBottomInset: 8,
         keyboardSuperviewWidth: 768),
     // Landscape:
-    IntDuplet(1024, 768): LayoutConstants.makeiPadShortLayout(
+    IntDuplet(1024, 768): PadShortLayoutConstants(
         isPortrait: false,
         keyboardWidth: 1024,
         buttonGapX: 12,
@@ -697,7 +696,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardSuperviewWidth: 1024),
     
     // iPad floating mode
-    IntDuplet(320, 254): LayoutConstants.makeiPhoneLayout(
+    IntDuplet(320, 254): PhoneLayoutConstants(
         isPortrait: false,
         keyboardSize: CGSize(width: 320, height: 254),
         buttonGapX: 6,
@@ -718,7 +717,7 @@ extension LayoutConstants {
         // TODO instead of returning an exact match, return the nearest (floorKey?) match.
         guard let ret = layoutConstantsList[IntDuplet(Int(screenSize.width), Int(screenSize.height))] else {
             DDLogInfo("Cannot find constants for (\(screenSize.width), \(screenSize.height)).")
-            return layoutConstantsList.first!.value
+            return LayoutConstants(copyOf: layoutConstantsList.first!.value)
         }
         
         return ret

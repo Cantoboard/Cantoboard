@@ -70,6 +70,12 @@ open class KeyboardViewController: UIInputViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // To make sure keyboard layout is updated in the test app. This isn't for the keyboard extension.
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        view.setNeedsLayout()
+    }
+    
     private func refreshLayoutConstants() {
         guard let windowSize = view.superview?.window?.bounds else { return }
         let isWindowSmall = windowSize.width <= 320
@@ -119,7 +125,7 @@ open class KeyboardViewController: UIInputViewController {
         Settings.hasFullAccess = hasFullAccess
         
         let layoutConstants = self.layoutConstants.ref
-        let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardSize.height)
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardHeight)
         heightConstraint.priority = .required
         heightConstraint.isActive = true
         self.heightConstraint = heightConstraint
@@ -189,8 +195,8 @@ open class KeyboardViewController: UIInputViewController {
         
         let layoutConstants = self.layoutConstants.ref
         let hostWindowWidth = hostWindow.bounds.width
-        layoutConstants.keyboardWidthOverride = hostWindowWidth
-        heightConstraint?.constant = layoutConstants.keyboardSize.height
+        layoutConstants.keyboardWidth = hostWindowWidth
+        heightConstraint?.constant = layoutConstants.keyboardHeight
         widthConstraint?.constant = hostWindowWidth
         
         super.viewWillLayoutSubviews()

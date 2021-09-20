@@ -135,7 +135,7 @@ class KeyPopupView: UIView {
         
         let keyWidth = parentKeyView.bounds.width
         let keyHeight = parentKeyView.bounds.height
-        let keyboardWidth = layoutConstants.keyboardSize.width
+        let keyboardWidth = layoutConstants.keyboardWidth
         
         var buttonSize: CGSize
         if actions.count < 10 {
