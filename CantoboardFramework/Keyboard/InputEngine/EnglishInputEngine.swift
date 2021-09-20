@@ -90,12 +90,15 @@ class EnglishInputEngine: InputEngine {
     }
     static var userDictionary = UserDictionary()
     
-    private static let highFreqSuffixes = ["'m", "'t", "let's", "he's", "'ve", "'re", "what's", "this's", "that's", "which's", "where's", "these're", "there're", "which're", "where're"]
+    private static let highFreqSuffixes = ["’m", "’t", "’d", "’s", "’ve", "’re", "’ll"]
+    private static let commonContractionPrefixes = ["i", "we", "you", "he", "she", "it", "they", "can", "would", "could"]
     private static let textChecker = UITextChecker()
     private(set) static var englishDictionary = DefaultDictionary(locale: language)
     
     private var inputTextBuffer = InputTextBuffer()
-    var textBeforeInput: String?
+    var textBeforeInput, textAfterInput: String?
+    // HACK FIXME Remove this. We should not override the text for auto correction. But to show and preselect the auto correct candidate.
+    var disableTextOverride = false
     
     private(set) var candidates: [String] = []
     private(set) var isWord: Bool = false
@@ -152,19 +155,15 @@ class EnglishInputEngine: InputEngine {
     
     private func updateCandidates() {
         var text = inputTextBuffer.text, textLowercased = text.lowercased()
-        guard !text.isEmpty && text.count < 25 && textLowercased != "m" else {
+        guard !text.isEmpty && text.count < 25 else {
             isWord = false
             candidates = [text]
-            if text == "m" {
-                candidates.append("M")
-            }
             prefectCandidatesStartIndex = 0
             worstCandidatesStartIndex = 0
             return
         }
         
-        let documentContextBeforeInput = textBeforeInput
-        let combined = (documentContextBeforeInput ?? "") + text
+        let combined = (textBeforeInput ?? "") + text
         let wordRange = combined.index(combined.endIndex, offsetBy: -text.count)..<combined.endIndex
         let nsWordRange = NSRange(wordRange, in: combined)
         
@@ -183,33 +182,51 @@ class EnglishInputEngine: InputEngine {
         
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
-        if isWord {
-            if text == "i" {
-                text = "I"
-            } else if let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+        var performCaseCorrection = false
+        
+        if !disableTextOverride && text == "i" && textBeforeInput?.hasSuffix(" ") ?? true && textAfterInput?.hasPrefix(" ") ?? true {
+            inputTextBuffer.textOverride = "I"
+            candidates.append("i")
+            prefectCandidatesStartIndex += 1
+            performCaseCorrection = true
+        }
+        
+        if !disableTextOverride,
+           let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+            if isInAppleDictionary {
                 text = firstCaseCorrectedCandidate
+            } else {
+                inputTextBuffer.textOverride = firstCaseCorrectedCandidate
             }
+            performCaseCorrection = true
+        }
+        
+        let isContraction = Self.commonContractionPrefixes.contains(where: { textLowercased.starts(with: $0) && textLowercased.count != $0.count })
+        if performCaseCorrection && !isContraction {
             candidates.append(text)
             prefectCandidatesStartIndex += 1
             worstCandidatesStartIndex = candidates.count
+            isWord = true
             return
         }
         
         // If the user is typing a word after an English word, run autocomplete.
         let autoCompleteCandidates: [String]
-        if documentContextBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
+        if textBeforeInput?.suffix(2).first?.isEnglishLetter ?? false {
             autoCompleteCandidates = textChecker.completions(forPartialWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         } else {
             autoCompleteCandidates = []
         }
         
-        if text.allSatisfy({ $0.isUppercase }) {
+        let shortWordLengthThreshold = 5
+        if text.count >= shortWordLengthThreshold && text.allSatisfy({ $0.isUppercase }) {
             candidateSets.insert(text)
             candidates.append(text)
             prefectCandidatesStartIndex += 1
         }
         
         englishDictionaryWordsSet.forEach({ word in
+            if word.count < shortWordLengthThreshold { return }
             var word = word
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized

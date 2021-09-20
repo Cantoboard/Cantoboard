@@ -69,6 +69,8 @@ class BilingualInputEngine: InputEngine {
                 updateRimeEngineState = self.rimeInputEngine.processChar(char.lowercasedChar)
             }
             englishInputEngine.textBeforeInput = inputController?.textDocumentProxy?.documentContextBeforeInput
+            englishInputEngine.textAfterInput = inputController?.textDocumentProxy?.documentContextAfterInput
+            englishInputEngine.disableTextOverride = SessionState.main.lastInputMode == .chinese
             queue.async(group: group) {
                 updateEnglishEngineState = self.englishInputEngine.processChar(char)
             }
@@ -127,7 +129,7 @@ class BilingualInputEngine: InputEngine {
     private func updateComposition() {
         if !isComposing {
             composition = nil
-        } else if !isForcingRimeMode && englishInputEngine.isWord && rimeSchema.supportMixedMode {
+        } else if !isForcingRimeMode && englishInputEngine.isWord && rimeSchema.supportMixedMode && Settings.cached.isMixedModeEnabled {
             composition = englishComposition
         } else {
             guard let rimeComposition = rimeComposition else {

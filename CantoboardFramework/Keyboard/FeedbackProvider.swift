@@ -17,12 +17,12 @@ class FeedbackProvider {
     static func play(keyboardAction: KeyboardAction) {
         guard Settings.cached.isAudioFeedbackEnabled else { return }
         switch keyboardAction {
+        case .keyboardType, .space, .newLine, .shift, .character("\t"), .toggleInputMode:
+            AudioServicesPlaySystemSound(Self.modifierPress)
         case .none, .character(_), .rime(_), .emoji(_):
             AudioServicesPlaySystemSound(Self.clickPress)
         case .backspace, .deleteWord:
             AudioServicesPlaySystemSound(Self.deletePress)
-        case .keyboardType, .space, .newLine, .shift:
-            AudioServicesPlaySystemSound(Self.modifierPress)
         default: ()
         }
     }

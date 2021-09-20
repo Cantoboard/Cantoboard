@@ -11,20 +11,30 @@ import UIKit
 import CocoaLumberjackSwift
 import ZIPFoundation
 
-enum ContextualType: Equatable {
-    case english, chinese, rime, url(isRimeComposing: Bool)
-}
-
 enum KeyboardEnableState: Equatable {
     case enabled, disabled, loading
+}
+
+enum ContextualType: Equatable {
+    case english, chinese, rime, url
+    
+    var isEnglish: Bool {
+        switch self {
+        case .english, .rime, .url: return true
+        default: return false
+        }
+    }
 }
 
 struct KeyboardState: Equatable {
     var keyboardType: KeyboardType {
         didSet {
-            symbolShapeOverride = nil
+            if case .alphabetic = keyboardType {
+                symbolShapeOverride = nil
+            }
         }
     }
+    var lastKeyboardTypeChangeFromAutoCap: Bool
     var keyboardContextualType: ContextualType
     var symbolShapeOverride: SymbolShape?
     
@@ -33,6 +43,8 @@ struct KeyboardState: Equatable {
     var returnKeyType: ReturnKeyType
     var needsInputModeSwitchKey: Bool
     var spaceKeyMode: SpaceKeyMode
+    
+    var keyboardIdiom: LayoutIdiom
     
     var mainSchema: RimeSchema, reverseLookupSchema: RimeSchema?
     var inputMode: InputMode {
@@ -49,7 +61,9 @@ struct KeyboardState: Equatable {
     
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
+        lastKeyboardTypeChangeFromAutoCap = false
         keyboardContextualType = .english
+        keyboardIdiom = LayoutConstants.forMainScreen.idiom
         
         enableState = .enabled
         
@@ -64,7 +78,7 @@ struct KeyboardState: Equatable {
 
 class InputController: NSObject {
     private weak var keyboardViewController: KeyboardViewController?
-    private weak var keyboardView: InputView?
+    private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
     
     private(set) var state: KeyboardState = KeyboardState()
@@ -111,12 +125,13 @@ class InputController: NSObject {
     }
     
     private func initKeyboardView() {
-        guard let keyboardViewPlaceholder = keyboardViewController?.keyboardViewPlaceholder else { return }
-        let keyboardView: InputView
+        guard let keyboardViewController = keyboardViewController,
+              let keyboardViewPlaceholder = keyboardViewController.keyboardViewPlaceholder else { return }
+        let keyboardView: BaseKeyboardView
         if shouldUseKeypad {
-            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer)
+            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: keyboardViewController.layoutConstants)
         } else {
-            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
+            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: keyboardViewController.layoutConstants)
         }
         keyboardView.delegate = self
         keyboardView.translatesAutoresizingMaskIntoConstraints = false
@@ -180,17 +195,17 @@ class InputController: NSObject {
         }
     }
     
-    private func handleSpace() {
+    private func handleSpace(spaceKeyMode: SpaceKeyMode) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        if state.inputMode != .mixed && inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0 {
-            if Settings.cached.spaceAction == .insertText {
-                candidateSelected(choice: [0, 0], enableSmartSpace: true)
-            } else {
-                keyboardView?.candidatePanescrollToNextPageInRowMode()
-                needReloadCandidates = false
-            }
-        } else {
+        let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+        switch spaceKeyMode {
+        case .nextPage where hasCandidate:
+            keyboardView?.scrollCandidatePaneToNextPageInRowMode()
+            needReloadCandidates = false
+        case .select where hasCandidate:
+            candidateSelected(choice: [0, 0], enableSmartSpace: true)
+        default:
             if !insertComposingText() {
                 if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
@@ -213,6 +228,12 @@ class InputController: NSObject {
             state.enableState = .enabled
             keyboardView?.state = state
         }
+    }
+    
+    func onIdiomChanged() {
+        guard let newIdiom = keyboardViewController?.layoutConstants.ref.idiom else { return }
+        state.keyboardIdiom = newIdiom
+        keyboardView?.state = state
     }
     
     func handleKey(_ action: KeyboardAction) {
@@ -254,12 +275,13 @@ class InputController: NSObject {
             }
             if !isHoldingShift && state.keyboardType == .some(.alphabetic(.uppercased)) {
                 state.keyboardType = .alphabetic(.lowercased)
+                state.lastKeyboardTypeChangeFromAutoCap = false
             }
         case .rime(let rc):
             guard isComposing || rc == .sym else { return }
             _ = inputEngine.processRimeChar(rc.rawValue)
-        case .space:
-            handleSpace()
+        case .space(let spaceKeyMode):
+            handleSpace(spaceKeyMode: spaceKeyMode)
         case .newLine:
             if !insertComposingText(shouldDisableSmartSpace: true) {
                 insertText("\n")
@@ -297,9 +319,11 @@ class InputController: NSObject {
         case .shiftDown:
             isHoldingShift = true
             state.keyboardType = .alphabetic(.uppercased)
+            state.lastKeyboardTypeChangeFromAutoCap = false
             return
         case .shiftUp:
             state.keyboardType = .alphabetic(.lowercased)
+            state.lastKeyboardTypeChangeFromAutoCap = false
             isHoldingShift = false
             return
         case .shiftRelax:
@@ -307,6 +331,7 @@ class InputController: NSObject {
             return
         case .keyboardType(let type):
             state.keyboardType = type
+            state.lastKeyboardTypeChangeFromAutoCap = false
             self.checkAutoCap()
             return
         case .setCharForm(let cs):
@@ -321,11 +346,7 @@ class InputController: NSObject {
                 return
             }
             
-            switch state.inputMode {
-            case .mixed: state.inputMode = .english
-            case .chinese: state.inputMode = .english
-            case .english: state.inputMode = Settings.cached.isMixedModeEnabled ? .mixed : .chinese
-            }
+            state.inputMode = state.inputMode.afterToggle
             enforceInputMode()
         case .toggleSymbolShape:
             switch state.symbolShape {
@@ -367,6 +388,8 @@ class InputController: NSObject {
         case .enableKeyboard(let e):
             state.enableState = e ? .enabled : .disabled
             keyboardView?.state = state
+        case .dismissKeyboard:
+            keyboardViewController?.dismissKeyboard()
         case .exit: exit(0)
         default: ()
         }
@@ -391,8 +414,10 @@ class InputController: NSObject {
     private func shouldApplyAutoCap() -> Bool {
         guard let textDocumentProxy = textDocumentProxy else { return false }
         //print("autocapitalizationType", textDocumentProxy.autocapitalizationType?.rawValue)
-        if textDocumentProxy.autocapitalizationType == .some(.none) { return false }
-        if inputEngine.composition?.text != nil { return false }
+        if textDocumentProxy.autocapitalizationType == .some(.none) ||
+            inputEngine.composition?.text != nil ||
+            isHoldingShift
+            { return false }
         
         // There are three cases we should apply auto cap:
         // - First char in the doc. nil
@@ -412,6 +437,7 @@ class InputController: NSObject {
                 (state.keyboardType == .alphabetic(.lowercased) || state.keyboardType == .alphabetic(.uppercased))
             else { return }
         state.keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
+        state.lastKeyboardTypeChangeFromAutoCap = true
     }
     
     private func changeSchema() {
@@ -469,16 +495,17 @@ class InputController: NSObject {
             hasInsertedAutoSpace = false
         }
         
-        if hasMarkedText {
-            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.utf16.count, length: 0))
-            textDocumentProxy.unmarkText()
-            hasMarkedText = false
-        } else {
-            textDocumentProxy.insertText(textToBeInserted)
-        }
+        // After countless attempt, this provides best compatibility.
+        // Test cases:
+        // Normal text fields
+        // Safari/Chrome searching on www.youtube.com
+        // Chrome address bar
+        // Google Calender create event title text field
+        // Slack (not supported due to Slack's bug)
+        hasMarkedText = false
+        textDocumentProxy.insertText(textToBeInserted)
         
         needClearInput = true
-        
         // DDLogInfo("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
     }
     
@@ -489,19 +516,32 @@ class InputController: NSObject {
         
         state.returnKeyType = hasMarkedText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
-        if !inputEngine.isComposing {
+        if !inputEngine.isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
         } else {
-            state.spaceKeyMode = Settings.cached.spaceAction == .insertText ? .select : .nextPage
+            let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+            switch Settings.cached.spaceAction {
+            case .nextPage where hasCandidate: state.spaceKeyMode = .nextPage
+            case .insertCandidate where hasCandidate: state.spaceKeyMode = .select
+            default: state.spaceKeyMode = .space
+            }
         }
         keyboardView?.state = state
     }
     
     private func updateMarkedText() {
         switch state.inputMode {
-        case .chinese: setMarkedText(inputEngine.rimeComposition)
+        case .chinese: setMarkedText(inputEngine.composition)
         case .english: setMarkedText(inputEngine.englishComposition)
-        case .mixed: setMarkedText(inputEngine.composition)
+        case .mixed:
+            if state.activeSchema.isCangjieFamily {
+                // Show both Cangjie radicals and english composition in marked text.
+                let composition = inputEngine.rimeComposition
+                composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
+                setMarkedText(composition)
+            } else {
+                setMarkedText(inputEngine.composition)
+            }
         }
     }
     
@@ -546,7 +586,7 @@ class InputController: NSObject {
         if let englishText = inputEngine.englishComposition?.text,
            var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
-            if state.inputMode == .english {
+            if state.inputMode != .chinese {
                 composingText = englishText
             } else if inputEngine.rimeSchema == .jyutping && Settings.cached.toneInputMode == .vxq {
                 var englishTailLength = 0
@@ -584,7 +624,7 @@ class InputController: NSObject {
         if hasInsertedAutoSpace, case .selectCandidate = lastKey {
             // Mimic iOS stock behaviour. Swallow the space tap.
             return true
-        } else if hasInsertedAutoSpace || lastKey == .space,
+        } else if hasInsertedAutoSpace || lastKey?.isSpace ?? false,
            let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
            Settings.cached.isSmartFullStopEnabled &&
            (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {
@@ -658,7 +698,7 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         if textDocumentProxy.keyboardType == .some(.URL) || textDocumentProxy.keyboardType == .some(.webSearch) {
-            state.keyboardContextualType = .url(isRimeComposing: inputEngine.composition?.text != nil)
+            state.keyboardContextualType = .url
         } else if inputEngine.composition?.text != nil {
             state.keyboardContextualType = .rime
         } else {
@@ -721,7 +761,6 @@ class InputController: NSObject {
     }
 }
 
-// TODO remove this
 extension InputController: KeyboardViewDelegate {
     func handleInputModeList(from: UIView, with: UIEvent) {
         keyboardViewController?.handleInputModeList(from: from, with: with)

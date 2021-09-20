@@ -9,8 +9,9 @@ import Foundation
 import UIKit
 
 class KeyPopupView: UIView {
-    static let Inset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-    static let LinkHeight = CGFloat(15)
+    private static let keyHintInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0.75)
+    private static let bodyInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    static let phoneLinkHeight: CGFloat = 15, padGapHeight: CGFloat = 5
     
     enum PopupDirection {
         case left
@@ -30,6 +31,7 @@ class KeyPopupView: UIView {
     private(set) var leftAnchorX: CGFloat = 0
     private var defaultKeyCapIndex = 0
     private var highlightedLabelIndex: Int?
+    private weak var layoutConstants: Reference<LayoutConstants>?
     
     var selectedAction: KeyboardAction {
         actions[safe: highlightedLabelIndex ?? 0] ?? .none
@@ -38,8 +40,11 @@ class KeyPopupView: UIView {
     // These clearance values are used to keep the popup view within keyboard view boundary.
     var heightClearance: CGFloat?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(layoutConstants: Reference<LayoutConstants>) {
+        self.layoutConstants = layoutConstants
+        
+        super.init(frame: .zero)
+        
         backgroundColor = ButtonColor.popupBackgroundColor // ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).
         layer.contentsFormat = .gray8Uint
 
@@ -57,6 +62,9 @@ class KeyPopupView: UIView {
         label.textAlignment = .center
         label.baselineAdjustment = .alignCenters
         label.lineBreakMode = .byClipping
+        label.adjustsFontSizeToFitWidth = true
+
+        label.font = .preferredFont(forTextStyle: .title2)
         return label
     }
     
@@ -79,7 +87,6 @@ class KeyPopupView: UIView {
             let keyCap = keyCaps[i]
             label.tag = i
             label.text = keyCap.buttonText
-            label.font = keyCap.popupFont
             label.baselineAdjustment = .alignCenters
             label.backgroundColor = .clear
             
@@ -90,6 +97,10 @@ class KeyPopupView: UIView {
                 label.layer.addSublayer(hintLayer)
             }
         }
+    }
+    
+    private var linkHeight: CGFloat {
+        layoutConstants?.ref.idiom.isPad ?? false ? Self.padGapHeight : Self.phoneLinkHeight
     }
     
     func setup(keyCaps: [KeyCap], defaultKeyCapIndex: Int, direction: PopupDirection = .middle) {
@@ -119,19 +130,26 @@ class KeyPopupView: UIView {
     }
     
     func layoutView() {
+        guard let layoutConstants = layoutConstants?.ref,
+              let parentKeyView = superview else { return }
+        
+        let keyWidth = parentKeyView.bounds.width
+        let keyHeight = parentKeyView.bounds.height
+        let keyboardWidth = layoutConstants.keyboardWidth
+        
         var buttonSize: CGSize
         if actions.count < 10 {
             buttonSize = CGSize(
-                width: KeyPopupView.Inset.wrap(width: LayoutConstants.forMainScreen.keyButtonWidth),
-                height: LayoutConstants.forMainScreen.keyHeight)
+                width: layoutConstants.idiom.isPad ? keyWidth : KeyPopupView.bodyInsets.wrap(width: keyWidth),
+                height: keyHeight)
         } else {
             buttonSize = CGSize(
-                width: LayoutConstants.forMainScreen.keyboardSize.width / CGFloat(actions.count),
-                height: LayoutConstants.forMainScreen.keyHeight)
+                width: layoutConstants.idiom.isPad ? keyWidth : keyboardWidth / CGFloat(actions.count),
+                height: keyHeight)
         }
         
-        var bodySize = KeyPopupView.Inset.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))
-        var contentSize = bodySize.extend(height: KeyPopupView.LinkHeight)
+        var bodySize = KeyPopupView.bodyInsets.wrap(size: buttonSize.multiplyWidth(byTimes: max(actions.count, 1)))
+        var contentSize = bodySize.extend(height: linkHeight)
         
         if let heightClearance = heightClearance, contentSize.height > heightClearance {
             let ratio = heightClearance / contentSize.height
@@ -147,11 +165,13 @@ class KeyPopupView: UIView {
     private func layoutLabels(buttonSize: CGSize) {
         for i in 0..<actions.count {
             let label = labels[i]
-            let x = KeyPopupView.Inset.left + buttonSize.width * CGFloat(i)
+            let x = KeyPopupView.bodyInsets.left + buttonSize.width * CGFloat(i)
             
-            label.frame = CGRect(origin: CGPoint(x: x, y: KeyPopupView.Inset.top), size: buttonSize)
+            label.frame = CGRect(origin: CGPoint(x: x, y: KeyPopupView.bodyInsets.top), size: buttonSize)
         }
-        hintLayers.forEach { $0.layout(insets: KeyHintLayer.buttonInsets) }
+        hintLayers.forEach {
+            layout(textLayer: $0, atTopRightCornerWithInsets: Self.keyHintInsets)
+        }
     }
     
     private func layoutPopupShape(buttonSize: CGSize, bodySize: CGSize, contentSize: CGSize) {
@@ -162,7 +182,7 @@ class KeyPopupView: UIView {
         let keyWidth = superview.bounds.width
         
         let fullSize = contentSize
-        let offsetX = (KeyPopupView.Inset.wrap(size: buttonSize).width - keyWidth) / 2
+        let offsetX = (KeyPopupView.bodyInsets.wrap(size: buttonSize).width - keyWidth) / 2
         
         let path = CGMutablePath()
         let bodyRect = CGRect(origin: CGPoint.zero, size: bodySize)
@@ -183,7 +203,7 @@ class KeyPopupView: UIView {
             let defaultKeyCapIndex = min(self.defaultKeyCapIndex, keyCaps.count - 1)
             guard defaultKeyCapIndex >= 0 else { return }
             let defaultKeyCapMinX = buttonSize.width * CGFloat(defaultKeyCapIndex)
-            let defaultKeyCapMaxX = defaultKeyCapMinX + KeyPopupView.Inset.wrap(width: buttonSize.width)
+            let defaultKeyCapMaxX = defaultKeyCapMinX + KeyPopupView.bodyInsets.wrap(width: buttonSize.width)
             neckLeft = CGPoint(x: defaultKeyCapMinX, y: bodySize.height - 5)
             neckRight = CGPoint(x: defaultKeyCapMaxX, y: bodySize.height - 5)
             anchorLeft = CGPoint(x: neckLeft.x + offsetX, y: fullSize.height)
@@ -194,13 +214,15 @@ class KeyPopupView: UIView {
         
         path.addRoundedRect(in: bodyRect, cornerWidth: 5, cornerHeight: 5)
         
-        path.move(to: anchorLeft)
-        let yVector = CGPoint(x: 0, y: KeyPopupView.LinkHeight / 2)
-        path.addCurve(to: neckLeft, control1: anchorLeft - yVector, control2: neckLeft + yVector)
-        path.addLine(to: neckRight)
-        path.addCurve(to: anchorRight, control1: neckRight + yVector, control2: anchorRight - yVector)
-        
-        path.closeSubpath()
+        if !(layoutConstants?.ref.idiom.isPad ?? true) {
+            path.move(to: anchorLeft)
+            let yVector = CGPoint(x: 0, y: linkHeight / 2)
+            path.addCurve(to: neckLeft, control1: anchorLeft - yVector, control2: neckLeft + yVector)
+            path.addLine(to: neckRight)
+            path.addCurve(to: anchorRight, control1: neckRight + yVector, control2: anchorRight - yVector)
+            
+            path.closeSubpath()
+        }
         
         shapeLayer.path = path
     }
