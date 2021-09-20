@@ -52,7 +52,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         var numFlexibleWidthKeys: Int = 0
         var keyWidths = Dictionary<KeyView, CGFloat>()
         
-        let inputKeyWidth = (availableWidth - layoutConstants.padFull5RowsLayoutConstants!.deleteKeyWidth - 13 * layoutConstants.buttonGapX) / CGFloat(13)
+        let inputKeyWidth = (availableWidth - layoutConstants.asPadFull5RowsLayoutConstants!.deleteKeyWidth - 13 * layoutConstants.buttonGapX) / CGFloat(13)
         let takenWidth = getFixedKeyWidth(keyRowView: keyRowView, keys: allKeys, inputKeyWidth: inputKeyWidth, layoutConstants: layoutConstants, numFlexibleWidthKeys: &numFlexibleWidthKeys, keyWidths: &keyWidths)
         
         let totalGapWidth = CGFloat(allKeys.count - 1) * layoutConstants.buttonGapX
@@ -79,7 +79,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     private static func getFixedKeyWidth(keyRowView: KeyRowView, keys: [KeyView], inputKeyWidth: CGFloat, layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
-        let padFull5RowsLayoutConstants = layoutConstants.padFull5RowsLayoutConstants!
+        let padFull5RowsLayoutConstants = layoutConstants.asPadFull5RowsLayoutConstants!
         
         let totalFixedKeyWidth = keys.enumerated().reduce(CGFloat(0)) {sum, indexAndKey in
             let index = indexAndKey.offset
@@ -148,7 +148,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat {
-        return atRow == 0 ? layoutConstants.padFull5RowsLayoutConstants!.topRowKeyHeight : layoutConstants.keyHeight
+        return atRow == 0 ? layoutConstants.asPadFull5RowsLayoutConstants!.topRowKeyHeight : layoutConstants.keyHeight
     }
     
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap? {

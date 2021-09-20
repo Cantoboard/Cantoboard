@@ -100,13 +100,13 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     private static func getKeyWidth(_ key: KeyView, _ layoutConstants: LayoutConstants) -> CGFloat {
         switch key.keyCap {
         case .shift, .toggleInputMode, .keyboardType(.symbolic), .backspace:
-            return layoutConstants.phoneLayoutConstants!.shiftKeyWidth
+            return layoutConstants.asPhoneLayoutConstants!.shiftKeyWidth
         case .returnKey:
-            return 1.5 * layoutConstants.phoneLayoutConstants!.systemKeyWidth
+            return 1.5 * layoutConstants.asPhoneLayoutConstants!.systemKeyWidth
         case .character, .cangjie, .rime, .currency:
-            return layoutConstants.phoneLayoutConstants!.letterKeyWidth
+            return layoutConstants.asPhoneLayoutConstants!.letterKeyWidth
         default:
-            return layoutConstants.phoneLayoutConstants!.systemKeyWidth
+            return layoutConstants.asPhoneLayoutConstants!.systemKeyWidth
         }
     }
     

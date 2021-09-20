@@ -86,7 +86,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     private static func getFixedKeyWidth(keyRowView: KeyRowView, keys: [KeyView], groupLayoutDirection: GroupLayoutDirection, layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
-        let padFull4RowsLayoutConstants = layoutConstants.padFull4RowsLayoutConstants!
+        let padFull4RowsLayoutConstants = layoutConstants.asPadFull4RowsLayoutConstants!
         
         let totalFixedKeyWidth = keys.enumerated().reduce(CGFloat(0)) {sum, indexAndKey in
             let index = indexAndKey.offset

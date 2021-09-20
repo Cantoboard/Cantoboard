@@ -51,7 +51,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         let bounds = keyRowView.bounds
         
         let availableWidth = bounds.width - directionalLayoutMargins.leading - directionalLayoutMargins.trailing
-        let rightShiftKeyWidth = layoutConstants.padShortLayoutConstants!.rightShiftKeyWidth
+        let rightShiftKeyWidth = layoutConstants.asPadShortLayoutConstants!.rightShiftKeyWidth
         let row3LeftGroupWidth = availableWidth - rightShiftKeyWidth - layoutConstants.buttonGapX
         let keyWidthRow3n4 = (row3LeftGroupWidth - 9 * layoutConstants.buttonGapX) / 10
         
@@ -67,7 +67,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
             allFrames = layoutKeyViews(keys: allKeys, keyWidth: keyWidth, layoutConstants: layoutConstants, marginTop: directionalLayoutMargins.top, x: &x)
         case 1:
             let leftInset: CGFloat = keyWidthRow3n4 / 2
-            let lastKeyWidth = layoutConstants.padShortLayoutConstants!.returnKeyWidth
+            let lastKeyWidth = layoutConstants.asPadShortLayoutConstants!.returnKeyWidth
             let keyWidth = (availableWidth - leftInset - lastKeyWidth - 9 * layoutConstants.buttonGapX) / 9
             var x = directionalLayoutMargins.leading + leftInset
             

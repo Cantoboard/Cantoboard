@@ -300,19 +300,19 @@ class LayoutConstants: Copyable {
     let keyViewInsets: UIEdgeInsets
     
     // Downcast helpers
-    var phoneLayoutConstants: PhoneLayoutConstants? {
+    var asPhoneLayoutConstants: PhoneLayoutConstants? {
         return self as? PhoneLayoutConstants
     }
     
-    var padShortLayoutConstants: PadShortLayoutConstants? {
+    var asPadShortLayoutConstants: PadShortLayoutConstants? {
         return self as? PadShortLayoutConstants
     }
     
-    var padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants? {
+    var asPadFull4RowsLayoutConstants: PadFull4RowsLayoutConstants? {
         return self as? PadFull4RowsLayoutConstants
     }
     
-    var padFull5RowsLayoutConstants: PadFull5RowsLayoutConstants? {
+    var asPadFull5RowsLayoutConstants: PadFull5RowsLayoutConstants? {
         return self as? PadFull5RowsLayoutConstants
     }
 
