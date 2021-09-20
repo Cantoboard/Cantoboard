@@ -565,6 +565,31 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 3,
         keyboardSuperviewWidth: 568),
     
+    // iPhone zoomed view
+    // Portrait:
+    IntDuplet(320, 693): PhoneLayoutConstants(
+        isPortrait: true,
+        keyboardSize: CGSize(width: 320, height: 206+38),
+        buttonGapX: 6,
+        systemKeyWidth: 34,
+        shiftKeyWidth: 35,
+        keyHeight: 40,
+        autoCompleteBarHeight: 38,
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 320),
+    // Landscape:
+    // TODO fine tune these constants to better match system keyboard.
+    IntDuplet(693, 320): PhoneLayoutConstants(
+        isPortrait: false,
+        keyboardSize: CGSize(width: 543, height: 147+38),
+        buttonGapX: 5,
+        systemKeyWidth: 50,
+        shiftKeyWidth: 68,
+        keyHeight: 29,
+        autoCompleteBarHeight: 38,
+        keyboardViewLeftRightInset: 3,
+        keyboardSuperviewWidth: 543),
+    
     // iPad 1024x1366 iPad Pro 12.9"
     // Portrait:
     IntDuplet(1024, 1366): PadFull5RowsLayoutConstants(
