@@ -88,16 +88,14 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     private static func getFixedKeyWidth(keyRowView: KeyRowView, keys: [KeyView], groupLayoutDirection: GroupLayoutDirection, layoutConstants: LayoutConstants, numFlexibleWidthKeys: inout Int, keyWidths: inout Dictionary<KeyView, CGFloat>) -> CGFloat {
         let padFull4RowsLayoutConstants = layoutConstants.asPadFull4RowsLayoutConstants!
         
-        let totalFixedKeyWidth = keys.enumerated().reduce(CGFloat(0)) {sum, indexAndKey in
-            let index = indexAndKey.offset
-            let key = indexAndKey.element
+        let totalFixedKeyWidth = keys.reduce(CGFloat(0)) { sum, key in
+            let width: CGFloat
             
-            var width: CGFloat
             switch key.keyCap {
             case "\t", .backspace: width = padFull4RowsLayoutConstants.tabDeleteKeyWidth
             case .toggleInputMode: width = padFull4RowsLayoutConstants.capLockKeyWidth
             case .shift:
-                if index == 0 {
+                if groupLayoutDirection == .left {
                     width = padFull4RowsLayoutConstants.leftShiftKeyWidth
                 } else {
                     width = padFull4RowsLayoutConstants.rightShiftKeyWidth
