@@ -495,15 +495,27 @@ class InputController: NSObject {
             hasInsertedAutoSpace = false
         }
         
-        // After countless attempt, this provides best compatibility.
+        // After countless attempt, this provides the best compatibility.
         // Test cases:
         // Normal text fields
-        // Safari/Chrome searching on www.youtube.com
+        // Safari/Chrome searching on www.youtube.com, enter should trigger search.
         // Chrome address bar
         // Google Calender create event title text field
-        // Slack (not supported due to Slack's bug)
-        hasMarkedText = false
-        textDocumentProxy.insertText(textToBeInserted)
+        // Twitter search bar: enter 𥄫女 (multiple codepoints char)
+        // Slack
+        // Number only text field, keyboard should be able to insert multiple digits.
+        
+        if hasMarkedText {
+            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.utf16.count, length: 0))
+            // Without this async block, keyboard doesn't work in Safari/Chrome searching on www.youtube.com.
+            // Pressing enter would clear the search textbox.
+            DispatchQueue.main.async {
+                textDocumentProxy.unmarkText()
+            }
+            hasMarkedText = false
+        } else {
+            textDocumentProxy.insertText(textToBeInserted)
+        }
         
         needClearInput = true
         // DDLogInfo("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
