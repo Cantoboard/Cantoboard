@@ -80,6 +80,7 @@ class InputController: NSObject {
     private weak var keyboardViewController: KeyboardViewController?
     private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
+    private var inputBufferRenderer: InputBufferRenderer!
     
     private(set) var state: KeyboardState = KeyboardState()
     
@@ -103,6 +104,7 @@ class InputController: NSObject {
         
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
+        inputBufferRenderer = MarkedTextInputBufferRenderer(inputController: self)
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
         initKeyboardView()
@@ -465,8 +467,6 @@ class InputController: NSObject {
         prevTextBefore = nil
     }
     
-    private var hasMarkedText = false
-    
     private func insertText(_ text: String, requestSmartSpace: Bool = false) {
         guard !text.isEmpty else { return }
         guard let textDocumentProxy = textDocumentProxy else { return }
@@ -474,7 +474,7 @@ class InputController: NSObject {
         
         if shouldRemoveSmartSpace(text) {
             // If there's marked text, we've to make an extra call to deleteBackward to remove the marked text before we could delete the space.
-            if hasMarkedText {
+            if inputBufferRenderer.hasText {
                 textDocumentProxy.deleteBackward()
                 // If we hit this case, textDocumentProxy.documentContextBeforeInput will no longer be in-sync with the text of the document,
                 // It will contain part of the marked text which the doc doesn't contain.
@@ -498,17 +498,16 @@ class InputController: NSObject {
         // After countless attempt, this provides the best compatibility.
         // Test cases:
         // Normal text fields
-        // Safari/Chrome searching on www.youtube.com, enter should trigger search. ** Not working due to bug in iOS **
+        // Safari/Chrome searching on www.youtube.com, enter should trigger search. ** Not working due to a bug in iOS **
         // Chrome address bar
         // Google Calender create event title text field
         // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
         // Slack
         // Number only text field, keyboard should be able to insert multiple digits.
         
-        if hasMarkedText {
-            textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.utf16.count, length: 0))
-            textDocumentProxy.unmarkText()
-            hasMarkedText = false
+        if inputBufferRenderer.hasText {
+            inputBufferRenderer.updateInputBuffer(withCaretAtTheEnd: textToBeInserted)
+            inputBufferRenderer.commitInputBuffer()
         } else {
             textDocumentProxy.insertText(textToBeInserted)
         }
@@ -522,7 +521,7 @@ class InputController: NSObject {
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
-        state.returnKeyType = hasMarkedText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
+        state.returnKeyType = inputBufferRenderer.hasText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
         if !inputEngine.isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
@@ -539,28 +538,27 @@ class InputController: NSObject {
     
     private func updateMarkedText() {
         switch state.inputMode {
-        case .chinese: setMarkedText(inputEngine.composition)
-        case .english: setMarkedText(inputEngine.englishComposition)
+        case .chinese: updateComposition(inputEngine.composition)
+        case .english: updateComposition(inputEngine.englishComposition)
         case .mixed:
             if state.activeSchema.isCangjieFamily {
                 // Show both Cangjie radicals and english composition in marked text.
                 let composition = inputEngine.rimeComposition
                 composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
-                setMarkedText(composition)
+                updateComposition(composition)
             } else {
-                setMarkedText(inputEngine.composition)
+                updateComposition(inputEngine.composition)
             }
         }
     }
     
-    private func setMarkedText(_ composition: Composition?) {
+    private func updateComposition(_ composition: Composition?) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         guard var text = composition?.text, !text.isEmpty else {
-            if hasMarkedText {
-                textDocumentProxy.setMarkedText("", selectedRange: NSRange(location: 0, length: 0))
-                textDocumentProxy.unmarkText()
-                hasMarkedText = false
+            if inputBufferRenderer.hasText {
+                inputBufferRenderer.updateInputBuffer(withCaretAtTheEnd: "")
+                inputBufferRenderer.commitInputBuffer()
             }
             return
         }
@@ -574,9 +572,7 @@ class InputController: NSObject {
             text = spaceStrippedSpace
         }
         
-        let caretPositionInUtf16 = text.index(text.startIndex, offsetBy: caretPosition).utf16Offset(in: text)
-        textDocumentProxy.setMarkedText(text, selectedRange: NSRange(location: caretPositionInUtf16, length: 0))
-        hasMarkedText = true
+        inputBufferRenderer.updateInputBuffer(text: text, caretIndex: text.index(text.startIndex, offsetBy: caretPosition))
     }
     
     private var shouldEnableSmartInput: Bool {

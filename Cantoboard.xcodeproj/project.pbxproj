@@ -156,6 +156,7 @@
 		79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */; };
 		79BE976926D749A90059E58A /* CandidateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976826D749A90059E58A /* CandidateCell.swift */; };
 		79BE977326D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE977226D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift */; };
+		79CA7AF426FD9386006B561E /* InputBufferRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CA7AF326FD9386006B561E /* InputBufferRenderer.swift */; };
 		79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AAF263F95F600993949 /* CocoaLumberjackSwift */; };
 		79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AB4263F961800993949 /* CocoaLumberjack */; };
 		79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D31ACC263FAC1300993949 /* InstanceCounter.swift */; };
@@ -438,6 +439,7 @@
 		79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateSegmentControlCell.swift; sourceTree = "<group>"; };
 		79BE976826D749A90059E58A /* CandidateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCell.swift; sourceTree = "<group>"; };
 		79BE977226D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		79CA7AF326FD9386006B561E /* InputBufferRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBufferRenderer.swift; sourceTree = "<group>"; };
 		79D31ACC263FAC1300993949 /* InstanceCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstanceCounter.swift; sourceTree = "<group>"; };
 		79D4E1BE26422C6E00857D7D /* DataFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFileManager.swift; sourceTree = "<group>"; };
 		79D4E23A264251C600857D7D /* EnglishDictSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EnglishDictSource; sourceTree = "<group>"; };
@@ -635,6 +637,7 @@
 			children = (
 				799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */,
 				79B9B59125F34A1200238E80 /* FeedbackProvider.swift */,
+				79CA7AF326FD9386006B561E /* InputBufferRenderer.swift */,
 				79B9B5A725F34A1200238E80 /* InputController.swift */,
 				79B9B58B25F34A1200238E80 /* InputEngine */,
 				79B9B5A825F34A1200238E80 /* KeyboardAction.swift */,
@@ -1313,6 +1316,7 @@
 				79B9B5F825F34A1200238E80 /* BilingualInputEngine.swift in Sources */,
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,
+				79CA7AF426FD9386006B561E /* InputBufferRenderer.swift in Sources */,
 				79BE977326D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift in Sources */,
 				79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */,
 				799AE20226792F4C00286530 /* KeypadButton.swift in Sources */,
