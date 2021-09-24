@@ -498,20 +498,16 @@ class InputController: NSObject {
         // After countless attempt, this provides the best compatibility.
         // Test cases:
         // Normal text fields
-        // Safari/Chrome searching on www.youtube.com, enter should trigger search.
+        // Safari/Chrome searching on www.youtube.com, enter should trigger search. ** Not working due to bug in iOS **
         // Chrome address bar
         // Google Calender create event title text field
-        // Twitter search bar: enter 𥄫女 (multiple codepoints char)
+        // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
         // Slack
         // Number only text field, keyboard should be able to insert multiple digits.
         
         if hasMarkedText {
             textDocumentProxy.setMarkedText(textToBeInserted, selectedRange: NSRange(location: textToBeInserted.utf16.count, length: 0))
-            // Without this async block, keyboard doesn't work in Safari/Chrome searching on www.youtube.com.
-            // Pressing enter would clear the search textbox.
-            DispatchQueue.main.async {
-                textDocumentProxy.unmarkText()
-            }
+            textDocumentProxy.unmarkText()
             hasMarkedText = false
         } else {
             textDocumentProxy.insertText(textToBeInserted)
