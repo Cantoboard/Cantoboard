@@ -12,6 +12,7 @@ protocol InputBufferRenderer {
     func updateInputBuffer(text: String, caretIndex: String.Index)
     func commitInputBuffer()
     var hasText: Bool { get }
+    var hasMarkedText: Bool { get }
 }
 
 extension InputBufferRenderer {
@@ -40,4 +41,6 @@ class MarkedTextInputBufferRenderer: InputBufferRenderer {
         inputController?.textDocumentProxy?.unmarkText()
         hasText = false
     }
+    
+    var hasMarkedText: Bool { hasText }
 }

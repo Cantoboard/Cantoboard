@@ -160,7 +160,7 @@ class InputController: NSObject {
     
     func textDidChange(_ textInput: UITextInput?) {
         // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
-        shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
+        shouldApplyChromeSearchBarHack = isTextChromeSearchBar() && inputBufferRenderer is MarkedTextInputBufferRenderer
         
         updateInputState()
     }
@@ -464,7 +464,7 @@ class InputController: NSObject {
         
         if shouldRemoveSmartSpace(text) {
             // If there's marked text, we've to make an extra call to deleteBackward to remove the marked text before we could delete the space.
-            if inputBufferRenderer.hasText {
+            if inputBufferRenderer.hasMarkedText {
                 textDocumentProxy.deleteBackward()
                 // If we hit this case, textDocumentProxy.documentContextBeforeInput will no longer be in-sync with the text of the document,
                 // It will contain part of the marked text which the doc doesn't contain.
