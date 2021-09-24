@@ -236,6 +236,10 @@ class RimeInputEngine: NSObject, InputEngine {
         }
     }
     
+    var isFirstCandidateCompleteMatch: Bool {
+        rimeSession?.isFirstCandidateCompleteMatch ?? false
+    }
+    
     private func convertUtf8ByteIndexToCharIndex(_ text: String, _ byteIndex: Int) -> Int {
         let textUtf8 = text.utf8
         let utf8ByteIndex = textUtf8.index(textUtf8.startIndex, offsetBy: byteIndex)

@@ -20,7 +20,7 @@ enum GroupByMode {
     }
 }
 
-protocol CandidateSource: class {
+protocol CandidateSource: AnyObject {
     func updateCandidates(reload: Bool)
     func getNumberOfSections() -> Int
     func getCandidate(indexPath: IndexPath) -> String?
@@ -38,9 +38,9 @@ class InputEngineCandidateSource: CandidateSource {
     
     private var candidatePaths: [[CandidatePath]] = []
     private var sectionHeaders: [String] = []
-    private var curRimeCandidateIndex = 0
+    private var curRimeCandidateIndex = 0, curEnglishCandidateIndex = 0
     private var hasLoadedAllBestRimeCandidates = false
-    private var hasPopulatedPrefectEnglishCandidates = false, hasPopulatedBestEnglishCandidates = false, hasPopulatedWorstEnglishCandidates = false
+    private var hasPopulatedBestEnglishCandidates = false, hasPopulatedWorstEnglishCandidates = false
     private weak var inputController: InputController?
     private var _groupByMode = GroupByMode.byFrequency
 
@@ -50,12 +50,12 @@ class InputEngineCandidateSource: CandidateSource {
     
     private func resetCandidates() {
         curRimeCandidateIndex = 0
+        curEnglishCandidateIndex = 0
         
         candidatePaths = []
         sectionHeaders = []
         
         hasLoadedAllBestRimeCandidates = false
-        hasPopulatedPrefectEnglishCandidates = false
         hasPopulatedBestEnglishCandidates = false
         hasPopulatedWorstEnglishCandidates = false
     }
@@ -82,28 +82,14 @@ class InputEngineCandidateSource: CandidateSource {
             candidatePaths.append([])
         }
         
-        // If input is an English word, insert best English candidates first.
-        if !hasPopulatedPrefectEnglishCandidates && isEnglishActive {
-            for i in 0..<inputEngine.englishPrefectCandidatesStartIndex {
-                appendEnglishCandidate(i)
-            }
-            hasPopulatedPrefectEnglishCandidates = true
-        }
-        
-        // let rawInputWithoutDigits = inputEngine.englishComposition?.text.lowercased() ?? ""
         let firstRimeCandidateLength = inputEngine.getRimeCandidate(0)?.count ?? 0
-        // let firstRimeCode = (inputEngine.getRimeCandidateComment(0) ?? "").lowercased().filter({ !$0.isNumber && $0 != " " })
-        // let composeTextFirstRimeCodeLCS = rawInputWithoutDigits.longestCommonSubsequence(firstRimeCode)
-        // let isRimeExactMatch = composeTextFirstRimeCodeLCS.count == rawInputWithoutDigits.count
-        // let isRimeExactMatch = firstRimeCode.starts(with: rawInputWithoutDigits)
         // Experimenting new way to order candidates.
-        let isRimeExactMatch = true
-
-        //if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
+        let isRimeExactMatch = inputEngine.isRimeFirstCandidateCompleteMatch
+        
+        if !isRimeExactMatch { hasLoadedAllBestRimeCandidates = true }
         
         // Populate the best Rime candidates. It's in the best candidates set if the user input is the prefix of candidate's composition.
         while inputMode != .english &&
-              isRimeExactMatch &&
               !hasLoadedAllBestRimeCandidates &&
               curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
             guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else {
@@ -118,6 +104,15 @@ class InputEngineCandidateSource: CandidateSource {
             
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
+            // TODO, change N to change with candidate cell width. Show 1 English candidate at the end of the row.
+            // For every N Rime candidates, mix an English candidate.
+            if curRimeCandidateIndex % 4 == 0 {
+                while curEnglishCandidateIndex < inputEngine.englishPrefectCandidatesStartIndex {
+                    let hasAddedCandidate = appendEnglishCandidate(curEnglishCandidateIndex)
+                    curEnglishCandidateIndex += 1
+                    if hasAddedCandidate { break }
+                }
+            }
         }
         
         // Do not populate remaining English candidates until all best Rime candidates are populated.
@@ -125,8 +120,8 @@ class InputEngineCandidateSource: CandidateSource {
         
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
-            for i in inputEngine.englishPrefectCandidatesStartIndex..<inputEngine.englishWorstCandidatesStartIndex {
-                appendEnglishCandidate(i)
+            for i in curEnglishCandidateIndex..<inputEngine.englishWorstCandidatesStartIndex {
+                _ = appendEnglishCandidate(i)
             }
             hasPopulatedBestEnglishCandidates = true
         }
@@ -140,25 +135,26 @@ class InputEngineCandidateSource: CandidateSource {
         // Populate worst English candidates.
         if (inputMode == .english || inputEngine.hasRimeLoadedAllCandidates) && !hasPopulatedWorstEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishWorstCandidatesStartIndex..<englishCandidates.count {
-                appendEnglishCandidate(i)
+                _ = appendEnglishCandidate(i)
             }
             hasPopulatedWorstEnglishCandidates = true
         }
     }
     
-    private func appendEnglishCandidate(_ i: Int) {
+    private func appendEnglishCandidate(_ i: Int) -> Bool {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine,
               inputController.state.inputMode != .english && i < 7 || inputController.state.inputMode == .english
-            else { return }
+            else { return false }
         
         if inputController.state.inputMode != .chinese && !Settings.cached.shouldShowEnglishExactMatch &&
             inputEngine.englishCandidates[i] == inputEngine.englishComposition?.text {
             // Skip exact match in mixed mode.
-            return
+            return false
         }
         
         candidatePaths[0].append(CandidatePath(source: .english, index: i))
+        return true
     }
     
     private func populateCandidatesByRomanization() {

@@ -195,6 +195,10 @@ class BilingualInputEngine: InputEngine {
         rimeInputEngine.composition
     }
     
+    var isRimeFirstCandidateCompleteMatch: Bool {
+        rimeInputEngine.isFirstCandidateCompleteMatch
+    }
+    
     func getRimeCandidate(_ index: Int) -> String? {
         return rimeInputEngine.getCandidate(index)
     }
