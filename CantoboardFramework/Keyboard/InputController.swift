@@ -88,7 +88,7 @@ class InputController: NSObject {
     private var isHoldingShift = false
         
     private var hasInsertedAutoSpace = false
-    private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
+    private var shouldApplyChromeSearchBarHack = false
     private var needClearInput = false, needReloadCandidates = true
     
     private var prevTextBefore: String?
@@ -161,13 +161,7 @@ class InputController: NSObject {
     func textDidChange(_ textInput: UITextInput?) {
         // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
         shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
-        if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
-            clearInput(shouldLeaveReverseLookupMode: false)
-        } else if inputEngine.composition != nil, !shouldApplyChromeSearchBarHack {
-            self.updateMarkedText()
-        }
         
-        shouldSkipNextTextDidChange = false
         updateInputState()
     }
     
@@ -266,7 +260,8 @@ class InputController: NSObject {
         case .character(let c):
             guard let char = c.first else { return }
             if !isComposing && shouldApplyChromeSearchBarHack {
-                self.shouldSkipNextTextDidChange = true
+                // To clear out the current url selected in Chrome address bar.
+                // This shouldn't have any side effects in other apps.
                 textDocumentProxy.insertText("")
             }
             let shouldFeedCharToInputEngine = char.isASCII && char.isLetter && c.count == 1
@@ -400,6 +395,7 @@ class InputController: NSObject {
         } else {
             updateInputState()
         }
+        updateMarkedText()
     }
     
     func enforceInputMode() {
@@ -409,7 +405,8 @@ class InputController: NSObject {
     
     private func isTextChromeSearchBar() -> Bool {
         guard let textFieldType = textDocumentProxy?.keyboardType else { return false }
-        //print("isTextChromeSearchBar", textFieldType, textDocumentProxy.documentContextBeforeInput)
+        // DDLogInfo("isTextChromeSearchBar \(textFieldType) \(textDocumentProxy?.documentContextBeforeInput ?? "<empty-documentContextBeforeInput>")")
+        // Finding: documentContextBeforeInput might not contain the full url.
         return textFieldType == UIKeyboardType.webSearch
     }
     
@@ -457,14 +454,7 @@ class InputController: NSObject {
             inputEngine.rimeSchema = state.activeSchema
         }
         updateInputState()
-    }
-    
-    func clearState() {
-        // clearInput()
-        hasInsertedAutoSpace = false
-        shouldSkipNextTextDidChange = false
-        lastKey = nil
-        prevTextBefore = nil
+        updateMarkedText()
     }
     
     private func insertText(_ text: String, requestSmartSpace: Bool = false) {
@@ -499,13 +489,13 @@ class InputController: NSObject {
         // Test cases:
         // Normal text fields
         // Safari/Chrome searching on www.youtube.com, enter should trigger search. ** Not working due to a bug in iOS **
-        // Chrome address bar
+        // Chrome address bar, entering the first character should clear out the current url.
         // Google Calender create event title text field
         // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
         // Slack
         // Number only text field, keyboard should be able to insert multiple digits.
-        
         if inputBufferRenderer.hasText {
+            // Calling setMarkedText("") & unmarkText() here won't work in Slack. It will insert the text twice.
             inputBufferRenderer.updateInputBuffer(withCaretAtTheEnd: textToBeInserted)
             inputBufferRenderer.commitInputBuffer()
         } else {
@@ -517,16 +507,16 @@ class InputController: NSObject {
     }
     
     private func updateInputState() {
-        updateMarkedText()
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
-        state.returnKeyType = inputBufferRenderer.hasText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
+        let isComposing = inputEngine.isComposing
+        state.returnKeyType = isComposing ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
-        if !inputEngine.isComposing || state.inputMode == .english {
+        if !isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
         } else {
-            let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+            let hasCandidate = isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
             switch Settings.cached.spaceAction {
             case .nextPage where hasCandidate: state.spaceKeyMode = .nextPage
             case .insertCandidate where hasCandidate: state.spaceKeyMode = .select
