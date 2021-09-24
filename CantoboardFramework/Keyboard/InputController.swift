@@ -574,7 +574,8 @@ class InputController: NSObject {
             text = spaceStrippedSpace
         }
         
-        textDocumentProxy.setMarkedText(text, selectedRange: NSRange(location: caretPosition, length: 0))
+        let caretPositionInUtf16 = text.index(text.startIndex, offsetBy: caretPosition).utf16Offset(in: text)
+        textDocumentProxy.setMarkedText(text, selectedRange: NSRange(location: caretPositionInUtf16, length: 0))
         hasMarkedText = true
     }
     
