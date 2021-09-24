@@ -137,6 +137,14 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         }
     }
     
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        let orgValue = super.tableView(tableView, titleForFooterInSection: section)
+        switch section {
+        case 0: return orgValue
+        default: return isKeyboardEnabled() ? orgValue : nil
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let orgValue = super.tableView(tableView, numberOfRowsInSection: section)
         switch section {
