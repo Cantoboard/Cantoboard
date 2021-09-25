@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol KeyboardViewDelegate: class {
+protocol KeyboardViewDelegate: AnyObject {
     func handleKey(_ action: KeyboardAction)
     func handleInputModeList(from: UIView, with: UIEvent)
 }

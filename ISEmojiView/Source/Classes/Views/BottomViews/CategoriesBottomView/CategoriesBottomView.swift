@@ -9,7 +9,7 @@ import Foundation
 
 private let MinCellSize = CGFloat(35)
 
-internal protocol CategoriesBottomViewDelegate: class {
+internal protocol CategoriesBottomViewDelegate: AnyObject {
     
     func categoriesBottomViewDidSelecteCategory(_ category: Category, percentage: Double, bottomView: CategoriesBottomView)
     func categoriesBottomViewDidPressChangeKeyboardButton(_ bottomView: CategoriesBottomView)
