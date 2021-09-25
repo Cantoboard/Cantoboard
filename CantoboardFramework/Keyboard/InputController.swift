@@ -113,8 +113,8 @@ class InputController: NSObject {
         
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
-        // inputBufferRenderer = MarkedTextInputBufferRenderer(inputController: self)
-        inputBufferRenderer = ImmediateModeInputBufferRenderer(inputController: self)
+        inputBufferRenderer = MarkedTextInputBufferRenderer(inputController: self)
+        // inputBufferRenderer = ImmediateModeInputBufferRenderer(inputController: self)
         isImmediateMode = inputBufferRenderer is ImmediateModeInputBufferRenderer
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
