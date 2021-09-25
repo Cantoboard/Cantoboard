@@ -11,6 +11,13 @@ import UIKit
 import CocoaLumberjackSwift
 
 extension UITextDocumentProxy {
+    func deleteBackward(times: Int) {
+        guard times >= 0 else { return }
+        for _ in 0..<times {
+            deleteBackward()
+        }
+    }
+    
     func deleteBackwardWord() {
         DispatchQueue.main.async { [self] in
             guard let documentContextBeforeInput = documentContextBeforeInput,

@@ -205,6 +205,11 @@ open class KeyboardViewController: UIInputViewController {
         logView?.frame = CGRect(origin: .zero, size: layoutConstants.keyboardSize)
     }
     
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        inputController?.keyboardDisappeared()
+    }
+    
     public func createKeyboardIfNeeded() {
         if inputController == nil {
             inputController = InputController(keyboardViewController: self)
