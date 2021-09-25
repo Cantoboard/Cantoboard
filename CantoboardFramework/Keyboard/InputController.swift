@@ -296,7 +296,7 @@ class InputController: NSObject {
         case .space(let spaceKeyMode):
             handleSpace(spaceKeyMode: spaceKeyMode)
         case .newLine:
-            if !insertComposingText(shouldDisableSmartSpace: true) {
+            if !insertComposingText(shouldDisableSmartSpace: true) || isImmediateMode {
                 insertText("\n")
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
@@ -520,7 +520,7 @@ class InputController: NSObject {
         candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
         let isComposing = inputEngine.isComposing
-        state.returnKeyType = isComposing ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
+        state.returnKeyType = isComposing && !isImmediateMode ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
         if !isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
