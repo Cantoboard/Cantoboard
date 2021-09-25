@@ -297,7 +297,16 @@ class InputController: NSObject {
             handleSpace(spaceKeyMode: spaceKeyMode)
         case .newLine:
             if !insertComposingText(shouldDisableSmartSpace: true) || isImmediateMode {
-                insertText("\n")
+                let shouldApplyBrowserYoutubeSearchHack = textDocumentProxy.returnKeyType == .search && !isImmediateMode
+                if shouldApplyBrowserYoutubeSearchHack {
+                    // This is a special hack for triggering finishing/search event with marked text in browser searching on www.youtube.com
+                    textDocumentProxy.unmarkText()
+                    DispatchQueue.main.async {
+                        textDocumentProxy.insertText("\n")
+                    }
+                } else {
+                    insertText("\n")
+                }
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
             if state.reverseLookupSchema != nil && !isComposing {
@@ -497,7 +506,7 @@ class InputController: NSObject {
         // After countless attempt, this provides the best compatibility.
         // Test cases:
         // Normal text fields
-        // Safari/Chrome searching on www.youtube.com, enter should trigger search. ** Not working due to a bug in iOS **
+        // Safari/Chrome searching on www.youtube.com, enter should trigger search. Requires a special hack when inserting "\n".
         // Chrome address bar, entering the first character should clear out the current url.
         // Google Calender create event title text field
         // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
