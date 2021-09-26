@@ -13,7 +13,7 @@ class CompositionLabel: UILabel {
     static let height: CGFloat = 20
 
     private static let caretColor: UIColor = UIColor(dynamicProvider: {
-        $0.userInterfaceStyle == .dark ? UIColor.white : UIColor.systemBlue
+        $0.userInterfaceStyle == .dark ? UIColor.white : UIColor.darkGray
     })
     private static let caretWidth: CGFloat = 1.5
     private static let fontSizePerHeight: CGFloat = 14 / "Ag".size(withFont: UIFont.systemFont(ofSize: 14)).height

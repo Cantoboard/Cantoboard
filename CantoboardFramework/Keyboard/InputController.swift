@@ -113,15 +113,14 @@ class InputController: NSObject {
         
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
-        // inputBufferRenderer = MarkedTextInputBufferRenderer(inputController: self)
-        compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
+        compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
+        // compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
         isImmediateMode = compositionRenderer is ImmediateModeCompositionRenderer
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
-        keyboardViewController.hasCompositionView = isImmediateMode
-        
         initKeyboardView()
         enforceInputMode()
+        refreshCompositionViewState()
     }
     
     private var shouldUseKeypad: Bool {
@@ -160,6 +159,10 @@ class InputController: NSObject {
         ])
         
         self.keyboardView = keyboardView
+    }
+    
+    private func refreshCompositionViewState() {
+        keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
     }
     
     deinit {
@@ -428,6 +431,7 @@ class InputController: NSObject {
     func enforceInputMode() {
         if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
+        refreshCompositionViewState()
     }
     
     private func isTextChromeSearchBar() -> Bool {
@@ -473,6 +477,7 @@ class InputController: NSObject {
             handleKey(.toggleInputMode)
         }
         clearInput(shouldLeaveReverseLookupMode: false)
+        refreshCompositionViewState()
     }
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
@@ -553,15 +558,20 @@ class InputController: NSObject {
         case .mixed:
             if state.activeSchema.isCangjieFamily {
                 // Show both Cangjie radicals and english composition in marked text.
-                let composition = inputEngine.rimeComposition
-                composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
-                updateComposition(composition)
+                // let composition = inputEngine.rimeComposition
+                // composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
+                // updateComposition(composition)
+                updateComposition(inputEngine.englishComposition)
             } else {
                 updateComposition(inputEngine.composition)
             }
         }
         
-        keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
+        if state.activeSchema.isCangjieFamily {
+            keyboardViewController?.compositionLabelView?.composition = inputEngine.rimeComposition
+        } else {
+            keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
+        }
     }
     
     private func updateComposition(_ composition: Composition?) {
