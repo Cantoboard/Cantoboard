@@ -113,14 +113,10 @@ class InputController: NSObject {
         
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
-        compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
-        // compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
-        isImmediateMode = compositionRenderer is ImmediateModeCompositionRenderer
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
         initKeyboardView()
-        enforceInputMode()
-        refreshCompositionViewState()
+        refreshInputSettings()
     }
     
     private var shouldUseKeypad: Bool {
@@ -159,10 +155,6 @@ class InputController: NSObject {
         ])
         
         self.keyboardView = keyboardView
-    }
-    
-    private func refreshCompositionViewState() {
-        keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
     }
     
     deinit {
@@ -374,7 +366,7 @@ class InputController: NSObject {
             }
             
             state.inputMode = state.inputMode.afterToggle
-            enforceInputMode()
+            refreshInputSettings()
         case .toggleSymbolShape:
             switch state.symbolShape {
             case .full: state.symbolShapeOverride = .half
@@ -428,10 +420,18 @@ class InputController: NSObject {
         updateComposition()
     }
     
-    func enforceInputMode() {
+    func refreshInputSettings() {
         if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
-        refreshCompositionViewState()
+        
+        isImmediateMode =  Settings.cached.compositionMode == .immediate
+        if isImmediateMode {
+            compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
+        } else {
+            compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
+        }
+        
+        keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
     }
     
     private func isTextChromeSearchBar() -> Bool {
@@ -477,7 +477,7 @@ class InputController: NSObject {
             handleKey(.toggleInputMode)
         }
         clearInput(shouldLeaveReverseLookupMode: false)
-        refreshCompositionViewState()
+        refreshInputSettings()
     }
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {

@@ -23,6 +23,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak private var hapticFeedbackControl: UISwitch!
     @IBOutlet weak private var showEnglishExactMatchControl: UISwitch!
     @IBOutlet weak private var testTextField: UITextField!
+    @IBOutlet weak private var compositionModeControl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +43,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         audioFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         hapticFeedbackControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         showEnglishExactMatchControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        compositionModeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
 
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -93,6 +95,13 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         default: showRomanizationMode = .onlyInNonCantoneseMode
         }
         
+        let compositionMode: CompositionMode
+        switch compositionModeControl.selectedSegmentIndex {
+        case 0: compositionMode = .immediate
+        case 1: compositionMode = .multiStage
+        default: compositionMode = .multiStage
+        }
+        
         var settings = Settings()
         settings.isMixedModeEnabled = enableMixedModeControl.isOn
         settings.isAutoCapEnabled = autoCapControl.isOn
@@ -107,6 +116,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         settings.isAudioFeedbackEnabled = audioFeedbackControl.isOn
         settings.isTapHapticFeedbackEnabled = hapticFeedbackControl.isOn
         settings.shouldShowEnglishExactMatch = showEnglishExactMatchControl.isOn
+        settings.compositionMode = compositionMode
         Settings.save(settings)
     }
     
@@ -161,6 +171,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     private func populateSettings() {
         let settings = Settings.reload()
         populateSmartInputSettings(settings)
+        populateCompositionMode(settings)
         populateSymbolShape(settings)
         populateSpaceOutputMode(settings)
         populateToneInput(settings)
@@ -196,6 +207,15 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
             case .never: return 0
             case .always: return 1
             case .onlyInNonCantoneseMode: return 2
+            }
+        })
+    }
+    
+    private func populateCompositionMode(_ settings: Settings) {
+        populateSetting(toSegmentedControl: compositionModeControl, settingToIndexMapper: {
+            switch $0.compositionMode {
+            case .immediate: return 0
+            case .multiStage: return 1
             }
         })
     }

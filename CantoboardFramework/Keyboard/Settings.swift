@@ -15,6 +15,11 @@ public enum CharForm: String, Codable {
     case simplified = "zh-CN"
 }
 
+public enum CompositionMode: String, Codable {
+    case multiStage = "multiStage"
+    case immediate = "immediate"
+}
+
 public enum InputMode: String, Codable {
     case mixed = "mixed"
     case chinese = "chinese"
@@ -100,6 +105,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultAudioFeedbackEnabled: Bool = true
     private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultShowEnglishExactMatch: Bool = true
+    private static let defaultCompositionMode: CompositionMode = .multiStage
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -114,6 +120,7 @@ public struct Settings: Codable, Equatable {
     public var isAudioFeedbackEnabled: Bool
     public var isTapHapticFeedbackEnabled: Bool
     public var shouldShowEnglishExactMatch: Bool
+    public var compositionMode: CompositionMode
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -129,6 +136,7 @@ public struct Settings: Codable, Equatable {
         isAudioFeedbackEnabled = Self.defaultAudioFeedbackEnabled
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
         shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
+        compositionMode = Self.defaultCompositionMode
     }
     
     public init(from decoder: Decoder) throws {
@@ -146,6 +154,7 @@ public struct Settings: Codable, Equatable {
         self.isAudioFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAudioFeedbackEnabled) ?? Settings.defaultAudioFeedbackEnabled
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
         self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
+        self.compositionMode = try container.decodeIfPresent(CompositionMode.self, forKey: .compositionMode) ?? Settings.defaultCompositionMode
     }
     
     private static var _cached: Settings?

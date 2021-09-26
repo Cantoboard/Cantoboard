@@ -291,9 +291,15 @@ open class KeyboardViewController: UIInputViewController {
             DDLogInfo("Detected change in English locale from \(prevSettings.englishLocale) to \(settings.englishLocale).")
         }
         
-        if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled {
-            inputController?.enforceInputMode()
-            DDLogInfo("Detected change in isMixedModeEnabled from \(prevSettings.isMixedModeEnabled) to \(settings.isMixedModeEnabled).")
+        if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled ||
+            prevSettings.compositionMode != settings.compositionMode {
+            inputController?.refreshInputSettings()
+            if prevSettings.isMixedModeEnabled != settings.isMixedModeEnabled {
+                DDLogInfo("Detected change in isMixedModeEnabled from \(prevSettings.isMixedModeEnabled) to \(settings.isMixedModeEnabled).")
+            }
+            if prevSettings.compositionMode != settings.compositionMode {
+                DDLogInfo("Detected change in compositionMode from \(prevSettings.compositionMode) to \(settings.compositionMode).")
+            }
         }
     }
 }
