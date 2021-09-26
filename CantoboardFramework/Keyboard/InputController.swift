@@ -80,8 +80,8 @@ class InputController: NSObject {
     private weak var keyboardViewController: KeyboardViewController?
     private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
-    private var inputBufferRenderer: InputBufferRenderer!
-    private var isImmediateMode: Bool!
+    private var compositionRenderer: CompositionRenderer!
+    private(set) var isImmediateMode: Bool!
     
     private(set) var state: KeyboardState = KeyboardState()
     
@@ -101,11 +101,11 @@ class InputController: NSObject {
     }
     
     private var documentContextBeforeInput: String {
-        inputBufferRenderer.documentContextBeforeInput
+        compositionRenderer.textBeforeInput
     }
     
     private var documentContextAfterInput: String {
-        inputBufferRenderer.documentContextAfterInput
+        compositionRenderer.textAfterInput
     }
     
     init(keyboardViewController: KeyboardViewController) {
@@ -113,10 +113,12 @@ class InputController: NSObject {
         
         self.keyboardViewController = keyboardViewController
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
-        inputBufferRenderer = MarkedTextInputBufferRenderer(inputController: self)
-        // inputBufferRenderer = ImmediateModeInputBufferRenderer(inputController: self)
-        isImmediateMode = inputBufferRenderer is ImmediateModeInputBufferRenderer
+        // inputBufferRenderer = MarkedTextInputBufferRenderer(inputController: self)
+        compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
+        isImmediateMode = compositionRenderer is ImmediateModeCompositionRenderer
         candidateOrganizer = CandidateOrganizer(inputController: self)
+        
+        keyboardViewController.hasCompositionView = isImmediateMode
         
         initKeyboardView()
         enforceInputMode()
@@ -238,7 +240,7 @@ class InputController: NSObject {
     }
     
     func keyboardDisappeared() {
-        inputBufferRenderer.textReset()
+        compositionRenderer.textReset()
         clearInput()
     }
     
@@ -420,7 +422,7 @@ class InputController: NSObject {
         } else {
             updateInputState()
         }
-        updateMarkedText()
+        updateComposition()
     }
     
     func enforceInputMode() {
@@ -480,7 +482,7 @@ class InputController: NSObject {
             inputEngine.rimeSchema = state.activeSchema
         }
         updateInputState()
-        updateMarkedText()
+        updateComposition()
     }
     
     private func insertText(_ text: String, requestSmartSpace: Bool = false) {
@@ -489,7 +491,7 @@ class InputController: NSObject {
         let isNewLine = text == "\n"
         
         if shouldRemoveSmartSpace(text) {
-            inputBufferRenderer.removeCharBeforeInputBuffer()
+            compositionRenderer.removeCharBeforeInput()
             hasInsertedAutoSpace = false
         }
         
@@ -512,10 +514,10 @@ class InputController: NSObject {
         // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
         // Slack
         // Number only text field, keyboard should be able to insert multiple digits.
-        if inputBufferRenderer.hasText {
+        if compositionRenderer.hasText {
             // Calling setMarkedText("") & unmarkText() here won't work in Slack. It will insert the text twice.
-            inputBufferRenderer.updateInputBuffer(withCaretAtTheEnd: textToBeInserted)
-            inputBufferRenderer.commitInputBuffer()
+            compositionRenderer.update(withCaretAtTheEnd: textToBeInserted)
+            compositionRenderer.commit()
         } else {
             textDocumentProxy.insertText(textToBeInserted)
         }
@@ -544,7 +546,7 @@ class InputController: NSObject {
         keyboardView?.state = state
     }
     
-    private func updateMarkedText() {
+    private func updateComposition() {
         switch state.inputMode {
         case .chinese: updateComposition(inputEngine.composition)
         case .english: updateComposition(inputEngine.englishComposition)
@@ -558,15 +560,17 @@ class InputController: NSObject {
                 updateComposition(inputEngine.composition)
             }
         }
+        
+        keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
     }
     
     private func updateComposition(_ composition: Composition?) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         guard var text = composition?.text, !text.isEmpty else {
-            if inputBufferRenderer.hasText {
-                inputBufferRenderer.updateInputBuffer(withCaretAtTheEnd: "")
-                inputBufferRenderer.commitInputBuffer()
+            if compositionRenderer.hasText {
+                compositionRenderer.update(withCaretAtTheEnd: "")
+                compositionRenderer.commit()
             }
             return
         }
@@ -580,7 +584,7 @@ class InputController: NSObject {
             text = spaceStrippedSpace
         }
         
-        inputBufferRenderer.updateInputBuffer(text: text, caretIndex: text.index(text.startIndex, offsetBy: caretPosition))
+        compositionRenderer.update(text: text, caretIndex: text.index(text.startIndex, offsetBy: caretPosition))
     }
     
     private var shouldEnableSmartInput: Bool {

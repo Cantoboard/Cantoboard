@@ -10,25 +10,25 @@ import UIKit
 
 import CocoaLumberjackSwift
 
-protocol InputBufferRenderer {
-    func updateInputBuffer(text: String, caretIndex: String.Index)
-    func commitInputBuffer()
-    func removeCharBeforeInputBuffer()
+protocol CompositionRenderer {
+    func update(text: String, caretIndex: String.Index)
+    func commit()
+    func removeCharBeforeInput() // For removing smart space before input.
     
     var hasText: Bool { get }
-    var documentContextBeforeInput: String { get }
-    var documentContextAfterInput: String { get }
+    var textBeforeInput: String { get }
+    var textAfterInput: String { get }
     
     func textReset()
 }
 
-extension InputBufferRenderer {
-    func updateInputBuffer(withCaretAtTheEnd text: String) {
-        updateInputBuffer(text: text, caretIndex: text.endIndex)
+extension CompositionRenderer {
+    func update(withCaretAtTheEnd text: String) {
+        update(text: text, caretIndex: text.endIndex)
     }
 }
 
-class MarkedTextInputBufferRenderer: InputBufferRenderer {
+class MarkedTextCompositionRenderer: CompositionRenderer {
     private weak var inputController: InputController?
     private(set) var hasText: Bool
     
@@ -37,19 +37,19 @@ class MarkedTextInputBufferRenderer: InputBufferRenderer {
         self.hasText = false
     }
     
-    func updateInputBuffer(text: String, caretIndex: String.Index) {
+    func update(text: String, caretIndex: String.Index) {
         let caretPositionInUtf16 = caretIndex.utf16Offset(in: text)
         inputController?.textDocumentProxy?.setMarkedText(text, selectedRange: NSRange(location: caretPositionInUtf16, length: 0))
         
         hasText = !text.isEmpty
     }
     
-    func commitInputBuffer() {
+    func commit() {
         inputController?.textDocumentProxy?.unmarkText()
         hasText = false
     }
     
-    func removeCharBeforeInputBuffer() {
+    func removeCharBeforeInput() {
         guard let textDocumentProxy = inputController?.textDocumentProxy else { return }
         // If there's marked text, we've to make an extra call to deleteBackward to remove the marked text before we could delete the space.
         if hasText {
@@ -62,11 +62,11 @@ class MarkedTextInputBufferRenderer: InputBufferRenderer {
         textDocumentProxy.deleteBackward()
     }
     
-    var documentContextBeforeInput: String {
+    var textBeforeInput: String {
         inputController?.textDocumentProxy?.documentContextBeforeInput ?? ""
     }
     
-    var documentContextAfterInput: String {
+    var textAfterInput: String {
         inputController?.textDocumentProxy?.documentContextAfterInput ?? ""
     }
     
@@ -75,7 +75,7 @@ class MarkedTextInputBufferRenderer: InputBufferRenderer {
     }
 }
 
-class ImmediateModeInputBufferRenderer: InputBufferRenderer {
+class ImmediateModeCompositionRenderer: CompositionRenderer {
     private weak var inputController: InputController?
     private(set) var text: String
     private(set) var caretIndex: String.Index
@@ -86,9 +86,15 @@ class ImmediateModeInputBufferRenderer: InputBufferRenderer {
         caretIndex = text.endIndex
     }
     
-    func updateInputBuffer(text newText: String, caretIndex newCaretIndex: String.Index) {
+    func update(text newText: String, caretIndex newCaretIndex: String.Index) {
+        // Adjusting text position too frequent in textbox with auto completion
+        // would cause textDocumentProxy going out sync with our state.
+        // For example: Slack, search box on www.youtube.com in WKWebView.
+        // Keep the system caret at the end of the composition.
+        let newCaretIndex = newText.endIndex
+        
         guard let textDocumentProxy = inputController?.textDocumentProxy else {
-            commitInputBuffer()
+            commit()
             return
         }
         
@@ -111,12 +117,12 @@ class ImmediateModeInputBufferRenderer: InputBufferRenderer {
         caretIndex = newCaretIndex
     }
     
-    func commitInputBuffer() {
+    func commit() {
         moveCaretToEnd()
         textReset()
     }
     
-    func removeCharBeforeInputBuffer() {
+    func removeCharBeforeInput() {
         guard let textDocumentProxy = inputController?.textDocumentProxy else { return }
         
         // Move caret to the first char
@@ -138,7 +144,7 @@ class ImmediateModeInputBufferRenderer: InputBufferRenderer {
     
     var hasText: Bool { !text.isEmpty }
     
-    var documentContextBeforeInput: String {
+    var textBeforeInput: String {
         let documentContextBeforeInput = inputController?.textDocumentProxy?.documentContextBeforeInput ?? ""
         let inputTextBeforeCaret = text[..<caretIndex]
         if documentContextBeforeInput.hasSuffix(inputTextBeforeCaret) {
@@ -148,7 +154,7 @@ class ImmediateModeInputBufferRenderer: InputBufferRenderer {
         }
     }
     
-    var documentContextAfterInput: String {
+    var textAfterInput: String {
         let documentContextAfterInput = inputController?.textDocumentProxy?.documentContextAfterInput ?? ""
         let inputTextAfterCaret = text[caretIndex...]
         if documentContextAfterInput.hasPrefix(inputTextAfterCaret) {

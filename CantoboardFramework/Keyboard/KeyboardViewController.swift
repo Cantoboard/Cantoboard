@@ -11,6 +11,7 @@ import UIKit
 import CocoaLumberjackSwift
 
 open class KeyboardViewController: UIInputViewController {
+    static let defaultHasCompositionView = false
     private static let isLoggerInited = initLogger()
     
     // Uncomment this to debug memory leak.
@@ -18,8 +19,9 @@ open class KeyboardViewController: UIInputViewController {
     
     private var inputController: InputController?
     private(set) weak var keyboardViewPlaceholder: UIView?
-    private weak var keyboardWidthConstraint, superviewCenterXConstraint: NSLayoutConstraint?
+    private weak var keyboardWidthConstraint, superviewCenterXConstraint, keyboardViewPlaceholderTopConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
+    private(set) weak var compositionLabelView: CompositionLabel?
     private weak var logView: UITextView?
     
     private(set) var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
@@ -116,6 +118,31 @@ open class KeyboardViewController: UIInputViewController {
         }
     }
     
+    var hasCompositionView: Bool = KeyboardViewController.defaultHasCompositionView {
+        didSet {
+            view.setNeedsLayout()
+            
+            if hasCompositionView {
+                if compositionLabelView == nil {
+                    let compositionLabelView = CompositionLabel()
+                    view.addSubview(compositionLabelView)
+                    self.compositionLabelView = compositionLabelView
+                }
+            } else {
+                compositionLabelView?.removeFromSuperview()
+                compositionLabelView = nil
+            }
+        }
+    }
+    
+    private var compositionViewHeight: CGFloat {
+        return (hasCompositionView) ? CompositionLabel.height : .zero
+    }
+    
+    private var keyboardHeight: CGFloat {
+        layoutConstants.ref.keyboardHeight + compositionViewHeight
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         refreshLayoutConstants()
@@ -124,15 +151,12 @@ open class KeyboardViewController: UIInputViewController {
         
         Settings.hasFullAccess = hasFullAccess
         
-        let layoutConstants = self.layoutConstants.ref
-        let heightConstraint = view.heightAnchor.constraint(equalToConstant: layoutConstants.keyboardHeight)
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardHeight)
         heightConstraint.priority = .required
-        heightConstraint.isActive = true
         self.heightConstraint = heightConstraint
     
         let widthConstraint = view.widthAnchor.constraint(equalToConstant: 1) // Just a placeholder. Value will be reset on viewWillLayoutSubviews()
         widthConstraint.priority = .required
-        widthConstraint.isActive = true
         self.widthConstraint = widthConstraint
     
         let keyboardViewPlaceholder = UIView()
@@ -142,18 +166,24 @@ open class KeyboardViewController: UIInputViewController {
         
         let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
         keyboardWidthConstraint.priority = .required
-        keyboardWidthConstraint.isActive = true
         self.keyboardWidthConstraint = keyboardWidthConstraint
-        
-        // EmojiView inside KeyboardView requires AutoLayout.
-        NSLayoutConstraint.activate([
-            keyboardViewPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor),
-            keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
         
         reloadSettings()
         createKeyboardIfNeeded()
+        
+        // EmojiView inside KeyboardView requires AutoLayout.
+        let keyboardViewPlaceholderTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
+        keyboardViewPlaceholderTopConstraint.priority = .required
+        self.keyboardViewPlaceholderTopConstraint = keyboardViewPlaceholderTopConstraint
+        
+        NSLayoutConstraint.activate([
+            heightConstraint,
+            widthConstraint,
+            keyboardWidthConstraint,
+            keyboardViewPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            keyboardViewPlaceholderTopConstraint,
+            keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -163,6 +193,7 @@ open class KeyboardViewController: UIInputViewController {
         if superviewCenterXConstraint == nil, let superview = view.superview {
             let superviewCenterXConstraint = view.centerXAnchor.constraint(equalTo: superview.centerXAnchor)
             self.superviewCenterXConstraint = superviewCenterXConstraint
+            // TODO Remove this
             superviewCenterXConstraint.isActive = true
         }
         
@@ -196,13 +227,23 @@ open class KeyboardViewController: UIInputViewController {
         let layoutConstants = self.layoutConstants.ref
         let hostWindowWidth = hostWindow.bounds.width
         layoutConstants.keyboardWidth = hostWindowWidth
-        heightConstraint?.constant = layoutConstants.keyboardHeight
+        heightConstraint?.constant = keyboardHeight
         widthConstraint?.constant = hostWindowWidth
+        keyboardViewPlaceholderTopConstraint?.constant = compositionViewHeight
+        
+        if let compositionLabelView = compositionLabelView {
+            compositionLabelView.frame = CGRect(
+                origin: .zero,
+                size: CGSize(width: hostWindowWidth, height: compositionViewHeight)).inset(by: CompositionLabel.insets)
+        }
         
         super.viewWillLayoutSubviews()
         
         // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
-        logView?.frame = CGRect(origin: .zero, size: layoutConstants.keyboardSize)
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        logView?.frame = keyboardViewPlaceholder?.frame ?? .zero
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

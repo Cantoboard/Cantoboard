@@ -27,6 +27,7 @@
 		79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79305FF3260A6EF7002131EF /* DefaultDictionary.swift */; };
 		79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* LevelDbTable.mm */; };
 		79515ABC2609AF9C00D29A5C /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79515AB82609AF5D00D29A5C /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		795A69DC2700810F00CDDC52 /* CompositionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A69DB2700810F00CDDC52 /* CompositionLabel.swift */; };
 		795B22C4261EBA3D00271D9F /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795B22C3261EBA3D00271D9F /* Array+Extension.swift */; };
 		795B22D5261EEE1400271D9F /* UserDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795B22D4261EEE1400271D9F /* UserDictionary.swift */; };
 		79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */; };
@@ -156,7 +157,7 @@
 		79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */; };
 		79BE976926D749A90059E58A /* CandidateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976826D749A90059E58A /* CandidateCell.swift */; };
 		79BE977326D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE977226D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift */; };
-		79CA7AF426FD9386006B561E /* InputBufferRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CA7AF326FD9386006B561E /* InputBufferRenderer.swift */; };
+		79CA7AF426FD9386006B561E /* CompositionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CA7AF326FD9386006B561E /* CompositionRenderer.swift */; };
 		79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AAF263F95F600993949 /* CocoaLumberjackSwift */; };
 		79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AB4263F961800993949 /* CocoaLumberjack */; };
 		79D31ACD263FAC1300993949 /* InstanceCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D31ACC263FAC1300993949 /* InstanceCounter.swift */; };
@@ -311,6 +312,7 @@
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		79515AD72609BFB400D29A5C /* Data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Data; path = CantoboardFramework/Data; sourceTree = SOURCE_ROOT; };
 		79515AED260A6BBB00D29A5C /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
+		795A69DB2700810F00CDDC52 /* CompositionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionLabel.swift; sourceTree = "<group>"; };
 		795B22C3261EBA3D00271D9F /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		795B22D4261EEE1400271D9F /* UserDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictionary.swift; sourceTree = "<group>"; };
 		79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionView.swift; sourceTree = "<group>"; };
@@ -439,7 +441,7 @@
 		79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateSegmentControlCell.swift; sourceTree = "<group>"; };
 		79BE976826D749A90059E58A /* CandidateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCell.swift; sourceTree = "<group>"; };
 		79BE977226D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
-		79CA7AF326FD9386006B561E /* InputBufferRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBufferRenderer.swift; sourceTree = "<group>"; };
+		79CA7AF326FD9386006B561E /* CompositionRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRenderer.swift; sourceTree = "<group>"; };
 		79D31ACC263FAC1300993949 /* InstanceCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstanceCounter.swift; sourceTree = "<group>"; };
 		79D4E1BE26422C6E00857D7D /* DataFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFileManager.swift; sourceTree = "<group>"; };
 		79D4E23A264251C600857D7D /* EnglishDictSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EnglishDictSource; sourceTree = "<group>"; };
@@ -637,7 +639,7 @@
 			children = (
 				799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */,
 				79B9B59125F34A1200238E80 /* FeedbackProvider.swift */,
-				79CA7AF326FD9386006B561E /* InputBufferRenderer.swift */,
+				79CA7AF326FD9386006B561E /* CompositionRenderer.swift */,
 				79B9B5A725F34A1200238E80 /* InputController.swift */,
 				79B9B58B25F34A1200238E80 /* InputEngine */,
 				79B9B5A825F34A1200238E80 /* KeyboardAction.swift */,
@@ -678,6 +680,7 @@
 				79B9B5A025F34A1200238E80 /* KeyView.swift */,
 				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
 				79BE977F26D74B460059E58A /* Status */,
+				795A69DB2700810F00CDDC52 /* CompositionLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1316,7 +1319,7 @@
 				79B9B5F825F34A1200238E80 /* BilingualInputEngine.swift in Sources */,
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,
-				79CA7AF426FD9386006B561E /* InputBufferRenderer.swift in Sources */,
+				79CA7AF426FD9386006B561E /* CompositionRenderer.swift in Sources */,
 				79BE977326D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift in Sources */,
 				79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */,
 				799AE20226792F4C00286530 /* KeypadButton.swift in Sources */,
@@ -1356,6 +1359,7 @@
 				79BE974F26D73D680059E58A /* BaseKeyboardView.swift in Sources */,
 				79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */,
 				79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */,
+				795A69DC2700810F00CDDC52 /* CompositionLabel.swift in Sources */,
 				79D4E1BF26422C6E00857D7D /* DataFileManager.swift in Sources */,
 				79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */,
 				79BE976926D749A90059E58A /* CandidateCell.swift in Sources */,
