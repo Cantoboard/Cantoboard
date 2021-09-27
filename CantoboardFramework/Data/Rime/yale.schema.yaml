@@ -131,23 +131,6 @@ translator:
   max_homophones: 10
   always_show_comments: true
   prism: yale
-  preedit_format:
-    - xform/j|dz/z/
-    - xform/ts/c/
-    - xform/x/ng/
-    - xform/ee|(?<=[aeou])y/i/
-    - xform/oo|(?<=[aeio])w/u/
-    - xform/(?!^)(?<![ '])h|q(?=[aeiou])//
-    - xform/[uo](?=[mp])/a/
-    - xform/r|(?<!a)a(?=$|[ '\d])/aa/
-    - xform/(^|[ '])(y(?=$|[aeio '\d]|ue?(ng|k)|ui)|(?=y))/$1j/
-    - xform/y?ue|(?<=[zcsj])u(?=$|[ '\d])|y(?!u)/yu/
-    - xform/((?<=[dtnlzcsjh])u|oe|eu|v)(?!$|ng|[k '\d])/eo/
-    - xform/(eo|eu|v)(?=$|ng|[k '\d])/oe/
-    - xform/(^|[ '])eot/$1oet/
-    - xform/(^|[bpmfdtnlgkh '])i(?=$|[ '\d])/$1ei/
-    - xform/(^|[bpmdtnlh ']|ng)u(?=$|[ '\d])/$1ou/
-
   # Jyutping to Yale
   # comment_format:
     # - xform/aa(?=\d)/a/
