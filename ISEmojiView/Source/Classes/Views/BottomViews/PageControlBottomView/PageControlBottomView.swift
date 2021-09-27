@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal protocol PageControlBottomViewDelegate: class {
+internal protocol PageControlBottomViewDelegate: AnyObject {
     
     func pageControlBottomViewDidPressDeleteBackwardButton(_ bottomView: PageControlBottomView)
     func pageControlBottomViewDidPressDismissKeyboardButton(_ bottomView: PageControlBottomView)
