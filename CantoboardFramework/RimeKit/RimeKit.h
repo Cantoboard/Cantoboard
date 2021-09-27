@@ -25,6 +25,7 @@ NS_SWIFT_NAME(RimeSession)
 -(void)setCurrentSchema:(NSString *)schemaId;
 
 @property int compositionCaretBytePosition, rawInputCaretBytePosition;
+@property bool isFirstCandidateCompleteMatch;
 @property (readonly, strong) NSString *compositionText, *commitTextPreview, *rawInput;
 
 @end

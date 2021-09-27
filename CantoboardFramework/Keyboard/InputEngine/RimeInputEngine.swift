@@ -34,7 +34,7 @@ public enum RimeSchema: String, Codable {
     var shortName: String {
         switch self {
         case .cangjie: return "倉頡"
-        case .yale: return "耶魯"
+        case .yale: return "耶魯/劉錫祥"
         case .quick: return "速成"
         case .jyutping: return "粵拼"
         case .loengfan: return "兩分"
@@ -234,6 +234,10 @@ class RimeInputEngine: NSObject, InputEngine {
             let caretCharIndex = convertUtf8ByteIndexToCharIndex(text, caretByteIndex)
             return Composition(text: text, caretIndex: Int(caretCharIndex))
         }
+    }
+    
+    var isFirstCandidateCompleteMatch: Bool {
+        rimeSession?.isFirstCandidateCompleteMatch ?? false
     }
     
     private func convertUtf8ByteIndexToCharIndex(_ text: String, _ byteIndex: Int) -> Int {

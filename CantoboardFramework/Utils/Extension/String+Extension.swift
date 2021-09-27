@@ -13,6 +13,18 @@ extension String {
         return (self as NSString).size(withAttributes: [NSAttributedString.Key.font: withFont])
     }
     
+    func caseChangeCount() -> Int {
+        var caseChangeCount = 0
+        var isLastCharUppercase: Bool? = nil
+        for c in self {
+            if isLastCharUppercase != nil && isLastCharUppercase != c.isUppercase {
+                caseChangeCount += 1
+            }
+            isLastCharUppercase = c.isUppercase
+        }
+        return caseChangeCount
+    }
+    
     func caseMorph(caseForm: String) -> String {
         return Self.caseMorph(rimeText: self, englishText: caseForm)
     }

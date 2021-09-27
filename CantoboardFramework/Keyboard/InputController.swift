@@ -80,6 +80,8 @@ class InputController: NSObject {
     private weak var keyboardViewController: KeyboardViewController?
     private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
+    private var compositionRenderer: CompositionRenderer!
+    private(set) var isImmediateMode: Bool!
     
     private(set) var state: KeyboardState = KeyboardState()
     
@@ -87,7 +89,7 @@ class InputController: NSObject {
     private var isHoldingShift = false
         
     private var hasInsertedAutoSpace = false
-    private var shouldApplyChromeSearchBarHack = false, shouldSkipNextTextDidChange = false
+    private var shouldApplyChromeSearchBarHack = false
     private var needClearInput = false, needReloadCandidates = true
     
     private var prevTextBefore: String?
@@ -98,6 +100,14 @@ class InputController: NSObject {
         keyboardViewController?.textDocumentProxy
     }
     
+    private var documentContextBeforeInput: String {
+        compositionRenderer.textBeforeInput
+    }
+    
+    private var documentContextAfterInput: String {
+        compositionRenderer.textAfterInput
+    }
+    
     init(keyboardViewController: KeyboardViewController) {
         super.init()
         
@@ -106,7 +116,7 @@ class InputController: NSObject {
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
         initKeyboardView()
-        enforceInputMode()
+        refreshInputSettings()
     }
     
     private var shouldUseKeypad: Bool {
@@ -158,14 +168,8 @@ class InputController: NSObject {
     
     func textDidChange(_ textInput: UITextInput?) {
         // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
-        shouldApplyChromeSearchBarHack = isTextChromeSearchBar()
-        if prevTextBefore != textDocumentProxy?.documentContextBeforeInput && !shouldSkipNextTextDidChange {
-            clearInput(shouldLeaveReverseLookupMode: false)
-        } else if inputEngine.composition != nil, !shouldApplyChromeSearchBarHack {
-            self.updateMarkedText()
-        }
+        shouldApplyChromeSearchBarHack = isTextChromeSearchBar() && !isImmediateMode
         
-        shouldSkipNextTextDidChange = false
         updateInputState()
     }
     
@@ -230,6 +234,11 @@ class InputController: NSObject {
         }
     }
     
+    func keyboardDisappeared() {
+        compositionRenderer.textReset()
+        clearInput()
+    }
+    
     func onIdiomChanged() {
         guard let newIdiom = keyboardViewController?.layoutConstants.ref.idiom else { return }
         state.keyboardIdiom = newIdiom
@@ -264,7 +273,8 @@ class InputController: NSObject {
         case .character(let c):
             guard let char = c.first else { return }
             if !isComposing && shouldApplyChromeSearchBarHack {
-                self.shouldSkipNextTextDidChange = true
+                // To clear out the current url selected in Chrome address bar.
+                // This shouldn't have any side effects in other apps.
                 textDocumentProxy.insertText("")
             }
             let shouldFeedCharToInputEngine = char.isASCII && char.isLetter && c.count == 1
@@ -283,8 +293,17 @@ class InputController: NSObject {
         case .space(let spaceKeyMode):
             handleSpace(spaceKeyMode: spaceKeyMode)
         case .newLine:
-            if !insertComposingText(shouldDisableSmartSpace: true) {
-                insertText("\n")
+            if !insertComposingText(shouldDisableSmartSpace: true) || isImmediateMode {
+                let shouldApplyBrowserYoutubeSearchHack = textDocumentProxy.returnKeyType == .search && !isImmediateMode
+                if shouldApplyBrowserYoutubeSearchHack {
+                    // This is a special hack for triggering finishing/search event with marked text in browser searching on www.youtube.com
+                    textDocumentProxy.unmarkText()
+                    DispatchQueue.main.async {
+                        textDocumentProxy.insertText("\n")
+                    }
+                } else {
+                    insertText("\n")
+                }
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
             if state.reverseLookupSchema != nil && !isComposing {
@@ -347,7 +366,7 @@ class InputController: NSObject {
             }
             
             state.inputMode = state.inputMode.afterToggle
-            enforceInputMode()
+            refreshInputSettings()
         case .toggleSymbolShape:
             switch state.symbolShape {
             case .full: state.symbolShapeOverride = .half
@@ -398,16 +417,27 @@ class InputController: NSObject {
         } else {
             updateInputState()
         }
+        updateComposition()
     }
     
-    func enforceInputMode() {
+    func refreshInputSettings() {
         if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
+        
+        isImmediateMode =  Settings.cached.compositionMode == .immediate
+        if isImmediateMode {
+            compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
+        } else {
+            compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
+        }
+        
+        keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
     }
     
-    private func isTextChromeSearchBar() -> Bool {
+    func isTextChromeSearchBar() -> Bool {
         guard let textFieldType = textDocumentProxy?.keyboardType else { return false }
-        //print("isTextChromeSearchBar", textFieldType, textDocumentProxy.documentContextBeforeInput)
+        // DDLogInfo("isTextChromeSearchBar \(textFieldType) \(textDocumentProxy?.documentContextBeforeInput ?? "<empty-documentContextBeforeInput>")")
+        // Finding: documentContextBeforeInput might not contain the full url.
         return textFieldType == UIKeyboardType.webSearch
     }
     
@@ -415,7 +445,7 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return false }
         //print("autocapitalizationType", textDocumentProxy.autocapitalizationType?.rawValue)
         if textDocumentProxy.autocapitalizationType == .some(.none) ||
-            inputEngine.composition?.text != nil ||
+            inputEngine.isComposing ||
             isHoldingShift
             { return false }
         
@@ -423,9 +453,10 @@ class InputController: NSObject {
         // - First char in the doc. nil
         // - Half shaped: e.g. ". " -> "<sym><space>"
         // - Full shaped: e.g. "。" -> "<sym>"
-        let lastChar = textDocumentProxy.documentContextBeforeInput?.last
-        let lastSymbol = textDocumentProxy.documentContextBeforeInput?.last(where: { $0 != " " })
-        // DDLogInfo("documentContextBeforeInput \(textDocumentProxy.documentContextBeforeInput) \(lastChar)")
+        let documentContextBeforeInput = documentContextBeforeInput
+        let lastChar = documentContextBeforeInput.last
+        let lastSymbol = documentContextBeforeInput.last(where: { $0 != " " })
+        // DDLogInfo("documentContextBeforeInput \(documentContextBeforeInput) \(lastChar)")
         let isFirstCharInDoc = lastChar == nil || lastChar == "\n"
         let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isHalfShapeTerminalPunctuation ?? false)
         let isFullShapedCase = lastChar?.isFullShapeTerminalPunctuation ?? false
@@ -446,6 +477,7 @@ class InputController: NSObject {
             handleKey(.toggleInputMode)
         }
         clearInput(shouldLeaveReverseLookupMode: false)
+        refreshInputSettings()
     }
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
@@ -455,17 +487,8 @@ class InputController: NSObject {
             inputEngine.rimeSchema = state.activeSchema
         }
         updateInputState()
+        updateComposition()
     }
-    
-    func clearState() {
-        // clearInput()
-        hasInsertedAutoSpace = false
-        shouldSkipNextTextDidChange = false
-        lastKey = nil
-        prevTextBefore = nil
-    }
-    
-    private var hasMarkedText = false
     
     private func insertText(_ text: String, requestSmartSpace: Bool = false) {
         guard !text.isEmpty else { return }
@@ -473,19 +496,11 @@ class InputController: NSObject {
         let isNewLine = text == "\n"
         
         if shouldRemoveSmartSpace(text) {
-            // If there's marked text, we've to make an extra call to deleteBackward to remove the marked text before we could delete the space.
-            if hasMarkedText {
-                textDocumentProxy.deleteBackward()
-                // If we hit this case, textDocumentProxy.documentContextBeforeInput will no longer be in-sync with the text of the document,
-                // It will contain part of the marked text which the doc doesn't contain.
-                // Fortunately, contextual update looks at the tail of the documentContextBeforeInput only.
-                // After inserting text, the inaccurate text doesn't affect the contextual update.
-            }
-            textDocumentProxy.deleteBackward()
+            compositionRenderer.removeCharBeforeInput()
             hasInsertedAutoSpace = false
         }
         
-        let textToBeInserted: String
+        var textToBeInserted: String
         
         if shouldInsertSmartSpace(text, requestSmartSpace, isNewLine) {
             textToBeInserted = text + " "
@@ -495,31 +510,38 @@ class InputController: NSObject {
             hasInsertedAutoSpace = false
         }
         
-        // After countless attempt, this provides best compatibility.
+        // After countless attempt, this provides the best compatibility.
         // Test cases:
         // Normal text fields
-        // Safari/Chrome searching on www.youtube.com
-        // Chrome address bar
+        // Safari/Chrome searching on www.youtube.com, enter should trigger search. Requires a special hack when inserting "\n".
+        // Chrome address bar, entering the first character should clear out the current url.
         // Google Calender create event title text field
-        // Slack (not supported due to Slack's bug)
-        hasMarkedText = false
-        textDocumentProxy.insertText(textToBeInserted)
+        // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
+        // Slack
+        // Number only text field, keyboard should be able to insert multiple digits.
+        if compositionRenderer.hasText {
+            // Calling setMarkedText("") & unmarkText() here won't work in Slack. It will insert the text twice.
+            compositionRenderer.update(withCaretAtTheEnd: textToBeInserted)
+            compositionRenderer.commit()
+        } else {
+            textDocumentProxy.insertText(textToBeInserted)
+        }
         
         needClearInput = true
         // DDLogInfo("insertText() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
     }
     
     private func updateInputState() {
-        updateMarkedText()
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
-        state.returnKeyType = hasMarkedText ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
+        let isComposing = inputEngine.isComposing
+        state.returnKeyType = isComposing && !isImmediateMode ? .confirm : ReturnKeyType(textDocumentProxy?.returnKeyType ?? .default)
         state.needsInputModeSwitchKey = keyboardViewController?.needsInputModeSwitchKey ?? false
-        if !inputEngine.isComposing || state.inputMode == .english {
+        if !isComposing || state.inputMode == .english {
             state.spaceKeyMode = .space
         } else {
-            let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+            let hasCandidate = isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
             switch Settings.cached.spaceAction {
             case .nextPage where hasCandidate: state.spaceKeyMode = .nextPage
             case .insertCandidate where hasCandidate: state.spaceKeyMode = .select
@@ -529,45 +551,50 @@ class InputController: NSObject {
         keyboardView?.state = state
     }
     
-    private func updateMarkedText() {
+    private func updateComposition() {
         switch state.inputMode {
-        case .chinese: setMarkedText(inputEngine.composition)
-        case .english: setMarkedText(inputEngine.englishComposition)
+        case .chinese: updateComposition(inputEngine.composition)
+        case .english: updateComposition(inputEngine.englishComposition)
         case .mixed:
             if state.activeSchema.isCangjieFamily {
                 // Show both Cangjie radicals and english composition in marked text.
-                let composition = inputEngine.rimeComposition
-                composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
-                setMarkedText(composition)
+                // let composition = inputEngine.rimeComposition
+                // composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
+                // updateComposition(composition)
+                updateComposition(inputEngine.englishComposition)
             } else {
-                setMarkedText(inputEngine.composition)
+                updateComposition(inputEngine.composition)
             }
+        }
+        
+        if state.activeSchema.isCangjieFamily {
+            keyboardViewController?.compositionLabelView?.composition = inputEngine.rimeComposition
+        } else {
+            keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
         }
     }
     
-    private func setMarkedText(_ composition: Composition?) {
+    private func updateComposition(_ composition: Composition?) {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         guard var text = composition?.text, !text.isEmpty else {
-            if hasMarkedText {
-                textDocumentProxy.setMarkedText("", selectedRange: NSRange(location: 0, length: 0))
-                textDocumentProxy.unmarkText()
-                hasMarkedText = false
+            if compositionRenderer.hasText {
+                compositionRenderer.update(withCaretAtTheEnd: "")
+                compositionRenderer.commit()
             }
             return
         }
         var caretPosition = composition?.caretIndex ?? NSNotFound
         
         let inputType = textDocumentProxy.keyboardType ?? .default
-        let shouldStripSpace = inputType == .URL || inputType == .emailAddress || inputType == .webSearch
+        let shouldStripSpace = inputType == .URL || inputType == .emailAddress || inputType == .webSearch || isImmediateMode
         if shouldStripSpace {
             let spaceStrippedSpace = text.filter { $0 != " " }
             caretPosition -= text.prefix(caretPosition).reduce(0, { $0 + ($1 != " " ? 0 : 1) })
             text = spaceStrippedSpace
         }
         
-        textDocumentProxy.setMarkedText(text, selectedRange: NSRange(location: caretPosition, length: 0))
-        hasMarkedText = true
+        compositionRenderer.update(text: text, caretIndex: text.index(text.startIndex, offsetBy: caretPosition))
     }
     
     private var shouldEnableSmartInput: Bool {
@@ -620,12 +647,11 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return false }
         
         // DDLogInfo("handleAutoSpace() hasInsertedAutoSpace \(hasInsertedAutoSpace) isLastInsertedTextFromCandidate \(isLastInsertedTextFromCandidate)")
-        
+        let last2CharsInDoc = documentContextBeforeInput.suffix(2)
         if hasInsertedAutoSpace, case .selectCandidate = lastKey {
             // Mimic iOS stock behaviour. Swallow the space tap.
             return true
-        } else if hasInsertedAutoSpace || lastKey?.isSpace ?? false,
-           let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
+        } else if (hasInsertedAutoSpace || lastKey?.isSpace ?? false) &&
            Settings.cached.isSmartFullStopEnabled &&
            (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Translate double space tap into ". "
@@ -643,17 +669,16 @@ class InputController: NSObject {
     }
     
     private func shouldRemoveSmartSpace(_ textBeingInserted: String) -> Bool {
-        guard
-            // If we are inserting newline in Google Chrome address bar, do not remove smart space
-            !(isTextChromeSearchBar() && textBeingInserted == "\n"),
-            let textDocumentProxy = textDocumentProxy else { return false }
+        // If we are inserting newline in Google Chrome address bar, do not remove smart space
+        guard !(isTextChromeSearchBar() && textBeingInserted == "\n") else { return false }
         
-        if let last2CharsInDoc = textDocumentProxy.documentContextBeforeInput?.suffix(2),
-            hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
+        let documentContextBeforeInput = documentContextBeforeInput
+        let last2CharsInDoc = documentContextBeforeInput.suffix(2)
+        if hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Remove leading smart space if:
             // English" "(中/.)
-            let isOpeningDoubleQuote = textBeingInserted.first! == "\"" && (textDocumentProxy.documentContextBeforeInput?.filter({ $0 == "\"" }).count ?? 0) % 2 == 0
-            let isOpeningSingleQuote = textBeingInserted.first! == "\'" && (textDocumentProxy.documentContextBeforeInput?.filter({ $0 == "\'" }).count ?? 0) % 2 == 0
+            let isOpeningDoubleQuote = textBeingInserted.first! == "\"" && (documentContextBeforeInput.filter({ $0 == "\"" }).count) % 2 == 0
+            let isOpeningSingleQuote = textBeingInserted.first! == "\'" && (documentContextBeforeInput.filter({ $0 == "\'" }).count) % 2 == 0
             if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit &&
                 !isOpeningDoubleQuote && !isOpeningSingleQuote ||
                 textBeingInserted == "\n" {
@@ -668,25 +693,25 @@ class InputController: NSObject {
     
     private func shouldInsertSmartSpace(_ insertingText: String, _ isFromCandidateBar: Bool, _ isNewLine: Bool) -> Bool {
         guard shouldEnableSmartInput && !isNewLine,
-              let textDocumentProxy = textDocumentProxy,
               let lastChar = insertingText.last else { return false }
         
         // If we are typing a url or just sent combo text like .com, do not insert smart space.
         if case .url = state.keyboardContextualType, insertingText.contains(".") { return false }
         
         // If the user is typing something like a url, do not insert smart space.
-        let lastSpaceIndex = textDocumentProxy.documentContextBeforeInput?.lastIndex(where: { $0.isWhitespace })
-        let lastDotIndex = textDocumentProxy.documentContextBeforeInput?.lastIndex(of: ".")
+        let documentContextBeforeInput = documentContextBeforeInput
+        let lastSpaceIndex = documentContextBeforeInput.lastIndex(where: { $0.isWhitespace })
+        let lastDotIndex = documentContextBeforeInput.lastIndex(of: ".")
         
         guard lastDotIndex == nil ||
               // Scan the text before input from the end, if we hit a dot before hitting a space, do not insert smart space.
-              lastSpaceIndex != nil && textDocumentProxy.documentContextBeforeInput?.distance(from: lastDotIndex!, to: lastSpaceIndex!) ?? 0 >= 0 else {
+              lastSpaceIndex != nil && documentContextBeforeInput.distance(from: lastDotIndex!, to: lastSpaceIndex!) >= 0 else {
             // DDLogInfo("Guessing user is typing url \(textDocumentProxy.documentContextBeforeInput)")
             return false
         }
         
         
-        let nextChar = textDocumentProxy.documentContextAfterInput?.first
+        let nextChar = documentContextAfterInput.first
         // Insert space after english letters and [.,;], and if the input is followed by an English letter.
         // If the input isnt from the candidate bar and there are chars following, do not insert space.
         let isTextFromCandidateBarOrCommitingAtTheEnd = isFromCandidateBar && (nextChar == nil || nextChar?.isEnglishLetter ?? false)
@@ -705,7 +730,7 @@ class InputController: NSObject {
             let symbolShape = Settings.cached.symbolShape
             if symbolShape == .smart {
                 // Default to English.
-                guard let lastChar = textDocumentProxy.documentContextBeforeInput?.last(where: { !$0.isWhitespace }) else {
+                guard let lastChar = documentContextBeforeInput.last(where: { !$0.isWhitespace }) else {
                     self.state.keyboardContextualType = .english
                     return
                 }
@@ -721,9 +746,9 @@ class InputController: NSObject {
         }
     }
     
-    private func showAutoSuggestCandidates() {        
-        let textAfterInput = textDocumentProxy?.documentContextAfterInput ?? ""
-        let textBeforeInput = textDocumentProxy?.documentContextBeforeInput ?? ""
+    private func showAutoSuggestCandidates() {
+        let textAfterInput = documentContextBeforeInput
+        let textBeforeInput = documentContextAfterInput
         
         var newAutoSuggestionType: AutoSuggestionType?
         

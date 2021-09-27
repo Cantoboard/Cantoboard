@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol StatusMenuHandler: class {
+protocol StatusMenuHandler: AnyObject {
     var delegate: KeyboardViewDelegate? { get set }
     var state: KeyboardState { get set }
     var statusMenu: StatusMenu? { get set }

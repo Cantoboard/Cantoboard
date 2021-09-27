@@ -22,6 +22,7 @@
     int _compositionCaretBytePosition;
     NSMutableArray<NSString *> *_candidates;
     NSMutableArray<NSString *> *_comments;
+    bool _isFirstCandidateCompleteMatch;
 }
 
 -(id)init:(RimeApi *)rimeApi sessionId:(RimeSessionId)sessionId {
@@ -31,6 +32,7 @@
     _sessionId = sessionId;
     _candidatesAllLoaded = false;
     _compositionCaretBytePosition = 0;
+    _isFirstCandidateCompleteMatch = false;
     _rawInputCaretBytePosition = 0;
     
     _candidates = [NSMutableArray array];
@@ -142,6 +144,7 @@
         _rawInput = nullSafeToNSString(_rimeApi->get_input(_sessionId));
         
         _compositionCaretBytePosition = ctx.composition.cursor_pos;
+        _isFirstCandidateCompleteMatch = ctx.composition.sel_end == ctx.composition.length;
         _rawInputCaretBytePosition = (int)_rimeApi->get_caret_pos(_sessionId);
         
         // DDLogInfo(@"updateContext");

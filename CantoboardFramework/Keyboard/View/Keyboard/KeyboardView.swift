@@ -69,9 +69,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func initTouchHandler() {
-        longPressGestureRecognizer = UILongPressGestureRecognizer()
-        longPressGestureRecognizer.minimumPressDuration = 0
-        longPressGestureRecognizer.delegate = self
+        longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(keyboardView: self)
         addGestureRecognizer(longPressGestureRecognizer)
         
         touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
@@ -505,16 +503,6 @@ extension KeyboardView {
         let touchPoint = touch.location(in: self)
         let touchingView = super.hitTest(touchPoint, with: event)
         return touchingView
-    }
-}
-
-extension KeyboardView: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive event: UIEvent) -> Bool {
-        let beganTouches = event.allTouches?.filter { $0.phase == .began }
-        if let beganTouches = beganTouches, beganTouches.count > 0 {
-            touchesBeganFromGestureRecoginzer(Set(beganTouches), with: event)
-        }
-        return false
     }
 }
 

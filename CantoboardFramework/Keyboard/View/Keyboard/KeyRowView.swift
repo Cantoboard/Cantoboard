@@ -76,8 +76,6 @@ class KeyRowView: UIView {
               let layoutConstants = layoutConstants
             else { return }
         
-        let keyboardType = keyboardState.keyboardType
-        
         // Reuse keys. Only create/remove keys if necessary.
         
         // Create new keys if necessary.

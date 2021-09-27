@@ -192,7 +192,7 @@ class EnglishInputEngine: InputEngine {
         }
         
         if !disableTextOverride,
-           let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased }) {
+           let firstCaseCorrectedCandidate = spellCorrectionCandidates.prefix(7).first(where: { $0.lowercased() == textLowercased && $0.caseChangeCount() <= 1 }) {
             if isInAppleDictionary {
                 text = firstCaseCorrectedCandidate
             } else {
@@ -218,15 +218,7 @@ class EnglishInputEngine: InputEngine {
             autoCompleteCandidates = []
         }
         
-        let shortWordLengthThreshold = 5
-        if text.count >= shortWordLengthThreshold && text.allSatisfy({ $0.isUppercase }) {
-            candidateSets.insert(text)
-            candidates.append(text)
-            prefectCandidatesStartIndex += 1
-        }
-        
         englishDictionaryWordsSet.forEach({ word in
-            if word.count < shortWordLengthThreshold { return }
             var word = word
             if text.first!.isUppercase && word.first!.isLowercase && word.allSatisfy({ $0.isLowercase }) {
                 word = word.capitalized
@@ -240,12 +232,6 @@ class EnglishInputEngine: InputEngine {
             candidateSets.insert(word)
             prefectCandidatesStartIndex += 1
         })
-        
-        // TODO This's a hack to rule out words like Liu,Jiu which Apple considers as words.
-        if isInAppleDictionary && !candidateSets.contains(text) {
-            candidates.append(text)
-            candidateSets.insert(text)
-        }
         
         // If the dictionary doesn't contain the input word, but iOS considers it as a word, demote it.
         if isInAppleDictionary && !isWord && !candidateSets.contains(text) {

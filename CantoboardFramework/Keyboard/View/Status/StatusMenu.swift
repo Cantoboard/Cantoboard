@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 class StatusMenu: UIView {
+    private static let labelInset: CGFloat = 4
+    
     static let xInset: CGFloat = 5
     static let cornerRadius: CGFloat = 5
     static let separatorWidth: CGFloat = 1
@@ -85,7 +87,7 @@ class StatusMenu: UIView {
             for i in 0..<row.count {
                 let label = itemLabelInRows[r][i]
                 label.frame = CGRect(origin: CGPoint(x: x, y: y), size: cellSize)
-                label.font = .systemFont(ofSize: Self.fontSizeAtUnitHeight * cellSize.height / Self.unitHeight)
+                label.font = .systemFont(ofSize: Self.fontSizeAtUnitHeight * (cellSize.height - 2 * Self.labelInset) / Self.unitHeight)
                 x += cellSize.width
             }
             y += cellSize.height
