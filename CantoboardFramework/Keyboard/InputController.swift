@@ -427,13 +427,24 @@ class InputController: NSObject {
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
         
         isImmediateMode =  Settings.cached.compositionMode == .immediate
+        var hasChangedMode = false
         if isImmediateMode {
-            compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
+            if !(compositionRenderer is ImmediateModeCompositionRenderer) {
+                compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
+                hasChangedMode = true
+            }
         } else {
-            compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
+            if !(compositionRenderer is MarkedTextCompositionRenderer) {
+                compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
+                hasChangedMode = true
+            }
         }
         
         keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
+        
+        if hasChangedMode {
+            clearInput()
+        }
     }
     
     func isTextChromeSearchBar() -> Bool {
