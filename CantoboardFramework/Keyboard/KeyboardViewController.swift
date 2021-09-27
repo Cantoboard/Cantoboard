@@ -193,10 +193,8 @@ open class KeyboardViewController: UIInputViewController {
         super.viewDidAppear(animated)
         refreshLayoutConstants()
         
-        DispatchQueue.main.async {
-            self.reloadSettings()
-            self.createKeyboardIfNeeded()
-        }
+        self.reloadSettings()
+        self.createKeyboardIfNeeded()
     }
     
     public override func didReceiveMemoryWarning() {
