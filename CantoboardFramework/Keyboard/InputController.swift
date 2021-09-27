@@ -522,6 +522,7 @@ class InputController: NSObject {
         // Normal text fields
         // Safari/Chrome searching on www.youtube.com, enter should trigger search. Requires a special hack when inserting "\n".
         // Chrome address bar, entering the first character should clear out the current url.
+        // GMail search field.
         // Google Calender create event title text field
         // Twitter search bar: enter 𥄫女 (𥄫 is a multiple codepoints char)
         // Slack
