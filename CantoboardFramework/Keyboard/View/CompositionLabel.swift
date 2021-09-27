@@ -22,6 +22,7 @@ class CompositionLabel: UILabel {
     
     init() {
         super.init(frame: .zero)
+        backgroundColor = .clear
         textColor = .label
     }
     
