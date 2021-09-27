@@ -35,6 +35,7 @@ struct KeyboardState: Equatable {
         }
     }
     var lastKeyboardTypeChangeFromAutoCap: Bool
+    var isComposing: Bool
     var keyboardContextualType: ContextualType
     var symbolShapeOverride: SymbolShape?
     
@@ -62,6 +63,7 @@ struct KeyboardState: Equatable {
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         lastKeyboardTypeChangeFromAutoCap = false
+        isComposing = false
         keyboardContextualType = .english
         keyboardIdiom = LayoutConstants.forMainScreen.idiom
         
@@ -548,6 +550,7 @@ class InputController: NSObject {
             default: state.spaceKeyMode = .space
             }
         }
+        state.isComposing = isComposing
         keyboardView?.state = state
     }
     

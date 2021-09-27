@@ -86,7 +86,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.activeSchema != newState.activeSchema ||
             prevState.inputMode != newState.inputMode || // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
             prevState.keyboardIdiom != newState.keyboardIdiom ||
-            prevState.lastKeyboardTypeChangeFromAutoCap != newState.lastKeyboardTypeChangeFromAutoCap
+            prevState.lastKeyboardTypeChangeFromAutoCap != newState.lastKeyboardTypeChangeFromAutoCap ||
+            prevState.isComposing != newState.isComposing
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
@@ -284,7 +285,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                 if c == "r" {
                     hint = "反"
                     childrenKeyCaps = [KeyCap(keyChar), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
-                } else if state.returnKeyType == .confirm {
+                } else if state.isComposing {
                     if isInLongPressMode {
                         switch c {
                         case "f":
