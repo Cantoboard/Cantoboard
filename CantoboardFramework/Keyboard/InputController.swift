@@ -309,7 +309,7 @@ class InputController: NSObject {
             }
         case .backspace, .deleteWord, .deleteWordSwipe:
             if state.reverseLookupSchema != nil && !isComposing {
-                state.reverseLookupSchema = nil
+                clearInput(shouldLeaveReverseLookupMode: true)
             } else if isComposing {
                 if action == .deleteWordSwipe {
                     needClearInput = true
@@ -427,24 +427,17 @@ class InputController: NSObject {
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
         
         isImmediateMode =  Settings.cached.compositionMode == .immediate
-        var hasChangedMode = false
         if isImmediateMode {
             if !(compositionRenderer is ImmediateModeCompositionRenderer) {
                 compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
-                hasChangedMode = true
             }
         } else {
             if !(compositionRenderer is MarkedTextCompositionRenderer) {
                 compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
-                hasChangedMode = true
             }
         }
         
         keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
-        
-        if hasChangedMode {
-            clearInput()
-        }
     }
     
     func isTextChromeSearchBar() -> Bool {
@@ -499,6 +492,7 @@ class InputController: NSObject {
             state.reverseLookupSchema = nil
             inputEngine.rimeSchema = state.activeSchema
         }
+        refreshInputSettings()
         updateInputState()
         updateComposition()
     }
