@@ -144,6 +144,7 @@ class InputEngineCandidateSource: CandidateSource {
     private func appendEnglishCandidate(_ i: Int) -> Bool {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine,
+              inputController.state.reverseLookupSchema == nil &&
               inputController.state.inputMode != .chinese &&
               inputController.state.inputMode != .english && i < 7 || inputController.state.inputMode == .english
             else { return false }
