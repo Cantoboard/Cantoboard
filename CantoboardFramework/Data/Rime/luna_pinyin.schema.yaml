@@ -107,8 +107,6 @@ jyut6ping3_reverse_lookup:
     - "xlit| |/|"
 
 __patch:
-  # 使用八股文語言模型
-  - grammar:/hant?
   # 用家自選配置
   - luna_pinyin.custom:/patch?
   - common.custom:/patch?
