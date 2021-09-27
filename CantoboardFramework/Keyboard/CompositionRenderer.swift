@@ -88,9 +88,9 @@ class ImmediateModeCompositionRenderer: CompositionRenderer {
     
     func update(text newText: String, caretIndex newCaretIndex: String.Index) {
         // Adjusting text position too frequent in textbox with auto completion
-        // would cause textDocumentProxy going out sync with our state.
+        // would cause textDocumentProxy going out sync with the actual text in the textbox.
         // For example: Slack, search box on www.youtube.com in WKWebView.
-        // Keep the system caret at the end of the composition.
+        // The following line keeps the system caret at the end of the composition to workaround the limitation.
         let newCaretIndex = newText.endIndex
         
         guard let textDocumentProxy = inputController?.textDocumentProxy else {
@@ -126,15 +126,14 @@ class ImmediateModeCompositionRenderer: CompositionRenderer {
     func removeCharBeforeInput() {
         guard let textDocumentProxy = inputController?.textDocumentProxy else { return }
         
-        // Move caret to the first char
-        let caretMovement = text.distance(from: caretIndex, to: text.startIndex)
-        textDocumentProxy.adjustTextPosition(byCharacterOffset: caretMovement)
+        // Originally, I implemented this as adjustTextPosition(n), deleteBackward() then adjustTextPosition(-n)
+        // Turned out it doesn't work well on Slack (textbox with autocomplete)
+        // The following code is less efficient but compatible with Slack:
         
-        // Delete char
-        textDocumentProxy.deleteBackward()
+        let numCharsToDelete = text.distance(from: text.startIndex, to: caretIndex)
+        textDocumentProxy.deleteBackward(times: numCharsToDelete + 1)
         
-        // Restore caret position
-        textDocumentProxy.adjustTextPosition(byCharacterOffset: -caretMovement)
+        textDocumentProxy.insertText(String(text.prefix(upTo: caretIndex)))
     }
     
     private func moveCaretToEnd() {
