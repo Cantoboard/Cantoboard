@@ -434,7 +434,7 @@ class InputController: NSObject {
         keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
     }
     
-    private func isTextChromeSearchBar() -> Bool {
+    func isTextChromeSearchBar() -> Bool {
         guard let textFieldType = textDocumentProxy?.keyboardType else { return false }
         // DDLogInfo("isTextChromeSearchBar \(textFieldType) \(textDocumentProxy?.documentContextBeforeInput ?? "<empty-documentContextBeforeInput>")")
         // Finding: documentContextBeforeInput might not contain the full url.

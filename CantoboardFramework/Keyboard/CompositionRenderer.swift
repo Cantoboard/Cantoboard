@@ -100,7 +100,8 @@ class ImmediateModeCompositionRenderer: CompositionRenderer {
         
         guard text != newText || caretIndex != newCaretIndex else { return }
         
-        if textDocumentProxy.documentContextBeforeInput?.hasSuffix(text) ?? false {
+        if (inputController?.isTextChromeSearchBar() ?? false) || // Chrome changes the address bar textbox and causes the textDocumentProxy to go out sync.
+            textDocumentProxy.documentContextBeforeInput?.hasSuffix(text) ?? false {
             // If documentContextBeforeInput contains the previous composition, the user didn't select a different textbox.
             // Remove the previous composition, then insert the new one.
             let commonPrefix = text.commonPrefix(with: newText)
