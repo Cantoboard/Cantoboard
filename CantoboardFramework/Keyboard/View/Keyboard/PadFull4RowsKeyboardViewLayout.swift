@@ -17,7 +17,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numeric)], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [

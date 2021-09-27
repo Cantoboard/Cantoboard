@@ -38,6 +38,7 @@ struct KeyboardState: Equatable {
     var isComposing: Bool
     var keyboardContextualType: ContextualType
     var symbolShapeOverride: SymbolShape?
+    var isPortrait: Bool
     
     var enableState: KeyboardEnableState
     
@@ -65,7 +66,9 @@ struct KeyboardState: Equatable {
         lastKeyboardTypeChangeFromAutoCap = false
         isComposing = false
         keyboardContextualType = .english
-        keyboardIdiom = LayoutConstants.forMainScreen.idiom
+        let layoutConstants = LayoutConstants.forMainScreen
+        keyboardIdiom = layoutConstants.idiom
+        isPortrait = layoutConstants.isPortrait
         
         enableState = .enabled
         
@@ -241,9 +244,11 @@ class InputController: NSObject {
         clearInput()
     }
     
-    func onIdiomChanged() {
-        guard let newIdiom = keyboardViewController?.layoutConstants.ref.idiom else { return }
-        state.keyboardIdiom = newIdiom
+    func onLayoutChanged() {
+        guard let newLayoutConstants = keyboardViewController?.layoutConstants.ref else { return }
+        state.keyboardIdiom = newLayoutConstants.idiom
+        state.isPortrait = newLayoutConstants.isPortrait
+
         keyboardView?.state = state
     }
     

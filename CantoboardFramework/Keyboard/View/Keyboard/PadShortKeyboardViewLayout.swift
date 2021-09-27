@@ -15,7 +15,7 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
         [[], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
         [[], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
         [[.shift(.lowercased)], [ "z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.keyboardType(.numeric), .dismissKeyboard]]
+        [[.keyboardType(.numSymbolic), .nextKeyboard], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [

@@ -18,10 +18,8 @@ public enum KeyboardType: Equatable {
     alphabetic(_ state: KeyboardShiftState),
     numeric,
     symbolic,
-    email,
     emojis,
-    images,
-    custom(_ name: String)
+    numSymbolic
 }
 
 public enum RimeChar: Character {

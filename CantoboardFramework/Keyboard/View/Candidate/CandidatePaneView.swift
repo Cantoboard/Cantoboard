@@ -70,7 +70,8 @@ class CandidatePaneView: UIControl {
     var statusIndicatorMode: StatusIndicatorMode {
         get {
             if keyboardState.keyboardType == .numeric ||
-                keyboardState.keyboardType == .symbolic {
+               keyboardState.keyboardType == .symbolic ||
+               keyboardState.keyboardType == .numSymbolic {
                 return .shape
             } else {
                 return .lang

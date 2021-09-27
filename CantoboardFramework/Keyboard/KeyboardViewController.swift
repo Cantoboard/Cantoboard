@@ -111,10 +111,11 @@ open class KeyboardViewController: UIInputViewController {
             newLayoutConstants = LayoutConstants.getContants(screenSize: correctedScreenSize)
         }
         
-        let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom
+        let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom ||
+                               layoutConstants.ref.isPortrait != newLayoutConstants.isPortrait
         layoutConstants.ref = newLayoutConstants
         if hasLayoutChanged {
-            inputController?.onIdiomChanged()
+            inputController?.onLayoutChanged()
         }
     }
     

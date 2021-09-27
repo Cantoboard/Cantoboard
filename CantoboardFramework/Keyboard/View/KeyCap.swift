@@ -130,7 +130,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFont: UIFont {
         switch self {
-        case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
+        case .keyboardType(.numeric), .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
         case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
         case .cangjie(_, true): return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
@@ -235,6 +235,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
         case .keyboardType(.alphabetic): return "ABC"
+        case .keyboardType(.numSymbolic): return ".?123"
         case .rime(.tone1, _, _): return "陰平"
         case .rime(.tone2, _, _): return "陰上"
         case .rime(.tone3, _, _): return "陰去"
@@ -478,16 +479,16 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 let FrameworkBundle = Bundle(for: KeyView.self)
 
 class ButtonImage {
-    static let globe = UIImage(named: "globe", in: Bundle(for: ButtonImage.self), with: nil)
-    static let backspace = UIImage(named: "delete.left", in: Bundle(for: ButtonImage.self), with: nil)
-    static let shift = UIImage(named: "shift", in: Bundle(for: ButtonImage.self), with: nil)
-    static let shiftFilled = UIImage(named: "shift.fill", in: Bundle(for: ButtonImage.self), with: nil)
-    static let capLockFilled = UIImage(named: "capslock.fill", in: Bundle(for: ButtonImage.self), with: nil)
-    static let emojiKeyboardLight = UIImage(named: "face.smiling", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))
-    static let emojiKeyboardDark = UIImage(named: "face.smiling.fill", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))
-    static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)
-    static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)
-    static let dissmissKeyboard = UIImage(named: "keyboard.chevron.compact.down", in: Bundle(for: ButtonImage.self), with: nil)
+    static let globe = UIImage(named: "globe", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let backspace = UIImage(named: "delete.left", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let shift = UIImage(named: "shift", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let shiftFilled = UIImage(named: "shift.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let capLockFilled = UIImage(named: "capslock.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let emojiKeyboardLight = UIImage(named: "face.smiling", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))!.resizableImage(withCapInsets: .zero)
+    static let emojiKeyboardDark = UIImage(named: "face.smiling.fill", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))!.resizableImage(withCapInsets: .zero)
+    static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let dissmissKeyboard = UIImage(named: "keyboard.chevron.compact.down", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
     // static let oneTwoThree = UIImage(systemName: "textformat.123", in: Bundle(for: ButtonImage.self), with: nil)
 }
 

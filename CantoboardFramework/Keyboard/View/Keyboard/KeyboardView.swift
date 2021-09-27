@@ -87,7 +87,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.inputMode != newState.inputMode || // In Cangjie family schemas, toggling inputMode changes the keyboard layout.
             prevState.keyboardIdiom != newState.keyboardIdiom ||
             prevState.lastKeyboardTypeChangeFromAutoCap != newState.lastKeyboardTypeChangeFromAutoCap ||
-            prevState.isComposing != newState.isComposing
+            prevState.isComposing != newState.isComposing ||
+            prevState.isPortrait != newState.isPortrait
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
@@ -206,7 +207,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         switch state.keyboardType {
         case let .alphabetic(shiftState):
             refreshAlphabeticKeys(keyboardViewLayout, shiftState)
-        case .numeric:
+        case .numeric, .numSymbolic:
             let rows = state.symbolShape == .full ? keyboardViewLayout.numbersFull : keyboardViewLayout.numbersHalf
             for (index, keyCaps) in rows.enumerated() {
                 keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)

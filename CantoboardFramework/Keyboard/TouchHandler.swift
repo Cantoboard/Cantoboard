@@ -253,7 +253,7 @@ class TouchHandler {
                 } else {
                     callKeyHandler(.shiftUp)
                 }
-            case .shift(.capsLocked), .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic): ()
+            case .shift(.capsLocked), .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic), .keyboardType(.numSymbolic): ()
             default:
                 // On iPad, on key up, it commits all previous key presses to make sure text is inserted in order.
                 if case .pad = keyboardIdiom {

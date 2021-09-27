@@ -18,7 +18,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .contextual("’")], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numeric)], [.space(.space)], [.contextual(".com"), .keyboardType(.numeric), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.contextual(".com"), .keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [

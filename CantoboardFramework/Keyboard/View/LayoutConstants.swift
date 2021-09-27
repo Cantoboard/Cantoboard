@@ -81,12 +81,12 @@ class PhoneLayoutConstants: LayoutConstants {
     }
     
     required init(copyOf: LayoutConstants) {
-        guard let copyOfTypeCorrected = copyOf as? Self else {
+        guard let copyOf = copyOf as? Self else {
             fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
         }
         
-        self.systemKeyWidthRatio = copyOfTypeCorrected.systemKeyWidthRatio
-        self.shiftKeyWidthRatio = copyOfTypeCorrected.shiftKeyWidthRatio
+        self.systemKeyWidthRatio = copyOf.systemKeyWidthRatio
+        self.shiftKeyWidthRatio = copyOf.shiftKeyWidthRatio
         
         super.init(copyOf: copyOf)
     }
@@ -116,19 +116,19 @@ class PadShortLayoutConstants: LayoutConstants {
                    buttonGapX: buttonGapX,
                    keyHeight: keyHeight,
                    autoCompleteBarHeight: autoCompleteBarHeight,
-                   keyViewInsets: LayoutConstants.contentEdgeInsetsPadShortAndFull,
+                   keyViewInsets: isPortrait ? LayoutConstants.contentEdgeInsetsPadShortAndFullPortrait : LayoutConstants.contentEdgeInsetsPadShortAndFullLandscape,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
     }
     
     required init(copyOf: LayoutConstants) {
-        guard let copyOfTypeCorrected = copyOf as? Self else {
+        guard let copyOf = copyOf as? Self else {
             fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
         }
         
-        self.rightShiftKeyWidth = copyOfTypeCorrected.rightShiftKeyWidth
-        self.returnKeyWidth = copyOfTypeCorrected.returnKeyWidth
+        self.rightShiftKeyWidth = copyOf.rightShiftKeyWidth
+        self.returnKeyWidth = copyOf.returnKeyWidth
         
         super.init(copyOf: copyOf)
     }
@@ -177,26 +177,26 @@ class PadFull4RowsLayoutConstants: LayoutConstants {
                    buttonGapX: buttonGapX,
                    keyHeight: keyHeight,
                    autoCompleteBarHeight: autoCompleteBarHeight,
-                   keyViewInsets: Self.contentEdgeInsetsPadShortAndFull,
+                   keyViewInsets: isPortrait ? LayoutConstants.contentEdgeInsetsPadShortAndFullPortrait : LayoutConstants.contentEdgeInsetsPadShortAndFullLandscape,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
     }
     
     required init(copyOf: LayoutConstants) {
-        guard let copyOfTypeCorrected = copyOf as? Self else {
+        guard let copyOf = copyOf as? Self else {
             fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
         }
         
-        self.tabDeleteKeyWidth = copyOfTypeCorrected.tabDeleteKeyWidth
+        self.tabDeleteKeyWidth = copyOf.tabDeleteKeyWidth
         
-        self.capLockKeyWidth = copyOfTypeCorrected.capLockKeyWidth
-        self.leftShiftKeyWidth = copyOfTypeCorrected.leftShiftKeyWidth
-        self.smallSystemKeyWidth = copyOfTypeCorrected.smallSystemKeyWidth
+        self.capLockKeyWidth = copyOf.capLockKeyWidth
+        self.leftShiftKeyWidth = copyOf.leftShiftKeyWidth
+        self.smallSystemKeyWidth = copyOf.smallSystemKeyWidth
         
-        self.returnKeyWidth = copyOfTypeCorrected.returnKeyWidth
-        self.rightShiftKeyWidth = copyOfTypeCorrected.rightShiftKeyWidth
-        self.largeSystemKeyWidth = copyOfTypeCorrected.largeSystemKeyWidth
+        self.returnKeyWidth = copyOf.returnKeyWidth
+        self.rightShiftKeyWidth = copyOf.rightShiftKeyWidth
+        self.largeSystemKeyWidth = copyOf.largeSystemKeyWidth
         
         super.init(copyOf: copyOf)
     }
@@ -260,21 +260,21 @@ class PadFull5RowsLayoutConstants: LayoutConstants {
     }
     
     required init(copyOf: LayoutConstants) {
-        guard let copyOfTypeCorrected = copyOf as? Self else {
+        guard let copyOf = copyOf as? Self else {
             fatalError("copyOf source object has incorrect type: \(copyOf.self). Expecting \(Self.self)")
         }
         
-        self.topRowKeyHeight = copyOfTypeCorrected.topRowKeyHeight
+        self.topRowKeyHeight = copyOf.topRowKeyHeight
         
-        self.tabKeyWidth = copyOfTypeCorrected.tabKeyWidth
-        self.capLockKeyWidth = copyOfTypeCorrected.capLockKeyWidth
-        self.leftShiftKeyWidth = copyOfTypeCorrected.leftShiftKeyWidth
-        self.smallSystemKeyWidth = copyOfTypeCorrected.smallSystemKeyWidth
+        self.tabKeyWidth = copyOf.tabKeyWidth
+        self.capLockKeyWidth = copyOf.capLockKeyWidth
+        self.leftShiftKeyWidth = copyOf.leftShiftKeyWidth
+        self.smallSystemKeyWidth = copyOf.smallSystemKeyWidth
         
-        self.deleteKeyWidth = copyOfTypeCorrected.deleteKeyWidth
-        self.returnKeyWidth = copyOfTypeCorrected.returnKeyWidth
-        self.rightShiftKeyWidth = copyOfTypeCorrected.rightShiftKeyWidth
-        self.largeSystemKeyWidth = copyOfTypeCorrected.largeSystemKeyWidth
+        self.deleteKeyWidth = copyOf.deleteKeyWidth
+        self.returnKeyWidth = copyOf.returnKeyWidth
+        self.rightShiftKeyWidth = copyOf.rightShiftKeyWidth
+        self.largeSystemKeyWidth = copyOf.largeSystemKeyWidth
         
         super.init(copyOf: copyOf)
     }
@@ -283,8 +283,9 @@ class PadFull5RowsLayoutConstants: LayoutConstants {
 class LayoutConstants: Copyable {
     // Fixed:
     static let keyboardViewTopInset = CGFloat(8)
-    static let contentEdgeInsetsPadShortAndFull = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6 )
-    static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    static let contentEdgeInsetsPadShortAndFullPortrait = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
+    static let contentEdgeInsetsPadShortAndFullLandscape = UIEdgeInsets(top: 9, left: 9, bottom: 9, right: 9)
+    static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     
     // Provided:
     // Keyboard size

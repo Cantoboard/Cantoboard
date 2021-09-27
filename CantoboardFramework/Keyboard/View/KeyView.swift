@@ -11,6 +11,7 @@ import UIKit
 class KeyView: HighlightableButton {
     private static let swipeDownMinCutOffYRatio: CGFloat = 0.25
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.6
+    private static let padLandscapeFontRatio = 1.3
     
     private var keyHintLayer: KeyHintLayer?
     private var swipeDownHintLayer: KeyHintLayer?
@@ -83,7 +84,8 @@ class KeyView: HighlightableButton {
         let hasStateChanged = keyboardState == nil ||
             keyboardState?.keyboardIdiom != newState.keyboardIdiom ||
             keyboardState?.keyboardType != newState.keyboardType ||
-            keyboardState?.keyboardContextualType != newState.keyboardContextualType
+            keyboardState?.keyboardContextualType != newState.keyboardContextualType ||
+            keyboardState?.isPortrait != newState.isPortrait
         guard keyCap != self.keyCap || hasStateChanged else { return }
         
         self.keyCap = keyCap
@@ -95,7 +97,7 @@ class KeyView: HighlightableButton {
         setupView()
         swipeDownPercentage = 0
     }
-        
+    
     internal func setupView() {
         guard let keyboardState = keyboardState,
               let layoutConstants = layoutConstants else { return }
@@ -134,6 +136,13 @@ class KeyView: HighlightableButton {
             setImage(nil, for: .normal)
             setTitle(buttonText, for: .normal)
             titleLabel?.font = keyCap.buttonFont
+            
+            if case .pad = keyboardIdiom,
+               let titleLabel = titleLabel,
+               !keyboardState.isPortrait {
+                titleLabel.font = titleLabel.font.withSize(titleLabel.font.pointSize * Self.padLandscapeFontRatio)
+            }
+            
             titleLabel?.baselineAdjustment = .alignCenters
             titleLabel?.lineBreakMode = .byClipping
             titleLabel?.adjustsFontSizeToFitWidth = true
@@ -146,6 +155,7 @@ class KeyView: HighlightableButton {
                 buttonImage = isDarkMode ? ButtonImage.emojiKeyboardDark : ButtonImage.emojiKeyboardLight
             }
             setImage(buttonImage, for: .normal)
+            imageView?.contentMode = .scaleAspectFit
             setTitle(nil, for: .normal)
             titleLabel?.text = nil
             setHighlightedBackground = true
@@ -163,11 +173,13 @@ class KeyView: HighlightableButton {
             if let titleLabel = titleLabel {
                 swipeDownHintLayer?.fontSize = titleLabel.font.pointSize
             }
-            contentEdgeInsets = UIEdgeInsets(top: contentEdgeInsets.top / 2, left: contentEdgeInsets.left / 2, bottom: contentEdgeInsets.bottom / 2, right: contentEdgeInsets.right / 2)
             updateColorsAccordingToSwipeDownPercentage()
+            contentVerticalAlignment = .bottom
         } else {
             swipeDownHintLayer?.removeFromSuperlayer()
             swipeDownHintLayer = nil
+            contentVerticalAlignment = keyboardIdiom.isPadFull &&
+                !(keyCap.keyCapType == .input || keyCap.keyCapType == .space || isPadTopRowButton) ? .bottom : .center
         }
         
         if isPadTopRowButton {
@@ -238,12 +250,10 @@ class KeyView: HighlightableButton {
         }
         
         updateColorsAccordingToSwipeDownPercentage()
+        setNeedsLayout()
     }
     
     override func layoutSubviews() {
-        guard let keyboardState = keyboardState else { return }
-        let keyboardIdiom = keyboardState.keyboardIdiom
-        
         if let keyHintLayer = keyHintLayer {
             keyHintLayer.isHidden = popupView != nil
             layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.topRightInsets)
@@ -256,10 +266,6 @@ class KeyView: HighlightableButton {
             let yOffset = (1 - swipeDownPercentage) * contentEdgeInsets.top + swipeDownPercentage * fullySwipedDownYOffset
             
             layout(textLayer: swipeDownHintLayer, centeredWithYOffset: yOffset, height: swipeDownHintLayerHeight)
-            contentVerticalAlignment = .bottom
-        } else {
-            contentVerticalAlignment = keyboardIdiom.isPadFull &&
-                !(keyCap.keyCapType == .input || keyCap.keyCapType == .space || isPadTopRowButton) ? .bottom : .center
         }
         
         super.layoutSubviews()
