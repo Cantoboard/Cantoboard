@@ -19,7 +19,7 @@ open class KeyboardViewController: UIInputViewController {
     
     private var inputController: InputController?
     private(set) weak var keyboardViewPlaceholder: UIView?
-    private weak var keyboardWidthConstraint, superviewCenterXConstraint, keyboardViewPlaceholderTopConstraint: NSLayoutConstraint?
+    private weak var keyboardWidthConstraint, keyboardViewPlaceholderTopConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private(set) weak var compositionLabelView: CompositionLabel?
     private weak var logView: UITextView?
@@ -168,9 +168,6 @@ open class KeyboardViewController: UIInputViewController {
         keyboardWidthConstraint.priority = .required
         self.keyboardWidthConstraint = keyboardWidthConstraint
         
-        reloadSettings()
-        createKeyboardIfNeeded()
-        
         // EmojiView inside KeyboardView requires AutoLayout.
         let keyboardViewPlaceholderTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
         keyboardViewPlaceholderTopConstraint.priority = .required
@@ -184,21 +181,21 @@ open class KeyboardViewController: UIInputViewController {
             keyboardViewPlaceholderTopConstraint,
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        
+        DispatchQueue.main.async {
+            self.reloadSettings()
+            self.createKeyboardIfNeeded()
+        }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         refreshLayoutConstants()
         
-        if superviewCenterXConstraint == nil, let superview = view.superview {
-            let superviewCenterXConstraint = view.centerXAnchor.constraint(equalTo: superview.centerXAnchor)
-            self.superviewCenterXConstraint = superviewCenterXConstraint
-            // TODO Remove this
-            superviewCenterXConstraint.isActive = true
+        DispatchQueue.main.async {
+            self.reloadSettings()
+            self.createKeyboardIfNeeded()
         }
-        
-        reloadSettings()
-        createKeyboardIfNeeded()
     }
     
     public override func didReceiveMemoryWarning() {
