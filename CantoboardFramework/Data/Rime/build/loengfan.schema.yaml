@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1631866494
-    default: 1631866489
-    default.custom: 1631866489
-    loengfan.schema: 1631866489
-    symbols: 1631866489
+    common.custom: 0
+    default: 1632713534
+    default.custom: 1632713533
+    loengfan.schema: 1632713534
+    symbols: 1632713534
     symbols.custom: 0
-    symbols_cantonese: 1631866489
+    symbols_cantonese: 1632713533
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -386,7 +386,6 @@ switches:
     states: ["。，", "．，"]
 translator:
   dictionary: loengfan
-  enable_correction: true
   spelling_hints: 20
 variants_hk:
   opencc_config: t2hk.json

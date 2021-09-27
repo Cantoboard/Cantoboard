@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    common.custom: 1631866494
-    default: 1631866489
-    default.custom: 1631866489
-    symbols: 1631866489
+    common.custom: 0
+    default: 1632713534
+    default.custom: 1632713533
+    symbols: 1632713534
     symbols.custom: 0
-    symbols_cantonese: 1631866489
-    yale.schema: 1631866489
+    symbols_cantonese: 1632713533
+    yale.schema: 1632713533
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -337,7 +337,6 @@ simp_hk2s:
 speller:
   algebra:
     - "derive/^ng(?=[aeiou])//"
-    - "derive/^(?=[aeiou])/ng/"
     - "derive/^n(?!g)/l/"
     - "derive/^(g|k)w(?=o)/$1/"
     - "derive/^ng(?=\\d)/m/"
@@ -352,26 +351,27 @@ speller:
     - "derive/aa(?=\\d)/a/"
     - "derive/z/j/"
     - "derive/c/ch/"
+    - "abbrev/^([a-z]).+$/$1/"
+    - "abbrev/^([gk]w|ng).+$/$1/"
     - "derive/j/zh/"
     - "derive/s/sh/"
     - "derive/(?<!a)a(?=m|p)/u/"
     - "derive/(?<!a)a(?=m|p)/o/"
     - "derive/ou/o/"
-    - "derive/^([bpmdtnlh]|ng)?ou/$1u/"
+    - "derive/^([bpmdtxlh]|ng?)?ou/$1u/"
     - "derive/ei/i/"
     - "derive/^yu/yue/"
     - "derive/(?!^)yu/ue/"
     - "derive/ue(?=\\d)/u/"
     - "derive/(?<![aeioy])u/oo/"
-    - "derive/(?<![aeou])i(?!ng|k)/ee/"
+    - "derive/(?<![aeou])i/ee/"
     - "derive/(?<=[aeou])i/y/"
     - "derive/(?<=[aeio])u/w/"
     - "derive/eo/u/"
     - "derive/oe/eo/"
     - "derive/eo/oe/"
-    - "abbrev/^([a-z]).+$/$1/"
-    - "abbrev/^([gk]w|ng).+$/$1/"
-    - "derive/((?!^)([mptk]|ng?))?\\d/h$&/"
+    - "derive/(?!^)([mxptk]|ng?)?\\d/h$&/"
+    - "erase/^(hh(m|ng|x)|(m|ng|x)h)\\d$/"
     - "derive/zh/dz/"
     - "derive/ch/ts/"
     - "derive/\\d//"
@@ -391,24 +391,7 @@ switches:
 translator:
   always_show_comments: true
   dictionary: jyut6ping3
-  enable_correction: true
   max_homophones: 10
-  preedit_format:
-    - "xform/j|dz/z/"
-    - "xform/ts/c/"
-    - "xform/x/ng/"
-    - "xform/ee|(?<=[aeou])y/i/"
-    - "xform/oo|(?<=[aeio])w/u/"
-    - "xform/(?!^)(?<![ '])h|q(?=[aeiou])//"
-    - "xform/[uo](?=[mp])/a/"
-    - "xform/r|(?<!a)a(?=$|[ '\\d])/aa/"
-    - "xform/(^|[ '])(y(?=$|[aeio '\\d]|ue?(ng|k)|ui)|(?=y))/$1j/"
-    - "xform/y?ue|(?<=[zcsj])u(?=$|[ '\\d])|y(?!u)/yu/"
-    - "xform/((?<=[dtnlzcsjh])u|oe|eu|v)(?!$|ng|[k '\\d])/eo/"
-    - "xform/(eo|eu|v)(?=$|ng|[k '\\d])/oe/"
-    - "xform/(^|[ ']|ng)eot/$1oet/"
-    - "xform/(^|[bpmfdtnlgkh '])i(?=$|[ '\\d])/$1ei/"
-    - "xform/(^|[bpmdtnlh ']|ng)u(?=$|[ '\\d])/$1ou/"
   prism: yale
   spelling_hints: 256
 variants_hk:
