@@ -118,11 +118,20 @@ class CandidatePaneView: UIControl {
             
             DDLogInfo("Reloading candidates.")
             
+            let originalCandidatePaneMode = self.mode
+            let originalContentOffset = collectionView.contentOffset
+            
             UIView.performWithoutAnimation {
                 collectionView.scrollOnLayoutSubviews = {
-                    let y = self.groupByEnabled ? self.rowHeight : 0
-                    
-                    collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+                    if originalCandidatePaneMode == .table && originalCandidatePaneMode == self.mode {
+                        // Preserve contentOffset on toggling charForm
+                        let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, collectionView.contentSize.height - self.bounds.height))
+                        collectionView.setContentOffset(clampedOffset, animated: false)
+                    } else {
+                        let y = self.groupByEnabled ? self.rowHeight : 0
+                        
+                        collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+                    }
                     
                     return true
                 }

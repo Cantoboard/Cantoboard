@@ -239,7 +239,7 @@ class InputEngineCandidateSource: CandidateSource {
               inputController.state.inputMode != .english else { return }
         
         while inputEngine.loadMoreRimeCandidates() {}
-                
+        
         var candidateGroupByRadical = Dictionary<UInt8, [Int]>()
         var radicalStrokes = Dictionary<Int, UInt8>()
         for i in 0..<inputEngine.rimeLoadedCandidatesCount {
