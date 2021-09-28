@@ -49,7 +49,8 @@ class CandidatePaneView: UIControl {
             let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType ||
                 prevState.keyboardType != newValue.keyboardType ||
                 prevState.inputMode != newState.inputMode ||
-                prevState.activeSchema != newState.activeSchema
+                prevState.activeSchema != newState.activeSchema ||
+                prevState.symbolShape != newState.symbolShape
             
             _keyboardState = newValue
             
@@ -125,7 +126,7 @@ class CandidatePaneView: UIControl {
                 collectionView.scrollOnLayoutSubviews = {
                     if originalCandidatePaneMode == .table && originalCandidatePaneMode == self.mode {
                         // Preserve contentOffset on toggling charForm
-                        let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, collectionView.contentSize.height - self.bounds.height))
+                        let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, max(0, collectionView.contentSize.height - self.rowHeight)))
                         collectionView.setContentOffset(clampedOffset, animated: false)
                     } else {
                         let y = self.groupByEnabled ? self.rowHeight : 0
@@ -231,10 +232,10 @@ class CandidatePaneView: UIControl {
             backspaceButton.isHidden = false
             charFormButton.isHidden = keyboardState.activeSchema.isShapeBased
         } else {
-            let cannotExpand =
-                collectionView.visibleCells.isEmpty ||
-                collectionView.contentSize.width < collectionView.bounds.width ||
-                candidateOrganizer.cannotExpand
+            let cannotExpand = !keyboardState.keyboardType.isAlphabetic ||
+                               collectionView.visibleCells.isEmpty ||
+                               collectionView.contentSize.width < collectionView.bounds.width ||
+                               candidateOrganizer.cannotExpand
             
             expandButton.isHidden = cannotExpand
             inputModeButton.isHidden = title == nil

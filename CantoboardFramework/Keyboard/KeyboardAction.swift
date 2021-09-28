@@ -20,6 +20,13 @@ public enum KeyboardType: Equatable {
     symbolic,
     emojis,
     numSymbolic
+    
+    var isAlphabetic: Bool {
+        switch self {
+        case .alphabetic: return true
+        default: return false
+        }
+    }
 }
 
 public enum RimeChar: Character {

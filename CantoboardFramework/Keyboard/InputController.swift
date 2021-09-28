@@ -762,8 +762,8 @@ class InputController: NSObject {
     }
     
     private func showAutoSuggestCandidates() {
-        let textAfterInput = documentContextBeforeInput
-        let textBeforeInput = documentContextAfterInput
+        let textBeforeInput = documentContextBeforeInput
+        let textAfterInput = documentContextAfterInput
         
         var newAutoSuggestionType: AutoSuggestionType?
         
