@@ -166,6 +166,10 @@ class KeypadView: UIView, BaseKeyboardView {
     func scrollCandidatePaneToNextPageInRowMode() {
         candidatePaneView?.scrollToNextPageInRowMode()
     }
+    
+    func changeCandidatePaneMode(_ mode: CandidatePaneView.Mode) {
+        candidatePaneView?.changeMode(mode)
+    }
 }
 
 extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {

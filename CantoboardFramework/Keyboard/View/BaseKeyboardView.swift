@@ -17,4 +17,5 @@ protocol BaseKeyboardView: UIView {
     var delegate: KeyboardViewDelegate? { get set }
     var state: KeyboardState { get set }
     func scrollCandidatePaneToNextPageInRowMode()
+    func changeCandidatePaneMode(_ mode: CandidatePaneView.Mode)
 }

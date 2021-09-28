@@ -137,6 +137,10 @@ class KeyboardView: UIView, BaseKeyboardView {
         candidatePaneView?.scrollToNextPageInRowMode()
     }
     
+    func changeCandidatePaneMode(_ mode: CandidatePaneView.Mode) {
+        candidatePaneView?.changeMode(mode)
+    }
+    
     private func layoutKeyboardSubviews(_ layoutConstants: LayoutConstants) {
         directionalLayoutMargins = NSDirectionalEdgeInsets(top: layoutConstants.keyboardViewInsets.top,
                                                            leading: layoutConstants.keyboardViewInsets.left,
@@ -407,7 +411,6 @@ class KeyboardView: UIView, BaseKeyboardView {
         emojiView.removeFromSuperview()
         self.emojiView = nil
     }
-    
     
     private func changeKeyboardEnabled(isEnabled: Bool, isLoading: Bool = false) {
         keyRows.forEach { $0.isEnabled = isEnabled }

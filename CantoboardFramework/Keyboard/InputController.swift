@@ -191,7 +191,7 @@ class InputController: NSObject {
             }
             insertText(commitedText, requestSmartSpace: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
-                // keyboardView?.changeCandidatePaneMode(.row)
+                keyboardView?.changeCandidatePaneMode(.row)
             }
         }
     }
@@ -322,7 +322,7 @@ class InputController: NSObject {
                     _ = inputEngine.processBackspace()
                 }
                 if !inputEngine.isComposing {
-                    // keyboardView?.changeCandidatePaneMode(.row)
+                    keyboardView?.changeCandidatePaneMode(.row)
                 }
             } else {
                 switch action {
