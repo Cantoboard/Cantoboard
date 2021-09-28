@@ -362,7 +362,8 @@ class InputController: NSObject {
             return
         case .setCharForm(let cs):
             inputEngine.charForm = cs
-            candidateOrganizer.updateCandidates(reload: true)
+            let currentCandidatesCount = candidateOrganizer.getCandidateCount(section: 0)
+            candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
             return
         case .toggleInputMode:
             guard state.reverseLookupSchema == nil else {

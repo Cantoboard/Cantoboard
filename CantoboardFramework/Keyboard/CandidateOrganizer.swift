@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CocoaLumberjackSwift
 
 enum GroupByMode {
     case byFrequency, byRomanization, byRadical, byTotalStroke
@@ -21,7 +22,7 @@ enum GroupByMode {
 }
 
 protocol CandidateSource: AnyObject {
-    func updateCandidates(reload: Bool)
+    func updateCandidates(reload: Bool, targetCandidatesCount: Int)
     func getNumberOfSections() -> Int
     func getCandidate(indexPath: IndexPath) -> String?
     func selectCandidate(indexPath: IndexPath) -> String?
@@ -30,6 +31,12 @@ protocol CandidateSource: AnyObject {
     func getSectionHeader(section: Int) -> String?
     var supportedGroupByModes: [GroupByMode] { get }
     var groupByMode: GroupByMode { get set }
+}
+
+extension CandidateSource {
+    func updateCandidates(reload: Bool) {
+        updateCandidates(reload: reload, targetCandidatesCount: 0)
+    }
 }
 
 class InputEngineCandidateSource: CandidateSource {
@@ -294,13 +301,15 @@ class InputEngineCandidateSource: CandidateSource {
         }
     }
     
-    func updateCandidates(reload: Bool) {
+    func updateCandidates(reload: Bool, targetCandidatesCount: Int) {
         guard let inputEngine = inputController?.inputEngine,
               reload || groupByMode == .byFrequency else { return }
         if reload { resetCandidates() }
         
-        if inputController?.inputEngine.rimeLoadedCandidatesCount == 0 || !reload { _ = inputEngine.loadMoreRimeCandidates() }
-        populateCandidates()
+        repeat {
+            _ = inputEngine.loadMoreRimeCandidates()
+            populateCandidates()
+        } while inputEngine.rimeLoadedCandidatesCount < targetCandidatesCount && !inputEngine.hasRimeLoadedAllCandidates
     }
 
     func getNumberOfSections() -> Int {
@@ -383,7 +392,7 @@ class AutoSuggestionCandidateSource: CandidateSource {
         self.cannotExpand = cannotExpand
     }
     
-    func updateCandidates(reload: Bool) {
+    func updateCandidates(reload: Bool, targetCandidatesCount: Int) {
     }
     
     func getNumberOfSections() -> Int {
@@ -462,7 +471,7 @@ class CandidateOrganizer {
         updateCandidates(reload: false)
     }
     
-    func updateCandidates(reload: Bool) {
+    func updateCandidates(reload: Bool, targetCandidatesCount: Int = 0) {
         if let inputController = inputController,
            inputController.inputEngine.isComposing {
             candidateSource = InputEngineCandidateSource(inputController: inputController)
@@ -479,7 +488,7 @@ class CandidateOrganizer {
             candidateSource = nil
         }
         
-        candidateSource?.updateCandidates(reload: reload)
+        candidateSource?.updateCandidates(reload: reload, targetCandidatesCount: targetCandidatesCount)
         
         if reload {
             onReloadCandidates?(self)
