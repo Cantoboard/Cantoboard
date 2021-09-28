@@ -18,7 +18,6 @@ class CandidateCollectionView: UICollectionView {
     private static let longPressMovement: CGFloat = 10
     
     var scrollOnLayoutSubviews: (() -> Bool)?
-    var didLayoutSubviews: ((UICollectionView) -> Void)?
     
     private var longPressTimer: Timer?
     private var cancelTouch: UITouch?
@@ -29,8 +28,6 @@ class CandidateCollectionView: UICollectionView {
         if scrollOnLayoutSubviews?() ?? false {
             scrollOnLayoutSubviews = nil
         }
-        
-        didLayoutSubviews?(self)
     }
     
     @objc private func onLongPress(longPressTouch: UITouch, longPressBeginPoint: CGPoint) {

@@ -263,9 +263,6 @@ class CandidatePaneView: UIControl {
         collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.didLayoutSubviews = { [weak self] _ in
-            self?.setupButtons()
-        }
         
         let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         flowLayout.scrollDirection = mode == .row ? .horizontal : .vertical
@@ -331,6 +328,8 @@ class CandidatePaneView: UIControl {
         collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
         collectionView.collectionViewLayout.invalidateLayout()
         super.layoutSubviews()
+        
+        setupButtons()
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
