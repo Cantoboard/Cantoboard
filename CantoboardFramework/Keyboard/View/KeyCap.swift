@@ -130,7 +130,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonFont: UIFont {
         switch self {
-        case .keyboardType(.numeric), .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
+        case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
         case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
         case .cangjie(_, true): return .systemFont(ofSize: 20)
         default: return .systemFont(ofSize: 22)
