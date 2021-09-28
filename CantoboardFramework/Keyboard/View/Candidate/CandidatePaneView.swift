@@ -124,10 +124,16 @@ class CandidatePaneView: UIControl {
             
             UIView.performWithoutAnimation {
                 collectionView.scrollOnLayoutSubviews = {
-                    if originalCandidatePaneMode == .table && originalCandidatePaneMode == self.mode {
-                        // Preserve contentOffset on toggling charForm
-                        let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, max(0, collectionView.contentSize.height - self.rowHeight)))
-                        collectionView.setContentOffset(clampedOffset, animated: false)
+                    if originalCandidatePaneMode == self.mode {
+                        if originalCandidatePaneMode == .table  {
+                            // Preserve contentOffset on toggling charForm
+                            let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, max(0, collectionView.contentSize.height - self.rowHeight)))
+                            collectionView.setContentOffset(clampedOffset, animated: false)
+                        } else {
+                            // Preserve contentOffset on toggling unlearn
+                            let clampedOffset = CGPoint(x: min(originalContentOffset.x, max(0, collectionView.contentSize.width - collectionView.bounds.width)), y: 0)
+                            collectionView.setContentOffset(clampedOffset, animated: false)
+                        }
                     } else {
                         let y = self.groupByEnabled ? self.rowHeight : 0
                         
