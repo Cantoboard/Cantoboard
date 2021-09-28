@@ -31,8 +31,7 @@ class CandidateCollectionView: UICollectionView {
     }
     
     @objc private func onLongPress(longPressTouch: UITouch, longPressBeginPoint: CGPoint) {
-        if longPressTouch.force >= longPressTouch.maximumPossibleForce * 0.75,
-           let d = delegate as? CandidateCollectionViewDelegate,
+        if let d = delegate as? CandidateCollectionViewDelegate,
            longPressBeginPoint.distanceTo(longPressTouch.location(in: self)).isLessThanOrEqualTo(Self.longPressMovement),
            let indexPath = indexPathForItem(at: longPressBeginPoint) {
             d.collectionView(self, didLongPressItemAt: indexPath)

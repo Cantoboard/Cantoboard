@@ -46,7 +46,7 @@ class BilingualInputEngine: InputEngine {
     var isComposing: Bool {
         !(rimeInputEngine.composition?.text.isEmpty ?? true)
     }
-
+    
     func moveCaret(offset: Int) -> Bool {
         if isComposing {
             let updateRimeEngineState = rimeInputEngine.moveCaret(offset: offset)
@@ -178,6 +178,10 @@ class BilingualInputEngine: InputEngine {
         return commitedText
     }
     
+    func updateEnglishCandidates() {
+        englishInputEngine.updateCandidates()
+    }
+
     private func updateEnglishCaretPosFromRime() -> Bool {
         guard let rimeRawInput = rimeInputEngine.rawInput else { DDLogInfo("Bug check. rimeRawInput shouldn't be nil"); return true }
         // guard let englishComposition = englishComposition else { DDLogInfo("Bug check. englishComposition shouldn't be nil"); return true }

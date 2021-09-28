@@ -200,6 +200,8 @@ class InputController: NSObject {
         if let text = candidateOrganizer.getCandidate(indexPath: choice), text.allSatisfy({ $0.isEnglishLetter }) {
             if EnglishInputEngine.userDictionary.unlearnWord(word: text) {
                 FeedbackProvider.lightImpact.impactOccurred()
+                let candidateCount = candidateOrganizer.getCandidateCount(section: choice.section)
+                candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: candidateCount)
             }
         }
     }

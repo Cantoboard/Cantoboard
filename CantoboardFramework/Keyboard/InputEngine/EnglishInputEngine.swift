@@ -153,7 +153,7 @@ class EnglishInputEngine: InputEngine {
         return englishDictionaryWordsSet
     }
     
-    private func updateCandidates() {
+    func updateCandidates() {
         var text = inputTextBuffer.text, textLowercased = text.lowercased()
         guard !text.isEmpty && text.count < 25 else {
             isWord = false

@@ -58,6 +58,7 @@ class UserDictionary {
                 } else {
                     dict.put(key, value: "\(freq),\(wordSet.joined(separator: ","))")
                 }
+                return true
             }
         }
         return false
