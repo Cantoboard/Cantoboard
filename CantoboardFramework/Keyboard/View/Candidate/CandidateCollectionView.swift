@@ -25,6 +25,10 @@ class CandidateCollectionView: UICollectionView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        if let candidatePaneView = superview as? CandidatePaneView {
+            candidatePaneView.canExpand = contentSize.width > bounds.width
+        }
+        
         if scrollOnLayoutSubviews?() ?? false {
             scrollOnLayoutSubviews = nil
         }

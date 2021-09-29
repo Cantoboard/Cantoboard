@@ -68,6 +68,7 @@ class CandidatePaneView: UIControl {
     weak var delegate: CandidatePaneViewDelegate?
     
     private(set) var mode: Mode = .row
+    
     var statusIndicatorMode: StatusIndicatorMode {
         get {
             if keyboardState.keyboardType == .numeric ||
@@ -77,6 +78,16 @@ class CandidatePaneView: UIControl {
             } else {
                 return .lang
             }
+        }
+    }
+    
+    private var _canExpand: Bool = false
+    var canExpand: Bool {
+        get { _canExpand }
+        set {
+            guard _canExpand != newValue else { return }
+            _canExpand = newValue
+            setupButtons()
         }
     }
     
@@ -240,7 +251,7 @@ class CandidatePaneView: UIControl {
         } else {
             let cannotExpand = !keyboardState.keyboardType.isAlphabetic ||
                                collectionView.visibleCells.isEmpty ||
-                               collectionView.contentSize.width < collectionView.bounds.width ||
+                               !canExpand ||
                                candidateOrganizer.cannotExpand
             
             expandButton.isHidden = cannotExpand
@@ -250,6 +261,8 @@ class CandidatePaneView: UIControl {
             backspaceButton.isHidden = true
             charFormButton.isHidden = true
         }
+        
+        layoutButtons()
     }
     
     private func handleStatusMenu(from: UIView, with: UIEvent?) -> Bool {
@@ -329,24 +342,29 @@ class CandidatePaneView: UIControl {
         guard let superview = superview else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
-        let buttonWidth = expandButtonWidth
-        let candidateViewWidth = superview.bounds.width - buttonWidth - directionalLayoutMargins.trailing
+        let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
         
-        collectionView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
-        collectionView.collectionViewLayout.invalidateLayout()
+        let newcollectionViewFrame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
+        if collectionView.frame != newcollectionViewFrame {
+            collectionView.frame = newcollectionViewFrame
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
+
         super.layoutSubviews()
-        
-        setupButtons()
-        
+        layoutButtons()
+    }
+    
+    private func layoutButtons() {
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
+        let candidateViewWidth = collectionView.bounds.width
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
-                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth + buttonWidth - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
+                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth + expandButtonWidth - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
                 continue
             }
-            button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: buttonWidth, height: buttonWidth))
+            button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: expandButtonWidth, height: expandButtonWidth))
             buttonY += rowHeight
         }
     }
