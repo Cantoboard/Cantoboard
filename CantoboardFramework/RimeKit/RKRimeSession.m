@@ -9,7 +9,8 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
-#include "rime_api.h"
+#pragma clang diagnostic ignored "-Wdocumentation-deprecated-sync"
+#include <Rime/rime_api.h>
 #pragma clang diagnostic pop
 
 #import "RimeKit.h"

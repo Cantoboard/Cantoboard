@@ -317,7 +317,7 @@
 		795B22D4261EEE1400271D9F /* UserDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictionary.swift; sourceTree = "<group>"; };
 		79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionView.swift; sourceTree = "<group>"; };
 		79607A64260FF09200E23D33 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
-		796D9565263EA63E006D9370 /* Rime.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Rime.framework.dSYM; path = RimeFramework/build/Rime.framework.dSYM; sourceTree = "<group>"; };
+		796D9565263EA63E006D9370 /* Rime.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Rime.framework.dSYM; path = RimeFramework/Rime.framework.dSYM; sourceTree = "<group>"; };
 		796E53E426E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadShortKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull4RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
