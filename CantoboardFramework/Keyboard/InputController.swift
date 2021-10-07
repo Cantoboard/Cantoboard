@@ -328,6 +328,13 @@ class InputController: NSObject {
                 if action == .deleteWordSwipe {
                     needClearInput = true
                 } else {
+                    if isTextFieldWebSearch() && isImmediateMode {
+                        // To clear out the auto complete suggestion in Chrome url bar.
+                        // Without this hack, deleteBackward() call will only remove the autosuggestion. It won't remove the the last char of the input.
+                        // This shouldn't have any side effects in other apps.
+                        textDocumentProxy.insertText(" ")
+                        textDocumentProxy.deleteBackward()
+                    }
                     _ = inputEngine.processBackspace()
                 }
                 if !inputEngine.isComposing {
