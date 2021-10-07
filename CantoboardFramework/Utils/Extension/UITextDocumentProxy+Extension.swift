@@ -23,7 +23,7 @@ extension UITextDocumentProxy {
             guard let documentContextBeforeInput = documentContextBeforeInput,
                   var lastChar = documentContextBeforeInput.last else { return }
             // TODO Remove this.
-            DDLogInfo("deleteBackwardWord documentContextBeforeInput \(documentContextBeforeInput)")
+            // DDLogInfo("deleteBackwardWord documentContextBeforeInput \(documentContextBeforeInput)")
             let secondLastCharIdx = documentContextBeforeInput.index(documentContextBeforeInput.endIndex, offsetBy: -2, limitedBy: documentContextBeforeInput.startIndex) ?? documentContextBeforeInput.startIndex
             let secondLastChar = documentContextBeforeInput[safe: secondLastCharIdx]
             var deleteCount = 0

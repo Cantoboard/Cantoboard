@@ -68,6 +68,7 @@ class CandidatePaneView: UIControl {
     weak var delegate: CandidatePaneViewDelegate?
     
     private(set) var mode: Mode = .row
+    private var shouldPreserveCandidateOffset: Bool = false
     
     var statusIndicatorMode: StatusIndicatorMode {
         get {
@@ -131,11 +132,11 @@ class CandidatePaneView: UIControl {
             DDLogInfo("Reloading candidates.")
             
             let originalCandidatePaneMode = self.mode
-            let originalContentOffset = collectionView.contentOffset
+            let originalContentOffset: CGPoint = collectionView.contentOffset
             
             UIView.performWithoutAnimation {
                 collectionView.scrollOnLayoutSubviews = {
-                    if originalCandidatePaneMode == self.mode {
+                    if originalCandidatePaneMode == self.mode && self.shouldPreserveCandidateOffset {
                         if originalCandidatePaneMode == .table  {
                             // Preserve contentOffset on toggling charForm
                             let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, max(0, collectionView.contentSize.height - self.rowHeight)))
@@ -151,6 +152,7 @@ class CandidatePaneView: UIControl {
                         collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
                     }
                     
+                    self.shouldPreserveCandidateOffset = false
                     return true
                 }
                 collectionView.reloadCandidates()
@@ -474,6 +476,10 @@ extension CandidatePaneView {
         }
         targetOffset.x = max(0, min(targetOffset.x, collectionView.contentSize.width - collectionView.frame.width))
         collectionView.setContentOffset(targetOffset, animated: true)
+    }
+    
+    func setPreserveCandidateOffset() {
+        shouldPreserveCandidateOffset = true
     }
 }
 
