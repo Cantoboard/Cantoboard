@@ -104,15 +104,23 @@ class ImmediateModeCompositionRenderer: CompositionRenderer {
         let commonPrefix = text.commonPrefix(with: newText)
         
         // Remove current input buffer
-        moveCaretToEnd()
-        textDocumentProxy.deleteBackward(times: text.count - commonPrefix.count)
+        let deleteCount = text.count - commonPrefix.count
+        if deleteCount > 0 {
+            moveCaretToEnd()
+            textDocumentProxy.deleteBackward(times: deleteCount)
+        }
         
         // Insert input buffer
-        textDocumentProxy.insertText(String(newText.suffix(newText.count - commonPrefix.count)))
+        let insertText = String(newText.suffix(newText.count - commonPrefix.count))
+        if !insertText.isEmpty {
+            textDocumentProxy.insertText(insertText)
+        }
         
         // Move caret
         let caretMovement = newText.distance(from: newText.endIndex, to: newCaretIndex)
-        textDocumentProxy.adjustTextPosition(byCharacterOffset: caretMovement)
+        if caretMovement != 0 {
+            textDocumentProxy.adjustTextPosition(byCharacterOffset: caretMovement)
+        }
         
         text = newText
         caretIndex = newCaretIndex
