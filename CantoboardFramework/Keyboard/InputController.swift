@@ -167,13 +167,20 @@ class InputController: NSObject {
     }
     
     func textWillChange(_ textInput: UITextInput?) {
-        prevTextBefore = textDocumentProxy?.documentContextBeforeInput
-        // DDLogInfo("textWillChange \(prevTextBefore)")
+        prevTextBefore = compositionRenderer.textBeforeInput
+        // DDLogInfo("textWillChange prevTextBefore '\(prevTextBefore ?? "nil")' doc '\(textDocumentProxy?.documentContextBeforeInput ?? "nil")'")
     }
     
     func textDidChange(_ textInput: UITextInput?) {
-        // DDLogInfo("textDidChange prevTextBefore \(prevTextBefore) documentContextBeforeInput \(textDocumentProxy?.documentContextBeforeInput)")
-        shouldApplyChromeSearchBarHack = isTextChromeSearchBar() && !isImmediateMode
+        // DDLogInfo("textDidChange prevTextBefore '\(prevTextBefore ?? "nil")' textBeforeInput '\(compositionRenderer.textBeforeInput)' doc '\(textDocumentProxy?.documentContextBeforeInput ?? "nil")'")
+        shouldApplyChromeSearchBarHack = isTextFieldWebSearch() && !isImmediateMode
+        
+        let textBeforeInput = compositionRenderer.textBeforeInput
+        if !isImmediateMode && isTextFieldWebSearch() && prevTextBefore != textBeforeInput {
+            // Attempt to fix https://github.com/Cantoboard/Cantoboard/issues/33
+            clearInput()
+            prevTextBefore = textBeforeInput
+        }
         
         updateInputState()
     }
@@ -448,7 +455,7 @@ class InputController: NSObject {
         keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
     }
     
-    func isTextChromeSearchBar() -> Bool {
+    func isTextFieldWebSearch() -> Bool {
         guard let textFieldType = textDocumentProxy?.keyboardType else { return false }
         // DDLogInfo("isTextChromeSearchBar \(textFieldType) \(textDocumentProxy?.documentContextBeforeInput ?? "<empty-documentContextBeforeInput>")")
         // Finding: documentContextBeforeInput might not contain the full url.
@@ -687,7 +694,7 @@ class InputController: NSObject {
     
     private func shouldRemoveSmartSpace(_ textBeingInserted: String) -> Bool {
         // If we are inserting newline in Google Chrome address bar, do not remove smart space
-        guard !(isTextChromeSearchBar() && textBeingInserted == "\n") else { return false }
+        guard !(isTextFieldWebSearch() && textBeingInserted == "\n") else { return false }
         
         let documentContextBeforeInput = documentContextBeforeInput
         let last2CharsInDoc = documentContextBeforeInput.suffix(2)
