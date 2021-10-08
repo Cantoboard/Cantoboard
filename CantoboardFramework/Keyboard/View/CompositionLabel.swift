@@ -9,9 +9,8 @@ import Foundation
 import UIKit
 
 class CompositionLabel: UILabel {
-    static let insets: UIEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 0, right: 4)
-    static let height: CGFloat = 24
-
+    static let insets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 4, bottom: 2, right: 4)
+    
     private static let caretColor: UIColor = UIColor(dynamicProvider: {
         $0.userInterfaceStyle == .dark ? UIColor.white : UIColor.darkGray
     })
@@ -23,7 +22,7 @@ class CompositionLabel: UILabel {
     init() {
         super.init(frame: .zero)
         backgroundColor = .clear
-        textColor = .label
+        textColor = ButtonColor.keyForegroundColor
     }
     
     required init?(coder: NSCoder) {
@@ -60,6 +59,7 @@ class CompositionLabel: UILabel {
                 caretView = nil
             }
             setNeedsLayout()
+            superview?.setNeedsLayout()
         }
     }
     
@@ -79,5 +79,9 @@ class CompositionLabel: UILabel {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         caretView?.backgroundColor = Self.caretColor.resolvedColor(with: traitCollection).cgColor
+    }
+    
+    func getRequiredWidth(height: CGFloat) -> CGFloat {
+        return text?.size(withFont: font.withSize(Self.fontSizePerHeight * height)).width ?? .zero
     }
 }

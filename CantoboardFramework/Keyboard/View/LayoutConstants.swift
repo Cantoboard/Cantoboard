@@ -332,6 +332,8 @@ class LayoutConstants: Copyable {
         }
     }
     
+    let compositionViewHeight: CGFloat
+    
     var numOfSingleCharCandidateInRow: Int {
         switch idiom {
         case .phone:
@@ -372,6 +374,8 @@ class LayoutConstants: Copyable {
         let width = (keyboardSize.width - 2 * keyboardViewLeftRightInset - 4 * buttonGapX) / 5
         let height = ((keyboardSize.height - Self.keyboardViewTopInset - keyboardViewBottomInset - autoCompleteBarHeight) - 3 * buttonGapX) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
+        
+        compositionViewHeight = idiom == .phone ? 24 : 28
     }
     
     required init(copyOf: LayoutConstants) {
@@ -387,6 +391,7 @@ class LayoutConstants: Copyable {
         self.buttonGapX = copyOf.buttonGapX
         self.keyRowGapY = copyOf.keyRowGapY
         self.keypadButtonUnitSize = copyOf.keypadButtonUnitSize
+        self.compositionViewHeight = copyOf.compositionViewHeight
     }
     
     func copy() -> Self {

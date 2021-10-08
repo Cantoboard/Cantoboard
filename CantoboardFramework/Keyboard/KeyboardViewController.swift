@@ -154,7 +154,7 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     private var compositionViewHeight: CGFloat {
-        return (hasCompositionView) ? CompositionLabel.height : .zero
+        return hasCompositionView ? layoutConstants.ref.compositionViewHeight : .zero
     }
     
     private var keyboardHeight: CGFloat {
@@ -244,19 +244,24 @@ open class KeyboardViewController: UIInputViewController {
         widthConstraint?.constant = hostWindowWidth
         keyboardViewPlaceholderTopConstraint?.constant = compositionViewHeight
         
-        let compositionViewHeightAfterInset = compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
+        let compositionLabelHeight = compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
+        let compositionResetButtonWidth = compositionViewHeight
         if let compositionResetButton = compositionResetButton {
             compositionResetButton.frame = CGRect(
                 origin: CGPoint(
-                    x: hostWindowWidth - compositionViewHeightAfterInset - CompositionLabel.insets.right,
-                    y: CompositionLabel.insets.top),
-                size: CGSize(width: compositionViewHeightAfterInset, height: compositionViewHeightAfterInset))
+                    x: hostWindowWidth - compositionResetButtonWidth,
+                    y: 0),
+                size: CGSize(width: compositionResetButtonWidth, height: compositionResetButtonWidth))
         }
         
         if let compositionLabelView = compositionLabelView {
+            let compositionLabelViewWidthByText = compositionLabelView.getRequiredWidth(height: compositionLabelHeight)
+            let compositionLabelViewMinWidth = hostWindowWidth - compositionResetButtonWidth - CompositionLabel.insets.left - CompositionLabel.insets.right
+            let compositionLabelViewWidth = max(compositionLabelViewWidthByText, compositionLabelViewMinWidth)
+            let compositionLabelViewExcessWidth = max(0, compositionLabelViewWidth - compositionLabelViewMinWidth)
             compositionLabelView.frame = CGRect(
-                origin: CGPoint(x: CompositionLabel.insets.left, y: CompositionLabel.insets.top),
-                size: CGSize(width: hostWindowWidth, height: compositionViewHeightAfterInset))
+                origin: CGPoint(x: CompositionLabel.insets.left - compositionLabelViewExcessWidth, y: CompositionLabel.insets.top),
+                size: CGSize(width: compositionLabelViewWidth, height: compositionLabelHeight))
         }
         
         super.viewWillLayoutSubviews()
