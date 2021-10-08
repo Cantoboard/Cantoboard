@@ -10,7 +10,7 @@ import UIKit
 
 class CompositionLabel: UILabel {
     static let insets: UIEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 0, right: 4)
-    static let height: CGFloat = 20
+    static let height: CGFloat = 24
 
     private static let caretColor: UIColor = UIColor(dynamicProvider: {
         $0.userInterfaceStyle == .dark ? UIColor.white : UIColor.darkGray

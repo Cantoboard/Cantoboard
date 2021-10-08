@@ -245,18 +245,18 @@ open class KeyboardViewController: UIInputViewController {
         keyboardViewPlaceholderTopConstraint?.constant = compositionViewHeight
         
         let compositionViewHeightAfterInset = compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
-        var compositionX: CGFloat = CompositionLabel.insets.left
         if let compositionResetButton = compositionResetButton {
             compositionResetButton.frame = CGRect(
-                origin: CGPoint(x: compositionX, y: CompositionLabel.insets.top),
+                origin: CGPoint(
+                    x: hostWindowWidth - compositionViewHeightAfterInset - CompositionLabel.insets.right,
+                    y: CompositionLabel.insets.top),
                 size: CGSize(width: compositionViewHeightAfterInset, height: compositionViewHeightAfterInset))
-            compositionX += compositionViewHeightAfterInset + CompositionLabel.insets.right
         }
         
         if let compositionLabelView = compositionLabelView {
             compositionLabelView.frame = CGRect(
-                origin: CGPoint(x: compositionX, y: CompositionLabel.insets.top),
-                size: CGSize(width: hostWindowWidth - compositionX, height: compositionViewHeightAfterInset))
+                origin: CGPoint(x: CompositionLabel.insets.left, y: CompositionLabel.insets.top),
+                size: CGSize(width: hostWindowWidth, height: compositionViewHeightAfterInset))
         }
         
         super.viewWillLayoutSubviews()
