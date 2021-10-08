@@ -489,6 +489,7 @@ class ButtonImage {
     static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
     static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
     static let dissmissKeyboard = UIImage(named: "keyboard.chevron.compact.down", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let clear = UIImage(named: "clear", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
     // static let oneTwoThree = UIImage(systemName: "textformat.123", in: Bundle(for: ButtonImage.self), with: nil)
 }
 

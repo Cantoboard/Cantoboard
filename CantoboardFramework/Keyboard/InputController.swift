@@ -391,7 +391,6 @@ class InputController: NSObject {
             }
             
             state.inputMode = state.inputMode.afterToggle
-            refreshInputSettings()
         case .toggleSymbolShape:
             switch state.symbolShape {
             case .full: state.symbolShapeOverride = .half
@@ -434,6 +433,9 @@ class InputController: NSObject {
             keyboardView?.state = state
         case .dismissKeyboard:
             keyboardViewController?.dismissKeyboard()
+        case .resetComposition:
+            compositionRenderer.textReset()
+            needClearInput = true
         case .exit: exit(0)
         default: ()
         }
@@ -461,6 +463,7 @@ class InputController: NSObject {
         }
         
         keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
+        keyboardViewController?.hasCompositionResetButton = isImmediateMode && state.isComposing
     }
     
     func isTextFieldWebSearch() -> Bool {
@@ -506,7 +509,6 @@ class InputController: NSObject {
             handleKey(.toggleInputMode)
         }
         clearInput(shouldLeaveReverseLookupMode: false)
-        refreshInputSettings()
     }
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
@@ -515,7 +517,6 @@ class InputController: NSObject {
             state.reverseLookupSchema = nil
             inputEngine.rimeSchema = state.activeSchema
         }
-        refreshInputSettings()
         updateInputState()
         updateComposition()
     }
@@ -604,6 +605,7 @@ class InputController: NSObject {
         } else {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
         }
+        refreshInputSettings()
     }
     
     private func updateComposition(_ composition: Composition?) {

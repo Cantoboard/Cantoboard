@@ -87,6 +87,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     exportFile(String, String),
     enableKeyboard(Bool),
     dismissKeyboard,
+    resetComposition,
     exit
     
     init(stringLiteral value: String) {

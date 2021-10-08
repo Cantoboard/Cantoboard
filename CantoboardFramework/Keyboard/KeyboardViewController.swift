@@ -11,7 +11,6 @@ import UIKit
 import CocoaLumberjackSwift
 
 open class KeyboardViewController: UIInputViewController {
-    static let defaultHasCompositionView = false
     private static let isLoggerInited = initLogger()
     
     // Uncomment this to debug memory leak.
@@ -22,6 +21,7 @@ open class KeyboardViewController: UIInputViewController {
     private weak var keyboardWidthConstraint, keyboardViewPlaceholderTopConstraint: NSLayoutConstraint?
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private(set) weak var compositionLabelView: CompositionLabel?
+    private(set) weak var compositionResetButton: UIButton?
     private weak var logView: UITextView?
     
     private(set) var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
@@ -119,10 +119,8 @@ open class KeyboardViewController: UIInputViewController {
         }
     }
     
-    var hasCompositionView: Bool = KeyboardViewController.defaultHasCompositionView {
+    var hasCompositionView: Bool = false {
         didSet {
-            view.setNeedsLayout()
-            
             if hasCompositionView {
                 if compositionLabelView == nil {
                     let compositionLabelView = CompositionLabel()
@@ -132,6 +130,25 @@ open class KeyboardViewController: UIInputViewController {
             } else {
                 compositionLabelView?.removeFromSuperview()
                 compositionLabelView = nil
+            }
+        }
+    }
+    
+    var hasCompositionResetButton: Bool = false {
+        didSet {
+            if hasCompositionResetButton {
+                if compositionResetButton == nil {
+                    let compositionResetButton = UIButton()
+                    compositionResetButton.setImage(ButtonImage.clear, for: .normal)
+                    compositionResetButton.imageView?.contentMode = .center
+                    compositionResetButton.tintColor = ButtonColor.keyForegroundColor
+                    compositionResetButton.addTarget(self, action: #selector(onCompositionResetButtonClicked), for: .touchUpInside)
+                    view.addSubview(compositionResetButton)
+                    self.compositionResetButton = compositionResetButton
+                }
+            } else {
+                compositionResetButton?.removeFromSuperview()
+                compositionResetButton = nil
             }
         }
     }
@@ -227,10 +244,19 @@ open class KeyboardViewController: UIInputViewController {
         widthConstraint?.constant = hostWindowWidth
         keyboardViewPlaceholderTopConstraint?.constant = compositionViewHeight
         
+        let compositionViewHeightAfterInset = compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
+        var compositionX: CGFloat = CompositionLabel.insets.left
+        if let compositionResetButton = compositionResetButton {
+            compositionResetButton.frame = CGRect(
+                origin: CGPoint(x: compositionX, y: CompositionLabel.insets.top),
+                size: CGSize(width: compositionViewHeightAfterInset, height: compositionViewHeightAfterInset))
+            compositionX += compositionViewHeightAfterInset + CompositionLabel.insets.right
+        }
+        
         if let compositionLabelView = compositionLabelView {
             compositionLabelView.frame = CGRect(
-                origin: .zero,
-                size: CGSize(width: hostWindowWidth, height: compositionViewHeight)).inset(by: CompositionLabel.insets)
+                origin: CGPoint(x: compositionX, y: CompositionLabel.insets.top),
+                size: CGSize(width: hostWindowWidth - compositionX, height: compositionViewHeightAfterInset))
         }
         
         super.viewWillLayoutSubviews()
@@ -297,5 +323,9 @@ open class KeyboardViewController: UIInputViewController {
                 DDLogInfo("Detected change in compositionMode from \(prevSettings.compositionMode) to \(settings.compositionMode).")
             }
         }
+    }
+    
+    @objc private func onCompositionResetButtonClicked() {
+        inputController?.handleKey(.resetComposition)
     }
 }
