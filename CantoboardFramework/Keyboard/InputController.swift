@@ -208,6 +208,7 @@ class InputController: NSObject {
             if EnglishInputEngine.userDictionary.unlearnWord(word: text) {
                 FeedbackProvider.lightImpact.impactOccurred()
                 let candidateCount = candidateOrganizer.getCandidateCount(section: choice.section)
+                inputEngine.updateEnglishCandidates()
                 candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: candidateCount)
             }
         }

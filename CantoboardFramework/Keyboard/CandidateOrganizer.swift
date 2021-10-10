@@ -65,8 +65,6 @@ class InputEngineCandidateSource: CandidateSource {
         hasLoadedAllBestRimeCandidates = false
         hasPopulatedBestEnglishCandidates = false
         hasPopulatedWorstEnglishCandidates = false
-        
-        inputController?.inputEngine.updateEnglishCandidates()
     }
     
     private func populateCandidates() {
