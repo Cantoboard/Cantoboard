@@ -32,7 +32,6 @@
 		795B22D5261EEE1400271D9F /* UserDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795B22D4261EEE1400271D9F /* UserDictionary.swift */; };
 		79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */; };
 		79607A65260FF09200E23D33 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79607A64260FF09200E23D33 /* String+Extension.swift */; };
-		796D9566263EA649006D9370 /* Rime.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 796D9565263EA63E006D9370 /* Rime.framework.dSYM */; };
 		796E53E526E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53E426E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift */; };
 		796E53EB26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */; };
 		796E53F126E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */; };
@@ -62,12 +61,12 @@
 		799F2E9125F46C0000C53416 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
 		79A211F525F46E6100CB01CC /* CantoboardExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 799F2E7B25F46BC600C53416 /* CantoboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		79A2D0802661FD0C00F2EB19 /* Guide in Resources */ = {isa = PBXBuildFile; fileRef = 79A2D07F2661FD0C00F2EB19 /* Guide */; };
+		79B05DB42712698000CF07D3 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; };
+		79B05DB627126B6000CF07D3 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; };
+		79B05DB727126B6100CF07D3 /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		79B05DB827126B8800CF07D3 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; };
+		79B05DB927126B8800CF07D3 /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B05DB22712697300CF07D3 /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79B23738267832BD009FF854 /* KeypadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B23737267832BD009FF854 /* KeypadView.swift */; };
-		79B880E92702639C006AEDB8 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B880E82702639C006AEDB8 /* Rime.xcframework */; };
-		79B880EA2702639C006AEDB8 /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B880E82702639C006AEDB8 /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79B880EB270263A2006AEDB8 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B880E82702639C006AEDB8 /* Rime.xcframework */; };
-		79B880EC270263A2006AEDB8 /* Rime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B880E82702639C006AEDB8 /* Rime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79B880ED27026714006AEDB8 /* Rime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B880E82702639C006AEDB8 /* Rime.xcframework */; };
 		79B9B57725F3496800238E80 /* CantoboardFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 79B9B57525F3496800238E80 /* CantoboardFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79B9B57A25F3496800238E80 /* CantoboardFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; };
 		79B9B57B25F3496800238E80 /* CantoboardFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79B9B57325F3496800238E80 /* CantoboardFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -241,7 +240,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				796D9566263EA649006D9370 /* Rime.framework.dSYM in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,9 +249,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				79B05DB927126B8800CF07D3 /* Rime.xcframework in Embed Frameworks */,
 				799F2E6B25F46B5800C53416 /* ISEmojiView.framework in Embed Frameworks */,
 				799F2E6725F46B5800C53416 /* CantoboardFramework.framework in Embed Frameworks */,
-				79B880EA2702639C006AEDB8 /* Rime.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,9 +273,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				79B05DB727126B6100CF07D3 /* Rime.xcframework in Embed Frameworks */,
 				799F2E2725F4540800C53416 /* ISEmojiView.framework in Embed Frameworks */,
 				79B9B57B25F3496800238E80 /* CantoboardFramework.framework in Embed Frameworks */,
-				79B880EC270263A2006AEDB8 /* Rime.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,13 +309,11 @@
 		79515A7D2609AA1500D29A5C /* LevelDbTable.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LevelDbTable.mm; sourceTree = "<group>"; };
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		79515AD72609BFB400D29A5C /* Data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Data; path = CantoboardFramework/Data; sourceTree = SOURCE_ROOT; };
-		79515AED260A6BBB00D29A5C /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; path = include; sourceTree = "<group>"; };
 		795A69DB2700810F00CDDC52 /* CompositionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionLabel.swift; sourceTree = "<group>"; };
 		795B22C3261EBA3D00271D9F /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		795B22D4261EEE1400271D9F /* UserDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictionary.swift; sourceTree = "<group>"; };
 		79607A5C260D9E6600E23D33 /* CandidateCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionView.swift; sourceTree = "<group>"; };
 		79607A64260FF09200E23D33 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
-		796D9565263EA63E006D9370 /* Rime.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Rime.framework.dSYM; path = RimeFramework/Rime.framework.dSYM; sourceTree = "<group>"; };
 		796E53E426E6E1D700C9B187 /* PadShortKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadShortKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull4RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
@@ -343,8 +339,8 @@
 		799F2E7F25F46BC600C53416 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		799F2E8D25F46BEF00C53416 /* CantoboardExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardExtension.entitlements; sourceTree = "<group>"; };
 		79A2D07F2661FD0C00F2EB19 /* Guide */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Guide; sourceTree = "<group>"; };
+		79B05DB22712697300CF07D3 /* Rime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rime.xcframework; path = RimeFramework/Rime.xcframework; sourceTree = "<group>"; };
 		79B23737267832BD009FF854 /* KeypadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadView.swift; sourceTree = "<group>"; };
-		79B880E82702639C006AEDB8 /* Rime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rime.xcframework; path = RimeFramework/Rime.xcframework; sourceTree = "<group>"; };
 		79B9B57325F3496800238E80 /* CantoboardFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CantoboardFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79B9B57525F3496800238E80 /* CantoboardFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CantoboardFramework.h; sourceTree = "<group>"; };
 		79B9B57625F3496800238E80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -463,9 +459,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79B05DB627126B6000CF07D3 /* Rime.xcframework in Frameworks */,
 				799F2E2625F4540800C53416 /* ISEmojiView.framework in Frameworks */,
 				79B9B57A25F3496800238E80 /* CantoboardFramework.framework in Frameworks */,
-				79B880EB270263A2006AEDB8 /* Rime.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,9 +469,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79B05DB827126B8800CF07D3 /* Rime.xcframework in Frameworks */,
 				799F2E6A25F46B5800C53416 /* ISEmojiView.framework in Frameworks */,
 				799F2E6625F46B5800C53416 /* CantoboardFramework.framework in Frameworks */,
-				79B880E92702639C006AEDB8 /* Rime.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,7 +487,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79B880ED27026714006AEDB8 /* Rime.xcframework in Frameworks */,
+				79B05DB42712698000CF07D3 /* Rime.xcframework in Frameworks */,
 				79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */,
 				799F2E3925F45B4300C53416 /* ISEmojiView.framework in Frameworks */,
 				79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */,
@@ -611,7 +607,6 @@
 			isa = PBXGroup;
 			children = (
 				79515AD72609BFB400D29A5C /* Data */,
-				79515AED260A6BBB00D29A5C /* include */,
 				79B9B57525F3496800238E80 /* CantoboardFramework.h */,
 				79B9B57625F3496800238E80 /* Info.plist */,
 				79B9B5E925F34A1200238E80 /* Media.xcassets */,
@@ -869,8 +864,7 @@
 		79B9B6F625F4398C00238E80 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				79B880E82702639C006AEDB8 /* Rime.xcframework */,
-				796D9565263EA63E006D9370 /* Rime.framework.dSYM */,
+				79B05DB22712697300CF07D3 /* Rime.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1509,7 +1503,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1570,7 +1563,6 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1608,14 +1600,14 @@
 				CODE_SIGN_ENTITLEMENTS = Cantoboard/Cantoboard.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.Cantoboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1632,14 +1624,14 @@
 				CODE_SIGN_ENTITLEMENTS = Cantoboard/Cantoboard.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.Cantoboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1698,7 +1690,7 @@
 				CODE_SIGN_ENTITLEMENTS = CantoboardExtension/CantoboardExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1707,7 +1699,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.Cantoboard.CantoboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1723,7 +1715,7 @@
 				CODE_SIGN_ENTITLEMENTS = CantoboardExtension/CantoboardExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1732,7 +1724,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.Cantoboard.CantoboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
