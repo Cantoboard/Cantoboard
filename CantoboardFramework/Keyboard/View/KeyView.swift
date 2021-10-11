@@ -72,12 +72,10 @@ class KeyView: HighlightableButton {
         setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(weight: .light), forImageIn: .normal)
         
         isUserInteractionEnabled = true
-        layer.cornerRadius = 5
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         layer.shadowColor = ButtonColor.keyShadowColor.resolvedColor(with: traitCollection).cgColor
         layer.shadowRadius = 0.0
         layer.masksToBounds = false
-        layer.cornerRadius = 5
     }
     
     func setKeyCap(_ keyCap: KeyCap, keyboardState newState: KeyboardState, isPadTopRowButton: Bool = false) {
@@ -110,6 +108,13 @@ class KeyView: HighlightableButton {
         tintColor = foregroundColor
         contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
+        
+        if case .pad = keyboardIdiom,
+           !keyboardState.isPortrait {
+            layer.cornerRadius = 8
+        } else {
+            layer.cornerRadius = 5
+        }
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
@@ -277,7 +282,7 @@ class KeyView: HighlightableButton {
         let keyboardIdiom = keyboardState.keyboardIdiom
         
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
-            setTitleColor(mainTextColor.withAlphaComponent(mainTextColor.alpha * (1 - swipeDownPercentage)), for: .highlighted)
+            setTitleColor(mainTextColor.withAlphaComponent(mainTextColor.alpha * (1 - swipeDownPercentage * 2.5)), for: .highlighted)
             
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
