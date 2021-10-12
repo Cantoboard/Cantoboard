@@ -176,8 +176,9 @@ class InputController: NSObject {
         shouldApplyChromeSearchBarHack = isTextFieldWebSearch() && !isImmediateMode
         
         let textBeforeInput = compositionRenderer.textBeforeInput
-        if !isImmediateMode && isTextFieldWebSearch() && prevTextBefore != textBeforeInput {
+        if !isImmediateMode && isTextFieldWebSearch() && prevTextBefore != textBeforeInput && !textBeforeInput.isEmpty {
             // Attempt to fix https://github.com/Cantoboard/Cantoboard/issues/33
+            // !textBeforeInput.isEmpty is added to fix address typing in Chrome. Without this fix, the first input letter is ignored.
             clearInput()
             prevTextBefore = textBeforeInput
         }
