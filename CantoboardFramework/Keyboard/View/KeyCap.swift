@@ -131,9 +131,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonFont: UIFont {
         switch self {
         case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
-        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
+        case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return .systemFont(ofSize: 16)
         case .cangjie(_, true): return .systemFont(ofSize: 20)
-        default: return .systemFont(ofSize: 22)
+        default: return .systemFont(ofSize: 24)
         }
     }
     
@@ -173,7 +173,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var keyCapType: KeyCapType {
         switch self {
-        case .character("\t", _, _): return .system
+        case "\t": return .system
         case .character, .cangjie, .contextual, .currency, .stroke, .rime: return .input
         case .space: return .space
         case .returnKey: return .returnKey
@@ -234,7 +234,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .space(.space): return LocalizedStrings.keyTitleSpace
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
-        case .keyboardType(.alphabetic): return "ABC"
+        case .keyboardType(.alphabetic): return "ABC" // schema.shortName
         case .keyboardType(.numSymbolic): return ".?123"
         case .rime(.tone1, _, _): return "陰平"
         case .rime(.tone2, _, _): return "陰上"
@@ -245,10 +245,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.delimiter, _, _): return "分"
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
+        case .changeSchema(.yale): return "耶魯／劉錫祥"
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
-        case .toggleInputMode(.chinese, let rimeSchema): return "中文 - \(rimeSchema?.shortName ?? "")"
-        case .toggleInputMode(.mixed, let rimeSchema): return "混合 - \(rimeSchema?.shortName ?? "")"
+        case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
+        case "'": return "′"
+        case "\"": return "″"
         case "（": return "("
         case "）": return ")"
         case "「": return "「"
@@ -312,8 +314,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
              "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
              "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
-             "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉",
-             "＄", "＂", "＇": return "全"
+             "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉", "《", "》",
+             "＄", "￥", "「", "」", "＂", "＇": return "全"
         default: return nil
         }
     }
@@ -363,7 +365,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "&": return ["＆", "&", "§"]
         case "?": return ["?", "？", "¿"]
         case "!": return ["!", "！", "¡"]
-        case "’": return ["’", "'", "＇", "‘", "`"]
+        case "'": return ["'", "＇", "’", "‘", "`", "｀"]
         // 123 4rd row
         case "@": return ["@", "＠"]
         // #+= 1st row
@@ -387,6 +389,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "«": return ["«", "《"]
         case "»": return ["»", "》"]
         case "•": return ["•", "·", "．", "°"]
+        // #+= 3rd row
+        case "…": return ["…", "⋯"]
         // 123 1st row full width
         case "１": return ["１", "一", "壹", "1", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
         case "２": return ["貳", "２", "二", "2", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
@@ -405,7 +409,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "；": return ["；", ";"]
         case "（": return ["（", "("]
         case "）": return ["）", ")"]
-        case "＂": return ["＂", "\"", "”", "“", "c", "»", "«"]
+        case "＂": return ["＂", "\"", "”", "“", "»", "«"]
         // 123 3rd row full width
         case "。": return ["。", ".", "．", "…", "⋯", "⋯⋯"]
         case "，": return ["，", ", "]
@@ -413,7 +417,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "、": return ["､", "、"]
         case "？": return ["？", "?", "¿"]
         case "！": return ["！", "!", "¡"]
-        case "＇": return ["＇", "'", "’", "‘", "｀"]
+        case "＇": return ["＇", "'", "’", "‘", "`", "｀"]
         // 123 4rd row full width
         case "＠": return ["＠", "@"]
         // #+= 1st row full width
@@ -437,8 +441,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "·": return ["·", "．", "•", "°"]
+        // #+= 3rd row full width
+        case "⋯": return ["…", "⋯"]
         case .currency:
-            var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
+            var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄", "￥"]
             let localCurrencySymbolKeyCap: KeyCap = KeyCap(SessionState.main.currencySymbol)
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
