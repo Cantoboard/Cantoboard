@@ -17,7 +17,7 @@ class FeedbackProvider {
     static func play(keyboardAction: KeyboardAction) {
         guard Settings.cached.isAudioFeedbackEnabled else { return }
         switch keyboardAction {
-        case .keyboardType, .space, .newLine, .shift, .character("\t"), .toggleInputMode:
+        case .keyboardType, .space, .newLine, .shift, .character("\t"), .toggleInputMode, .nextKeyboard, .dismissKeyboard:
             AudioServicesPlaySystemSound(Self.modifierPress)
         case .none, .character(_), .rime(_), .emoji(_):
             AudioServicesPlaySystemSound(Self.clickPress)
