@@ -34,11 +34,10 @@ extension StatusMenuHandler where Self: UIView {
     private var statusMenuSize: CGSize {
         // let statusMenuHeightRatio: CGFloat = 0.8
         let statusMenuWidthRatio: CGFloat = 0.35
-        let statusMenuMinWidth: CGFloat = 200
-        let rowHeight = keyboardSize.height / 5
+        let rowHeight = keyboardSize.height / 5.5
         
         let height = rowHeight * CGFloat(statusMenu?.itemLabelInRows.count ?? 0) // (keyboardSize.height - statusMenuOriginY) * statusMenuHeightRatio
-        let width = max(statusMenuMinWidth, keyboardSize.width * statusMenuWidthRatio)
+        let width = keyboardSize.width * statusMenuWidthRatio
         return CGSize(width: width, height: height)
     }
     
@@ -70,14 +69,16 @@ extension StatusMenuHandler where Self: UIView {
         guard statusMenu == nil else { return }
         FeedbackProvider.softImpact.impactOccurred()
         
-        var menuRows: [[KeyCap]] =  [
-            [ .changeSchema(.yale), .changeSchema(.jyutping) ],
-            [ .changeSchema(.cangjie), .changeSchema(.quick) ],
-            [ .changeSchema(.mandarin), .changeSchema(.stroke) ],
+        let menuRows: [[[KeyCap]]] = state.keyboardIdiom == .phone ? [
+            [[ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ]],
+            [[ .changeSchema(.yale) ]],
+            [[ .changeSchema(.cangjie), .changeSchema(.quick) ]],
+            [[ .changeSchema(.stroke), .changeSchema(.mandarin) ]],
+        ] : [
+            [[ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ], [ .changeSchema(.yale) ]],
+            [[ .changeSchema(.cangjie), .changeSchema(.quick) ], [ .changeSchema(.stroke), .changeSchema(.mandarin) ]],
         ]
-        if state.activeSchema.supportMixedMode {
-            menuRows[menuRows.count - 1].append(.toggleInputMode(.english, nil))
-        }
+        
         let statusMenu = StatusMenu(menuRows: menuRows)
         statusMenu.handleKey = delegate?.handleKey
 
