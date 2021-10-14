@@ -285,7 +285,7 @@ class LayoutConstants: Copyable {
     static let keyboardViewTopInset = CGFloat(8)
     static let contentEdgeInsetsPadShortAndFullPortrait = UIEdgeInsets(top: 6, left: 6, bottom: 6, right: 6)
     static let contentEdgeInsetsPadShortAndFullLandscape = UIEdgeInsets(top: 9, left: 9, bottom: 9, right: 9)
-    static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    static let contentEdgeInsetsPad5Rows = UIEdgeInsets(top: 10, left: 13, bottom: 10, right: 13)
     
     // Provided:
     // Keyboard size
@@ -341,6 +341,10 @@ class LayoutConstants: Copyable {
         case .pad:
             return isPortrait ? 15 : 20
         }
+    }
+    
+    var cornerRadius: CGFloat {
+        idiom.isPad && !isPortrait ? 8 : 5
     }
         
     internal init(idiom: LayoutIdiom,
