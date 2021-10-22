@@ -46,10 +46,8 @@ class KeypadButton: KeyView {
             setTitle("ABC", for: .normal)
         }
         
-        switch keyCap {
-        case .character, .stroke:
+        if keyCap.isCharacter {
             titleLabel?.font = .systemFont(ofSize: 26)
-        default:()
         }
         
         highlightedColor = props.keyCap.keypadButtonBgHighlightedColor

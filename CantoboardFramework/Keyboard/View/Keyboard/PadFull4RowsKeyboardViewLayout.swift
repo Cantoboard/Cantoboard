@@ -22,14 +22,14 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", "$", "&", "*", "(", ")", "'", "\""], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", "$", "&", "*", "(", ")", .singleQuote, .doubleQuote], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "+", "=", "/", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", "$", "/", "(", ")", "「", "」", "'"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", "$", "/", "(", ")", "「", "」", .singleQuote], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
@@ -43,7 +43,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static let symbolsFull: [[[KeyCap]]] = [
         [["\t"], ["^", "_", "|", "\\", "<", ">", "{", "}", ",", "."], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["&", "¥", "€", "*", "【", "】", "『", "』", "\""], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["&", "¥", "€", "*", "【", "】", "『", "』", .doubleQuote], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["^_^", "—", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]

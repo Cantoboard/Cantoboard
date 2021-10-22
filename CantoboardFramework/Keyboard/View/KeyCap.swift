@@ -84,6 +84,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
     exportFile(String, String),
+    singleQuote,
+    doubleQuote,
     currency,
     dismissKeyboard,
     exit,
@@ -123,6 +125,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .exportFile(let namePrefix, let path): return .exportFile(namePrefix, path)
         case .exit: return .exit
         case .currency: return .character(SessionState.main.currencySymbol)
+        case .singleQuote: return .quote(false)
+        case .doubleQuote: return .quote(true)
         case .dismissKeyboard: return .dismissKeyboard
         default: return .none
         }
@@ -174,7 +178,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapType: KeyCapType {
         switch self {
         case "\t": return .system
-        case .character, .cangjie, .contextual, .currency, .stroke, .rime: return .input
+        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .rime: return .input
         case .space: return .space
         case .returnKey: return .returnKey
         default: return .system
@@ -234,7 +238,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .space(.space): return LocalizedStrings.keyTitleSpace
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
-        case .keyboardType(.alphabetic): return "ABC" // schema.shortName
+        case .keyboardType(.alphabetic): return "ABC"
         case .keyboardType(.numSymbolic): return ".?123"
         case .rime(.tone1, _, _): return "陰平"
         case .rime(.tone2, _, _): return "陰上"
@@ -249,8 +253,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
         case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
-        case "'": return "′"
-        case "\"": return "″"
+        case .singleQuote: return "′"
+        case .doubleQuote: return "″"
         case "（": return "("
         case "）": return ")"
         case "「": return "「"
@@ -355,7 +359,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case ";": return [";", "；"]
         case "(": return ["(", "（"]
         case ")": return [")", "）"]
-        case "\"": return ["\"", "＂", "”", "“", "„", "»", "«"]
+        case .doubleQuote: return ["\"", "＂", "”", "“", "„", "»", "«"]
         case "「": return ["「", "『", "“", "‘"]
         case "」": return ["」", "』", "”", "’"]
         // 123 3rd row
@@ -365,7 +369,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "&": return ["＆", "&", "§"]
         case "?": return ["?", "？", "¿"]
         case "!": return ["!", "！", "¡"]
-        case "'": return ["'", "＇", "’", "‘", "`", "｀"]
+        case .singleQuote: return ["'", "＇", "’", "‘", "`", "｀"]
         // 123 4rd row
         case "@": return ["@", "＠"]
         // #+= 1st row
@@ -444,11 +448,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         // #+= 3rd row full width
         case "⋯": return ["…", "⋯"]
         case .currency:
-            var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄", "￥"]
+            var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
             let localCurrencySymbolKeyCap: KeyCap = KeyCap(SessionState.main.currencySymbol)
             currencyLists.removeAll(where: { $0 == localCurrencySymbolKeyCap })
             currencyLists.insert(localCurrencySymbolKeyCap, at: currencyLists.count / 2 - 1)
             return currencyLists
+        case "'": return ["'", "＇"]
+        case "\"": return ["\"", "＂"]
         default: return [self]
         }
     }
@@ -463,15 +469,15 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapCharacter: String? {
         switch self {
         case .character(let c, _, _), .cangjie(let c, _): return c.lowercased()
+        case .currency: return "$"
+        case .singleQuote: return "'"
+        case .doubleQuote: return "\""
         default: return nil
         }
     }
     
     var isCharacter: Bool {
-        switch self {
-        case .character, .cangjie: return true
-        default: return false
-        }
+        keyCapCharacter != nil
     }
     
     var isContextual: Bool {

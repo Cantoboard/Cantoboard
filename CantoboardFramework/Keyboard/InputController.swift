@@ -234,6 +234,14 @@ class InputController: NSObject {
         }
     }
     
+    private func handleQuote(isDoubleQuote: Bool) {
+        if documentContextBeforeInput.last?.isWhitespace ?? true {
+            insertText(isDoubleQuote ? "“" : "‘")
+        } else {
+            insertText(isDoubleQuote ? "”" : "’")
+        }
+    }
+    
     private var cachedActions: [KeyboardAction] = []
     
     func reenableKeyboard() {
@@ -295,7 +303,7 @@ class InputController: NSObject {
                 // This shouldn't have any side effects in other apps.
                 textDocumentProxy.insertText("")
             }
-            let shouldFeedCharToInputEngine = char.isASCII && char.isLetter && c.count == 1
+            let shouldFeedCharToInputEngine = char.isEnglishLetter && c.count == 1
             if !(shouldFeedCharToInputEngine && inputEngine.processChar(char)) {
                 if !insertComposingText(appendBy: c) {
                     insertText(c)
@@ -310,6 +318,8 @@ class InputController: NSObject {
             _ = inputEngine.processRimeChar(rc.rawValue)
         case .space(let spaceKeyMode):
             handleSpace(spaceKeyMode: spaceKeyMode)
+        case .quote(let isDoubleQuote):
+            handleQuote(isDoubleQuote: isDoubleQuote)
         case .newLine:
             if !insertComposingText(shouldDisableSmartSpace: true) || isImmediateMode {
                 let shouldApplyBrowserYoutubeSearchHack = textDocumentProxy.returnKeyType == .search && !isImmediateMode
@@ -711,12 +721,7 @@ class InputController: NSObject {
         let documentContextBeforeInput = documentContextBeforeInput
         let last2CharsInDoc = documentContextBeforeInput.suffix(2)
         if hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
-            // Remove leading smart space if:
-            // English" "(中/.)
-            let isOpeningDoubleQuote = textBeingInserted.first! == "\"" && (documentContextBeforeInput.filter({ $0 == "\"" }).count) % 2 == 0
-            let isOpeningSingleQuote = textBeingInserted.first! == "\'" && (documentContextBeforeInput.filter({ $0 == "\'" }).count) % 2 == 0
-            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit &&
-                !isOpeningDoubleQuote && !isOpeningSingleQuote ||
+            if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit ||
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.
                 // TODO Remove this.
