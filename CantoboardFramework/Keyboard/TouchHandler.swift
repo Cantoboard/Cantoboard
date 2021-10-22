@@ -46,7 +46,7 @@ class TouchHandler {
     static let keyRepeatInitialDelay = 7 // Unit is keyRepeatInterval
     static let longPressDelay = 3
     static let keyRepeatInterval = 0.08
-    static let cursorMovingStepX: CGFloat = 8
+    static let cursorMovingStepX: CGFloat = 10
     static let initialCursorMovingThreshold = cursorMovingStepX * 1.25
     static let swipeXThreshold: CGFloat = 30
     static let capsLockDoubleTapDelay = 0.2
