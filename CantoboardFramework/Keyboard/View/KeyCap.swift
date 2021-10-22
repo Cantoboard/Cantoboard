@@ -249,10 +249,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.delimiter, _, _): return "分"
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
-        case .changeSchema(.yale): return "耶魯／劉錫祥"
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
-        case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
+        case .toggleInputMode(.chinese, let rimeSchema): return "中文 - \(rimeSchema?.shortName ?? "")"
+        case .toggleInputMode(.mixed, let rimeSchema): return "混合 - \(rimeSchema?.shortName ?? "")"
         case .singleQuote: return "′"
         case .doubleQuote: return "″"
         case "（": return "("
