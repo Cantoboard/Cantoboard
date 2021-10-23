@@ -32,8 +32,16 @@ class HighlightableButton: UIButton {
         }
     }
     
+    var isGrayed: Bool = false {
+        didSet {
+            setupBackgroundColor()
+        }
+    }
+    
     private func setupBackgroundColor() {
-        if !isHighlighted {
+        if isGrayed {
+            super.backgroundColor = .systemGray
+        } else if !isHighlighted {
             super.backgroundColor = originalBackgroundColor
         } else {
             super.backgroundColor = highlightedColor ?? originalBackgroundColor

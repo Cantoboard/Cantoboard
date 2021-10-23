@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class KeyView: HighlightableButton {
+class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let swipeDownMinCutOffYRatio: CGFloat = 0.2
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.5
     private static let swipeDownFullYRatio: CGFloat = 0.8
@@ -54,6 +54,8 @@ class KeyView: HighlightableButton {
         popupView?.keyCaps.count ?? 0 > 1
     }
     
+    private var firstFrame = false
+    
     // TODO Remove
     var shouldDisablePopup: Bool = false
     
@@ -69,6 +71,10 @@ class KeyView: HighlightableButton {
         self.layoutConstants = layoutConstants
         super.init(frame: .zero)
         setupUIButton()
+    }
+    
+    override public class var layerClass: AnyClass {
+        return SwipeDownLayer.self
     }
     
     private func setupUIButton() {
@@ -266,6 +272,20 @@ class KeyView: HighlightableButton {
         layoutPopupView()
     }
     
+    override func display(_ layer: CALayer) {
+        if firstFrame {
+            firstFrame = false
+            return
+        }
+        guard let layer = layer.presentation() as? SwipeDownLayer else { return }
+        swipeDownPercentage = layer.swipeDownPercentage
+    }
+    
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        isHighlighted = !flag
+        isGrayed = false
+    }
+    
     private func updateColorsAccordingToSwipeDownPercentage() {
         guard let keyboardState = keyboardState else { return }
         let keyboardIdiom = keyboardState.keyboardIdiom
@@ -320,6 +340,7 @@ extension KeyView {
         isHighlighted = true
         selectedAction = keyCap.action
         updatePopup(isLongPress: false)
+        layer.removeAllAnimations()
         
         touchBeginPosition = touch.location(in: self)
         shouldAcceptLongPress = true
@@ -354,9 +375,21 @@ extension KeyView {
     }
     
     func keyTouchEnded() {
-        isHighlighted = false
         touchBeginPosition = nil
-        swipeDownPercentage = 0
+        
+        if swipeDownPercentage == 0 {
+            isHighlighted = false
+        } else {
+            isGrayed = true
+            firstFrame = true
+            let layer = layer as! SwipeDownLayer
+            let animation = CABasicAnimation(keyPath: #keyPath(SwipeDownLayer.swipeDownPercentage))
+            animation.fromValue = swipeDownPercentage
+            animation.toValue = 0
+            animation.duration = 0.2
+            animation.delegate = self
+            layer.add(animation, forKey: animation.keyPath)
+        }
         
         removePopup()
     }
@@ -448,5 +481,12 @@ extension KeyView {
         } else {
             return [keyCap]
         }
+    }
+}
+
+class SwipeDownLayer: CALayer {
+    @NSManaged var swipeDownPercentage: CGFloat
+    override class func needsDisplay(forKey key: String) -> Bool {
+        return key == #keyPath(swipeDownPercentage) || super.needsDisplay(forKey: key)
     }
 }
