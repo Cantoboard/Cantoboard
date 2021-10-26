@@ -128,45 +128,21 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var phoneButtonFontSize: CGFloat {
-        switch self {
-        case .returnKey(.emergencyCall): return 12
-        case .keyboardType(.symbolic), .keyboardType(.alphabetic): return 14
-        case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return 16
-        case .cangjie(_, true): return 20
-        default: return 22
-        }
-    }
-    
-    var padButtonFontSize: CGFloat {
-        switch self {
-        case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return 16
-        case .cangjie(_, true): return 20
-        default: return 24
-        }
-    }
-    
     var buttonBgColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
-        default:
-            if keyCapType == .input || keyCapType == .space {
-                 return ButtonColor.inputKeyBackgroundColor
-            }
-            return ButtonColor.systemKeyBackgroundColor
+        case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyBackgroundColor
+        default: return ButtonColor.systemKeyBackgroundColor
         }
     }
     
     var buttonBgHighlightedColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return buttonBgColor
-        default:
-            if keyCapType == .input || keyCapType == .space {
-                return ButtonColor.inputKeyHighlightedBackgroundColor
-            }
-            return ButtonColor.systemKeyHighlightedBackgroundColor
+        case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyHighlightedBackgroundColor
+        default: return ButtonColor.systemKeyHighlightedBackgroundColor
         }
     }
     
@@ -290,11 +266,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonTitleInset: UIEdgeInsets {
         switch self {
         case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        default:
-            if keyCapType == .input {
-                return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
-            }
-            return UIEdgeInsets.zero
+        case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+        default: return .zero
         }
 
     }
@@ -325,7 +298,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return true
-        default: return self.keyCapType == .input
+        default: return keyCapType == .input
         }
     }
     

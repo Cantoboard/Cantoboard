@@ -118,7 +118,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
         layer.cornerRadius = layoutConstants.ref.cornerRadius
-        titleLabelFontSize = isPadTopRowButton ? 17 : keyboardIdiom.isPad ? keyCap.padButtonFontSize : keyCap.phoneButtonFontSize
+        titleLabelFontSize = isPadTopRowButton ? 17 : layoutConstants.ref.getButtonFontSize(keyCap)
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0

@@ -843,4 +843,22 @@ extension LayoutConstants {
         
         return ret.copy()
     }
+    
+    func getButtonFontSize(_ keyCap: KeyCap) -> CGFloat {
+        if idiom.isPad {
+            switch keyCap {
+            case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return 16
+            case .cangjie(_, true): return 20
+            default: return 24
+            }
+        } else {
+            switch keyCap {
+            case .returnKey(.emergencyCall): return 12
+            case .keyboardType(.symbolic), .keyboardType(.alphabetic): return 14
+            case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return 16
+            case .cangjie(_, true): return 20
+            default: return 22
+            }
+        }
+    }
 }
