@@ -128,52 +128,27 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonFont: UIFont {
-        switch self {
-        case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
-        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
-        case .cangjie(_, true): return .systemFont(ofSize: 20)
-        default: return .systemFont(ofSize: 22)
-        }
-    }
-    
-    var popupFont: UIFont {
-        switch self {
-        case .reverseLookup, .rime(.delimiter, _, _), .rime(.sym, _, _): return .systemFont(ofSize: 24)
-        case .exportFile, .exit: return .systemFont(ofSize: 12)
-        case .rime, "……", "⋯⋯", "——", "^_^", ".com", ".net", ".org", ".edu": return .systemFont(ofSize: 16)
-        default: return .systemFont(ofSize: 30)
-        }
-    }
-    
     var buttonBgColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
         case .returnKey(.continue), .returnKey(.next), .returnKey(.default), .returnKey(.confirm): return ButtonColor.systemKeyBackgroundColor
         case .returnKey: return UIColor.systemBlue
-        default:
-            if keyCapType == .input || keyCapType == .space {
-                 return ButtonColor.inputKeyBackgroundColor
-            }
-            return ButtonColor.systemKeyBackgroundColor
+        case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyBackgroundColor
+        default: return ButtonColor.systemKeyBackgroundColor
         }
     }
     
-    var buttonBgHighlightedColor: UIColor? {
+    var buttonBgHighlightedColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return buttonBgColor
-        case .space: return ButtonColor.spaceKeyHighlightedBackgroundColor
-        default:
-            if keyCapType == .input {
-                return nil
-            }
-            return ButtonColor.systemHighlightedKeyBackgroundColor
+        case _ where keyCapType == .input || keyCapType == .space: return ButtonColor.inputKeyHighlightedBackgroundColor
+        default: return ButtonColor.systemKeyHighlightedBackgroundColor
         }
     }
     
     var keyCapType: KeyCapType {
         switch self {
-        case .character("\t", _, _): return .system
+        case "\t": return .system
         case .character, .cangjie, .contextual, .currency, .stroke, .rime: return .input
         case .space: return .space
         case .returnKey: return .returnKey
@@ -181,10 +156,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var keypadButtonBgHighlightedColor: UIColor? {
+    var keypadButtonBgHighlightedColor: UIColor {
         switch self {
-        case .keyboardType, .backspace, .none, .returnKey: return ButtonColor.systemHighlightedKeyBackgroundColor
-        default: return ButtonColor.spaceKeyHighlightedBackgroundColor
+        case .keyboardType, .backspace, .none, .returnKey: return ButtonColor.systemKeyHighlightedBackgroundColor
+        default: return ButtonColor.inputKeyHighlightedBackgroundColor
         }
     }
     
@@ -245,22 +220,26 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.delimiter, _, _): return "分"
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
+        case .changeSchema(.yale): return "耶魯／劉錫祥"
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
-        case .toggleInputMode(.chinese, let rimeSchema): return "中文 - \(rimeSchema?.shortName ?? "")"
-        case .toggleInputMode(.mixed, let rimeSchema): return "混合 - \(rimeSchema?.shortName ?? "")"
-        case "（": return "("
-        case "）": return ")"
-        case "「": return "「"
-        case "」": return " 」"
-        case "〈": return "〈　"
-        case "〉": return "  〉"
-        case "《": return "《　"
-        case "》": return "  》"
-        case "［": return "["
-        case "］": return "]"
-        case "｛": return "{"
-        case "｝": return "}"
+        case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
+        case "（": return "（⠀"
+        case "）": return "⠀）"
+        case "「": return "「⠀"
+        case "」": return "⠀」"
+        case "『": return "『⠀"
+        case "』": return "⠀』"
+        case "〈": return "〈⠀"
+        case "〉": return "⠀〉"
+        case "《": return "《⠀"
+        case "》": return "⠀》"
+        case "［": return "［⠀"
+        case "］": return "⠀］"
+        case "｛": return "｛⠀"
+        case "｝": return "⠀｝"
+        case "【": return "【⠀"
+        case "】": return "⠀】"
         case "\t": return "tab"
         case "——": return "⸻"
         case .character(let text, _, _): return text
@@ -287,11 +266,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonTitleInset: UIEdgeInsets {
         switch self {
         case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        default:
-            if keyCapType == .input {
-                return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
-            }
-            return UIEdgeInsets.zero
+        case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+        default: return .zero
         }
 
     }
@@ -322,7 +298,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return true
-        default: return self.keyCapType == .input
+        default: return keyCapType == .input
         }
     }
     
@@ -474,6 +450,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         default: return false
         }
     }
+    
+    var isPlaceholder: Bool {
+        switch self {
+        case .placeholder: return true
+        default: return false
+        }
+    }
 }
 
 let FrameworkBundle = Bundle(for: KeyView.self)
@@ -502,6 +485,6 @@ class ButtonColor {
     static let keyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
     static let shiftKeyHighlightedBackgroundColor = UIColor(named: "shiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let shiftKeyHighlightedForegroundColor = UIColor(named: "shiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let spaceKeyHighlightedBackgroundColor = UIColor(named: "spaceKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let systemHighlightedKeyBackgroundColor = UIColor(named: "systemHighlightedKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let inputKeyHighlightedBackgroundColor = UIColor(named: "inputKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let systemKeyHighlightedBackgroundColor = UIColor(named: "systemKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
 }

@@ -40,4 +40,13 @@ internal extension UIView {
         
         textLayer.frame = CGRect(origin: CGPoint(x: 0, y: yOffset), size: size)
     }
+    
+    func layout(textLayer: CATextLayer, centeredWithYOffset yOffset: CGFloat) {
+        guard !textLayer.isHidden,
+              let superlayerBounds = textLayer.superlayer?.bounds
+            else { return }
+        
+        textLayer.alignmentMode = .center
+        textLayer.frame = CGRect(origin: CGPoint(x: 0, y: yOffset), size: superlayerBounds.size)
+    }
 }
