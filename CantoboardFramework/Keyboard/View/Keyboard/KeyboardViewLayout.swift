@@ -29,7 +29,10 @@ protocol KeyboardViewLayout {
 
 extension KeyboardViewLayout {
     static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool {
-        return !(keyCap.keyCapCharacter?.first?.isEnglishLetter ?? false)
+        switch keyCap {
+        case .character(let c, _, _), .cangjie(let c, _): return !(c.first?.isLetter ?? false)
+        default: return true
+        }
     }
 }
 

@@ -113,13 +113,10 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                 } else {
                     width = padFull5RowsLayoutConstants.largeSystemKeyWidth
                 }
+            case .character, .cangjie, .currency, .singleQuote, .doubleQuote: width = inputKeyWidth
             default:
-                if (keyCap.isCharacter) {
-                    width = inputKeyWidth
-                } else {
-                    width = 0
-                    numFlexibleWidthKeys += 1
-                }
+                width = 0
+                numFlexibleWidthKeys += 1
             }
             
             if width > 0 {

@@ -469,15 +469,15 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapCharacter: String? {
         switch self {
         case .character(let c, _, _), .cangjie(let c, _): return c.lowercased()
-        case .currency: return "$"
-        case .singleQuote: return "'"
-        case .doubleQuote: return "\""
         default: return nil
         }
     }
     
     var isCharacter: Bool {
-        keyCapCharacter != nil
+        switch self {
+        case .character, .cangjie: return true
+        default: return false
+        }
     }
     
     var isContextual: Bool {
