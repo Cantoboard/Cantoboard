@@ -34,11 +34,11 @@ public enum RimeSchema: String, Codable {
     var shortName: String {
         switch self {
         case .cangjie: return "倉頡"
-        case .yale: return "耶魯/劉錫祥"
+        case .yale: return "耶魯"
         case .quick: return "速成"
         case .jyutping: return "粵拼"
         case .loengfan: return "兩分"
-        case .mandarin: return "普通話"
+        case .mandarin: return "普拼"
         case .stroke: return "筆劃"
         }
     }
