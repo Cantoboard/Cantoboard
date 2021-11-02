@@ -19,7 +19,7 @@ class FeedbackProvider {
         switch keyboardAction {
         case .keyboardType, .space, .newLine, .shift, .character("\t"), .toggleInputMode, .nextKeyboard, .dismissKeyboard:
             AudioServicesPlaySystemSound(Self.modifierPress)
-        case .none, .character(_), .rime(_), .emoji(_):
+        case .none, .character(_), .quote(_), .rime(_), .emoji(_):
             AudioServicesPlaySystemSound(Self.clickPress)
         case .backspace, .deleteWord:
             AudioServicesPlaySystemSound(Self.deletePress)

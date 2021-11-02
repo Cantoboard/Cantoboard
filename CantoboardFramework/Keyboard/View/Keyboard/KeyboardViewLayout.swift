@@ -76,8 +76,8 @@ class CommonSwipeDownKeys {
         case "g": return "*"
         case "h": return "("
         case "j": return ")"
-        case "k": return "’"
-        case "l": return "\""
+        case "k": return .singleQuote
+        case "l": return .doubleQuote
         case "z": return "%"
         case "x": return "-"
         case "c": return "+"

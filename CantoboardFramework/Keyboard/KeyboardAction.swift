@@ -72,6 +72,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     newLine,
     nextKeyboard,
     space(SpaceKeyMode),
+    quote(Bool),
     shift(_ state: KeyboardShiftState),
     shiftDown, // TODO remove
     shiftUp, // TODO remove

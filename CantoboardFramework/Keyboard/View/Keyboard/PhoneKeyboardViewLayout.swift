@@ -20,15 +20,15 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["-", "/", ":", ";", "(", ")", .currency, "\"", "「", "」"]],
-        [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", "’"], [.backspace]],
+        [["-", "/", ":", ";", "(", ")", .currency, .doubleQuote, "「", "」"]],
+        [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", .singleQuote], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
         [["_", "—", "\\", "|", "~", "<", ">", "«", "»", "•"]],
-        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", "’"], [.backspace]],
+        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", .singleQuote], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
@@ -103,7 +103,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
             return layoutConstants.asPhoneLayoutConstants!.shiftKeyWidth
         case .returnKey:
             return 1.5 * layoutConstants.asPhoneLayoutConstants!.systemKeyWidth
-        case .character, .cangjie, .rime, .currency:
+        case .character, .cangjie, .rime, .currency, .singleQuote, .doubleQuote:
             return layoutConstants.asPhoneLayoutConstants!.letterKeyWidth
         default:
             return layoutConstants.asPhoneLayoutConstants!.systemKeyWidth

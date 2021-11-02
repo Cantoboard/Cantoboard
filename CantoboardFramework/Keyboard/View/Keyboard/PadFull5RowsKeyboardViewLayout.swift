@@ -16,7 +16,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let letters: [[[KeyCap]]] = [
         [[], [.contextual("`"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
-        [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .contextual("’")], [.returnKey(.default)]],
+        [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
         [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.contextual(".com"), .keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
@@ -24,7 +24,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numbersHalf: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
         [["\t"], ["[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"], []],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", "’", "¥"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", .singleQuote, "¥"], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "、", "?", "!", "~", "“", "”", "€", "£"], []],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
@@ -32,7 +32,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numbersFull: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
         [["\t"], ["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "＼", "｜", "＿"], []],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["－", "／", "：", "；", "（", "）", .currency, "＆", "＠", "’", "¥"], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["－", "／", "：", "；", "（", "）", .currency, "＆", "＠", .singleQuote, "¥"], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "＂", "＇", "「", "」"], []],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
@@ -113,7 +113,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                 } else {
                     width = padFull5RowsLayoutConstants.largeSystemKeyWidth
                 }
-            case .character, .cangjie, .currency: width = inputKeyWidth
+            case .character, .cangjie, .currency, .singleQuote, .doubleQuote: width = inputKeyWidth
             default:
                 width = 0
                 numFlexibleWidthKeys += 1
@@ -136,7 +136,6 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "]": return "」"
             case "\\": return "、"
             case ";": return "；"
-            case "’": return "’"
             case "/": return "／"
             case "`": return "·"
             default: ()
@@ -173,7 +172,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "]": return "}"
             case "\\": return "|"
             case ";": return ":"
-            case "’": return "\""
+            case "'": return .doubleQuote
             case ",": return "<"
             case ".": return ">"
             case "/": return "?"
