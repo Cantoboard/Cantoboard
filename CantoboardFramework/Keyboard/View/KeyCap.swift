@@ -132,24 +132,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonFont: UIFont {
-        switch self {
-        case .keyboardType(.symbolic), .returnKey(.emergencyCall): return .systemFont(ofSize: 12)
-        case .rime, "^_^", .keyboardType, .returnKey, .space, .character("\t", _, _), .toggleInputMode: return .systemFont(ofSize: 16)
-        case .cangjie(_, true): return .systemFont(ofSize: 20)
-        default: return .systemFont(ofSize: 22)
-        }
-    }
-    
-    var popupFont: UIFont {
-        switch self {
-        case .reverseLookup, .rime(.delimiter, _, _), .rime(.sym, _, _): return .systemFont(ofSize: 24)
-        case .exportFile, .exit: return .systemFont(ofSize: 12)
-        case .rime, "……", "⋯⋯", "——", "^_^", ".com", ".net", ".org", ".edu": return .systemFont(ofSize: 16)
-        default: return .systemFont(ofSize: 30)
-        }
-    }
-    
     var buttonBgColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
