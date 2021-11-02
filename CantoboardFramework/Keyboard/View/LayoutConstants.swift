@@ -720,7 +720,7 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         rightShiftKeyWidth: 120,
         largeSystemKeyWidth: 121.5),
     
-    // iPad 810×1080 iPad (gen 8/7) 10.2"
+    // iPad 810×1080 iPad (gen 9/8/7) 10.2"
     // Portrait:
     IntDuplet(810, 1080): PadShortLayoutConstants(
         isPortrait: true,
@@ -747,6 +747,34 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         keyboardViewLeftRightInset: 7,
         keyboardViewBottomInset: 10,
         keyboardSuperviewWidth: 1080),
+    
+    // iPad 744x1133 iPad mini (gen 6)
+    // Portrait:
+    IntDuplet(744, 1133): PadShortLayoutConstants(
+        isPortrait: true,
+        keyboardWidth: 744,
+        buttonGapX: 12,
+        rowGapY: 8,
+        returnKeyWidth: 102.5,
+        rightShiftKeyWidth: 73.5,
+        keyHeight: 55,
+        autoCompleteBarHeight: 55,
+        keyboardViewLeftRightInset: 6,
+        keyboardViewBottomInset: 8,
+        keyboardSuperviewWidth: 744),
+    // Landscape:
+    IntDuplet(1133, 744): PadShortLayoutConstants(
+        isPortrait: false,
+        keyboardWidth: 1133,
+        buttonGapX: 14.5,
+        rowGapY: 11,
+        returnKeyWidth: 160,
+        rightShiftKeyWidth: 116.5,
+        keyHeight: 75,
+        autoCompleteBarHeight: 55,
+        keyboardViewLeftRightInset: 7,
+        keyboardViewBottomInset: 10,
+        keyboardSuperviewWidth: 1133),
     
     // iPad 834×1112 iPad Air (gen 3) iPad Pro 10.5"
     // Portrait:
