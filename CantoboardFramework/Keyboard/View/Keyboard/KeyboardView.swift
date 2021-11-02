@@ -36,7 +36,7 @@ class KeyboardView: UIView, BaseKeyboardView {
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    internal weak var layoutConstants: Reference<LayoutConstants>?
     private weak var newLineKey: KeyView?
     private weak var spaceKey: KeyView?
     private weak var loadingIndicatorView: UIActivityIndicatorView?

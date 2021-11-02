@@ -41,7 +41,7 @@ class KeypadView: UIView, BaseKeyboardView {
     ]
     
     private weak var candidatePaneView: CandidatePaneView?
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    internal weak var layoutConstants: Reference<LayoutConstants>?
     
     internal weak var statusMenu: StatusMenu?
     

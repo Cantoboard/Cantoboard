@@ -21,7 +21,7 @@ protocol StatusMenuHandler: AnyObject {
     func hideStatusMenu()
 }
 
-extension StatusMenuHandler where Self: UIView {
+extension StatusMenuHandler where Self: BaseKeyboardView {
     func layoutStatusMenu() {
         guard let statusMenu = statusMenu else { return }
         
@@ -32,12 +32,10 @@ extension StatusMenuHandler where Self: UIView {
     }
     
     private var statusMenuSize: CGSize {
-        // let statusMenuHeightRatio: CGFloat = 0.8
-        let statusMenuWidthRatio: CGFloat = 0.35
         let rowHeight = keyboardSize.height / 5.5
         
         let height = rowHeight * CGFloat(statusMenu?.itemLabelInRows.count ?? 0) // (keyboardSize.height - statusMenuOriginY) * statusMenuHeightRatio
-        let width = keyboardSize.width * statusMenuWidthRatio
+        let width = layoutConstants?.ref.statusMenuWidth ?? .zero
         return CGSize(width: width, height: height)
     }
     
