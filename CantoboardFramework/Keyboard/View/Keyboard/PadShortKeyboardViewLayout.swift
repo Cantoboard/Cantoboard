@@ -20,29 +20,29 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["@", "#", "$", "&", "*", "(", ")", .singleQuote, .doubleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.symbolic)], ["%", "-", "+", "=", "/", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
+        [[], ["@", "#", .currency, "/", "(", ")", "｢", "｣", .singleQuote], [.returnKey(.default)]],
+        [[.keyboardType(.symbolic)], ["%", "-", "~", "…", "､", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["@", "#", "$", "/", "(", ")", "「", "」", .singleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.symbolic)], ["%", "-", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
+        [[], ["@", "#", .currency, "／", "（", "）", "「", "」", .singleQuote], [.returnKey(.default)]],
+        [[.keyboardType(.symbolic)], ["%", "–", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["€", "£", "¥", "_", "^", "[", "]", "{", "}"], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["§", "|", "~", "…", "\\", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
+        [[], ["^", "_", "|", "\\", "[", "]", "{", "}", .doubleQuote], [.returnKey(.default)]],
+        [[.keyboardType(.numeric)], ["*", "&", "+", "=", "·", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
-        [[], ["^", "_", "|", "\\", "<", ">", "{", "}", ",", "."], [.backspace]],
-        [[], ["&", "¥", "€", "*", "【", "】", "『", "』", .doubleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["^_^", "—", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
+        [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
+        [[], ["^", "_", "｜", "＼", "［", "］", "｛", "｝", .doubleQuote], [.returnKey(.default)]],
+        [[.keyboardType(.numeric)], ["*", "&", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
@@ -126,6 +126,10 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap? {
-        return CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap)
+        return CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: keyboardState)
+    }
+    
+    static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool {
+        return keyCap == "," || keyCap == "." || keyCap == "，" || keyCap == "。"
     }
 }

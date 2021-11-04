@@ -20,30 +20,30 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["-", "/", ":", ";", "(", ")", .currency, .doubleQuote, "「", "」"]],
-        [[.keyboardType(.symbolic)], [".", ",", "、", "&", "?", "!", .singleQuote], [.backspace]],
+        [["-", "/", ":", ";", "(", ")", .currency, .doubleQuote, "｢", "｣"]],
+        [[.keyboardType(.symbolic)], [".", ",", "､", "^_^", "?", "!", .singleQuote], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
-        [["_", "—", "\\", "|", "~", "<", ">", "«", "»", "•"]],
-        [[.keyboardType(.numeric)], [".", ",", "、", "^_^", "?", "!", .singleQuote], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
+        [["_", "\\", "|", "~", "<", ">", "«", "»", "&", "·"]],
+        [[.keyboardType(.numeric)], [".", ",", "､", "^_^", "?", "!", .singleQuote], [.backspace]],
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["…", .returnKey(.default)]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["－", "／", "：", "；", "（", "）", .currency, "＂", "「", "」"]],
-        [[.keyboardType(.symbolic)], ["。", "，", "、", "＆", "？", "！", "＇"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["＠", .returnKey(.default)]]
+        [["–", "／", "：", "；", "（", "）", .currency, .doubleQuote, "「", "」"]],
+        [[.keyboardType(.symbolic)], ["。", "，", "、", "^_^", "？", "！", .singleQuote], [.backspace]],
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
-        [["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝"]],
-        [["＿", "—", "＼", "｜", "～", "〈", "〉", "《", "》", "•"]],
-        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", "＇"], [.backspace]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
+        [["［", "］", "｛", "｝", "#", "%", "^", "*", "+", "="]],
+        [["_", "＼", "｜", "～", "〈", "〉", "《", "》", "&", "·"]],
+        [[.keyboardType(.numeric)], ["。", "，", "、", "^_^", "？", "！", .singleQuote], [.backspace]],
+        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["⋯", .returnKey(.default)]]
     ]
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {

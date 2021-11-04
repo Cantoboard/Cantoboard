@@ -25,15 +25,7 @@ protocol KeyboardViewLayout {
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap?
     static func getKeyHeight(atRow: Int, layoutConstants: LayoutConstants) -> CGFloat
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap?
-}
-
-extension KeyboardViewLayout {
-    static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool {
-        switch keyCap {
-        case .character(let c, _, _), .cangjie(let c, _): return !(c.first?.isLetter ?? false)
-        default: return true
-        }
-    }
+    static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool
 }
 
 class CommonContextualKeys {
@@ -57,8 +49,17 @@ class CommonContextualKeys {
 }
 
 class CommonSwipeDownKeys {
-    static func getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: KeyCap) -> KeyCap? {
-        switch keyCap.keyCapCharacter {
+    static func getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap? {
+        let isInChineseContextualMode = !keyboardState.keyboardContextualType.isEnglish
+        let keyCapCharacter: String?
+        switch keyCap {
+        case .character(let c, _, _), .cangjie(let c, _): keyCapCharacter = c.lowercased()
+        case .currency: keyCapCharacter = "$"
+        case .singleQuote: keyCapCharacter = "'"
+        case .doubleQuote: keyCapCharacter = "\""
+        default: keyCapCharacter = nil
+        }
+        switch keyCapCharacter {
         case "q": return "1"
         case "w": return "2"
         case "e": return "3"
@@ -71,27 +72,49 @@ class CommonSwipeDownKeys {
         case "p": return "0"
         case "a": return "@"
         case "s": return "#"
-        case "d": return "$"
-        case "f": return "&"
-        case "g": return "*"
-        case "h": return "("
-        case "j": return ")"
-        case "k": return .singleQuote
-        case "l": return .doubleQuote
+        case "d": return .currency
+        case "f": return isInChineseContextualMode ? "／" : "/"
+        case "g": return isInChineseContextualMode ? "（" : "("
+        case "h": return isInChineseContextualMode ? "）" : ")"
+        case "j": return isInChineseContextualMode ? "「" : "｢"
+        case "k": return isInChineseContextualMode ? "」" : "｣"
+        case "l": return .singleQuote
         case "z": return "%"
         case "x": return "-"
-        case "c": return "+"
-        case "v": return "="
-        case "b": return "/"
-        case "n": return ";"
-        case "m": return ":"
+        case "c": return isInChineseContextualMode ? "~" : "～"
+        case "v": return isInChineseContextualMode ? "⋯" : "…"
+        case "b": return isInChineseContextualMode ? "、" : "､"
+        case "n": return isInChineseContextualMode ? "；" : ";"
+        case "m": return isInChineseContextualMode ? "：" : ":"
         case ",": return "!"
         case ".": return "?"
         case "，": return "！"
         case "。": return "？"
-        default: ()
+        case "@": return "^"
+        case "#": return "_"
+        case "$": return isInChineseContextualMode ? "｜" : "|"
+        case "/": return "\\"
+        case "／": return "＼"
+        case "(": return "["
+        case ")": return "]"
+        case "（": return "［"
+        case "）": return "］"
+        case "｢": return "{"
+        case "｣": return "}"
+        case "「": return "｛"
+        case "」": return "｝"
+        case "'": return .doubleQuote
+        case "%": return "*"
+        case "-", "–": return "&"
+        case "~", "～": return "+"
+        case "…", "⋯": return "="
+        case "､", "、": return "·"
+        case ";": return "<"
+        case "；": return "《"
+        case ":": return ">"
+        case "：": return "》"
+        default: return nil
         }
-        return nil
     }
 }
 
