@@ -228,6 +228,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
         case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
+        case .singleQuote: return "′"
+        case .doubleQuote: return "″"
         case "（": return "（⠀"
         case "）": return "⠀）"
         case "「": return "「⠀"
