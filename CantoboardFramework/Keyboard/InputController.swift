@@ -249,7 +249,9 @@ class InputController: NSObject {
         let lastClosingCharIndex = textBeforeInput.lastIndex(of: closingChar)
 
         let quote: String
-        if !isDoubleQuote && !(textBeforeInput.last?.isWhitespace ?? true) {
+        if keyboardViewController?.textDocumentProxy.smartQuotesType ?? .default == .no {
+            quote = isDoubleQuote ? "\"" : "'"
+        } else if !isDoubleQuote && !(textBeforeInput.last?.isWhitespace ?? true) {
             // iOS default keyboard uses right single quote as apostrophe
             quote = String(closingChar)
         } else if lastOpenCharIndex != nil && lastClosingCharIndex == nil {
