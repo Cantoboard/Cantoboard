@@ -235,10 +235,38 @@ class InputController: NSObject {
     }
     
     private func handleQuote(isDoubleQuote: Bool) {
-        if documentContextBeforeInput.last?.isWhitespace ?? true {
-            insertText(isDoubleQuote ? "“" : "‘")
+        let openingChar: Character = isDoubleQuote ? "“" : "‘"
+        let closingChar: Character = isDoubleQuote ? "”" : "’"
+
+        let textBeforeInput: String
+        if inputEngine.isComposing {
+            textBeforeInput = documentContextBeforeInput + (inputEngine.composition?.text ?? "")
         } else {
-            insertText(isDoubleQuote ? "”" : "’")
+            textBeforeInput = documentContextBeforeInput
+        }
+
+        let lastOpenCharIndex = textBeforeInput.lastIndex(of: openingChar)
+        let lastClosingCharIndex = textBeforeInput.lastIndex(of: closingChar)
+
+        let quote: String
+        if !isDoubleQuote && !(textBeforeInput.last?.isWhitespace ?? true) {
+            // iOS default keyboard uses right single quote as apostrophe
+            quote = String(closingChar)
+        } else if lastOpenCharIndex != nil && lastClosingCharIndex == nil {
+            // prev context has just opening quote.
+            quote = String(closingChar)
+        } else if
+            let lastOpenCharIndex = lastOpenCharIndex,
+            let lastClosingCharIndex = lastClosingCharIndex,
+            textBeforeInput.distance(from: lastClosingCharIndex, to: lastOpenCharIndex) > 0 {
+            // prev context has opening quotes & closing quotes.
+            quote = String(closingChar)
+        } else {
+            quote = String(openingChar)
+        }
+
+        if !insertComposingText(appendBy: quote) {
+            insertText(quote)
         }
     }
     
@@ -720,7 +748,15 @@ class InputController: NSObject {
         
         let documentContextBeforeInput = documentContextBeforeInput
         let last2CharsInDoc = documentContextBeforeInput.suffix(2)
+        
+        // Always keep smart space if quotes are being inserted
+        if textBeingInserted.first?.isOpeningQuote ?? false {
+            return false
+        }
+        
         if hasInsertedAutoSpace && last2CharsInDoc.last?.isWhitespace ?? false {
+            // Remove leading smart space if:
+            // English" "(中/.)
             if (last2CharsInDoc.first?.isEnglishLetterOrDigit ?? false) && !textBeingInserted.first!.isEnglishLetterOrDigit ||
                 textBeingInserted == "\n" {
                 // For some reason deleteBackward() does nothing unless it's wrapped in an main async block.

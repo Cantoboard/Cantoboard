@@ -20,6 +20,10 @@ extension Character {
         self == "(" || self == "{" || self == "[" || self == "<"
     }
     
+    var isOpeningQuote: Bool {
+        self == "“" || self == "‘"
+    }
+    
     var isPunctuation: Bool {
         // TODO Distingish apostrophe & single quote.
         self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self == "\"" ||
