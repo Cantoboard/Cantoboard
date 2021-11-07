@@ -259,7 +259,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "s": return "丨"
             case "p": return "丿"
             case "n": return "丶"
-            case "z": return "乙"
+            case "z": return "乛"
             default: return nil
             }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
@@ -336,13 +336,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "(": return ["(", "（"]
         case ")": return [")", "）"]
         case .doubleQuote: return ["\"", "＂", "”", "“", "„", "»", "«"]
-        case "「": return ["「", "『", "“", "‘"]
-        case "」": return ["」", "』", "”", "’"]
+        case "｢": return ["｢", "「", "『", "“", "‘"]
+        case "｣": return ["｣", "」", "』", "”", "’"]
         // 123 3rd row
-        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯", "》"]
-        case ",": return [",", "，", "《"]
+        case ".": return [".", "。", "．", "…", "⋯", "⋯⋯"]
+        case ",": return [",", "，"]
         case "､": return ["､", "、"]
-        case "&": return ["＆", "&", "§"]
+        case "^_^": return ["^_^", "^‿^", ">_<"]
         case "?": return ["?", "？", "¿"]
         case "!": return ["!", "！", "¡"]
         case .singleQuote: return ["'", "＇", "’", "‘", "`", "｀"]
@@ -368,51 +368,30 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case ">": return [">", "〉", "＞"]
         case "«": return ["«", "《"]
         case "»": return ["»", "》"]
+        case "&": return ["＆", "&", "§"]
         case "•": return ["•", "·", "．", "°"]
-        // #+= 3rd row
+        // #+= 4th row
         case "…": return ["…", "⋯"]
-        // 123 1st row full width
-        case "１": return ["１", "一", "壹", "1", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
-        case "２": return ["貳", "２", "二", "2", "②", "⑵", "⒉", "❷", "㊁", "㈡"]
-        case "３": return ["③", "叁", "３", "三", "3", "⑶", "⒊", "❸", "㊂", "㈢"]
-        case "４": return ["⒋", "④", "肆", "４", "四", "4", "⑷", "❹", "㊃", "㈣"]
-        case "５": return ["㊄", "⒌", "⑤", "伍", "５", "五", "5", "⑸", "❺", "㈤"]
-        case "６": return ["❻", "⑹", "6", "六", "６", "陸", "⑥", "⒍", "㊅", "㈥"]
-        case "７": return ["⑺", "7", "七", "７", "柒", "⑦", "⒎", "❼", "㊆", "㈦"]
-        case "８": return ["8", "八", "８", "捌", "⑧", "⑻", "⒏", "❽", "㊇", "㈧"]
-        case "９": return ["九", "９", "玖", "9", "⑨", "⑼", "⒐", "❾", "㊈", "㈨"]
-        case "０": return ["０", "0", "零", "十", "拾", "⓪", "°"]
         // 123 2nd row full width
-        case "－": return ["－", "-", "–", "—", "•"]
         case "／": return ["／", "/", "\\"]
         case "：": return ["：", ":"]
         case "；": return ["；", ";"]
         case "（": return ["（", "("]
         case "）": return ["）", ")"]
-        case "＂": return ["＂", "\"", "”", "“", "»", "«"]
+        case "「": return ["「", "『", "“", "‘", "｢", "｣"]
+        case "」": return ["」", "』", "”", "’"]
         // 123 3rd row full width
         case "。": return ["。", ".", "．", "…", "⋯", "⋯⋯"]
         case "，": return ["，", ", "]
-        case "＆": return ["&", "＆", "§"]
         case "、": return ["､", "、"]
         case "？": return ["？", "?", "¿"]
         case "！": return ["！", "!", "¡"]
-        case "＇": return ["＇", "'", "’", "‘", "`", "｀"]
-        // 123 4rd row full width
-        case "＠": return ["＠", "@"]
         // #+= 1st row full width
         case "［": return ["［", "[", "【", "〔"]
         case "］": return ["］", "]", "】", "〕"]
         case "｛": return ["｛", "{"]
         case "｝": return ["｝", "}"]
-        case "＃": return ["＃", "#"]
-        case "％": return ["％", "%", "‰"]
-        case "＾": return ["＾", "^"]
-        case "＊": return ["＊", "*"]
-        case "＋": return ["＋", "+"]
-        case "＝": return ["＝", "=", "≠", "≈"]
         // #+= 2nd row full width
-        case "＿": return ["＿", "_"]
         case "＼": return ["＼", "\\"]
         case "｜": return ["｜", "|"]
         case "～": return ["～", "~"]
@@ -421,7 +400,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "·": return ["·", "．", "•", "°"]
-        // #+= 3rd row full width
+        // #+= 4th row full width
         case "⋯": return ["…", "⋯"]
         case .currency:
             var currencyLists: [KeyCap] =  ["¢", "$", "€", "£", "¥", "₩", "₽", "＄"]
@@ -439,20 +418,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .character(".", "/", _): return nil // Contextual sym key in url mode
         default: return self.buttonText
-        }
-    }
-    
-    var keyCapCharacter: String? {
-        switch self {
-        case .character(let c, _, _), .cangjie(let c, _): return c.lowercased()
-        default: return nil
-        }
-    }
-    
-    var isCharacter: Bool {
-        switch self {
-        case .character, .cangjie: return true
-        default: return false
         }
     }
     

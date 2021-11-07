@@ -14,7 +14,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numOfRows = 5
     
     static let letters: [[[KeyCap]]] = [
-        [[], [.contextual("`"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
+        [[], [.contextual("•"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
@@ -24,16 +24,16 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numbersHalf: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
         [["\t"], ["[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"], []],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", .singleQuote, "¥"], [.returnKey(.default)]],
-        [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "、", "?", "!", "~", "“", "”", "€", "£"], []],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
+        [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "､", "?", "!", "~", "｢", "｣"], [.placeholder(.shift(.lowercased))]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
-        [["\t"], ["［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "＼", "｜", "＿"], []],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["－", "／", "：", "；", "（", "）", .currency, "＆", "＠", .singleQuote, "¥"], [.returnKey(.default)]],
-        [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "＂", "＇", "「", "」"], []],
+        [["\t"], ["［", "］", "｛", "｝", "#", "%", "^", "*", "+", "=", "＼", "｜", "_"], []],
+        [[.placeholder(.toggleInputMode(.english, nil))], ["–", "／", "：", "；", "（", "）", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
+        [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "「", "」"], [.placeholder(.shift(.lowercased))]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
@@ -108,11 +108,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                  .keyboardType where index <= 2:
                 width = (padFull5RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
             case .keyboardType, .dismissKeyboard:
-                if keyRowView.rowId == 4 && keys.contains(where: { $0.keyCap.isCharacter }) {
-                    width = padFull5RowsLayoutConstants.smallSystemKeyWidth
-                } else {
-                    width = padFull5RowsLayoutConstants.largeSystemKeyWidth
-                }
+                width = padFull5RowsLayoutConstants.largeSystemKeyWidth
             case .character, .cangjie, .currency, .singleQuote, .doubleQuote: width = inputKeyWidth
             default:
                 width = 0
@@ -137,7 +133,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "\\": return "、"
             case ";": return "；"
             case "/": return "／"
-            case "`": return "·"
+            case "•": return "·"
             default: ()
             }
         } else if case .character(let c) = key, c != ".com" {
@@ -153,8 +149,8 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap? {
         let isInChineseContextualMode = !keyboardState.keyboardContextualType.isEnglish
         if case .alphabetic = keyboardState.keyboardType {
-            switch keyCap.keyCapCharacter {
-            case "`": return "~"
+            switch keyCap {
+            case "•": return "~"
             case "·": return "～"
             case "1": return isInChineseContextualMode ? "！" : "!"
             case "2": return "@"
@@ -172,20 +168,24 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "]": return "}"
             case "\\": return "|"
             case ";": return ":"
-            case "'": return .doubleQuote
+            case .singleQuote: return .doubleQuote
             case ",": return "<"
             case ".": return ">"
             case "/": return "?"
             case "／": return "？"
-            case "，": return "《 "
-            case "。": return " 》"
-            case "「": return "『 "
-            case "」": return " 』"
+            case "，": return "《"
+            case "。": return "》"
+            case "「": return "『"
+            case "」": return "』"
             case "、": return "｜"
             case "；": return "："
             default: ()
             }
         }
         return nil
+    }
+    
+    static func isSwipeDownKeyShiftMorphing(keyCap: KeyCap) -> Bool {
+        return true
     }
 }
