@@ -27,7 +27,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
-        [["_", "\\", "|", "~", "<", ">", "«", "»", "&", "·"]],
+        [["_", "\\", "|", "~", "<", ">", "«", "»", "&", "•"]],
         [[.keyboardType(.numeric)], [".", ",", "､", "^_^", "?", "!", .singleQuote], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["…", .returnKey(.default)]]
     ]

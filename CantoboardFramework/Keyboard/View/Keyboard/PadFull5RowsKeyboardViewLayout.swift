@@ -14,7 +14,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numOfRows = 5
     
     static let letters: [[[KeyCap]]] = [
-        [[], [.contextual("`"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
+        [[], [.contextual("•"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
@@ -133,7 +133,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "\\": return "、"
             case ";": return "；"
             case "/": return "／"
-            case "`": return "·"
+            case "•": return "·"
             default: ()
             }
         } else if case .character(let c) = key, c != ".com" {
@@ -150,7 +150,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         let isInChineseContextualMode = !keyboardState.keyboardContextualType.isEnglish
         if case .alphabetic = keyboardState.keyboardType {
             switch keyCap {
-            case "`": return "~"
+            case "•": return "~"
             case "·": return "～"
             case "1": return isInChineseContextualMode ? "！" : "!"
             case "2": return "@"
