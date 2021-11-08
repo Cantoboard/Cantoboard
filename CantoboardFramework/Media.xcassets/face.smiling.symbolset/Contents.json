@@ -7,6 +7,16 @@
     {
       "filename" : "face.smiling.svg",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "face.smiling.fill.svg",
+      "idiom" : "universal"
     }
   ]
 }

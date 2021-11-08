@@ -46,6 +46,7 @@ class HighlightableButton: UIButton {
         } else {
             super.backgroundColor = highlightedColor ?? originalBackgroundColor
         }
+        layer.shadowColor = (isHighlighted && highlightedColor == ButtonColor.inputKeyHighlightedBackgroundColor ? ButtonColor.keyHighlightedShadowColor : ButtonColor.keyShadowColor).resolvedColor(with: traitCollection).cgColor
     }
     
 }

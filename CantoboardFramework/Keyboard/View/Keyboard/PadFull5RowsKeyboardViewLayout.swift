@@ -85,15 +85,8 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             let index = indexAndKey.offset
             let key = indexAndKey.element
             
-            let keyCap: KeyCap
-            if case let .placeholder(keyCapSizer) = key.keyCap {
-                keyCap = keyCapSizer
-            } else {
-                keyCap = key.keyCap
-            }
-            
             var width: CGFloat
-            switch keyCap {
+            switch key.keyCap.unescaped {
             case "\t": width = padFull5RowsLayoutConstants.tabKeyWidth
             case .toggleInputMode: width = padFull5RowsLayoutConstants.capLockKeyWidth
             case .shift:
