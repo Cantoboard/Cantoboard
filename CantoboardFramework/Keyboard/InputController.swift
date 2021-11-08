@@ -839,10 +839,22 @@ class InputController: NSObject {
             return
         }
         
+        switch lastCharBefore {
+        case "@":
+            newAutoSuggestionType = .email
+            return
+        case "." where
+            keyboardViewController?.textDocumentProxy.keyboardType == .URL ||
+            keyboardViewController?.textDocumentProxy.keyboardType == .webSearch:
+            newAutoSuggestionType = .domain
+            return
+        default: ()
+        }
+        
         switch state.keyboardContextualType {
-        case .english where !lastCharBefore.isNumber && !lastCharBefore.isPunctuation && textAfterInput.isEmpty:
+        case .english where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty:
             newAutoSuggestionType = .halfWidthPunctuation
-        case .chinese where !lastCharBefore.isNumber && !lastCharBefore.isPunctuation && textAfterInput.isEmpty:
+        case .chinese where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty:
             newAutoSuggestionType = .fullWidthPunctuation
         case .url: ()
         default:

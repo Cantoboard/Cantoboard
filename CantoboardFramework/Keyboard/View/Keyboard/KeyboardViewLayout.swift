@@ -42,7 +42,8 @@ class CommonContextualKeys {
         case ",": return keyboardState.keyboardContextualType.isEnglish ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.isEnglish ? "." : "。"
         case ".com" where keyboardState.keyboardContextualType == .url: // For iPad Pro 12.9"
-            return .character(".com", nil, [".net", ".org", ".edu", ".com", ".hk", ".tw", ".mo", ".cn", ".us"])
+            let domains = [".net", ".org", ".edu", ".com", String("." + SessionState.main.localDomain), ".hk", ".tw", ".mo", ".cn", ".uk", ".jp"].unique()
+            return .character(".com", nil, domains.map{  .character($0, nil, nil) })
         default: return nil
         }
     }

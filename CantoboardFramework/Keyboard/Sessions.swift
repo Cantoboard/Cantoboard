@@ -16,8 +16,10 @@ public struct SessionState: Codable, Equatable {
     private static let defaultPrimarySchema: RimeSchema = .jyutping
     private static let defaultCharForm: CharForm = .traditionalHK
     private static let defaultCurrency = "$"
+    private static let defaultDomain = "hk"
 
     public let currencySymbol: String = getLocalCurrencyCode()
+    public let localDomain: String = getLocalDomain()
     
     private static func getLocalCurrencyCode() -> String {
         if let currencySymbol = Locale.current.currencySymbol {
@@ -31,6 +33,11 @@ public struct SessionState: Codable, Equatable {
         }
         return Self.defaultCurrency
     }
+    
+    private static func getLocalDomain() -> String {
+        return (Locale.current.regionCode ?? defaultDomain).lowercased()
+    }
+    
     
     public var lastInputMode: InputMode {
         didSet { save() }
