@@ -488,7 +488,7 @@ class CandidateOrganizer {
             case .halfWidthDigit: candidateSource = Self.halfWidthDigitCandidateSource
             case .halfWidthPunctuation: candidateSource = Self.halfWidthPunctuationCandidateSource
             case .email: candidateSource = Self.emailCandidateSource
-            case .domain:  candidateSource = Self.domainCandidateSource
+            case .domain: candidateSource = Self.domainCandidateSource
             }
         } else {
             candidateSource = nil

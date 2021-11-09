@@ -843,9 +843,7 @@ class InputController: NSObject {
         case "@":
             newAutoSuggestionType = .email
             return
-        case "." where
-            keyboardViewController?.textDocumentProxy.keyboardType == .URL ||
-            keyboardViewController?.textDocumentProxy.keyboardType == .webSearch:
+        case ".":
             newAutoSuggestionType = .domain
             return
         default: ()
