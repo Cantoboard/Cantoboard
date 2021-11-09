@@ -150,6 +150,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    var buttonBgHighlightedShadowColor: UIColor {
+        switch keyCapType {
+        case .input, .space: return ButtonColor.keyHighlightedShadowColor
+        default: return ButtonColor.keyShadowColor
+        }
+    }
+    
     var keyCapType: KeyCapType {
         switch self {
         case "\t": return .system
@@ -471,6 +478,7 @@ class ButtonColor {
     static let popupBackgroundColor = UIColor(named: "popupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
     static let keyHighlightedShadowColor = UIColor(named: "keyHighlightedShadowColor", in: FrameworkBundle, compatibleWith: nil)!
+    static let keyGrayedColor = UIColor(named: "keyGrayedColor", in: FrameworkBundle, compatibleWith: nil)!
     static let shiftKeyHighlightedBackgroundColor = UIColor(named: "shiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let shiftKeyHighlightedForegroundColor = UIColor(named: "shiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
     static let inputKeyHighlightedBackgroundColor = UIColor(named: "inputKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!

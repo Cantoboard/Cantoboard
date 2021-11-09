@@ -120,6 +120,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         var setHighlightedBackground = false
         
         setImage(nil, for: .normal)
+        setImage(nil, for: .highlighted)
         setTitle(nil, for: .normal)
         imageView?.image = nil
         titleLabel?.text = nil
@@ -136,6 +137,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         } else if keyboardIdiom.isPad, case .returnKey(let type) = keyCap, type != .confirm {
             setImage(ButtonImage.returnKey, for: .normal)
+            setImage(ButtonImage.returnKey, for: .highlighted)
             imageView?.contentMode = .scaleAspectFit
             setHighlightedBackground = true
         } else if let buttonText = keyCap.unescaped.buttonText {
@@ -153,10 +155,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             titleLabel?.adjustsFontSizeToFitWidth = true
             setHighlightedBackground = true
         } else {
-            setImage(keyCap.unescaped.buttonImage, for: .normal)
-            if keyCap == .backspace {
-                setImage(ButtonImage.backspaceFilled, for: .highlighted)
-            }
+            let buttonImage = keyCap.unescaped.buttonImage
+            setImage(buttonImage, for: .normal)
+            setImage(keyCap == .backspace ? ButtonImage.backspaceFilled : buttonImage, for: .highlighted)
             imageView?.contentMode = .scaleAspectFit
             setHighlightedBackground = true
         }
@@ -186,6 +187,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
+        highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
         
         layer.maskedCorners = maskedCorners
