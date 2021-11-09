@@ -751,8 +751,9 @@ class InputController: NSObject {
         let documentContextBeforeInput = documentContextBeforeInput
         let last2CharsInDoc = documentContextBeforeInput.suffix(2)
         
-        // Always keep smart space if quotes are being inserted
-        if textBeingInserted.first?.isOpeningQuote ?? false {
+        // Always keep smart space if quotes or non punct symbols are being inserted
+        if let firstChar = textBeingInserted.first,
+           firstChar.isOpeningQuote || firstChar.isSymbol && !firstChar.isPunctuation {
             return false
         }
         

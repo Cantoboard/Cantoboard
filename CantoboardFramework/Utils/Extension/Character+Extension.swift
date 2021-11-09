@@ -25,14 +25,11 @@ extension Character {
     }
     
     var isPunctuation: Bool {
-        // TODO Distingish apostrophe & single quote.
-        self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" || self == "'" || self == "\"" ||
-            self ==  "\n" || self == ")" || self == "}" || self == "]" || self == ">" || // Closing brackets
-            isFullShapePunctuation
+        self == ":" || self == ";" || self == "." || self == "," || self == "?" || self == "!" // || isFullShapePunctuation
     }
     
     var isFullShapePunctuation: Bool {
-        self == "，" || self == "。" || self == "？" || self == "！"
+        self == "：" || self == "；" || self == "。" || self == "，" || self == "？" || self == "！"
     }
     
     var isHalfShapeTerminalPunctuation: Bool {
