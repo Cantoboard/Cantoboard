@@ -454,34 +454,42 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 let FrameworkBundle = Bundle(for: KeyView.self)
 
 class ButtonImage {
-    static let globe = UIImage(named: "globe", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let backspace = UIImage(named: "delete.left", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let backspaceFilled = UIImage(named: "delete.left.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let shift = UIImage(named: "shift", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let shiftFilled = UIImage(named: "shift.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let capLockFilled = UIImage(named: "capslock.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let emojiKeyboard = UIImage(named: "face.smiling", in: Bundle(for: ButtonImage.self), with: UIImage.SymbolConfiguration(pointSize: 18))!.resizableImage(withCapInsets: .zero)
-    static let paneCollapseButtonImage = UIImage(named: "chevron.up", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let paneExpandButtonImage = UIImage(named: "chevron.down", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let dissmissKeyboard = UIImage(named: "keyboard.chevron.compact.down", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let clear = UIImage(named: "clear", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let clearFilled = UIImage(named: "clear.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let tab = UIImage(named: "arrow.right.to.line", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let returnKey = UIImage(named: "return.left", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    private static func imageAssets(_ key: String) -> UIImage {
+        (UIImage(systemName: key) ?? UIImage(named: key, in: Bundle(for: ButtonImage.self), with: nil)!).resizableImage(withCapInsets: .zero)
+    }
+    
+    static let globe = imageAssets("globe")
+    static let backspace = imageAssets("delete.left")
+    static let backspaceFilled = imageAssets("delete.left.fill")
+    static let shift = imageAssets("shift")
+    static let shiftFilled = imageAssets("shift.fill")
+    static let capLockFilled = imageAssets("capslock.fill")
+    static let emojiKeyboard = imageAssets("face.smiling")
+    static let paneCollapseButtonImage = imageAssets("chevron.up")
+    static let paneExpandButtonImage = imageAssets("chevron.down")
+    static let dissmissKeyboard = imageAssets("keyboard.chevron.compact.down")
+    static let clear = imageAssets("clear")
+    static let clearFilled = imageAssets("clear.fill")
+    static let tab = imageAssets("arrow.right.to.line")
+    static let returnKey = imageAssets("return.left")
 }
 
 class ButtonColor {
-    static let systemKeyBackgroundColor = UIColor(named: "systemKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let inputKeyBackgroundColor = UIColor(named: "inputKeyBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let keyForegroundColor = UIColor(named: "keyForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let keyHintColor = UIColor(named: "keyHintColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let popupBackgroundColor = UIColor(named: "popupBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let keyShadowColor = UIColor(named: "keyShadowColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let keyHighlightedShadowColor = UIColor(named: "keyHighlightedShadowColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let keyGrayedColor = UIColor(named: "keyGrayedColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let shiftKeyHighlightedBackgroundColor = UIColor(named: "shiftKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let shiftKeyHighlightedForegroundColor = UIColor(named: "shiftKeyHighlightedForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let inputKeyHighlightedBackgroundColor = UIColor(named: "inputKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let systemKeyHighlightedBackgroundColor = UIColor(named: "systemKeyHighlightedBackgroundColor", in: FrameworkBundle, compatibleWith: nil)!
-    static let placeholderKeyForegroundColor = UIColor(named: "placeholderKeyForegroundColor", in: FrameworkBundle, compatibleWith: nil)!
+    private static func colorAssets(_ key: String) -> UIColor {
+        UIColor(named: key, in: FrameworkBundle, compatibleWith: nil)!
+    }
+    
+    static let systemKeyBackgroundColor = colorAssets("systemKeyBackgroundColor")
+    static let inputKeyBackgroundColor = colorAssets("inputKeyBackgroundColor")
+    static let keyForegroundColor = colorAssets("keyForegroundColor")
+    static let keyHintColor = colorAssets("keyHintColor")
+    static let popupBackgroundColor = colorAssets("popupBackgroundColor")
+    static let keyShadowColor = colorAssets("keyShadowColor")
+    static let keyHighlightedShadowColor = colorAssets("keyHighlightedShadowColor")
+    static let keyGrayedColor = colorAssets("keyGrayedColor")
+    static let shiftKeyHighlightedBackgroundColor = colorAssets("shiftKeyHighlightedBackgroundColor")
+    static let shiftKeyHighlightedForegroundColor = colorAssets("shiftKeyHighlightedForegroundColor")
+    static let inputKeyHighlightedBackgroundColor = colorAssets("inputKeyHighlightedBackgroundColor")
+    static let systemKeyHighlightedBackgroundColor = colorAssets("systemKeyHighlightedBackgroundColor")
+    static let placeholderKeyForegroundColor = colorAssets("placeholderKeyForegroundColor")
 }
