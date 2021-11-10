@@ -21,7 +21,11 @@ extension UITextDocumentProxy {
     func deleteBackwardWord() {
         DispatchQueue.main.async { [self] in
             guard let documentContextBeforeInput = documentContextBeforeInput,
-                  var lastChar = documentContextBeforeInput.last else { return }
+                  var lastChar = documentContextBeforeInput.last else {
+                      // In case if documentContextBeforeInput goes out of sync, fallback to delete single char.
+                      deleteBackward()
+                      return
+                  }
             // TODO Remove this.
             // DDLogInfo("deleteBackwardWord documentContextBeforeInput \(documentContextBeforeInput)")
             let secondLastCharIdx = documentContextBeforeInput.index(documentContextBeforeInput.endIndex, offsetBy: -2, limitedBy: documentContextBeforeInput.startIndex) ?? documentContextBeforeInput.startIndex
@@ -76,7 +80,8 @@ extension UITextDocumentProxy {
             
             // Delete char between the end and the first mismatching char.
             deleteCount += reversedTextBeforeInput.distance(from: reversedTextBeforeInput.startIndex, to: firstMismatchingCharIndex)
-            for _ in 0..<deleteCount {
+            // Delete at least one character in case if documentContextBeforeInput goes out of sync.
+            for _ in 0..<max(1, deleteCount) {
                 deleteBackward()
             }
         }
