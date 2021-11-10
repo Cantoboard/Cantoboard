@@ -310,11 +310,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     private static var logsPath: String = DataFileManager.logsDirectory
     private static let userDataPath: String = DataFileManager.userDataDirectory
+    private static let tmpPath: String = FileManager.default.temporaryDirectory.path
     
     var childrenKeyCaps: [KeyCap] {
         switch self {
         // For debugging
-        case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exit]
+        case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
         case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row

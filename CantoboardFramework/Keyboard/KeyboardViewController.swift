@@ -309,8 +309,9 @@ open class KeyboardViewController: UIInputViewController {
         
         if prevSettings.rimeSettings != settings.rimeSettings {
             RimeApi.generateSchemaPatchFromSettings()
+            RimeApi.removeQuickStartFlagFile()
             RimeApi.closeShared()
-            DDLogInfo("Detected config change. Redeploying rime. \(RimeApi.shared.getVersion() ?? "")")
+            DDLogInfo("Detected config change. Redeploying rime. \(RimeApi.shared.version() ?? "")")
         }
         
         if prevSettings.englishLocale != settings.englishLocale {

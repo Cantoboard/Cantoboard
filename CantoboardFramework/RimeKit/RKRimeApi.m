@@ -18,6 +18,8 @@
 
 #include "RKUtils.h"
 
+extern Bool RimeStartQuick(void);
+
 @interface RKRimeSession (extended)
 - (id)init:(RimeApi *)rimeApi sessionId:(RimeSessionId)sessionId;
 - (void)close;
@@ -27,6 +29,7 @@
     RimeApi *_rimeApi;
     NSObject<RKRimeNotificationHandler> *_rimeEventListener;
     NSMutableArray<RKRimeSession*> *_sessions;
+    NSString *_userDataPath;
 }
 
 static bool hasSetupRimeTrait = false;
@@ -49,6 +52,17 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
                 return;
             }
             // DDLogInfo("Rime state: %ld -> %ld.", zelf->_state, newState);
+            
+            NSString *couldQuickStartFlagFilePath = [zelf quickStartFlagFilePath];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            if (newState != RKRimeApiStateSucceeded) {
+                [fileManager removeItemAtPath:couldQuickStartFlagFilePath error:nil];
+                DDLogInfo(@"Removed quick start flag file due to deployment failure.");
+            } else {
+                [fileManager createFileAtPath:couldQuickStartFlagFilePath contents:nil attributes:nil];
+                DDLogInfo(@"Created quick start flag file.");
+            }
+            
             [zelf->_rimeEventListener onStateChange:zelf newState:newState];
             zelf->_state = newState;
         } else {
@@ -64,6 +78,8 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
     _sessions = [NSMutableArray array];
     _rimeApi = rime_get_api();
     _state = RKRimeApiStateUninitialized;
+    _userDataPath = userDataPath;
+    
     [self initRime:sharedDataPath userDataPath:userDataPath];
     return self;
 }
@@ -87,10 +103,19 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
     
     _rimeApi->initialize(NULL);
 
-    if (_rimeApi->start_maintenance(true)) {
-        // _rimeApi->join_maintenance_thread();
-    } else {
+    NSString *couldQuickStartFlagFilePath = [self quickStartFlagFilePath];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    bool couldQuickStart = [fileManager fileExistsAtPath: couldQuickStartFlagFilePath];
+    if (couldQuickStart && RimeStartQuick()) {
+        DDLogInfo(@"Quick start succeeded.");
+        return;
+    }
+    
+    DDLogInfo(@"Quick start %s. Falling back to slow start.", couldQuickStart ? "failed" : "bypassed");
+    if (!_rimeApi->start_maintenance(true)) {
         DDLogInfo(@"Failed to initialize Rime API.");
+    } else {
+        DDLogInfo(@"Slow start succeeded.");
     }
 }
 
@@ -106,8 +131,16 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
     DDLogInfo(@"Closed Rime API.");
 }
 
--(NSString *)getVersion {
+-(NSString *)version {
     return nullSafeToNSString(_rimeApi->get_version());
+}
+
+-(NSString *)quickStartFlagFilePath {
+    return [NSString stringWithFormat: @"%@/%@", _userDataPath, RKRimeApi.quickStartFlagFileName];
+}
+
++(NSString *)quickStartFlagFileName {
+    return @"quickstart";
 }
 
 -(RKRimeSession *)createSession {

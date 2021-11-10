@@ -67,6 +67,12 @@ extension RimeApi {
         DDLogInfo("Rime patches generated.")
     }
     
+    static func removeQuickStartFlagFile() {
+        let userDataPath = DataFileManager.rimeUserDirectory
+        try? FileManager.default.removeItem(atPath: "\(userDataPath)/\(RimeApi.quickStartFlagFileName()!)")
+        DDLogInfo("Removed quick start flag file due to config change.")
+    }
+    
     convenience init(bundle: Bundle) {
         let schemaPath = DataFileManager.rimeSharedDirectory
         let userDataPath = DataFileManager.rimeUserDirectory

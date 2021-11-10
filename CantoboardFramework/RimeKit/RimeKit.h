@@ -46,7 +46,10 @@ NS_SWIFT_NAME(RimeApi)
 -(id)init:(NSObject<RKRimeNotificationHandler> *)eventListener sharedDataPath:(NSString *)sharedDataPath userDataPath:(NSString *)userDataPath;
 -(void)close;
 
--(NSString *)getVersion;
+-(NSString *)version;
+-(NSString *)quickStartFlagFilePath;
++(NSString *)quickStartFlagFileName;
+
 // RKRimeSession is owned by RKRimeApi. Opening sessions are invalidated on close().
 -(RKRimeSession *)createSession;
 // RKRimeApi owns RKRimeSession to support invalidating outstanding sessions on close(). Please do not store strong ref to RKRimeSession.

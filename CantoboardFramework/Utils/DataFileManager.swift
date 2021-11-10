@@ -51,6 +51,8 @@ class DataFileManager {
             // Invalidate Rime build cache on upgrade.
             try? fileManager.removeItem(atPath: rimeBuildCacheDirectory)
             try? appVersion.write(toFile: versionFilePath, atomically: true, encoding: .utf8)
+            // Slow start to regenerate schema when the app is updated.
+            RimeApi.removeQuickStartFlagFile()
         }
         return true
     }

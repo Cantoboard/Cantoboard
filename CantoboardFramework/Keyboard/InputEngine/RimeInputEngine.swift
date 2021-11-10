@@ -313,7 +313,7 @@ class RimeApiListener: NSObject, RimeNotificationHandler {
     func onStateChange(_ rimeApi: RimeApi, newState: RimeApiState) {
         switch newState {
         case .deploying:
-            let version = rimeApi.getVersion() ?? "version unknown"
+            let version = rimeApi.version() ?? "version unknown"
             DDLogInfo("Rime \(version) is starting...")
         case .succeeded: DDLogInfo("Rime started.")
         case .failure: DDLogInfo("Rime failed to start.")
