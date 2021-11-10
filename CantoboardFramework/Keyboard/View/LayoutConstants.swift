@@ -878,8 +878,8 @@ extension LayoutConstants {
         switch keyCap {
         case .returnKey(.emergencyCall) where idiom == .phone: return 12
         case .keyboardType(.symbolic) where idiom == .phone, .keyboardType(.alphabetic) where idiom == .phone: return 14
+        case .keyboardType(.emojis): return 18
         case .rime, .keyboardType, .returnKey, .space, "^_^", "\t", ".com", .toggleInputMode, .shift, .nextKeyboard, .dismissKeyboard, .backspace: return 16
-        case .emoji: return 18
         case .cangjie(_, true): return 20
         case .character(let c, _, _) where c.first?.isEnglishLetter ?? false: return c.first!.isUppercase ? 22 : 23
         default: return idiom == .phone ? 22 : 24
