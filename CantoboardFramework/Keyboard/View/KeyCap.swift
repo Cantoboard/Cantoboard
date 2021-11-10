@@ -467,7 +467,7 @@ class ButtonImage {
     static let clear = UIImage(named: "clear", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
     static let clearFilled = UIImage(named: "clear.fill", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
     static let tab = UIImage(named: "arrow.right.to.line", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
-    static let returnKey = UIImage(named: "return", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
+    static let returnKey = UIImage(named: "return.left", in: Bundle(for: ButtonImage.self), with: nil)!.resizableImage(withCapInsets: .zero)
 }
 
 class ButtonColor {
