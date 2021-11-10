@@ -331,10 +331,10 @@ class KeyboardView: UIView, BaseKeyboardView {
             return .character(keyChar, hint, childrenKeyCaps)
         case .shift: return .shift(shiftState)
         case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
-            if state.keyboardContextualType == .rime {
-                return CommonContextualKeys.getContextualKeys(key: .symbol, keyboardState: state)
-            } else {
-                return keyCap
+            switch state.keyboardContextualType {
+            case .rime: return CommonContextualKeys.getContextualKeys(key: .symbol, keyboardState: state)
+            case .url: return CommonContextualKeys.getContextualKeys(key: .url, keyboardState: state)
+            default: return keyCap
             }
         case .contextual: fatalError("Contextual isn't being translated properly. \(keyCap) \(state)")
         default: return keyCap
