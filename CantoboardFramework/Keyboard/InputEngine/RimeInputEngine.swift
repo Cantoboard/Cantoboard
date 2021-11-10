@@ -265,6 +265,7 @@ class RimeInputEngine: NSObject, InputEngine {
                 self.createRimeSession()
                 if let rimeSession = self.rimeSession {
                     DDLogInfo("Created RimeSession \(rimeSession) in callback.")
+                    // exit(0)
                 } else {
                     if retryCount < 10 {
                         DDLogInfo("Retrying to create rime session.")
