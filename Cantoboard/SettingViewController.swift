@@ -58,10 +58,11 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @objc func updateSettings(_ sender: Any) {
         let selectedSymbolShape: SymbolShape
         switch symbolShapeControl.selectedSegmentIndex {
-        case 0: selectedSymbolShape = .half
-        case 1: selectedSymbolShape = .full
-        case 2: selectedSymbolShape = .smart
-        default: selectedSymbolShape = .smart
+        case 0: selectedSymbolShape = .default
+        case 1: selectedSymbolShape = .half
+        case 2: selectedSymbolShape = .full
+        case 3: selectedSymbolShape = .smart
+        default: selectedSymbolShape = .default
         }
         
         let candidateFontSize: CandidateFontSize
@@ -99,9 +100,10 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         
         let compositionMode: CompositionMode
         switch compositionModeControl.selectedSegmentIndex {
-        case 0: compositionMode = .immediate
-        case 1: compositionMode = .multiStage
-        default: compositionMode = .multiStage
+        case 0: compositionMode = .default
+        case 1: compositionMode = .immediate
+        case 2: compositionMode = .multiStage
+        default: compositionMode = .default
         }
         
         var settings = Settings()
@@ -218,8 +220,9 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     private func populateCompositionMode(_ settings: Settings) {
         populateSetting(toSegmentedControl: compositionModeControl, settingToIndexMapper: {
             switch $0.compositionMode {
-            case .immediate: return 0
-            case .multiStage: return 1
+            case .default: return 0
+            case .immediate: return 1
+            case .multiStage: return 2
             }
         })
     }
@@ -227,9 +230,10 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     private func populateSymbolShape(_ settings: Settings) {
         populateSetting(toSegmentedControl: symbolShapeControl, settingToIndexMapper: {
             switch $0.symbolShape {
-            case .half: return 0
-            case .full: return 1
-            case .smart: return 2
+            case .default: return 0
+            case .half: return 1
+            case .full: return 2
+            case .smart: return 3
             }
         })
     }

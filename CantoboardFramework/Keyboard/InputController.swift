@@ -20,7 +20,7 @@ enum ContextualType: Equatable {
     
     var isEnglish: Bool {
         switch self {
-        case .english, .rime, .url: return true
+        case .english, .url: return true
         default: return false
         }
     }
@@ -58,7 +58,7 @@ struct KeyboardState: Equatable {
     }
     
     var symbolShape: SymbolShape {
-        symbolShapeOverride ?? (keyboardContextualType == .chinese ? .full : .half)
+        symbolShapeOverride ?? (!keyboardContextualType.isEnglish ? .full : .half)
     }
     
     init() {
@@ -493,7 +493,7 @@ class InputController: NSObject {
         if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
         
-        isImmediateMode =  Settings.cached.compositionMode == .immediate
+        isImmediateMode = Settings.cached.compositionMode == .default && state.inputMode == .english || Settings.cached.compositionMode == .immediate
         if isImmediateMode {
             if !(compositionRenderer is ImmediateModeCompositionRenderer) {
                 compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
@@ -732,7 +732,7 @@ class InputController: NSObject {
            (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Translate double space tap into ". "
             textDocumentProxy.deleteBackward()
-            if state.keyboardContextualType == .chinese {
+            if !state.keyboardContextualType.isEnglish {
                 textDocumentProxy.insertText("。")
                 hasInsertedAutoSpace = false
             } else {
@@ -808,7 +808,9 @@ class InputController: NSObject {
             state.keyboardContextualType = .rime
         } else {
             let symbolShape = Settings.cached.symbolShape
-            if symbolShape == .smart {
+            if symbolShape == .default {
+                self.state.keyboardContextualType = state.inputMode == .english ? .english : .chinese
+            } else if symbolShape == .smart {
                 // Default to English.
                 guard let lastChar = documentContextBeforeInput.last(where: { !$0.isWhitespace }) else {
                     self.state.keyboardContextualType = .english
