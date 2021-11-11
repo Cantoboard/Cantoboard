@@ -858,7 +858,7 @@ class InputController: NSObject {
         case .url: ()
         default:
             if lastCharBefore.isNumber {
-                if lastCharBefore.isASCII {
+                if lastCharBefore.isASCII && !Settings.cached.enableNumKeyRow {
                     newAutoSuggestionType = .halfWidthDigit
                 } else {
                     switch lastCharBefore {

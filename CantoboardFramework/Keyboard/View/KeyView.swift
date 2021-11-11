@@ -35,6 +35,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private var isPadTopRowButton = false
     private var action: KeyboardAction = .none
     
+    // TODO Remove this field and check keyboardState
     var isKeyEnabled: Bool = true {
         didSet {
             setupView()

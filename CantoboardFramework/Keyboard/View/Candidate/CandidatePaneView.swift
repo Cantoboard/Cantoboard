@@ -50,9 +50,18 @@ class CandidatePaneView: UIControl {
                 prevState.keyboardType != newValue.keyboardType ||
                 prevState.inputMode != newState.inputMode ||
                 prevState.activeSchema != newState.activeSchema ||
-                prevState.symbolShape != newState.symbolShape
+                prevState.symbolShape != newState.symbolShape ||
+                prevState.enableState != newValue.enableState
+            
+            if newValue.enableState == .enabled {
+                isShowingNumKeyRow = newValue.keyboardIdiom == .phone &&
+                    !newValue.isComposing &&
+                    newValue.keyboardType.isAlphabetic &&
+                    candidateOrganizer.getCandidateCount(section: 0) == 0
+            }
             
             _keyboardState = newValue
+            numKeyRow?.keyboardState = newValue
             
             if isViewDirty {
                 setupButtons()
@@ -69,6 +78,27 @@ class CandidatePaneView: UIControl {
     
     private(set) var mode: Mode = .row
     private var shouldPreserveCandidateOffset: Bool = false
+    
+    private weak var numKeyRow: NumKeyRow?
+    private var _isShowingNumKeyRow: Bool = false
+    private var isShowingNumKeyRow: Bool {
+        get { _isShowingNumKeyRow }
+        set {
+            if _isShowingNumKeyRow != newValue {
+                if newValue {
+                    if numKeyRow == nil, let layoutConstants = layoutConstants {
+                        let numKeyRow = NumKeyRow(keyboardState: keyboardState, layoutConstants: layoutConstants)
+                        addSubview(numKeyRow)
+                        self.numKeyRow = numKeyRow
+                    }
+                } else {
+                    numKeyRow?.removeFromSuperview()
+                    numKeyRow = nil
+                }
+                _isShowingNumKeyRow = newValue
+            }
+        }
+    }
     
     var statusIndicatorMode: StatusIndicatorMode {
         get {
@@ -254,6 +284,7 @@ class CandidatePaneView: UIControl {
             let cannotExpand = !keyboardState.keyboardType.isAlphabetic ||
                                collectionView.visibleCells.isEmpty ||
                                !canExpand ||
+                               keyboardState.enableState != .enabled ||
                                candidateOrganizer.cannotExpand
             
             expandButton.isHidden = cannotExpand
@@ -341,15 +372,24 @@ class CandidatePaneView: UIControl {
     }
     
     override func layoutSubviews() {
-        guard let superview = superview else { return }
+        guard let superview = superview,
+              let layoutConstants = layoutConstants else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
         let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
         
-        let newcollectionViewFrame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
-        if collectionView.frame != newcollectionViewFrame {
-            collectionView.frame = newcollectionViewFrame
+        let collectionViewFrame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
+        if collectionView.frame != collectionViewFrame {
+            collectionView.frame = collectionViewFrame
             collectionView.collectionViewLayout.invalidateLayout()
+        }
+        if let numKeyRow = numKeyRow {
+            let numKeyRowHeight = min(layoutConstants.ref.keyHeight, height)
+            numKeyRow.frame = CGRect(origin: CGPoint(x: 0, y: height - numKeyRowHeight), size: CGSize(width: candidateViewWidth, height: numKeyRowHeight))
+            numKeyRow.isHidden = false
+            collectionView.isHidden = true
+        } else {
+            collectionView.isHidden = false
         }
 
         super.layoutSubviews()

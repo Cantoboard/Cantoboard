@@ -106,6 +106,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultShowEnglishExactMatch: Bool = true
     private static let defaultCompositionMode: CompositionMode = .multiStage
+    private static let defaultEnableNumKeyRow: Bool = true
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -121,6 +122,7 @@ public struct Settings: Codable, Equatable {
     public var isTapHapticFeedbackEnabled: Bool
     public var shouldShowEnglishExactMatch: Bool
     public var compositionMode: CompositionMode
+    public var enableNumKeyRow: Bool
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -137,6 +139,7 @@ public struct Settings: Codable, Equatable {
         isTapHapticFeedbackEnabled = Self.defaultTapHapticFeedbackEnabled
         shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
         compositionMode = Self.defaultCompositionMode
+        enableNumKeyRow = Self.defaultEnableNumKeyRow
     }
     
     public init(from decoder: Decoder) throws {
@@ -155,6 +158,7 @@ public struct Settings: Codable, Equatable {
         self.isTapHapticFeedbackEnabled = try container.decodeIfPresent(Bool.self, forKey: .isTapHapticFeedbackEnabled) ?? Settings.defaultTapHapticFeedbackEnabled
         self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
         self.compositionMode = try container.decodeIfPresent(CompositionMode.self, forKey: .compositionMode) ?? Settings.defaultCompositionMode
+        self.enableNumKeyRow = try container.decodeIfPresent(Bool.self, forKey: .enableNumKeyRow) ?? Settings.defaultEnableNumKeyRow
     }
     
     private static var _cached: Settings?
