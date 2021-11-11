@@ -106,7 +106,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultTapHapticFeedbackEnabled: Bool = false
     private static let defaultShowEnglishExactMatch: Bool = true
     private static let defaultCompositionMode: CompositionMode = .multiStage
-    private static let defaultEnableNumKeyRow: Bool = true
+    private static let defaultEnableNumKeyRow: Bool = false
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool

@@ -54,7 +54,8 @@ class CandidatePaneView: UIControl {
                 prevState.enableState != newValue.enableState
             
             if newValue.enableState == .enabled {
-                isShowingNumKeyRow = newValue.keyboardIdiom == .phone &&
+                isShowingNumKeyRow = Settings.cached.enableNumKeyRow &&
+                    newValue.keyboardIdiom != .pad(.padFull5Rows) &&
                     !newValue.isComposing &&
                     newValue.keyboardType.isAlphabetic &&
                     candidateOrganizer.getCandidateCount(section: 0) == 0
