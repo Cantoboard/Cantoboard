@@ -214,6 +214,20 @@ open class KeyboardViewController: UIInputViewController {
         self.createKeyboardIfNeeded()
     }
     
+    private func refreshKeyboardAppearance() {
+        // keyboardAppearance is only correct at the initial time.
+        // If user changes the system light/dark mode afterwards, keyboardAppearance isn't updated.
+        switch self.textDocumentProxy.keyboardAppearance {
+        case .light: overrideUserInterfaceStyle = .light
+        case .dark: overrideUserInterfaceStyle = .dark
+        default: overrideUserInterfaceStyle = .unspecified
+        }
+        // Reset override to unspecified to make sure traitCollectionDidChange is fired when system changes between light & dark mode.
+        DispatchQueue.main.async {
+            self.overrideUserInterfaceStyle = .unspecified
+        }
+    }
+    
     public override func didReceiveMemoryWarning() {
         let isVisible = isViewLoaded && view.window != nil
         if !isVisible {
@@ -229,6 +243,7 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func textDidChange(_ textInput: UITextInput?) {
         super.textDidChange(textInput)
+        refreshKeyboardAppearance()
         inputController?.textDidChange(textInput)
     }
     
