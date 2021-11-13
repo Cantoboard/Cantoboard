@@ -363,6 +363,9 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func charFormButtonClick() {
+        Self.hapticsGenerator.impactOccurred(intensity: 1)
+        FeedbackProvider.play(keyboardAction: .none)
+        
         let currentCharForm = SessionState.main.lastCharForm
         let newCharForm: CharForm = currentCharForm == .simplified ? .traditionalTW : .simplified
         delegate?.handleKey(.setCharForm(newCharForm))
