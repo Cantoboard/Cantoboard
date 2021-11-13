@@ -214,18 +214,26 @@ open class KeyboardViewController: UIInputViewController {
         self.createKeyboardIfNeeded()
     }
     
-    private func refreshKeyboardAppearance() {
+    private func setColorSchemeFromKeyboardAppearance() {
+        // Set keyboard color scheme from textDocumentProxy.keyboardAppearance.
+        var userInterfaceStyle: UIUserInterfaceStyle = .unspecified
+        switch self.textDocumentProxy.keyboardAppearance {
+        case .light: userInterfaceStyle = .light
+        case .dark: userInterfaceStyle = .dark
+        default: ()
+        }
+        // Do not override overrideUserInterfaceStyle of this view.
+        // Otherwise self.traitCollectionDidChange will not be called when system color scheme changes.
+        // Instead, override each subview.
+        view.subviews.forEach { $0.overrideUserInterfaceStyle = userInterfaceStyle }
+    }
+    
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         // keyboardAppearance is only correct at the initial time.
         // If user changes the system light/dark mode afterwards, keyboardAppearance isn't updated.
-        switch self.textDocumentProxy.keyboardAppearance {
-        case .light: overrideUserInterfaceStyle = .light
-        case .dark: overrideUserInterfaceStyle = .dark
-        default: overrideUserInterfaceStyle = .unspecified
-        }
-        // Reset override to unspecified to make sure traitCollectionDidChange is fired when system changes between light & dark mode.
-        DispatchQueue.main.async {
-            self.overrideUserInterfaceStyle = .unspecified
-        }
+        view.subviews.forEach { $0.overrideUserInterfaceStyle = .unspecified }
+        
+        super.traitCollectionDidChange(previousTraitCollection)
     }
     
     public override func didReceiveMemoryWarning() {
@@ -243,7 +251,7 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func textDidChange(_ textInput: UITextInput?) {
         super.textDidChange(textInput)
-        refreshKeyboardAppearance()
+        setColorSchemeFromKeyboardAppearance()
         inputController?.textDidChange(textInput)
     }
     
