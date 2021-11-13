@@ -10,7 +10,7 @@ import UIKit
 
 class StatusButton: UIButton {
     private static let longPressDelay: Double = TouchHandler.keyRepeatInterval * Double(TouchHandler.keyRepeatInitialDelay)
-    private static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
+    static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
     private static let miniExpandImageSizeRatio: CGFloat = 0.18, miniExpandImageAspectRatio: CGFloat = 1 / 2.3
     
     private var longPressTimer: Timer?

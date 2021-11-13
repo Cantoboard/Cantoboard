@@ -374,8 +374,7 @@ class CandidatePaneView: UIControl {
     }
     
     override func layoutSubviews() {
-        guard let superview = superview,
-              let layoutConstants = layoutConstants else { return }
+        guard let superview = superview else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
         let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
@@ -386,8 +385,8 @@ class CandidatePaneView: UIControl {
             collectionView.collectionViewLayout.invalidateLayout()
         }
         if let numKeyRow = numKeyRow {
-            let numKeyRowHeight = min(layoutConstants.ref.keyHeight, height)
-            numKeyRow.frame = CGRect(origin: CGPoint(x: 0, y: height - numKeyRowHeight), size: CGSize(width: candidateViewWidth, height: numKeyRowHeight))
+            let numKeyRowHeight = height - 2 * StatusButton.statusInset // min(layoutConstants.ref.keyHeight, height - StatusButton.statusInset)
+            numKeyRow.frame = CGRect(origin: CGPoint(x: 0, y: StatusButton.statusInset), size: CGSize(width: candidateViewWidth, height: numKeyRowHeight))
             numKeyRow.isHidden = false
             collectionView.isHidden = true
         } else {
