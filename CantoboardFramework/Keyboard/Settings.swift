@@ -65,7 +65,7 @@ public enum CandidateFontSize: String, Codable {
     var scale: CGFloat {
         switch self {
         case .normal: return 1
-        case .large: return 1.1
+        case .large: return 1.2
         }
     }
 }
