@@ -359,6 +359,7 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func backspaceButtonClick() {
+        FeedbackProvider.play(keyboardAction: .backspace)
         delegate?.handleKey(.backspace)
     }
     
