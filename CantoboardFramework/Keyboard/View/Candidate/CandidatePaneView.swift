@@ -352,7 +352,7 @@ class CandidatePaneView: UIControl {
         FeedbackProvider.play(keyboardAction: .none)
         
         if statusIndicatorMode == .lang {
-            delegate?.handleKey(.toggleInputMode)
+            delegate?.handleKey(.toggleInputMode(keyboardState.inputMode.afterToggle))
         } else {
             delegate?.handleKey(.toggleSymbolShape)
         }

@@ -109,7 +109,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .none: return .none
         case .backspace: return .backspace
-        case .toggleInputMode: return .toggleInputMode
+        case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _): return .character(c)
         case .stroke(let c): return .character(c)

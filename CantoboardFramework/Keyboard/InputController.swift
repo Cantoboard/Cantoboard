@@ -424,7 +424,7 @@ class InputController: NSObject {
             keyboardView?.setPreserveCandidateOffset()
             candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
             return
-        case .toggleInputMode:
+        case .toggleInputMode(let toInputMode):
             guard state.reverseLookupSchema == nil else {
                 // Disable reverse look up mode on tap.
                 state.reverseLookupSchema = nil
@@ -432,7 +432,7 @@ class InputController: NSObject {
                 return
             }
             
-            state.inputMode = state.inputMode.afterToggle
+            state.inputMode = toInputMode
         case .toggleSymbolShape:
             switch state.symbolShape {
             case .full: state.symbolShapeOverride = .half
@@ -548,7 +548,7 @@ class InputController: NSObject {
     private func changeSchema() {
         inputEngine.rimeSchema = state.activeSchema
         if state.inputMode == .english {
-            handleKey(.toggleInputMode)
+            handleKey(.toggleInputMode(state.inputMode.afterToggle))
         }
         clearInput(shouldLeaveReverseLookupMode: false)
     }
