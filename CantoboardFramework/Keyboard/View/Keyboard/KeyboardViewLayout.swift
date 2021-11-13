@@ -37,7 +37,12 @@ class CommonContextualKeys {
             case .chinese: return .character("，", keyHint, ["。", "，", "？", "！", ".", ",", KeyCap(rime: .sym)])
             case .english: return .character(",", keyHint, [".", ",", "?", "!", "。", "，", KeyCap(rime: .sym)])
             case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
-            case .url: return .character(".", "/", ["/", ".", ".com", ".net", ".org", ".edu", KeyCap(rime: .delimiter)])
+            case .url:
+                var children: [KeyCap] = ["/", ".", ".com", ".net", ".org", ".edu"]
+                if (keyboardState.isComposing) {
+                    children.append(KeyCap(rime: .delimiter))
+                }
+                return .character(".", "/", children)
             }
         case ",": return keyboardState.keyboardContextualType.isEnglish ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.isEnglish ? "." : "。"
