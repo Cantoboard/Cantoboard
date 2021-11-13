@@ -366,6 +366,7 @@ class CandidatePaneView: UIControl {
         let currentCharForm = SessionState.main.lastCharForm
         let newCharForm: CharForm = currentCharForm == .simplified ? .traditionalTW : .simplified
         delegate?.handleKey(.setCharForm(newCharForm))
+        setupButtons()
     }
     
     private func handleKey(_ action: KeyboardAction) {
