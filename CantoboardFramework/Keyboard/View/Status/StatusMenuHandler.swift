@@ -32,9 +32,9 @@ extension StatusMenuHandler where Self: BaseKeyboardView {
     }
     
     private var statusMenuSize: CGSize {
-        let rowHeight = keyboardSize.height / 5.5
+        let rowHeight = layoutConstants?.ref.statusMenuItemHeight ?? .zero
         
-        let height = rowHeight * CGFloat(statusMenu?.itemLabelInRows.count ?? 0) // (keyboardSize.height - statusMenuOriginY) * statusMenuHeightRatio
+        let height = rowHeight * CGFloat(statusMenu?.itemLabelInRows.count ?? 0)
         let width = layoutConstants?.ref.statusMenuWidth ?? .zero
         return CGSize(width: width, height: height)
     }
@@ -64,10 +64,10 @@ extension StatusMenuHandler where Self: BaseKeyboardView {
     }
     
     func showStatusMenu() {
-        guard statusMenu == nil else { return }
+        guard statusMenu == nil, let layoutConstants = layoutConstants else { return }
         FeedbackProvider.softImpact.impactOccurred()
         
-        let menuRows: [[[KeyCap]]] = state.keyboardIdiom == .phone ? [
+        let menuRows: [[[KeyCap]]] = state.keyboardIdiom == .phone && layoutConstants.ref.isPortrait ? [
             [[ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ]],
             [[ .changeSchema(.yale) ]],
             [[ .changeSchema(.cangjie), .changeSchema(.quick) ]],
