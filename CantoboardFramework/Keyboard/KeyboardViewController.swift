@@ -212,6 +212,7 @@ open class KeyboardViewController: UIInputViewController {
         
         self.reloadSettings()
         self.createKeyboardIfNeeded()
+        setColorSchemeFromKeyboardAppearance()
     }
     
     private func setColorSchemeFromKeyboardAppearance() {
