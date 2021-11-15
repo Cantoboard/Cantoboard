@@ -493,13 +493,21 @@ class InputController: NSObject {
         if Settings.cached.isMixedModeEnabled && state.inputMode == .chinese { state.inputMode = .mixed }
         if !Settings.cached.isMixedModeEnabled && state.inputMode == .mixed { state.inputMode = .chinese }
         
-        isImmediateMode =  Settings.cached.compositionMode == .immediate
+        isImmediateMode = state.inputMode == .english || Settings.cached.compositionMode == .immediate
         if isImmediateMode {
             if !(compositionRenderer is ImmediateModeCompositionRenderer) {
+                if let compositionRenderer = compositionRenderer, compositionRenderer.hasText {
+                    compositionRenderer.update(withCaretAtTheEnd: "")
+                    compositionRenderer.commit()
+                }
                 compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
             }
         } else {
             if !(compositionRenderer is MarkedTextCompositionRenderer) {
+                if let compositionRenderer = compositionRenderer, compositionRenderer.hasText {
+                    compositionRenderer.update(withCaretAtTheEnd: "")
+                    compositionRenderer.commit()
+                }
                 compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
             }
         }
@@ -627,6 +635,7 @@ class InputController: NSObject {
     }
     
     private func updateComposition() {
+        refreshInputSettings()
         switch state.inputMode {
         case .chinese: updateComposition(inputEngine.composition)
         case .english: updateComposition(inputEngine.englishComposition)
@@ -647,7 +656,6 @@ class InputController: NSObject {
         } else {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
         }
-        refreshInputSettings()
     }
     
     private func updateComposition(_ composition: Composition?) {
