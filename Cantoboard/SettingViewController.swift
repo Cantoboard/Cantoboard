@@ -60,10 +60,11 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @objc func updateSettings(_ sender: Any) {
         let selectedSymbolShape: SymbolShape
         switch symbolShapeControl.selectedSegmentIndex {
-        case 0: selectedSymbolShape = .half
-        case 1: selectedSymbolShape = .full
-        case 2: selectedSymbolShape = .smart
-        default: selectedSymbolShape = .smart
+        case 0: selectedSymbolShape = .language
+        case 1: selectedSymbolShape = .half
+        case 2: selectedSymbolShape = .full
+        case 3: selectedSymbolShape = .contextual
+        default: selectedSymbolShape = .language
         }
         
         let candidateFontSize: CandidateFontSize
@@ -231,9 +232,10 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     private func populateSymbolShape(_ settings: Settings) {
         populateSetting(toSegmentedControl: symbolShapeControl, settingToIndexMapper: {
             switch $0.symbolShape {
-            case .half: return 0
-            case .full: return 1
-            case .smart: return 2
+            case .language: return 0
+            case .half: return 1
+            case .full: return 2
+            case .contextual: return 3
             }
         })
     }

@@ -194,7 +194,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection footerTitle="自動模式會在英文字後輸入半形符號， 中文字後輸入全形符號．" id="0Eb-P1-eK0">
+                            <tableViewSection footerTitle="預設：英文輸入法輸入半形符號，中文輸入法輸入全形符號。 自動：英文字後輸入半形符號，中文字後輸入全形符號。" id="0Eb-P1-eK0">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="44" id="lV9-0G-hhe">
                                         <rect key="frame" x="0.0" y="630.5" width="320" height="44"/>
@@ -277,10 +277,11 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="ZM2-oE-LJv">
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="ZM2-oE-LJv">
                                                     <rect key="frame" x="143" y="6" width="160" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
+                                                        <segment title="預設"/>
                                                         <segment title="半形"/>
                                                         <segment title="全形"/>
                                                         <segment title="自動"/>
