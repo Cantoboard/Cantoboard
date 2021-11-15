@@ -156,7 +156,12 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             titleLabel?.adjustsFontSizeToFitWidth = true
             setHighlightedBackground = true
         } else if var buttonImage = keyCap.unescaped.buttonImage {
-            buttonImage = adjustImageFontSize(buttonImage)
+            if keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
+                // Special handling for emoji icon. We use different symbols in light/dark mode.
+                buttonImage = adjustImageFontSize(ButtonImage.emojiKeyboardDark)
+            } else {
+                buttonImage = adjustImageFontSize(buttonImage)
+            }
             setImage(buttonImage, for: .normal)
             setImage(keyCap == .backspace ? adjustImageFontSize(ButtonImage.backspaceFilled) : buttonImage, for: .highlighted)
             imageView?.contentMode = .scaleAspectFit

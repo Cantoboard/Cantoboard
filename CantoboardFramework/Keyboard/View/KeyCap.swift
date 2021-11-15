@@ -198,7 +198,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.uppercased): return ButtonImage.shiftFilled
         case .shift(.capsLocked): return ButtonImage.capLockFilled
         case .dismissKeyboard: return ButtonImage.dissmissKeyboard
-        case .keyboardType(.emojis): return ButtonImage.emojiKeyboard
+        case .keyboardType(.emojis): return ButtonImage.emojiKeyboardLight
         default: return nil
         }
     }
@@ -464,7 +464,8 @@ class ButtonImage {
     static let shift = imageAssets("shift")
     static let shiftFilled = imageAssets("shift.fill")
     static let capLockFilled = imageAssets("capslock.fill")
-    static let emojiKeyboard = imageAssets("face.smiling")
+    static let emojiKeyboardLight = imageAssets("face.smiling")
+    static let emojiKeyboardDark = imageAssets("face.smiling.fill")
     static let paneCollapseButtonImage = imageAssets("chevron.up")
     static let paneExpandButtonImage = imageAssets("chevron.down")
     static let dissmissKeyboard = imageAssets("keyboard.chevron.compact.down")
