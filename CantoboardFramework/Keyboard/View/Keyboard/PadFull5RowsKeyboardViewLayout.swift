@@ -18,7 +18,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.contextual(".com"), .keyboardType(.numSymbolic), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -107,7 +107,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case .nextKeyboard,
                  .keyboardType where index <= 2:
                 width = (padFull5RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
-            case .keyboardType, .dismissKeyboard:
+            case .keyboardType, .dismissKeyboard, .character(".com", _, _):
                 width = padFull5RowsLayoutConstants.largeSystemKeyWidth
             case .character, .cangjie, .currency, .singleQuote, .doubleQuote: width = inputKeyWidth
             default:
@@ -136,7 +136,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "•": return "·"
             default: ()
             }
-        } else if case .character(let c) = key, c != ".com" {
+        } else if case .character(let c) = key {
             return KeyCap(String(c))
         }
         return CommonContextualKeys.getContextualKeys(key: key, keyboardState: keyboardState)
