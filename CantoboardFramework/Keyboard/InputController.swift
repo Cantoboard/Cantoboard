@@ -802,10 +802,10 @@ class InputController: NSObject {
     private func refreshKeyboardContextualType() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
-        if inputEngine.composition?.text != nil {
-            state.keyboardContextualType = .rime
-        } else if textDocumentProxy.keyboardType == .some(.URL) || textDocumentProxy.keyboardType == .some(.webSearch) {
+        if textDocumentProxy.keyboardType == .some(.URL) || textDocumentProxy.keyboardType == .some(.webSearch) {
             state.keyboardContextualType = .url
+        } else if inputEngine.composition?.text != nil {
+            state.keyboardContextualType = .rime
         } else {
             let symbolShape = Settings.cached.symbolShape
             if symbolShape == .smart {
