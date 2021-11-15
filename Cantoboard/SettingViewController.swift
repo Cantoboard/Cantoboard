@@ -25,6 +25,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak private var testTextField: UITextField!
     @IBOutlet weak private var compositionModeControl: UISegmentedControl!
     @IBOutlet weak private var enableNumKeyRowControl: UISwitch!
+    @IBOutlet weak private var enableHKCorrectionControl: UISwitch!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +47,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         showEnglishExactMatchControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         compositionModeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         enableNumKeyRowControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        enableHKCorrectionControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
 
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -120,6 +122,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         settings.shouldShowEnglishExactMatch = showEnglishExactMatchControl.isOn
         settings.compositionMode = compositionMode
         settings.enableNumKeyRow = enableNumKeyRowControl.isOn
+        settings.enableHKCorrection = enableHKCorrectionControl.isOn
         Settings.save(settings)
     }
     
@@ -189,6 +192,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         rimeEnableCorrector.isOn = settings.rimeSettings.enableCorrector
         showEnglishExactMatchControl.isOn = settings.shouldShowEnglishExactMatch
         enableNumKeyRowControl.isOn = settings.enableNumKeyRow
+        enableHKCorrectionControl.isOn = settings.enableHKCorrection
         
         populateSetting(toSegmentedControl: englishLocaleInputControl, settingToIndexMapper: {
             switch $0.englishLocale {

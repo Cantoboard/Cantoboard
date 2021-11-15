@@ -368,7 +368,7 @@ class CandidatePaneView: UIControl {
         FeedbackProvider.play(keyboardAction: .none)
         
         let currentCharForm = SessionState.main.lastCharForm
-        let newCharForm: CharForm = currentCharForm == .simplified ? .traditionalTW : .simplified
+        let newCharForm: CharForm = currentCharForm == .simplified ? .traditional : .simplified
         delegate?.handleKey(.setCharForm(newCharForm))
         setupButtons()
     }

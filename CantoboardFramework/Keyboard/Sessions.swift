@@ -9,12 +9,17 @@ import Foundation
 
 import CocoaLumberjackSwift
 
+public enum CharForm: String, Codable {
+    case traditional = "zh-HK"
+    case simplified = "zh-CN"
+}
+
 public struct SessionState: Codable, Equatable {
     private static let sessionKeyName = "SessionState"
     
     private static let defaultInputMode: InputMode = .mixed
     private static let defaultPrimarySchema: RimeSchema = .jyutping
-    private static let defaultCharForm: CharForm = .traditionalHK
+    private static let defaultCharForm: CharForm = .traditional
     private static let defaultCurrency = "$"
     private static let defaultDomain = "hk"
 

@@ -9,12 +9,6 @@ import Foundation
 
 import CocoaLumberjackSwift
 
-public enum CharForm: String, Codable {
-    case traditionalHK = "zh-HK"
-    case traditionalTW = "zh-TW"
-    case simplified = "zh-CN"
-}
-
 public enum CompositionMode: String, Codable {
     case multiStage = "multiStage"
     case immediate = "immediate"
@@ -107,6 +101,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowEnglishExactMatch: Bool = true
     private static let defaultCompositionMode: CompositionMode = .multiStage
     private static let defaultEnableNumKeyRow: Bool = false
+    private static let defaultEnableHKCorrection: Bool = true
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -123,6 +118,7 @@ public struct Settings: Codable, Equatable {
     public var shouldShowEnglishExactMatch: Bool
     public var compositionMode: CompositionMode
     public var enableNumKeyRow: Bool
+    public var enableHKCorrection: Bool
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -140,6 +136,7 @@ public struct Settings: Codable, Equatable {
         shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
         compositionMode = Self.defaultCompositionMode
         enableNumKeyRow = Self.defaultEnableNumKeyRow
+        enableHKCorrection = Self.defaultEnableHKCorrection
     }
     
     public init(from decoder: Decoder) throws {
@@ -159,6 +156,7 @@ public struct Settings: Codable, Equatable {
         self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
         self.compositionMode = try container.decodeIfPresent(CompositionMode.self, forKey: .compositionMode) ?? Settings.defaultCompositionMode
         self.enableNumKeyRow = try container.decodeIfPresent(Bool.self, forKey: .enableNumKeyRow) ?? Settings.defaultEnableNumKeyRow
+        self.enableHKCorrection = try container.decodeIfPresent(Bool.self, forKey: .enableHKCorrection) ?? Settings.defaultEnableHKCorrection
     }
     
     private static var _cached: Settings?
