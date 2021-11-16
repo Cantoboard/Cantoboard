@@ -281,10 +281,10 @@
                                                     <rect key="frame" x="143" y="6" width="160" height="32"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
                                                     <segments>
-                                                        <segment title="預設"/>
+                                                        <segment title="根據輸入語言"/>
+                                                        <segment title="根據前文"/>
                                                         <segment title="半形"/>
                                                         <segment title="全形"/>
-                                                        <segment title="自動"/>
                                                     </segments>
                                                 </segmentedControl>
                                             </subviews>

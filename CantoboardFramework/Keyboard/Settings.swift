@@ -30,9 +30,9 @@ public enum InputMode: String, Codable {
 
 public enum SymbolShape: String, Codable {
     case language = "language"
+    case contextual = "contextual"
     case half = "half"
     case full = "full"
-    case contextual = "contextual"
 }
 
 public enum SpaceAction: String, Codable {

@@ -61,9 +61,9 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         let selectedSymbolShape: SymbolShape
         switch symbolShapeControl.selectedSegmentIndex {
         case 0: selectedSymbolShape = .language
-        case 1: selectedSymbolShape = .half
-        case 2: selectedSymbolShape = .full
-        case 3: selectedSymbolShape = .contextual
+        case 1: selectedSymbolShape = .contextual
+        case 2: selectedSymbolShape = .half
+        case 3: selectedSymbolShape = .full
         default: selectedSymbolShape = .language
         }
         
@@ -233,9 +233,9 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         populateSetting(toSegmentedControl: symbolShapeControl, settingToIndexMapper: {
             switch $0.symbolShape {
             case .language: return 0
-            case .half: return 1
-            case .full: return 2
-            case .contextual: return 3
+            case .contextual: return 1
+            case .half: return 2
+            case .full: return 3
             }
         })
     }
