@@ -10,15 +10,17 @@ import UIKit
 
 class NumKeyRow: UIView {
     private weak var layoutConstants: Reference<LayoutConstants>?
-    private var numKeys: [KeyView]!
+    private var numKeys: [Weak<KeyView>]!
     
     private var _keyboardState: KeyboardState
     var keyboardState: KeyboardState {
         get { _keyboardState }
         set {
             numKeys.forEach {
-                $0.setKeyCap($0.keyCap, keyboardState: newValue)
-                $0.isKeyEnabled = newValue.enableState == .enabled
+                guard let keyView = $0.ref else { return }
+                
+                keyView.setKeyCap(keyView.keyCap, keyboardState: newValue)
+                keyView.isKeyEnabled = newValue.enableState == .enabled
             }
             _keyboardState = newValue
         }
@@ -36,7 +38,7 @@ class NumKeyRow: UIView {
             keyView.setKeyCap(keyCap, keyboardState: keyboardState)
             keyView.shouldDisablePopup = true
             addSubview(keyView)
-            return keyView
+            return Weak(keyView)
         }
     }
     
@@ -56,9 +58,11 @@ class NumKeyRow: UIView {
         var hitframeX: CGFloat = 0
         var x = minX
         for i in 0..<numKeys.count {
-            numKeys[i].frame = CGRect(x: x, y: 0, width: keyWidth, height: bounds.height)
+            guard let keyView = numKeys[i].ref else { return }
+            
+            keyView.frame = CGRect(x: x, y: 0, width: keyWidth, height: bounds.height)
             let hitTestExtraWidth = i == 0 ? minX + gapX / 2 : gapX
-            numKeys[i].hitTestFrame = CGRect(x: hitframeX, y: 0, width: keyWidth + hitTestExtraWidth, height: bounds.height)
+            keyView.hitTestFrame = CGRect(x: hitframeX, y: 0, width: keyWidth + hitTestExtraWidth, height: bounds.height)
             x += keyWidth + gapX
             hitframeX = x - gapX / 2
         }
