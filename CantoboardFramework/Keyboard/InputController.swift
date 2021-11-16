@@ -496,18 +496,10 @@ class InputController: NSObject {
         isImmediateMode = state.inputMode == .english || Settings.cached.compositionMode == .immediate
         if isImmediateMode {
             if !(compositionRenderer is ImmediateModeCompositionRenderer) {
-                if let compositionRenderer = compositionRenderer, compositionRenderer.hasText {
-                    compositionRenderer.update(withCaretAtTheEnd: "")
-                    compositionRenderer.commit()
-                }
                 compositionRenderer = ImmediateModeCompositionRenderer(inputController: self)
             }
         } else {
             if !(compositionRenderer is MarkedTextCompositionRenderer) {
-                if let compositionRenderer = compositionRenderer, compositionRenderer.hasText {
-                    compositionRenderer.update(withCaretAtTheEnd: "")
-                    compositionRenderer.commit()
-                }
                 compositionRenderer = MarkedTextCompositionRenderer(inputController: self)
             }
         }
@@ -662,10 +654,7 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return }
         
         guard var text = composition?.text, !text.isEmpty else {
-            if compositionRenderer.hasText {
-                compositionRenderer.update(withCaretAtTheEnd: "")
-                compositionRenderer.commit()
-            }
+            compositionRenderer.clear()
             return
         }
         var caretPosition = composition?.caretIndex ?? NSNotFound
