@@ -212,20 +212,20 @@ class CandidatePaneView: UIControl {
     
     private func createButtons() {
         expandButton = createAndAddButton(isStatusIndicator: false)
-        expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchDown)
+        expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
 
         inputModeButton = (createAndAddButton(isStatusIndicator: true) as! StatusButton)
-        inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchDown)
+        inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
         inputModeButton.handleStatusMenu = { [weak self] in
             return self?.handleStatusMenu(from: $0, with: $1) ?? false
         }
         sendSubviewToBack(inputModeButton)
         
         backspaceButton = createAndAddButton(isStatusIndicator: false)
-        backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchDown)
+        backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
         
         charFormButton = createAndAddButton(isStatusIndicator: true)
-        charFormButton.addTarget(self, action: #selector(self.charFormButtonClick), for: .touchDown)
+        charFormButton.addTarget(self, action: #selector(self.charFormButtonClick), for: .touchUpInside)
     }
     
     private func createAndAddButton(isStatusIndicator: Bool) -> UIButton {
