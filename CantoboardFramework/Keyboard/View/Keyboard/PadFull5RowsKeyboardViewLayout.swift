@@ -119,7 +119,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
-        if !keyboardState.keyboardContextualType.isEnglish {
+        if !keyboardState.keyboardContextualType.halfWidthSymbol {
             switch key {
             case "[": return "「"
             case "]": return "」"
@@ -140,7 +140,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     }
     
     static func getSwipeDownKeyCap(keyCap: KeyCap, keyboardState: KeyboardState) -> KeyCap? {
-        let isInChineseContextualMode = !keyboardState.keyboardContextualType.isEnglish
+        let isInChineseContextualMode = !keyboardState.keyboardContextualType.halfWidthSymbol
         if case .alphabetic = keyboardState.keyboardType {
             switch keyCap {
             case "•": return "~"

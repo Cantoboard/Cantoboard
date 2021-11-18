@@ -107,15 +107,15 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func setupButtons() {
-        let isFullShape = !state.keyboardContextualType.isEnglish
+        let isFullWidth = !state.keyboardContextualType.halfWidthSymbol
         for row in rightButtons {
             for button in row {
                 var props = button.props
                 switch props.keyCap.action {
-                case ",", "，": props.keyCap = isFullShape ? "，" : ","
-                case ".", "。": props.keyCap = isFullShape ? "。" : "."
-                case "?", "？": props.keyCap = isFullShape ? "？" : "?"
-                case "!", "！": props.keyCap = isFullShape ? "！" : "!"
+                case ",", "，": props.keyCap = isFullWidth ? "，" : ","
+                case ".", "。": props.keyCap = isFullWidth ? "。" : "."
+                case "?", "？": props.keyCap = isFullWidth ? "？" : "?"
+                case "!", "！": props.keyCap = isFullWidth ? "！" : "!"
                 default: ()
                 }
                 button.setKeyCap(props.keyCap, keyboardState: state)
