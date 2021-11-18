@@ -29,10 +29,10 @@ public enum InputMode: String, Codable {
 }
 
 public enum SymbolShape: String, Codable {
-    case language = "language"
     case contextual = "contextual"
-    case half = "half"
     case full = "full"
+    case half = "half"
+    case language = "language"
 }
 
 public enum SpaceAction: String, Codable {
@@ -91,7 +91,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultAutoCapEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
-    private static let defaultSymbolShape: SymbolShape = .language
+    private static let defaultSymbolShape: SymbolShape = .contextual
     private static let defaultSpaceAction: SpaceAction = .insertText
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()

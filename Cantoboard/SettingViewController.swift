@@ -60,11 +60,11 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @objc func updateSettings(_ sender: Any) {
         let selectedSymbolShape: SymbolShape
         switch symbolShapeControl.selectedSegmentIndex {
-        case 0: selectedSymbolShape = .language
-        case 1: selectedSymbolShape = .contextual
-        case 2: selectedSymbolShape = .half
-        case 3: selectedSymbolShape = .full
-        default: selectedSymbolShape = .language
+        case 0: selectedSymbolShape = .half
+        case 1: selectedSymbolShape = .full
+        case 2: selectedSymbolShape = .language
+        case 3: selectedSymbolShape = .contextual
+        default: selectedSymbolShape = .contextual
         }
         
         let candidateFontSize: CandidateFontSize
@@ -81,7 +81,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         default: spaceAction = .insertText
         }
         
-        let toneInputMode: ToneInputMode =  toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
+        let toneInputMode: ToneInputMode = toneInputControl.selectedSegmentIndex == 0 ? .vxq : .longPress
         
         let englishLocale: EnglishLocale
         switch englishLocaleInputControl.selectedSegmentIndex {
@@ -232,10 +232,10 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     private func populateSymbolShape(_ settings: Settings) {
         populateSetting(toSegmentedControl: symbolShapeControl, settingToIndexMapper: {
             switch $0.symbolShape {
-            case .language: return 0
-            case .contextual: return 1
-            case .half: return 2
-            case .full: return 3
+            case .half: return 0
+            case .full: return 1
+            case .language: return 2
+            case .contextual: return 3
             }
         })
     }
