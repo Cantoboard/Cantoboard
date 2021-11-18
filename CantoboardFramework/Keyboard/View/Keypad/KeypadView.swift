@@ -107,7 +107,7 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func setupButtons() {
-        let isFullShape = state.keyboardContextualType == .chinese
+        let isFullShape = !state.keyboardContextualType.isEnglish
         for row in rightButtons {
             for button in row {
                 var props = button.props

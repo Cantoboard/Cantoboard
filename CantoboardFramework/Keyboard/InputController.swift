@@ -20,7 +20,7 @@ enum ContextualType: Equatable {
     
     var isEnglish: Bool {
         switch self {
-        case .english, .rime, .url: return true
+        case .english, .url: return true
         default: return false
         }
     }
@@ -58,7 +58,7 @@ struct KeyboardState: Equatable {
     }
     
     var symbolShape: SymbolShape {
-        symbolShapeOverride ?? (keyboardContextualType == .chinese ? .full : .half)
+        symbolShapeOverride ?? (!keyboardContextualType.isEnglish ? .full : .half)
     }
     
     init() {
@@ -729,7 +729,7 @@ class InputController: NSObject {
            (last2CharsInDoc.first ?? " ").couldBeFollowedBySmartSpace && last2CharsInDoc.last?.isWhitespace ?? false {
             // Translate double space tap into ". "
             textDocumentProxy.deleteBackward()
-            if state.keyboardContextualType == .chinese {
+            if !state.keyboardContextualType.isEnglish {
                 textDocumentProxy.insertText("。")
                 hasInsertedAutoSpace = false
             } else {
@@ -805,7 +805,9 @@ class InputController: NSObject {
             state.keyboardContextualType = .rime
         } else {
             let symbolShape = Settings.cached.symbolShape
-            if symbolShape == .smart {
+            if symbolShape == .language {
+                self.state.keyboardContextualType = state.inputMode == .english ? .english : .chinese
+            } else if symbolShape == .contextual {
                 // Default to English.
                 guard let lastChar = documentContextBeforeInput.last(where: { !$0.isWhitespace }) else {
                     self.state.keyboardContextualType = .english
