@@ -7,19 +7,19 @@ import CocoaLumberjackSwift
 // Touch Begin near the screen edge is delayed by iOS.
 // To workaround the issue, use UILongPressGestureRecognizer.
 class BypassScreenEdgeTouchDelayGestureRecognizer: UILongPressGestureRecognizer {
-    private weak var keyboardView: KeyboardView?
+    private var onTouchesBegan:((Set<UITouch>, UIEvent) -> Void)
     
-    init(keyboardView: KeyboardView) {
-        super.init(target: nil, action: nil)
+    init(onTouchesBegan: @escaping ((Set<UITouch>, UIEvent) -> Void)) {
+        self.onTouchesBegan = onTouchesBegan
         
-        self.keyboardView = keyboardView
+        super.init(target: nil, action: nil)
         
         minimumPressDuration = 0
         cancelsTouchesInView = false
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        keyboardView?.touchesBeganFromGestureRecoginzer(touches, with: event)
+        onTouchesBegan(touches, event)
     }
 }
 

@@ -69,7 +69,10 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func initTouchHandler() {
-        longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(keyboardView: self)
+        longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(onTouchesBegan: { [weak self] touches, event in
+            guard let self = self else { return }
+            self.touchesBeganFromGestureRecoginzer(touches, with: event)
+        })
         addGestureRecognizer(longPressGestureRecognizer)
         
         touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)

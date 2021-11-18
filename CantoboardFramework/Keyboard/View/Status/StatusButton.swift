@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class StatusButton: UIButton {
-    private static let longPressDelay: Double = TouchHandler.keyRepeatInterval * Double(TouchHandler.keyRepeatInitialDelay)
+    private static let longPressDelay: Double = 0.4
     static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
     private static let miniExpandImageSizeRatio: CGFloat = 0.18, miniExpandImageAspectRatio: CGFloat = 1 / 2.3
     
@@ -18,6 +18,11 @@ class StatusButton: UIButton {
     
     private weak var statusSquareBg: CALayer?
     private weak var miniExpandImageLayer: CALayer?, miniExpandImageMaskLayer: CALayer?
+    
+    // Touch event near the screen edge are delayed.
+    // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
+    // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
+    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<StatusButton>()
@@ -53,6 +58,12 @@ class StatusButton: UIButton {
         layer.addSublayer(statusSquareBg)
         
         self.statusSquareBg = statusSquareBg
+        
+        longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(onTouchesBegan: { [weak self] touches, event in
+            guard let self = self else { return }
+            self.touchesBegan(touches, with: event)
+        })
+        addGestureRecognizer(longPressGestureRecognizer)
     }
     
     required init?(coder: NSCoder) {
@@ -92,8 +103,6 @@ class StatusButton: UIButton {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        
-        FeedbackProvider.rigidImpact.impactOccurred()
         
         longPressTimer?.invalidate()
         longPressTimer = nil
