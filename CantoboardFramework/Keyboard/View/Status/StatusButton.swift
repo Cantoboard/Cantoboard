@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class StatusButton: UIButton {
-    private static let longPressDelay: Double = 0.4
+    private static let longPressDelay: Double = 0.3
     static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
     private static let miniExpandImageSizeRatio: CGFloat = 0.18, miniExpandImageAspectRatio: CGFloat = 1 / 2.3
     
@@ -128,7 +128,7 @@ class StatusButton: UIButton {
         
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
-        if bounds.contains(location) {
+        if bounds.contains(location) && !isMenuActive {
             super.touchesEnded(touches, with: event)
         } else {
             touchesCancelled(touches, with: event)
