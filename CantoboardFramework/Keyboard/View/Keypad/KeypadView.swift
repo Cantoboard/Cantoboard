@@ -126,6 +126,11 @@ class KeypadView: UIView, BaseKeyboardView {
     override func layoutSubviews() {
         guard let layoutConstants = layoutConstants?.ref else { return }
         
+        directionalLayoutMargins = NSDirectionalEdgeInsets(top: layoutConstants.keyboardViewInsets.top,
+                                                           leading: layoutConstants.keyboardViewInsets.left,
+                                                           bottom: layoutConstants.keyboardViewInsets.bottom,
+                                                           trailing: layoutConstants.keyboardViewInsets.right)
+        
         super.layoutSubviews()
         
         layoutButtons(leftButtons, initialX: layoutConstants.keyboardViewInsets.left, layoutConstants: layoutConstants)
@@ -162,6 +167,10 @@ class KeypadView: UIView, BaseKeyboardView {
     private func layoutCandidateSubviews(_ layoutConstants: LayoutConstants) {
         guard let candidatePaneView = candidatePaneView else { return }
         let height = candidatePaneView.mode == .row ? layoutConstants.autoCompleteBarHeight : bounds.height
+        candidatePaneView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0,
+                                                                             leading: layoutConstants.keyboardViewInsets.left,
+                                                                             bottom: 0,
+                                                                             trailing: layoutConstants.keyboardViewInsets.right)
         candidatePaneView.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: bounds.width, height: height))
     }
     
