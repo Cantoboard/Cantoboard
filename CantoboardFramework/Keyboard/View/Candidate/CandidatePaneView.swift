@@ -21,7 +21,6 @@ protocol CandidatePaneViewDelegate: NSObject {
 }
 
 class CandidatePaneView: UIControl {
-    private static let hapticsGenerator = UIImpactFeedbackGenerator(style: .rigid)
     private static let miniStatusSize = CGSize(width: 20, height: 20)
     
     // Uncomment this to debug memory leak.
@@ -344,11 +343,13 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func expandButtonClick() {
+        FeedbackProvider.rigidImpact.impactOccurred()
+        
         changeMode(mode == .row ? .table : .row)
     }
     
     @objc private func filterButtonClick() {
-        Self.hapticsGenerator.impactOccurred(intensity: 1)
+        FeedbackProvider.rigidImpact.impactOccurred()
         FeedbackProvider.play(keyboardAction: .none)
         
         if statusIndicatorMode == .lang {
@@ -364,7 +365,7 @@ class CandidatePaneView: UIControl {
     }
     
     @objc private func charFormButtonClick() {
-        Self.hapticsGenerator.impactOccurred(intensity: 1)
+        FeedbackProvider.rigidImpact.impactOccurred()
         FeedbackProvider.play(keyboardAction: .none)
         
         let currentCharForm = SessionState.main.lastCharForm
