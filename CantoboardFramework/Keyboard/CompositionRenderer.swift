@@ -26,6 +26,13 @@ extension CompositionRenderer {
     func update(withCaretAtTheEnd text: String) {
         update(text: text, caretIndex: text.endIndex)
     }
+    
+    func clear() {
+        if hasText {
+            update(withCaretAtTheEnd: "")
+            commit()
+        }
+    }
 }
 
 class MarkedTextCompositionRenderer: CompositionRenderer {
@@ -72,6 +79,10 @@ class MarkedTextCompositionRenderer: CompositionRenderer {
     
     func textReset() {
         hasText = false
+    }
+    
+    deinit {
+        clear()
     }
 }
 
@@ -175,5 +186,9 @@ class ImmediateModeCompositionRenderer: CompositionRenderer {
     func textReset() {
         text = ""
         caretIndex = text.endIndex
+    }
+    
+    deinit {
+        clear()
     }
 }
