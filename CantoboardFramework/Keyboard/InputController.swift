@@ -432,6 +432,10 @@ class InputController: NSObject {
                 return
             }
             
+            if (state.mainSchema == .stroke) {
+                clearInput()
+            }
+            
             state.inputMode = toInputMode
         case .toggleSymbolShape:
             switch state.symbolShape {
