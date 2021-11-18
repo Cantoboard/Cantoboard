@@ -878,20 +878,14 @@ extension LayoutConstants {
     }
     
     func getButtonFontSize(_ keyCap: KeyCap) -> CGFloat {
-        if idiom.isPad {
-            switch keyCap {
-            case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return 16
-            case .cangjie(_, true): return 20
-            default: return 24
-            }
-        } else {
-            switch keyCap {
-            case .returnKey(.emergencyCall): return 12
-            case .keyboardType(.symbolic), .keyboardType(.alphabetic): return 14
-            case .rime, "^_^", .keyboardType, .returnKey, .space, "\t", .toggleInputMode: return 16
-            case .cangjie(_, true): return 20
-            default: return 22
-            }
+        switch keyCap {
+        case .returnKey(.emergencyCall) where idiom == .phone: return 12
+        case .keyboardType(.symbolic) where idiom == .phone, .keyboardType(.alphabetic) where idiom == .phone: return 14
+        case .keyboardType(.emojis): return 18
+        case .rime, .keyboardType, .returnKey, .space, "^_^", "\t", ".com", .toggleInputMode, .shift, .nextKeyboard, .dismissKeyboard, .backspace: return 16
+        case .cangjie(_, true): return 20
+        case .character(let c, _, _) where c.first?.isEnglishLetter ?? false: return c.first!.isUppercase ? 22 : 23
+        default: return idiom == .phone ? 22 : 24
         }
     }
 }

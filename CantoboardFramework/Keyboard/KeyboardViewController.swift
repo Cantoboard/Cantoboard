@@ -140,6 +140,7 @@ open class KeyboardViewController: UIInputViewController {
                 if compositionResetButton == nil {
                     let compositionResetButton = UIButton()
                     compositionResetButton.setImage(ButtonImage.clear, for: .normal)
+                    compositionResetButton.setImage(ButtonImage.clearFilled, for: .highlighted)
                     compositionResetButton.imageView?.contentMode = .center
                     compositionResetButton.tintColor = ButtonColor.keyForegroundColor
                     compositionResetButton.addTarget(self, action: #selector(onCompositionResetButtonClicked), for: .touchUpInside)

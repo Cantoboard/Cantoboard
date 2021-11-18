@@ -48,7 +48,7 @@ class TestAppViewController: UIViewController, UITextViewDelegate {
         self.keyboardController = keyboard
         keyboard.view.translatesAutoresizingMaskIntoConstraints = false
         
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = UIColor(named: "keyboardBackgroundColor")
         view.addSubview(keyboard.view)
         addChild(keyboard)
         

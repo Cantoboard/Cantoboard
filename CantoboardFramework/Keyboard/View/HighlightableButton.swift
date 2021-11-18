@@ -38,13 +38,28 @@ class HighlightableButton: UIButton {
         }
     }
     
+    var shadowColor: UIColor? {
+        didSet {
+            layer.shadowColor = shadowColor?.resolvedColor(with: traitCollection).cgColor ?? nil
+        }
+    }
+    
+    var highlightedShadowColor: UIColor? {
+        didSet {
+            setupBackgroundColor()
+        }
+    }
+    
     private func setupBackgroundColor() {
         if isGrayed {
-            super.backgroundColor = .systemGray
+            super.backgroundColor = ButtonColor.keyGrayedColor
+            shadowColor = ButtonColor.keyShadowColor
         } else if !isHighlighted {
             super.backgroundColor = originalBackgroundColor
+            shadowColor = ButtonColor.keyShadowColor
         } else {
             super.backgroundColor = highlightedColor ?? originalBackgroundColor
+            shadowColor = highlightedShadowColor ?? ButtonColor.keyShadowColor
         }
     }
     

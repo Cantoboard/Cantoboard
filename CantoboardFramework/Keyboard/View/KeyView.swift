@@ -46,11 +46,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     var hitTestFrame: CGRect?
     
-    var isLabelHidden: Bool {
-        get { titleLabel?.isHidden ?? true }
-        set { titleLabel?.isHidden = newValue }
-    }
-    
     var hasInputAcceptingPopup: Bool {
         popupView?.keyCaps.count ?? 0 > 1
     }
@@ -83,7 +78,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         isUserInteractionEnabled = true
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        layer.shadowColor = ButtonColor.keyShadowColor.resolvedColor(with: traitCollection).cgColor
         layer.shadowRadius = 0.0
         layer.masksToBounds = false
     }
@@ -115,21 +109,28 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         let foregroundColor = keyCap.buttonFgColor
         setTitleColor(foregroundColor, for: .normal)
+        setTitleColor(ButtonColor.placeholderKeyForegroundColor, for: .disabled)
         tintColor = foregroundColor
         contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
         layer.cornerRadius = layoutConstants.ref.cornerRadius
-        titleLabelFontSize = isPadTopRowButton ? 17 : layoutConstants.ref.getButtonFontSize(keyCap)
+        titleLabelFontSize = isPadTopRowButton ? 17 : layoutConstants.ref.getButtonFontSize(keyCap.unescaped)
+        if keyboardIdiom.isPad && !keyboardState.isPortrait {
+            titleLabelFontSize *= Self.padLandscapeFontRatio
+        }
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
         var buttonHintTitle = keyCap.buttonHint
         var setHighlightedBackground = false
         
+        setImage(nil, for: .normal)
+        setImage(nil, for: .highlighted)
+        setTitle(nil, for: .normal)
+        imageView?.image = nil
+        titleLabel?.text = nil
+        
         if !isKeyEnabled {
-            setImage(nil, for: .normal)
-            setTitle(nil, for: .normal)
-            titleLabel?.text = nil
             if case .shift = keyCap {
                 // Hide the highlighted color in swipe mode.
                 backgroundColor = ButtonColor.systemKeyBackgroundColor
@@ -137,36 +138,34 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             shadowOpacity = 0
             buttonHintTitle = nil
         } else if popupView != nil && keyboardIdiom == .phone {
-            setImage(nil, for: .normal)
-            setTitle(nil, for: .normal)
-            titleLabel?.text = nil
             backgroundColor = ButtonColor.popupBackgroundColor
             maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
-        } else if let buttonText = keyCap.buttonText {
-            setImage(nil, for: .normal)
+        } else if keyboardIdiom.isPad, case .returnKey(let type) = keyCap, type != .confirm {
+            let buttonImage = adjustImageFontSize(ButtonImage.returnKey)
+            setImage(buttonImage, for: .normal)
+            setImage(buttonImage, for: .highlighted)
+            imageView?.contentMode = .scaleAspectFit
+            setHighlightedBackground = true
+        } else if let buttonText = keyCap.unescaped.buttonText {
             setTitle(buttonText, for: .normal)
             if keyboardState.inputMode != .english,
                case .keyboardType(.alphabetic) = keyCap {
                 setTitle(keyboardState.activeSchema.shortName, for: .normal)
             }
-            if keyboardIdiom.isPad && !keyboardState.isPortrait {
-                titleLabelFontSize *= Self.padLandscapeFontRatio
-            }
             titleLabel?.baselineAdjustment = .alignCenters
             titleLabel?.lineBreakMode = .byClipping
             titleLabel?.adjustsFontSizeToFitWidth = true
             setHighlightedBackground = true
-        } else {
-            var buttonImage = keyCap.buttonImage
-            if keyCap == .keyboardType(.emojis) {
+        } else if var buttonImage = keyCap.unescaped.buttonImage {
+            if keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
                 // Special handling for emoji icon. We use different symbols in light/dark mode.
-                let isDarkMode = traitCollection.userInterfaceStyle == .dark
-                buttonImage = isDarkMode ? ButtonImage.emojiKeyboardDark : ButtonImage.emojiKeyboardLight
+                buttonImage = adjustImageFontSize(ButtonImage.emojiKeyboardDark)
+            } else {
+                buttonImage = adjustImageFontSize(buttonImage)
             }
             setImage(buttonImage, for: .normal)
+            setImage(keyCap == .backspace ? adjustImageFontSize(ButtonImage.backspaceFilled) : buttonImage, for: .highlighted)
             imageView?.contentMode = .scaleAspectFit
-            setTitle(nil, for: .normal)
-            titleLabel?.text = nil
             setHighlightedBackground = true
         }
         
@@ -195,12 +194,13 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
+        highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
         
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
         
-        isHidden = keyCap.isPlaceholder
+        isEnabled = !keyCap.isPlaceholder
         
         // isUserInteractionEnabled = action == .nextKeyboard
         // layoutPopupView()
@@ -225,7 +225,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if let hitTestFrame = hitTestFrame {
-            if isHidden || window == nil { return false }
+            if !isEnabled || window == nil { return false }
             // Translate hit test frame to hit test bounds.
             let hitTestBounds = hitTestFrame.offsetBy(dx: -frame.origin.x, dy: -frame.origin.y)
             return hitTestBounds.contains(point)
@@ -313,6 +313,10 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         let layoutOffsetX = popupView.leftAnchorX
         let popupViewFrame = CGRect(origin: CGPoint(x: -layoutOffsetX, y: -popupViewSize.height + 1), size: popupViewSize)
         popupView.frame = popupViewFrame
+    }
+    
+    private func adjustImageFontSize(_ image: UIImage) -> UIImage {
+        image.withConfiguration(UIImage.SymbolConfiguration(pointSize: titleLabelFontSize))
     }
 }
 

@@ -91,14 +91,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         let totalFixedKeyWidth = keys.reduce(CGFloat(0)) { sum, key in
             let width: CGFloat
             
-            let keyCap: KeyCap
-            if case let .placeholder(keyCapSizer) = key.keyCap {
-                keyCap = keyCapSizer
-            } else {
-                keyCap = key.keyCap
-            }
-            
-            switch keyCap {
+            switch key.keyCap.unescaped {
             case "\t", .backspace: width = padFull4RowsLayoutConstants.tabDeleteKeyWidth
             case .toggleInputMode: width = padFull4RowsLayoutConstants.capLockKeyWidth
             case .shift, .keyboardType(.numeric), .keyboardType(.symbolic):
