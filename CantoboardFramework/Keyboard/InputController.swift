@@ -645,6 +645,8 @@ class InputController: NSObject {
         
         if state.activeSchema.isCangjieFamily {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.rimeComposition
+        } else if state.inputMode == .english {
+            keyboardViewController?.compositionLabelView?.composition = inputEngine.englishComposition
         } else {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.composition
         }
