@@ -84,6 +84,8 @@ class KeypadView: UIView, BaseKeyboardView {
         let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
         candidatePaneView.delegate = self
         addSubview(candidatePaneView)
+        candidatePaneView.setupButtons()
+
         self.candidatePaneView = candidatePaneView
     }
     
