@@ -73,7 +73,7 @@ extension StatusMenuHandler where Self: BaseKeyboardView {
             [[ .changeSchema(.cangjie), .changeSchema(.quick) ]],
             [[ .changeSchema(.stroke), .changeSchema(.mandarin) ]],
         ] : [
-            [[ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ], [ .changeSchema(.yale) ]],
+            [[ .changeSchema(.yale) ], [ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ]],
             [[ .changeSchema(.cangjie), .changeSchema(.quick) ], [ .changeSchema(.stroke), .changeSchema(.mandarin) ]],
         ]
         
