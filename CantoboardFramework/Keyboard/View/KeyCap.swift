@@ -346,8 +346,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "(": return ["(", "（"]
         case ")": return [")", "）"]
         case .doubleQuote: return ["\"", "＂", "”", "“", "„", "»", "«"]
-        case "｢": return ["｢", "「", "『", "“", "‘"]
-        case "｣": return ["｣", "」", "』", "”", "’"]
+        case "「": return ["「", "『", "“", "‘", "｢"]
+        case "」": return ["」", "』", "”", "’", "｣"]
         // 123 3rd row
         case ".": return [".", "。", "．", "…", "⋯", "⋯⋯"]
         case ",": return [",", "，"]
@@ -383,13 +383,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         // #+= 4th row
         case "…": return ["…", "⋯"]
         // 123 2nd row full width
+        case "—": return ["—", "–", "-", "－", "·"]
         case "／": return ["／", "/", "\\"]
         case "：": return ["：", ":"]
         case "；": return ["；", ";"]
         case "（": return ["（", "("]
         case "）": return ["）", ")"]
-        case "「": return ["「", "『", "“", "‘", "｢", "｣"]
-        case "」": return ["」", "』", "”", "’"]
         // 123 3rd row full width
         case "。": return ["。", ".", "．", "…", "⋯", "⋯⋯"]
         case "，": return ["，", ", "]

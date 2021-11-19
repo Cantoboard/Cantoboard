@@ -20,7 +20,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["-", "/", ":", ";", "(", ")", .currency, .doubleQuote, "｢", "｣"]],
+        [["-", "/", ":", ";", "(", ")", .currency, .doubleQuote, "「", "」"]],
         [[.keyboardType(.symbolic)], [".", ",", "､", "^_^", "?", "!", .singleQuote], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
@@ -34,7 +34,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["–", "／", "：", "；", "（", "）", .currency, .doubleQuote, "「", "」"]],
+        [["—", "／", "：", "；", "（", "）", .currency, .doubleQuote, "「", "」"]],
         [[.keyboardType(.symbolic)], ["。", "，", "、", "^_^", "？", "！", .singleQuote], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], ["@", .returnKey(.default)]]
     ]
