@@ -1,0 +1,108 @@
+/*
+  Localizable.strings
+  Cantoboard
+
+  Created by Alex Man on 16/10/21.
+  
+*/
+
+"installCantoboard" = "安裝 Cantoboard";
+"installCantoboard.settings" = "Cantoboard 程式設定";
+"installCantoboard.description" =
+"喺程式設定撳「鍵盤」→「Cantoboard」→「允許完整存取權」→「確定」，即可啓用 Cantoboard。
+
+「允許完整存取權」並唔係強制性，但係由於 iOS 嘅限制，諸如撳掣出聲同震動之類嘅功能要開咗先用得到。本程式唔會用到網絡，因此亦冇可能收集到任何資料，包括你所打嘅文字。程式嘅原始碼可以喺 GitHub 睇到。";
+
+"testKeyboard" = "測試鍵盤";
+"testKeyboard.placeholder" = "撳呢度打字，試下個鍵盤⋯⋯";
+
+"inputMethodSettings" = "輸入法設定";
+"inputMethodSettings.mixedMode" = "粵英混合輸入";
+"inputMethodSettings.mixedMode.description" = "熄咗呢個選項，打粵文嗰陣就唔會顯示英文候選詞。";
+"inputMethodSettings.smartFullStop" = "句號快捷鍵";
+"inputMethodSettings.smartFullStop.description" = "打字之後撳兩下空白鍵，快速輸入句號。";
+"inputMethodSettings.audioFeedback" = "按鍵聲音";
+"inputMethodSettings.tapHapticFeedback" = "按鍵震動";
+"inputMethodSettings.candidateFontSize" = "候選詞大小";
+"inputMethodSettings.candidateFontSize.normal" = "正常";
+"inputMethodSettings.candidateFontSize.large" = "大";
+"inputMethodSettings.symbolShape" = "標點符號";
+"inputMethodSettings.symbolShape.half" = "半形";
+"inputMethodSettings.symbolShape.full" = "全形";
+"inputMethodSettings.symbolShape.smart" = "自動";
+"inputMethodSettings.symbolShape.description" = "自動模式會喺英文字後輸入半形符號，中文字後輸入全形符號。";
+
+"chineseInputSettings" = "中文輸入設定";
+"chineseInputSettings.compositionMode" = "輸入模式";
+"chineseInputSettings.compositionMode.immediate" = "即時";
+"chineseInputSettings.compositionMode.multiStage" = "兩段";
+"chineseInputSettings.compositionMode.description" =
+"即時輸入：好似平時打英文噉，打咗嘅字直接輸出。
+兩段輸入：跟返普通嘅中文輸入法，打咗嘅字等揀完字先再輸出。";
+"chineseInputSettings.spaceAction" = "空白鍵功能";
+"chineseInputSettings.spaceAction.nextPage" = "下一頁";
+"chineseInputSettings.spaceAction.insertCandidate" = "選擇候補";
+"chineseInputSettings.spaceAction.insertText" = "保留輸入";
+"chineseInputSettings.showRomanizationMode" = "候選詞粵拼";
+"chineseInputSettings.showRomanizationMode.never" = "隱藏";
+"chineseInputSettings.showRomanizationMode.always" = "顯示";
+"chineseInputSettings.showRomanizationMode.onlyInNonCantoneseMode" = "非粵拼";
+"chineseInputSettings.enableCorrector" = "輸入糾錯";
+"chineseInputSettings.enableCorrector.description" = "對於部分機型，啓用後輸入速度可能會稍微下降。";
+"chineseInputSettings.toneInputMode" = "聲調輸入";
+"chineseInputSettings.toneInputMode.vxq" = "vxq";
+"chineseInputSettings.toneInputMode.longPress" = "長按";
+"chineseInputSettings.toneInputMode.description" =
+"喺粵拼模式打聲調，可以減少重碼字。
+呢個選項決定聲調點打：
+vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
+　　 撳兩下 v/x/q 輸入 4/5/6 聲。
+長按：長按鍵盤中間六粒掣選擇聲調。";
+
+"englishInputSettings" = "英文輸入設定";
+"englishInputSettings.autoCap" = "自動大階";
+"englishInputSettings.shouldShowEnglishExactMatch" = "顯示一致候選詞";
+"englishInputSettings.englishLocale" = "英文詞典";
+"englishInputSettings.englishLocale.au" = "澳洲";
+"englishInputSettings.englishLocale.ca" = "加拿大";
+"englishInputSettings.englishLocale.gb" = "英國";
+"englishInputSettings.englishLocale.us" = "美國";
+
+"other" = "其他";
+"other.onboarding" = "開始畫面";
+"other.faq" = "常見問題";
+"other.about" = "關於";
+
+"onboarding.skip" = "略過";
+"onboarding.jumpToSettings" = "前往 Cantoboard 設定";
+"onboarding.done" = "完成！";
+
+"onboarding.0.heading" = "歡迎使用 Cantoboard";
+"onboarding.0.content" = "Cantoboard 係一款開放原始碼嘅智能粵英混合輸入法。利用香港語言學學會粵語拼音方案，打字都可以好輕鬆！";
+"onboarding.1.heading" = "輸入編輯";
+"onboarding.1.content" = "打咗成句拼音，臨揀字先發現打錯字？唔緊要！只要長撳空格或者用力撳鍵盤，就可以左右移動輸入游標，編輯輸入咗嘅字。";
+"onboarding.2.heading" = "反查功能";
+"onboarding.2.content" = "唔識用粵拼打某個字？長撳 r 揀其他輸入法打字反查，粵拼就會喺候選詞下面顯示。";
+"onboarding.3.heading" = "揾唔到候選字？";
+"onboarding.3.content" = "同 iOS 內置嘅中文輸入法一樣，Cantoboard 可以按粵拼／部首／筆畫排列候選字。";
+"onboarding.4.heading" = "一Ｑ清枱";
+"onboarding.4.content" = "三心兩意，想由頭打過？唔使撳實 backspace 慢慢等啲字剷晒㗎！只要喺個 backspace 向左掃一下，就可以剷晒啱啱打過嘅字詞。";
+"onboarding.5.heading" = "仲有一步⋯⋯";
+"onboarding.5.content" = "要開始用 Cantoboard，最後一步就係去程式設定撳「鍵盤」→「Cantoboard」→「允許完整存取權」→「確定」。";
+"onboarding.5.footnote" = "「允許完整存取權」並唔係強制性，但係由於 iOS 嘅限制，諸如撳掣出聲同震動之類嘅功能要開咗先用得到。本程式唔會用到網絡，因此亦冇可能收集到任何資料，包括你所打嘅文字。程式嘅原始碼可以喺 GitHub 睇到。";
+"onboarding.5.installed.heading" = "大功告成！";
+"onboarding.5.installed.content" = "搞掂！如果遇到任何問題，可以睇下「常見問題」或者用「關於」嗰版嘅連結聯絡我哋。";
+
+"faq.0.question" = "點樣喺粵拼輸入法切換繁簡體字？";
+"faq.0.answer" = "打字嗰陣撳 ⌵ 展開候選詞選單，就可以見到右手邊嘅繁簡切換掣㗎喇。";
+"faq.1.question" = "Update 咗 iOS 之後 Cantoboard 突然間消失咗，點算？";
+"faq.1.answer" = "唔使驚，呢個係 iOS 嘅 bug，只要重新撳「Cantoboard 程式設定」→「鍵盤」→「Cantoboard」加返就得。";
+"faq.2.question" = "遇到其他問題或者 bug 應該點算？";
+"faq.2.answer" = "歡迎嚟我哋嘅 Telegram 用户羣組一齊傾下，又或者去 Cantoboard 嘅 GitHub 儲存庫度開返個 issue。連結可以喺「關於」嗰版揾到。";
+
+"about.jyutpingSite" = "粵拼網站";
+"about.sourceCode" = "GitHub 原始碼";
+"about.credit" = "鳴謝";
+"about.telegram" = "Telegram 用户羣組";
+"about.email" = "電郵反饋";
+"about.appStore" = "去 App Store 評價";
