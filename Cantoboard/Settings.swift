@@ -115,6 +115,7 @@ private class Segment<T: Equatable>: Option {
         self.settings = settings
         control = UISegmentedControl(items: options.map { $0.key })
         control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
+        control.apportionsSegmentWidthsByContent = true
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         return makeCell(with: control)
     }
@@ -158,7 +159,8 @@ extension Settings {
                     Segment(LocalizedStrings.symbolShape, \.symbolShape, [
                         LocalizedStrings.symbolShape_half: .half,
                         LocalizedStrings.symbolShape_full: .full,
-                        LocalizedStrings.symbolShape_smart: .smart,
+                        LocalizedStrings.symbolShape_language: .language,
+                        LocalizedStrings.symbolShape_contextual: .contextual,
                     ],
                     LocalizedStrings.symbolShape_description, "Guide9-1"),
                 ]
@@ -188,6 +190,7 @@ extension Settings {
                         LocalizedStrings.toneInputMode_longPress: .longPress,
                     ],
                     LocalizedStrings.toneInputMode_description, "Guide3-2"),
+                    Switch(LocalizedStrings.enableHKCorrection, \.enableHKCorrection),
                 ]
             ),
             Section(
@@ -199,7 +202,7 @@ extension Settings {
                         LocalizedStrings.englishLocale_au: .au,
                         LocalizedStrings.englishLocale_ca: .ca,
                         LocalizedStrings.englishLocale_gb: .gb,
-                        LocalizedStrings.englishLocale_us: .us
+                        LocalizedStrings.englishLocale_us: .us,
                     ]),
                 ]
             ),

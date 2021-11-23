@@ -32,7 +32,8 @@ class LocalizedStrings {
     static let symbolShape = localizedString("inputMethodSettings.symbolShape")
     static let symbolShape_half = localizedString("inputMethodSettings.symbolShape.half")
     static let symbolShape_full = localizedString("inputMethodSettings.symbolShape.full")
-    static let symbolShape_smart = localizedString("inputMethodSettings.symbolShape.smart")
+    static let symbolShape_language = localizedString("inputMethodSettings.symbolShape.language")
+    static let symbolShape_contextual = localizedString("inputMethodSettings.symbolShape.contextual")
     static let symbolShape_description = localizedString("inputMethodSettings.symbolShape.description")
     
     static let chineseInputSettings = localizedString("chineseInputSettings")
@@ -54,6 +55,7 @@ class LocalizedStrings {
     static let toneInputMode_vxq = localizedString("chineseInputSettings.toneInputMode.vxq")
     static let toneInputMode_longPress = localizedString("chineseInputSettings.toneInputMode.longPress")
     static let toneInputMode_description = localizedString("chineseInputSettings.toneInputMode.description")
+    static let enableHKCorrection = localizedString("chineseInputSettings.enableHKCorrection")
     
     static let englishInputSettings = localizedString("englishInputSettings")
     static let autoCap = localizedString("englishInputSettings.autoCap")
