@@ -77,8 +77,8 @@ class StatusButton: UIButton {
         titleLabel?.adjustsFontSizeToFitWidth = true
         titleLabel?.textAlignment = .center
         if !isMini {
-            titleLabel?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset).offsetBy(dx: Self.statusInset, dy: 0)
-            statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset).offsetBy(dx: Self.statusInset, dy: 0)
+            titleLabel?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
+            statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         }
         statusSquareBg?.isHidden = isMini
         setTitleColor(isMini ? ButtonColor.keyHintColor : .label, for: .normal)
