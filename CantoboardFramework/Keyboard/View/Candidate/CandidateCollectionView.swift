@@ -14,13 +14,15 @@ protocol CandidateCollectionViewDelegate: UICollectionViewDelegate {
 
 // This is the UICollectionView inside CandidatePaneView.
 class CandidateCollectionView: UICollectionView {
+    private let c = InstanceCounter<CandidateCollectionView>()
+    
     private static let longPressDelay: Double = 1
     private static let longPressMovement: CGFloat = 10
     
     var scrollOnLayoutSubviews: (() -> Bool)?
     
     private var longPressTimer: Timer?
-    private var cancelTouch: UITouch?
+    private weak var cancelTouch: UITouch?
     
     override func layoutSubviews() {
         super.layoutSubviews()

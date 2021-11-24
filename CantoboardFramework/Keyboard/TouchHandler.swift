@@ -40,6 +40,8 @@ class TouchState {
 }
 
 class TouchHandler {
+    private let c = InstanceCounter<TouchHandler>()
+    
     enum InputMode: Equatable {
         case typing, backspacing, nextKeyboard, cursorMoving
     }
