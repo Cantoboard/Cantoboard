@@ -156,17 +156,17 @@ class CandidatePaneView: UIControl {
         }
         
         candidateOrganizer.onReloadCandidates = { [weak self] candidateOrganizer in
-            guard let self = self,
-                  let collectionView = self.collectionView else { return }
+            guard let self = self else { return }
             
             DDLogInfo("Reloading candidates.")
             
             let originalCandidatePaneMode = self.mode
-            let originalContentOffset: CGPoint = collectionView.contentOffset
+            let originalContentOffset: CGPoint = self.collectionView.contentOffset
             
             UIView.performWithoutAnimation {
-                collectionView.scrollOnLayoutSubviews = { [weak self] in
-                    guard let self = self else { return true }
+                self.collectionView.scrollOnLayoutSubviews = { [weak self] in
+                    guard let self = self,
+                          let collectionView = self.collectionView else { return true }
                     if originalCandidatePaneMode == self.mode && self.shouldPreserveCandidateOffset {
                         if originalCandidatePaneMode == .table  {
                             // Preserve contentOffset on toggling charForm
@@ -186,7 +186,7 @@ class CandidatePaneView: UIControl {
                     self.shouldPreserveCandidateOffset = false
                     return true
                 }
-                collectionView.reloadCandidates()
+                self.collectionView.reloadCandidates()
                 if self.collectionView.numberOfSections < 1 ||
                     self.collectionView(self.collectionView, numberOfItemsInSection: 1) == 0 {
                     self.changeMode(.row)
@@ -305,6 +305,8 @@ class CandidatePaneView: UIControl {
     
     private func createCollectionView() {
         let collectionViewLayout = CandidateCollectionViewFlowLayout(candidatePaneView: self)
+        collectionViewLayout.scrollDirection = mode == .row ? .horizontal : .vertical
+        collectionViewLayout.minimumLineSpacing = rowPadding
         
         let collectionView = CandidateCollectionView(frame :.zero, collectionViewLayout: collectionViewLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -317,10 +319,6 @@ class CandidatePaneView: UIControl {
         collectionView.allowsSelection = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        
-        let flowLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        flowLayout.scrollDirection = mode == .row ? .horizontal : .vertical
-        flowLayout.minimumLineSpacing = rowPadding
         
         self.addSubview(collectionView)
         self.collectionView = collectionView

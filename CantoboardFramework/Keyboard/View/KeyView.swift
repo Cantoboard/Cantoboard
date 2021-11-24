@@ -288,8 +288,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     }
     
     private func updateColorsAccordingToSwipeDownPercentage() {
-        guard let keyboardState = keyboardState else { return }
-        let keyboardIdiom = keyboardState.keyboardIdiom
+        guard let keyboardIdiom = keyboardState?.keyboardIdiom,
+              keyboardIdiom != .phone else { return }
         
         titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
         
