@@ -88,7 +88,7 @@ class StatusButton: UIButton {
             
             let width = bounds.width * Self.miniExpandImageSizeRatio
             let size = CGSize(width: width, height: width * Self.miniExpandImageAspectRatio)
-            let origin = CGPoint(x: Self.miniExpandImageInset + Self.statusInset, y: bounds.maxY - Self.miniExpandImageInset - size.height)
+            let origin = CGPoint(x: Self.miniExpandImageInset, y: bounds.maxY - Self.miniExpandImageInset - size.height)
             miniExpandImageLayer?.frame = CGRect(origin: origin, size: size)
             miniExpandImageMaskLayer?.frame = CGRect(origin: .zero, size: size)
         } else {
