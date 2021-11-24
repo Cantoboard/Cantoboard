@@ -453,7 +453,7 @@ class CandidatePaneView: UIControl {
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
-        let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset)
+        let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : layoutConstants.ref.candidatePaneViewLeftRightInset)
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
