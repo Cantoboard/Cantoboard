@@ -381,8 +381,8 @@ class LayoutConstants: Copyable {
         keypadButtonUnitSize = CGSize(width: width, height: height)
         
         compositionViewHeight = idiom == .phone ? 24 : 28
-        statusMenuWidth = (idiom == .phone ? 0.5 : 0.35) * keyboardSize.width
-        statusMenuItemHeight = keyboardSize.height / (idiom == .phone && !isPortrait ? 3.5 : 5.5)
+        statusMenuWidth = (idiom == .phone ? 0.45 : 0.35) * keyboardSize.width
+        statusMenuItemHeight = keyboardSize.height / (idiom == .phone && !isPortrait ? 3.5 : 5)
     }
     
     required init(copyOf: LayoutConstants) {
