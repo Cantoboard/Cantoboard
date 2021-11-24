@@ -26,15 +26,15 @@ class KeyboardView: UIView, BaseKeyboardView {
     private var candidateOrganizer: CandidateOrganizer
     
     internal weak var statusMenu: StatusMenu?
-    private var candidatePaneView: CandidatePaneView?
-    private var emojiView: EmojiView?
+    private weak var candidatePaneView: CandidatePaneView?
+    private weak var emojiView: EmojiView?
     private var keyRows: [KeyRowView]!
     
     private var touchHandler: TouchHandler!
     // Touch event near the screen edge are delayed.
     // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
-    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
+    private weak var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
     internal weak var layoutConstants: Reference<LayoutConstants>?
     private weak var newLineKey: KeyView?
@@ -69,11 +69,12 @@ class KeyboardView: UIView, BaseKeyboardView {
     }
     
     private func initTouchHandler() {
-        longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(onTouchesBegan: { [weak self] touches, event in
+        let longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(onTouchesBegan: { [weak self] touches, event in
             guard let self = self else { return }
             self.touchesBeganFromGestureRecoginzer(touches, with: event)
         })
         addGestureRecognizer(longPressGestureRecognizer)
+        self.longPressGestureRecognizer = longPressGestureRecognizer
         
         touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
     }

@@ -22,7 +22,7 @@ class StatusButton: UIButton {
     // Touch event near the screen edge are delayed.
     // Overriding preferredScreenEdgesDeferringSystemGestures doesnt work in UIInputViewController,
     // As a workaround we use UILongPressGestureRecognizer to detect taps without delays.
-    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
+    private weak var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<StatusButton>()
@@ -59,11 +59,12 @@ class StatusButton: UIButton {
         
         self.statusSquareBg = statusSquareBg
         
-        longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(onTouchesBegan: { [weak self] touches, event in
+        let longPressGestureRecognizer = BypassScreenEdgeTouchDelayGestureRecognizer(onTouchesBegan: { [weak self] touches, event in
             guard let self = self else { return }
             self.touchesBegan(touches, with: event)
         })
         addGestureRecognizer(longPressGestureRecognizer)
+        self.longPressGestureRecognizer = longPressGestureRecognizer
     }
     
     required init?(coder: NSCoder) {

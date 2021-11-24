@@ -165,7 +165,8 @@ class CandidatePaneView: UIControl {
             let originalContentOffset: CGPoint = collectionView.contentOffset
             
             UIView.performWithoutAnimation {
-                collectionView.scrollOnLayoutSubviews = {
+                collectionView.scrollOnLayoutSubviews = { [weak self] in
+                    guard let self = self else { return true }
                     if originalCandidatePaneMode == self.mode && self.shouldPreserveCandidateOffset {
                         if originalCandidatePaneMode == .table  {
                             // Preserve contentOffset on toggling charForm
@@ -447,7 +448,8 @@ extension CandidatePaneView {
         if let scrollToIndexPath = firstVisibleIndexPath {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top
             if mode == .table && groupByEnabled && scrollToIndexPath.section <= 1 && scrollToIndexPath.row == 0 {
-                collectionView.scrollOnLayoutSubviews = {
+                collectionView.scrollOnLayoutSubviews = { [weak self] in
+                    guard let self = self else { return true }
                     let candindateBarHeight = self.rowHeight
                     
                     self.collectionView.setContentOffset(CGPoint(x: 0, y: candindateBarHeight), animated: false)
@@ -456,7 +458,8 @@ extension CandidatePaneView {
                     return true
                 }
             } else {
-                collectionView.scrollOnLayoutSubviews = {
+                collectionView.scrollOnLayoutSubviews = { [weak self] in
+                    guard let self = self else { return true }
                     guard let collectionView = self.collectionView else { return false }
                     
                     guard scrollToIndexPath.section < collectionView.numberOfSections else { return false }
@@ -508,10 +511,6 @@ extension CandidatePaneView {
         return self.collectionView.indexPathForItem(at: self.convert(CGPoint(x: candidateCharSize.width / 2, y: candidateCharSize.height / 2 + 2 * rowHeight), to: self.collectionView))
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-    }
-    
     func scrollToNextPageInRowMode() {
         guard mode == .row,
               let collectionView = self.collectionView else { return }
@@ -553,7 +552,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
         cell.setup(
             groupByModes: candidateOrganizer.supportedGroupByModes,
             selectedGroupByMode: candidateOrganizer.groupByMode,
-            onSelectionChanged: onGroupBySegmentControlSelectionChanged)
+            onSelectionChanged: { [weak self] in self?.onGroupBySegmentControlSelectionChanged($0) })
         
         return cell
     }
