@@ -20,17 +20,7 @@ class KeyHintLayer: CATextLayer {
     override init() {
         super.init()
         
-        let newActions = [
-            "onOrderIn": NSNull(),
-            "onOrderOut": NSNull(),
-            "sublayers": NSNull(),
-            "contents": NSNull(),
-            "position": NSNull(),
-            "bounds": NSNull(),
-            "hidden": NSNull(),
-            "fontSize": NSNull(),
-        ]
-        actions = newActions
+        actions = CALayer.disableAnimationActions
         
         allowsFontSubpixelQuantization = true
         contentsScale = UIScreen.main.scale

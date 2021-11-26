@@ -36,18 +36,7 @@ class CompositionLabel: UILabel {
                 if caretView == nil {
                     let caretView = CAShapeLayer()
                     caretView.backgroundColor = Self.caretColor.resolvedColor(with: traitCollection).cgColor
-                    // Disable animation
-                    let newActions = [
-                        "onOrderIn": NSNull(),
-                        "onOrderOut": NSNull(),
-                        "sublayers": NSNull(),
-                        "contents": NSNull(),
-                        "position": NSNull(),
-                        "bounds": NSNull(),
-                        "hidden": NSNull(),
-                        "fontSize": NSNull(),
-                    ]
-                    caretView.actions = newActions
+                    caretView.actions = CALayer.disableAnimationActions
                     
                     layer.addSublayer(caretView)
                     

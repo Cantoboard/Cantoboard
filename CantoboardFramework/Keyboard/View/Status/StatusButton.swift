@@ -8,6 +8,22 @@
 import Foundation
 import UIKit
 
+extension CALayer {
+    static let disableAnimationActions: [String : CAAction] =  [
+        "backgroundColor": NSNull(),
+        "bounds": NSNull(),
+        "contents": NSNull(),
+        "fontSize": NSNull(),
+        "foregroundColor": NSNull(),
+        "hidden": NSNull(),
+        "onOrderIn": NSNull(),
+        "onOrderOut": NSNull(),
+        "position": NSNull(),
+        "string": NSNull(),
+        "sublayers": NSNull(),
+    ]
+}
+
 class StatusButton: UIButton {
     private static let longPressDelay: Double = 0.3
     static let statusInset: CGFloat = 4, miniExpandImageInset: CGFloat = 7
@@ -45,12 +61,7 @@ class StatusButton: UIButton {
         super.init(frame: frame)
         
         let statusSquareBg = CALayer()
-        let newActions = [
-            "position": NSNull(),
-            "bounds": NSNull(),
-            "hidden": NSNull(),
-        ]
-        statusSquareBg.actions = newActions
+        statusSquareBg.actions = CALayer.disableAnimationActions
         statusSquareBg.frame = frame.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         statusSquareBg.backgroundColor = ButtonColor.systemKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
         statusSquareBg.cornerRadius = 3
@@ -152,6 +163,7 @@ class StatusButton: UIButton {
             let miniExpandImageLayer = CALayer(), miniExpandImageMaskLayer = CALayer()
             miniExpandImageLayer.backgroundColor = ButtonColor.keyForegroundColor.resolvedColor(with: traitCollection).cgColor
             miniExpandImageLayer.mask = miniExpandImageMaskLayer
+            miniExpandImageLayer.actions = CALayer.disableAnimationActions
             
             miniExpandImageMaskLayer.contents = ButtonImage.paneExpandButtonImage.cgImage
             
