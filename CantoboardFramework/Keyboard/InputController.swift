@@ -819,27 +819,31 @@ class InputController: NSObject {
         } else if inputEngine.composition?.text != nil {
             let halfWidthSymbol: Bool
             switch symbolShape {
-            case .language: halfWidthSymbol = state.inputMode == .english
-            case .contextual: // The last character of the input buffer can't be a Chinese char.
-                halfWidthSymbol = true
+            case .smart:
+                // The last character of the input buffer can't be a Chinese char.
+                // Show half width symbols in English and mixed mode.
+                halfWidthSymbol = state.keyboardContextualType != .chinese
             case .half: halfWidthSymbol = true
             case .full: halfWidthSymbol = false
             }
             state.keyboardContextualType = .rime(halfWidthSymbol: halfWidthSymbol)
         } else {
-            if symbolShape == .language {
-                state.keyboardContextualType = state.inputMode == .english ? .english : .chinese
-            } else if symbolShape == .contextual {
-                // Default to English.
-                guard let lastChar = documentContextBeforeInput.last(where: { !$0.isWhitespace }) else {
-                    state.keyboardContextualType = .english
-                    return
-                }
-                // If the last char is Chinese, change contextual type to Chinese.
-                if lastChar.isChineseChar {
-                    state.keyboardContextualType = .chinese
-                } else {
-                    state.keyboardContextualType = .english
+            if symbolShape == .smart {
+                switch state.inputMode {
+                case .chinese: state.keyboardContextualType = .chinese
+                case .english where !Settings.cached.isMixedModeEnabled: state.keyboardContextualType = .english
+                default:
+                    // Default to English as inserting half width symbols between Chinese chars is more acceptable.
+                    guard let lastChar = documentContextBeforeInput.last(where: { !$0.isWhitespace }) else {
+                        state.keyboardContextualType = .english
+                        return
+                    }
+                    // If the last char is Chinese, change contextual type to Chinese.
+                    if lastChar.isChineseChar {
+                        state.keyboardContextualType = .chinese
+                    } else {
+                        state.keyboardContextualType = .english
+                    }
                 }
             } else {
                 state.keyboardContextualType = symbolShape == .half ? .english : .chinese

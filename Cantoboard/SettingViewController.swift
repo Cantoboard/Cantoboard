@@ -62,9 +62,8 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         switch symbolShapeControl.selectedSegmentIndex {
         case 0: selectedSymbolShape = .half
         case 1: selectedSymbolShape = .full
-        case 2: selectedSymbolShape = .language
-        case 3: selectedSymbolShape = .contextual
-        default: selectedSymbolShape = .contextual
+        case 2: selectedSymbolShape = .smart
+        default: selectedSymbolShape = .smart
         }
         
         let candidateFontSize: CandidateFontSize
@@ -234,8 +233,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
             switch $0.symbolShape {
             case .half: return 0
             case .full: return 1
-            case .language: return 2
-            case .contextual: return 3
+            case .smart: return 2
             }
         })
     }
