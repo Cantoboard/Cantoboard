@@ -82,6 +82,8 @@ struct KeyboardState: Equatable {
 }
 
 class InputController: NSObject {
+    private let c = InstanceCounter<InputController>()
+    
     private weak var keyboardViewController: KeyboardViewController?
     private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
@@ -152,18 +154,24 @@ class InputController: NSObject {
         keyboardView.translatesAutoresizingMaskIntoConstraints = false
         keyboardViewPlaceholder.addSubview(keyboardView)
         
+        self.keyboardView = keyboardView
+    }
+    
+    deinit {
+        keyboardView?.removeConstraints(keyboardView?.constraints ?? [])
+        keyboardView?.removeFromSuperview()
+    }
+    
+    func createConstraints() {
+        guard let keyboardView = keyboardView,
+              let keyboardViewPlaceholder = keyboardViewController?.keyboardViewPlaceholder else { return }
+        
         NSLayoutConstraint.activate([
             keyboardView.leftAnchor.constraint(equalTo: keyboardViewPlaceholder.leftAnchor),
             keyboardView.rightAnchor.constraint(equalTo: keyboardViewPlaceholder.rightAnchor),
             keyboardView.topAnchor.constraint(equalTo: keyboardViewPlaceholder.topAnchor),
             keyboardView.bottomAnchor.constraint(equalTo: keyboardViewPlaceholder.bottomAnchor),
         ])
-        
-        self.keyboardView = keyboardView
-    }
-    
-    deinit {
-        keyboardView?.removeFromSuperview()
     }
     
     func textWillChange(_ textInput: UITextInput?) {

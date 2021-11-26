@@ -17,9 +17,12 @@ open class KeyboardViewController: UIInputViewController {
     private let c = InstanceCounter<KeyboardViewController>()
     
     private var inputController: InputController?
-    private(set) weak var keyboardViewPlaceholder: UIView?
-    private weak var keyboardWidthConstraint, keyboardViewPlaceholderTopConstraint: NSLayoutConstraint?
+    
     private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
+    
+    private(set) weak var keyboardViewPlaceholder: UIView?
+    private weak var keyboardViewWidthConstraint, keyboardViewTopConstraint: NSLayoutConstraint?
+
     private(set) weak var compositionLabelView: CompositionLabel?
     private(set) weak var compositionResetButton: UIButton?
     private weak var logView: UITextView?
@@ -164,56 +167,81 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        refreshLayoutConstants()
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
         
         Settings.hasFullAccess = hasFullAccess
+        view.translatesAutoresizingMaskIntoConstraints = false
         
-        let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardHeight)
-        heightConstraint.priority = .required
-        self.heightConstraint = heightConstraint
+        createInputController()
+    }
     
-        let widthConstraint = view.widthAnchor.constraint(equalToConstant: 1) // Just a placeholder. Value will be reset on viewWillLayoutSubviews()
-        widthConstraint.priority = .required
-        self.widthConstraint = widthConstraint
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        createConstraints()
+        refreshLayoutConstants()
+    }
     
+    public func createInputController() {
+        if inputController == nil {
+            reloadSettings()
+            
+            createKeyboardViewPlaceholder()
+            inputController = InputController(keyboardViewController: self)
+            
+            textWillChange(nil)
+            textDidChange(nil)
+        }
+    }
+    
+    private func createKeyboardViewPlaceholder() {
+        guard keyboardViewPlaceholder == nil else { return }
+        
         let keyboardViewPlaceholder = UIView()
         keyboardViewPlaceholder.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(keyboardViewPlaceholder)
         self.keyboardViewPlaceholder = keyboardViewPlaceholder
+    }
+    
+    private func createConstraints() {
+        guard let keyboardViewPlaceholder = keyboardViewPlaceholder else { return }
+        if self.heightConstraint == nil {
+            let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardHeight)
+            heightConstraint.priority = .required
+            heightConstraint.isActive = true
+            self.heightConstraint = heightConstraint
+        }
+    
+        if self.widthConstraint == nil {
+            let widthConstraint = view.widthAnchor.constraint(equalToConstant: 1) // Just a placeholder. Value will be reset on viewWillLayoutSubviews()
+            widthConstraint.priority = .required
+            widthConstraint.isActive = true
+            self.widthConstraint = widthConstraint
+        }
         
-        let keyboardWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
-        keyboardWidthConstraint.priority = .required
-        self.keyboardWidthConstraint = keyboardWidthConstraint
+        let keyboardViewWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
+        keyboardViewWidthConstraint.priority = .required
+        self.keyboardViewWidthConstraint = keyboardViewWidthConstraint
         
         // EmojiView inside KeyboardView requires AutoLayout.
-        let keyboardViewPlaceholderTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
-        keyboardViewPlaceholderTopConstraint.priority = .required
-        self.keyboardViewPlaceholderTopConstraint = keyboardViewPlaceholderTopConstraint
+        let keyboardViewTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
+        keyboardViewTopConstraint.priority = .required
+        self.keyboardViewTopConstraint = keyboardViewTopConstraint
         
         NSLayoutConstraint.activate([
-            heightConstraint,
-            widthConstraint,
-            keyboardWidthConstraint,
+            keyboardViewWidthConstraint,
+            keyboardViewTopConstraint,
             keyboardViewPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            keyboardViewPlaceholderTopConstraint,
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
-        DispatchQueue.main.async {
-            self.reloadSettings()
-            self.createKeyboardIfNeeded()
-        }
+        inputController?.createConstraints()
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        refreshLayoutConstants()
-        
-        self.reloadSettings()
-        self.createKeyboardIfNeeded()
-        setColorSchemeFromKeyboardAppearance()
+    public func destroyInputController() {
+        keyboardViewPlaceholder?.removeFromSuperview()
+
+        inputController?.keyboardDisappeared()
+        inputController = nil
     }
     
     private func setColorSchemeFromKeyboardAppearance() {
@@ -239,10 +267,11 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
         let isVisible = isViewLoaded && view.window != nil
         if !isVisible {
             DDLogInfo("Under memory pressure. Unloading invisible KeyboardView. \(self)")
-            destroyKeyboard()
+            destroyInputController()
         }
     }
     
@@ -258,6 +287,8 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+
         guard let hostWindow = view.superview?.window else { return }
         // Reset the size constraints to handle screen rotation.
         refreshLayoutConstants()
@@ -267,7 +298,7 @@ open class KeyboardViewController: UIInputViewController {
         layoutConstants.keyboardWidth = hostWindowWidth
         heightConstraint?.constant = keyboardHeight
         widthConstraint?.constant = hostWindowWidth
-        keyboardViewPlaceholderTopConstraint?.constant = compositionViewHeight
+        keyboardViewTopConstraint?.constant = compositionViewHeight
         
         let compositionLabelHeight = compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
         let compositionResetButtonWidth = compositionViewHeight
@@ -289,31 +320,13 @@ open class KeyboardViewController: UIInputViewController {
                 size: CGSize(width: compositionLabelViewWidth, height: compositionLabelHeight))
         }
         
-        super.viewWillLayoutSubviews()
-        
         // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
     }
     
     public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
         logView?.frame = keyboardViewPlaceholder?.frame ?? .zero
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        inputController?.keyboardDisappeared()
-    }
-    
-    public func createKeyboardIfNeeded() {
-        if inputController == nil {
-            inputController = InputController(keyboardViewController: self)
-            
-            textWillChange(nil)
-            textDidChange(nil)
-        }
-    }
-    
-    public func destroyKeyboard() {
-        inputController = nil
     }
     
     private func showLogs(_ logs: [String]) {

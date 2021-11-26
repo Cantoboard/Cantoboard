@@ -18,9 +18,9 @@ class TestAppViewController: UIViewController, UITextViewDelegate {
     func recreateKeyboard() {
         if let keyboard = keyboardController {
             if self.createKeyboard {
-                keyboard.createKeyboardIfNeeded()
+                keyboard.createInputController()
             } else {
-                keyboard.destroyKeyboard()
+                keyboard.destroyInputController()
             }
             self.createKeyboard = !self.createKeyboard
         }
