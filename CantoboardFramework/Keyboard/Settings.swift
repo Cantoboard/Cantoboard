@@ -91,6 +91,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
     private static let defaultSymbolShape: SymbolShape = .smart
+    private static let defaultSmartSymbolShapeDefault: SymbolShape = .half
     private static let defaultSpaceAction: SpaceAction = .insertText
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
@@ -108,6 +109,7 @@ public struct Settings: Codable, Equatable {
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
     public var symbolShape: SymbolShape
+    public var smartSymbolShapeDefault: SymbolShape
     public var spaceAction: SpaceAction
     public var toneInputMode: ToneInputMode
     public var rimeSettings: RimeSettings
@@ -126,6 +128,7 @@ public struct Settings: Codable, Equatable {
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         candidateFontSize = Self.defaultCandidateFontSize
         symbolShape = Self.defaultSymbolShape
+        smartSymbolShapeDefault = Self.defaultSmartSymbolShapeDefault
         spaceAction = Self.defaultSpaceAction
         toneInputMode = Self.defaultToneInputMode
         rimeSettings = Self.defaultRimeSettings
@@ -146,6 +149,7 @@ public struct Settings: Codable, Equatable {
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
+        self.smartSymbolShapeDefault = try container.decodeIfPresent(SymbolShape.self, forKey: .smartSymbolShapeDefault) ?? Settings.defaultSmartSymbolShapeDefault
         self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction
         self.toneInputMode = try container.decodeIfPresent(ToneInputMode.self, forKey: .toneInputMode) ?? Settings.defaultToneInputMode
         self.rimeSettings = try container.decodeIfPresent(RimeSettings.self, forKey: .rimeSettings) ?? Settings.defaultRimeSettings

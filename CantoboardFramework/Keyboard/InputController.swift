@@ -835,7 +835,7 @@ class InputController: NSObject {
                 default:
                     // Default to English as inserting half width symbols between Chinese chars is more acceptable.
                     guard let lastChar = documentContextBeforeInput.last(where: { !$0.isWhitespace }) else {
-                        state.keyboardContextualType = .english
+                        state.keyboardContextualType = Settings.cached.smartSymbolShapeDefault == .full ? .chinese : .english
                         return
                     }
                     // If the last char is Chinese, change contextual type to Chinese.

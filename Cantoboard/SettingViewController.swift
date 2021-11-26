@@ -13,6 +13,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak private var autoCapControl: UISwitch!
     @IBOutlet weak private var smartFullStopControl: UISwitch!
     @IBOutlet weak private var symbolShapeControl: UISegmentedControl!
+    @IBOutlet weak private var smartSymbolShapeDefaultControl: UISegmentedControl!
     @IBOutlet weak private var candidateFontSizeControl: UISegmentedControl!
     @IBOutlet weak private var spaceActionControl: UISegmentedControl!
     @IBOutlet weak private var toneInputControl: UISegmentedControl!
@@ -36,6 +37,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         autoCapControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        smartSymbolShapeDefaultControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         candidateFontSizeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         spaceActionControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -64,6 +66,13 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         case 1: selectedSymbolShape = .full
         case 2: selectedSymbolShape = .smart
         default: selectedSymbolShape = .smart
+        }
+        
+        let smartSymbolShapeDefault: SymbolShape
+        switch smartSymbolShapeDefaultControl.selectedSegmentIndex {
+        case 0: smartSymbolShapeDefault = .half
+        case 1: smartSymbolShapeDefault = .full
+        default: smartSymbolShapeDefault = .half
         }
         
         let candidateFontSize: CandidateFontSize
@@ -111,6 +120,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         settings.isAutoCapEnabled = autoCapControl.isOn
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
+        settings.smartSymbolShapeDefault = smartSymbolShapeDefault
         settings.candidateFontSize = candidateFontSize
         settings.spaceAction = spaceAction
         settings.toneInputMode = toneInputMode
@@ -234,6 +244,14 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
             case .half: return 0
             case .full: return 1
             case .smart: return 2
+            }
+        })
+        
+        populateSetting(toSegmentedControl: smartSymbolShapeDefaultControl, settingToIndexMapper: {
+            switch $0.smartSymbolShapeDefault {
+            case .half: return 0
+            case .full: return 1
+            case .smart: return 0
             }
         })
     }
