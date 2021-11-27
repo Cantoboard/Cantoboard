@@ -159,10 +159,14 @@ extension Settings {
                     Segment(LocalizedStrings.symbolShape, \.symbolShape, [
                         LocalizedStrings.symbolShape_half: .half,
                         LocalizedStrings.symbolShape_full: .full,
-                        LocalizedStrings.symbolShape_language: .language,
-                        LocalizedStrings.symbolShape_contextual: .contextual,
+                        LocalizedStrings.symbolShape_smart: .smart,
                     ],
                     LocalizedStrings.symbolShape_description, "Guide9-1"),
+                    Segment(LocalizedStrings.smartSymbolShapeDefault, \.smartSymbolShapeDefault, [
+                        LocalizedStrings.smartSymbolShapeDefault_half: .half,
+                        LocalizedStrings.smartSymbolShapeDefault_full: .full,
+                    ],
+                    LocalizedStrings.smartSymbolShapeDefault_description, "Guide10-3"),
                 ]
             ),
             Section(

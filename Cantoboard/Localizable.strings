@@ -29,11 +29,15 @@
 "inputMethodSettings.symbolShape" = "標點符號";
 "inputMethodSettings.symbolShape.half" = "半形";
 "inputMethodSettings.symbolShape.full" = "全形";
-"inputMethodSettings.symbolShape.language" = "據語言";
-"inputMethodSettings.symbolShape.contextual" = "據前文";
+"inputMethodSettings.symbolShape.smart" = "智能";
 "inputMethodSettings.symbolShape.description" =
-"據語言：英文輸入法輸入半形符號，中文輸入法輸入全形符號。
-據前文：英文字之後輸入半形符號，中文字之後輸入全形符號。";
+"智能標點符號會自動決定輸入半形定全形符號：
+閂咗混打模式嘅話，喺英文輸入法輸入半形符號，中文輸入法輸入全形符號。
+開咗混打模式嘅話會根據前文判斷係咩句子，喺英文句子輸入半形符號，中文句子輸入全形符號。";
+"inputMethodSettings.smartSymbolShapeDefault" = "預設標點符號";
+"inputMethodSettings.smartSymbolShapeDefault.half" = "半形";
+"inputMethodSettings.smartSymbolShapeDefault.full" = "全形";
+"inputMethodSettings.smartSymbolShapeDefault.description" = "用智能標點符號而且喺混打模式下，冇足夠前文判斷而家打緊中文定英文句子嘅時候，會根據呢個設定決定標點形態。";
 
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.compositionMode" = "輸入模式";
