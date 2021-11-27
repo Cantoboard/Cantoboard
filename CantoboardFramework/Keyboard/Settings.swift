@@ -91,7 +91,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
     private static let defaultSymbolShape: SymbolShape = .smart
-    private static let defaultSmartSymbolShapeDefault: SymbolShape = .half
+    private static let defaultSmartSymbolShapeDefault: SymbolShape = .full
     private static let defaultSpaceAction: SpaceAction = .insertText
     private static let defaultToneInputMode: ToneInputMode = .longPress
     private static let defaultRimeSettings: RimeSettings = RimeSettings()
