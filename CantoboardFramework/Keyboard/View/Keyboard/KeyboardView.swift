@@ -102,7 +102,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.keyboardIdiom != newState.keyboardIdiom ||
             prevState.lastKeyboardTypeChangeFromAutoCap != newState.lastKeyboardTypeChangeFromAutoCap ||
             prevState.isComposing != newState.isComposing ||
-            prevState.isPortrait != newState.isPortrait
+            prevState.isPortrait != newState.isPortrait ||
+            prevState.specialSymbolShapeOverride != newState.specialSymbolShapeOverride
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }
@@ -232,11 +233,13 @@ class KeyboardView: UIView, BaseKeyboardView {
         case .numeric, .numSymbolic:
             let rows = state.symbolShape == .full ? keyboardViewLayout.numbersFull : keyboardViewLayout.numbersHalf
             for (index, keyCaps) in rows.enumerated() {
+                let keyCaps = configureNumberAndSymbolKeyCaps(keyCaps: keyCaps)
                 keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
             }
         case .symbolic:
             let rows = state.symbolShape == .full ? keyboardViewLayout.symbolsFull : keyboardViewLayout.symbolsHalf
             for (index, keyCaps) in rows.enumerated() {
+                let keyCaps = configureNumberAndSymbolKeyCaps(keyCaps: keyCaps)
                 keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
             }
         default: ()
@@ -352,6 +355,14 @@ class KeyboardView: UIView, BaseKeyboardView {
             }
         case .contextual: fatalError("Contextual isn't being translated properly. \(keyCap) \(state)")
         default: return keyCap
+        }
+    }
+    
+    private func configureNumberAndSymbolKeyCaps(keyCaps: [[KeyCap]]) -> [[KeyCap]] {
+        return keyCaps.enumerated().map { groupId, keyCapGroup in
+            keyCapGroup.compactMap { keyCap in
+                return keyCap.symbolTransform(state: state)
+            }
         }
     }
     

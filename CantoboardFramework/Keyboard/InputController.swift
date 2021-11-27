@@ -16,7 +16,7 @@ enum KeyboardEnableState: Equatable {
 }
 
 indirect enum ContextualType: Equatable {
-    case english(useHalfWidthSlash: Bool), chinese(useHalfWidthSlash: Bool), rime(languageContext: ContextualType), url
+    case english, chinese, rime(languageContext: ContextualType), url
     
     var halfWidthSymbol: Bool {
         switch self {
@@ -38,6 +38,8 @@ struct KeyboardState: Equatable {
     var isComposing: Bool
     var keyboardContextualType: ContextualType
     var symbolShapeOverride: SymbolShape?
+    var specialSymbolShapeOverride: [SpecialSymbol: SymbolShape?]
+
     var isPortrait: Bool
     
     var enableState: KeyboardEnableState
@@ -65,7 +67,8 @@ struct KeyboardState: Equatable {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         lastKeyboardTypeChangeFromAutoCap = false
         isComposing = false
-        keyboardContextualType = .english(useHalfWidthSlash: true)
+        keyboardContextualType = .english
+        specialSymbolShapeOverride = [:]
         let layoutConstants = LayoutConstants.forMainScreen
         keyboardIdiom = layoutConstants.idiom
         isPortrait = layoutConstants.isPortrait
@@ -820,20 +823,22 @@ class InputController: NSObject {
             switch symbolShape {
             case .smart:
                 switch state.inputMode {
-                case .chinese: state.keyboardContextualType = .chinese(useHalfWidthSlash: false)
-                case .english where !Settings.cached.isMixedModeEnabled: state.keyboardContextualType = .english(useHalfWidthSlash: true)
+                case .chinese: state.keyboardContextualType = .chinese
+                case .english where !Settings.cached.isMixedModeEnabled: state.keyboardContextualType = .english
                 default:
-                    let isDefaultToHalfShape = Settings.cached.smartSymbolShapeDefault != .full
-                    let isLastCharEnglish = documentContextBeforeInput.last(where: { $0.isEnglishLetter || $0.isChineseChar })?.isEnglishLetter ?? isDefaultToHalfShape
                     let isEnglish = isUserTypingEnglish(documentContextBeforeInput: documentContextBeforeInput)
-                    if isEnglish {
-                        state.keyboardContextualType = .english(useHalfWidthSlash: isLastCharEnglish)
-                    } else {
-                        state.keyboardContextualType = .chinese(useHalfWidthSlash: isLastCharEnglish)
-                    }
+                    state.keyboardContextualType = isEnglish ? .english : .chinese
                 }
-            case .half: state.keyboardContextualType = .english(useHalfWidthSlash: true)
-            case .full: state.keyboardContextualType = .chinese(useHalfWidthSlash: false)
+                
+                let isDefaultToHalfShape = Settings.cached.smartSymbolShapeDefault != .full
+                let isLastCharEnglish = documentContextBeforeInput.last(where: { $0.isEnglishLetterOrDigit || $0.isChineseChar })?.isEnglishLetterOrDigit ?? isDefaultToHalfShape
+                state.specialSymbolShapeOverride[.slash] = isLastCharEnglish ? .half : .full
+            case .half:
+                state.keyboardContextualType = .english
+                state.specialSymbolShapeOverride[.slash] = .half
+            case .full:
+                state.keyboardContextualType = .chinese
+                state.specialSymbolShapeOverride[.slash] = .full
             }
         }
         if inputEngine.isComposing {

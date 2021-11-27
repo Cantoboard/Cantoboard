@@ -71,7 +71,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     none,
     backspace,
     toggleInputMode(/* toMode */ InputMode, RimeSchema?),
-    character(String, String?, [KeyCap]?),
+    character(String, /* hint */ String?, /* children key caps */ [KeyCap]?),
     cangjie(String, Bool),
     stroke(String),
     emoji(String),
@@ -448,6 +448,59 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .placeholder(let keyCap): return keyCap.unescaped
         default: return self
+        }
+    }
+    
+    private var toSpecialSymbol: SpecialSymbol? {
+        for specialSymbol in SpecialSymbol.allCases {
+            if specialSymbol.keyCaps.contains(self) {
+                return specialSymbol
+            }
+        }
+        return nil
+    }
+    
+    func symbolTransform(state: KeyboardState) -> KeyCap {
+        guard state.symbolShapeOverride == nil else { return self }
+        if let specialSymbol = self.toSpecialSymbol {
+            return specialSymbol.transform(keyCap: self, state: state)
+        }
+        return self
+    }
+}
+
+enum SpecialSymbol: CaseIterable {
+    case slash, parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
+    
+    var halfWidthKeyCap: KeyCap {
+        switch self {
+        case .slash: return "/"
+        default: return ""
+        }
+    }
+    
+    var fullWidthKeyCap: KeyCap {
+        switch self {
+        case .slash: return "／"
+        default: return ""
+        }
+    }
+    
+    var keyCaps: [KeyCap] {
+        return [halfWidthKeyCap, fullWidthKeyCap]
+    }
+    
+    func transform(keyCap: KeyCap, state: KeyboardState) -> KeyCap {
+        switch keyCap {
+        case halfWidthKeyCap, fullWidthKeyCap:
+            let shapeOverride = state.specialSymbolShapeOverride[self]
+            
+            switch shapeOverride {
+            case .half: return halfWidthKeyCap
+            case .full: return fullWidthKeyCap
+            default: return keyCap
+            }
+        default: return keyCap
         }
     }
 }
