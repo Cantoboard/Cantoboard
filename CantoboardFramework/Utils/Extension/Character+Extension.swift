@@ -41,6 +41,10 @@ extension Character {
         self == "。" || self == "？" || self == "！"
     }
     
+    var isTerminalPunctuation: Bool {
+        isHalfShapeTerminalPunctuation || isFullShapeTerminalPunctuation
+    }
+    
     var couldBeFollowedBySmartSpace: Bool {
         self != ":" && self != ";" && self != "." && self != "," && self != "?" && self != "!" && self != " " &&
         self != "，" && self != "。" && self != "？" && self != "！"
