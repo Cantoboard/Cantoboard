@@ -10,7 +10,7 @@ import CantoboardFramework
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate {
     var tableView: UITableView!
-    var settings: Reference<Settings> = Reference(Settings.reload())
+    var settings: Settings = Settings.reload()
     var sections: [Section] = Settings.buildSections()
     var aboutCells: [(title: String, image: UIImage, action: () -> ())]!
     
@@ -54,7 +54,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @objc func appMovedToBackground() {
-        settings = Reference(Settings.reload())
+        settings = Settings.reload()
         sections = Settings.buildSections()
         tableView.reloadData()
     }
@@ -90,7 +90,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         case lastSection: return UITableViewCell(title: aboutCells[indexPath.row].title, image: aboutCells[indexPath.row].image)
         case 0: return UITableViewCell(tintedTitle: LocalizedStrings.installCantoboard_settings, image: CellImage.settings)
         case 1: return InputTableViewCell(tableView: tableView)
-        default: return sections[indexPath.section - 2].options[indexPath.row].dequeueCell(with: settings)
+        default: return sections[indexPath.section - 2].options[indexPath.row].dequeueCell(with: self)
         }
     }
     

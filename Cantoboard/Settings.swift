@@ -22,7 +22,7 @@ protocol Option {
     var title: String { get }
     var description: String? { get }
     var videoUrl: String? { get }
-    func dequeueCell(with settings: Reference<Settings>) -> UITableViewCell
+    func dequeueCell(with controller: MainViewController) -> UITableViewCell
     func updateSettings()
 }
 
@@ -65,7 +65,7 @@ private class Switch: Option {
     var key: WritableKeyPath<Settings, Bool>
     var value: Bool
     
-    private var settings: Reference<Settings>!
+    private var controller: MainViewController!
     private var control: UISwitch!
     
     init(_ title: String, _ key: WritableKeyPath<Settings, Bool>, _ description: String? = nil, _ videoUrl: String? = nil) {
@@ -76,8 +76,8 @@ private class Switch: Option {
         self.videoUrl = videoUrl
     }
     
-    func dequeueCell(with settings: Reference<Settings>) -> UITableViewCell {
-        self.settings = settings
+    func dequeueCell(with controller: MainViewController) -> UITableViewCell {
+        self.controller = controller
         control = UISwitch()
         control.isOn = value
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -86,8 +86,9 @@ private class Switch: Option {
     
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        settings.ref[keyPath: key] = control.isOn
-        Settings.save(settings.ref)
+        value = control.isOn
+        controller.settings[keyPath: key] = value
+        Settings.save(controller.settings)
     }
 }
 
@@ -99,7 +100,7 @@ private class Segment<T: Equatable>: Option {
     var value: T
     var options: KeyValuePairs<String, T>
     
-    private var settings: Reference<Settings>!
+    private var controller: MainViewController!
     private var control: UISegmentedControl!
     
     init(_ title: String, _ key: WritableKeyPath<Settings, T>, _ options: KeyValuePairs<String, T>, _ description: String? = nil, _ videoUrl: String? = nil) {
@@ -111,8 +112,8 @@ private class Segment<T: Equatable>: Option {
         self.videoUrl = videoUrl
     }
     
-    func dequeueCell(with settings: Reference<Settings>) -> UITableViewCell {
-        self.settings = settings
+    func dequeueCell(with controller: MainViewController) -> UITableViewCell {
+        self.controller = controller
         control = UISegmentedControl(items: options.map { $0.key })
         control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
         control.apportionsSegmentWidthsByContent = true
@@ -122,16 +123,9 @@ private class Segment<T: Equatable>: Option {
     
     @objc func updateSettings() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        settings.ref[keyPath: key] = options[control.selectedSegmentIndex].value
-        Settings.save(settings.ref)
-    }
-}
-
-class Reference<Type> {
-    var ref: Type
-    
-    init(_ object: Type) {
-        ref = object
+        value = options[control.selectedSegmentIndex].value
+        controller.settings[keyPath: key] = value
+        Settings.save(controller.settings)
     }
 }
 
