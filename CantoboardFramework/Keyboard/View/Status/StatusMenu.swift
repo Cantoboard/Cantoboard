@@ -12,7 +12,7 @@ class StatusMenu: UIView {
     static let xInset: CGFloat = 5
     static let cornerRadius: CGFloat = 5
     static let separatorWidth: CGFloat = 1
-    static let fontSizeRatio: CGFloat = 0.12
+    static let fontSizePerWidth: CGFloat = 20 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).width
     
     var itemActions: [UILabel: KeyCap]
     var itemLabelInRows: [[[UILabel]]]
@@ -81,7 +81,7 @@ class StatusMenu: UIView {
         layer.shadowPath = CGPath(roundedRect: bounds, cornerWidth: Self.cornerRadius, cornerHeight: Self.cornerRadius, transform: nil)
         
         let rowHeight = bounds.height / CGFloat(itemLabelInRows.count)
-        let font = UIFont.systemFont(ofSize: bounds.width / CGFloat(itemLabelInRows[0].count) * Self.fontSizeRatio)
+        let font = UIFont.systemFont(ofSize: bounds.width / CGFloat(itemLabelInRows[0].count) * Self.fontSizePerWidth / 8)
         var cellSize = CGSize()
         var y = CGFloat(0)
         for labelRow in itemLabelInRows {
