@@ -483,7 +483,10 @@ enum SpecialSymbol: CaseIterable {
         switch self {
         case .slash: return [(half: "/", full: "／")]
         case .parenthesis: return [(half: "(", full: "（"), (half: ")", full: "）")]
-        default: return []
+        case .curlyBracket: return [(half: "{", full: "｛"), (half: "}", full: "｝")]
+        case .squareBracket: return [(half: "[", full: "［"), (half: "]", full: "］")]
+        case .angleBracket: return [(half: "<", full: "〈"), (half: ">", full: "〉")]
+        case .doubleAngleBracket: return [(half: "«", full: "《"), (half: "»", full: "》")]
         }
     }
     
@@ -510,8 +513,8 @@ enum SpecialSymbol: CaseIterable {
         case .smart:
             switch self {
             case .slash: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
-            case .parenthesis: return determineSymbolShapeFromLastMatchingChar(textBefore: textBefore)
-            default: return .half
+            case .parenthesis, .curlyBracket, .squareBracket, .angleBracket, .doubleAngleBracket:
+                return determineSymbolShapeFromLastMatchingChar(textBefore: textBefore)
             }
         case .half: return .half
         case .full: return .full
