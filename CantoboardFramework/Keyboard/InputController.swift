@@ -829,16 +829,13 @@ class InputController: NSObject {
                     let isEnglish = isUserTypingEnglish(documentContextBeforeInput: documentContextBeforeInput)
                     state.keyboardContextualType = isEnglish ? .english : .chinese
                 }
-                
-                let isDefaultToHalfShape = Settings.cached.smartSymbolShapeDefault != .full
-                let isLastCharEnglish = documentContextBeforeInput.last(where: { $0.isEnglishLetterOrDigit || $0.isChineseChar })?.isEnglishLetterOrDigit ?? isDefaultToHalfShape
-                state.specialSymbolShapeOverride[.slash] = isLastCharEnglish ? .half : .full
-            case .half:
-                state.keyboardContextualType = .english
-                state.specialSymbolShapeOverride[.slash] = .half
-            case .full:
-                state.keyboardContextualType = .chinese
-                state.specialSymbolShapeOverride[.slash] = .full
+            case .half: state.keyboardContextualType = .english
+            case .full: state.keyboardContextualType = .chinese
+            }
+            
+            for specialSymbol in SpecialSymbol.allCases {
+                let symbolShape = specialSymbol.determineSymbolShape(textBefore: documentContextBeforeInput)
+                state.specialSymbolShapeOverride[specialSymbol] = symbolShape
             }
         }
         if inputEngine.isComposing {

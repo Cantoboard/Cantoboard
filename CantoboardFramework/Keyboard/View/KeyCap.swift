@@ -133,6 +133,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    var character: Character? {
+        switch self {
+        case .character(let c, _, _): return c.first ?? nil
+        default: return nil
+        }
+    }
+        
     var buttonBgColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
@@ -472,36 +479,60 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 enum SpecialSymbol: CaseIterable {
     case slash, parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
     
-    var halfWidthKeyCap: KeyCap {
+    var keyCapPairs: [(half: KeyCap, full: KeyCap)] {
         switch self {
-        case .slash: return "/"
-        default: return ""
-        }
-    }
-    
-    var fullWidthKeyCap: KeyCap {
-        switch self {
-        case .slash: return "／"
-        default: return ""
+        case .slash: return [(half: "/", full: "／")]
+        case .parenthesis: return [(half: "(", full: "（"), (half: ")", full: "）")]
+        default: return []
         }
     }
     
     var keyCaps: [KeyCap] {
-        return [halfWidthKeyCap, fullWidthKeyCap]
+        return keyCapPairs.flatMap { return [$0.half, $0.full] }
     }
     
     func transform(keyCap: KeyCap, state: KeyboardState) -> KeyCap {
-        switch keyCap {
-        case halfWidthKeyCap, fullWidthKeyCap:
-            let shapeOverride = state.specialSymbolShapeOverride[self]
-            
-            switch shapeOverride {
-            case .half: return halfWidthKeyCap
-            case .full: return fullWidthKeyCap
-            default: return keyCap
-            }
+        let matchingKeyCap = keyCapPairs.first(where: { $0.half == keyCap || $0.full == keyCap })
+        guard let matchingKeyCap = matchingKeyCap else { return keyCap }
+        
+        let shapeOverride = state.specialSymbolShapeOverride[self]
+        
+        switch shapeOverride {
+        case .half: return matchingKeyCap.half
+        case .full: return matchingKeyCap.full
         default: return keyCap
         }
+    }
+    
+    func determineSymbolShape(textBefore: String) -> SymbolShape {
+        let symbolShape = Settings.cached.symbolShape
+        switch symbolShape {
+        case .smart:
+            switch self {
+            case .slash: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
+            case .parenthesis: return determineSymbolShapeFromLastMatchingChar(textBefore: textBefore)
+            default: return .half
+            }
+        case .half: return .half
+        case .full: return .full
+        }
+    }
+    
+    private static func determineSymbolShapeFromLastChar(textBefore: String) -> SymbolShape {
+        let defaultSymbolShape = Settings.cached.smartSymbolShapeDefault
+        let isLastCharEnglishLetterOrDigit = textBefore.last(where: { $0.isEnglishLetterOrDigit || $0.isChineseChar })?.isEnglishLetterOrDigit
+        return isLastCharEnglishLetterOrDigit.map { $0 ? .half : .full } ?? defaultSymbolShape
+    }
+    
+    private func determineSymbolShapeFromLastMatchingChar(textBefore: String) -> SymbolShape {
+        let defaultSymbolShape = Settings.cached.smartSymbolShapeDefault
+
+        let halfChars = keyCapPairs.compactMap { $0.half.character }
+        let fullChars = keyCapPairs.compactMap { $0.full.character }
+        
+        let lastMatchingChar = textBefore.last(where: { halfChars.contains($0) || fullChars.contains($0) })
+        guard let lastMatchingChar = lastMatchingChar else { return defaultSymbolShape }
+        return halfChars.contains(lastMatchingChar) ? .half : .full
     }
 }
 
