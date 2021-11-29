@@ -158,6 +158,10 @@ class InputController: NSObject {
         keyboardViewPlaceholder.addSubview(keyboardView)
         
         self.keyboardView = keyboardView
+        
+        if keyboardViewPlaceholder.superview != nil {
+            createConstraints()
+        }
     }
     
     deinit {
