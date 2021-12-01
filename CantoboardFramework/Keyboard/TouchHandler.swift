@@ -45,9 +45,12 @@ class TouchHandler {
     enum InputMode: Equatable {
         case typing, backspacing, nextKeyboard, cursorMoving
     }
-    static let keyRepeatInitialDelay = 7 // Unit is keyRepeatInterval
+    static let keyRepeatInitialDelay = 10 // Unit is keyRepeatInterval
     static let longPressDelay = 3
-    static let keyRepeatInterval = 0.08
+    static let keyRepeatInterval = 0.05
+    static let backspaceFrequency = 2
+    static let deleteWordFrequency = 7
+    static let deleteWordThreshold = 56
     static let cursorMovingStepX: CGFloat = 10
     static let initialCursorMovingThreshold = cursorMovingStepX * 1.25
     static let swipeXThreshold: CGFloat = 30
@@ -358,13 +361,18 @@ class TouchHandler {
             if touchState.initialAction == .backspace {
                 guard self.inputMode == .backspacing && keyRepeatCounter > Self.keyRepeatInitialDelay else { continue }
                 let action: KeyboardAction
-                if keyRepeatCounter <= 20 {
+                if keyRepeatCounter < Self.deleteWordThreshold {
+                    guard keyRepeatCounter % Self.backspaceFrequency == 0 else { continue }
                     action = .backspace
                 } else {
+                    guard keyRepeatCounter % Self.deleteWordFrequency == 0 else { continue }
                     action = .deleteWord
                 }
                 callKeyHandler(action)
                 touchState.hasTakenAction = true
+                if Settings.cached.isTapHapticFeedbackEnabled {
+                    FeedbackProvider.lightImpact.impactOccurred()
+                }
                 FeedbackProvider.play(keyboardAction: action)
             } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay && !shouldDisableLongPress {
                 touchState.activeKeyView.keyLongPressed(touchState.touch)

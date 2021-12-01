@@ -525,7 +525,7 @@ enum SpecialSymbol: CaseIterable {
         for c in textBefore.reversed() {
             if c.isEnglishLetterOrDigit {
                 return .half
-            } else if c.isChineseChar {
+            } else if c.isIdeographic {
                 return .full
             }
         }

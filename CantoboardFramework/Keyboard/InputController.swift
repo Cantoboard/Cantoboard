@@ -551,8 +551,8 @@ class InputController: NSObject {
         let lastSymbol = documentContextBeforeInput.last(where: { $0 != " " })
         // DDLogInfo("documentContextBeforeInput \(documentContextBeforeInput) \(lastChar)")
         let isFirstCharInDoc = lastChar == nil || lastChar == "\n"
-        let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isHalfShapeTerminalPunctuation ?? false)
-        let isFullShapedCase = lastChar?.isFullShapeTerminalPunctuation ?? false
+        let isHalfShapedCase = (lastChar?.isWhitespace ?? false && lastSymbol?.isASCIISentenceTerminal ?? false)
+        let isFullShapedCase = lastChar?.isNonASCIISentenceTerminal ?? false
         return isFirstCharInDoc || isHalfShapedCase || isFullShapedCase
     }
     
@@ -770,8 +770,7 @@ class InputController: NSObject {
         let last2CharsInDoc = documentContextBeforeInput.suffix(2)
         
         // Always keep smart space if quotes or non punct symbols are being inserted
-        if let firstChar = textBeingInserted.first,
-           firstChar.isOpeningQuote || firstChar.isSymbol && !firstChar.isPunctuation {
+        if textBeingInserted.first?.shouldKeepSmartSpace ?? false {
             return false
         }
         
@@ -852,12 +851,12 @@ class InputController: NSObject {
         var englishWordCount = 0
         
         let lastChar = documentContextBeforeInput.last
-        let text = (lastChar?.isTerminalPunctuation ?? false) ? documentContextBeforeInput.prefix(documentContextBeforeInput.count - 1) : documentContextBeforeInput[...]
-        let lastSentenseStartIndex = text.lastIndex(where: { $0.isTerminalPunctuation }) ?? documentContextBeforeInput.startIndex
+        let text = (lastChar?.isSentenceTerminal ?? false) ? documentContextBeforeInput.prefix(documentContextBeforeInput.count - 1) : documentContextBeforeInput[...]
+        let lastSentenseStartIndex = text.lastIndex(where: { $0.isSentenceTerminal }) ?? documentContextBeforeInput.startIndex
         let lastSentense = documentContextBeforeInput.suffix(from: lastSentenseStartIndex)
         var hasStartedEnglishWord = false
         for c in lastSentense {
-            chineseCharCount += c.isChineseChar ? 1 : 0
+            chineseCharCount += c.isIdeographic ? 1 : 0
             if c.isEnglishLetter {
                 if !hasStartedEnglishWord {
                     hasStartedEnglishWord = true
