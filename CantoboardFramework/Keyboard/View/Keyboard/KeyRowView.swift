@@ -128,6 +128,8 @@ extension KeyRowView {
     }
     
     private func expandKeysToFillGap(_ allKeys: [KeyView], _ allFrames: [CGRect]) {
+        guard !bounds.isEmpty else { return }
+
         var startX = bounds.minX
         let allKeyCount = allKeys.count
         for (index, key) in allKeys.enumerated() {
