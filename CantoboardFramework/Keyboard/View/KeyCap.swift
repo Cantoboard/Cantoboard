@@ -507,7 +507,7 @@ enum SpecialSymbol: CaseIterable {
         }
     }
     
-    func determineSymbolShape(textBefore: String) -> SymbolShape {
+    func determineSymbolShape(textBefore: String) -> SymbolShape? {
         let symbolShape = Settings.cached.symbolShape
         switch symbolShape {
         case .smart:
@@ -521,7 +521,7 @@ enum SpecialSymbol: CaseIterable {
         }
     }
     
-    private static func determineSymbolShapeFromLastChar(textBefore: String) -> SymbolShape {
+    private static func determineSymbolShapeFromLastChar(textBefore: String) -> SymbolShape? {
         for c in textBefore.reversed() {
             if c.isEnglishLetterOrDigit {
                 return .half
@@ -530,10 +530,10 @@ enum SpecialSymbol: CaseIterable {
             }
         }
         
-        return Settings.cached.smartSymbolShapeDefault
+        return nil
     }
     
-    private func determineSymbolShapeFromLastMatchingChar(textBefore: String) -> SymbolShape {
+    private func determineSymbolShapeFromLastMatchingChar(textBefore: String) -> SymbolShape? {
         let halfChars = keyCapPairs.compactMap { $0.half.character }
         let fullChars = keyCapPairs.compactMap { $0.full.character }
         
@@ -545,7 +545,7 @@ enum SpecialSymbol: CaseIterable {
             }
         }
         
-        return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
+        return nil
     }
 }
 
