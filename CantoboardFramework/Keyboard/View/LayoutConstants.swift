@@ -391,7 +391,7 @@ class LayoutConstants: Copyable {
             candidatePaneViewLeftRightInset = 0
         case .pad(.padFull5Rows):
             candidatePaneViewLeftRightInset = isPortrait ? 284 : 353
-        case _ where (idiom == .pad(.padShort)) != isAir:
+        case .pad(.padShort) where !isAir, .pad(.padFull4Rows) where isAir:
             candidatePaneViewLeftRightInset = isPortrait ? 153 : 179
         default:
             candidatePaneViewLeftRightInset = isPortrait ? 186 : 223

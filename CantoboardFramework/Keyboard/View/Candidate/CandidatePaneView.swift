@@ -404,9 +404,7 @@ class CandidatePaneView: UIControl {
         
         let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
         if collectionView.frame != collectionViewFrame {
-            UIView.animate(withDuration: collectionView.frame == .zero ? 0 : 0.25) {
-                self.collectionView.frame = collectionViewFrame
-            }
+            collectionView.frame = collectionViewFrame
             collectionView.collectionViewLayout.invalidateLayout()
         }
         if let numKeyRow = numKeyRow {
