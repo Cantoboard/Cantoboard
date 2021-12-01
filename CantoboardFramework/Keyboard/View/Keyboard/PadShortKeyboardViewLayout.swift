@@ -35,14 +35,14 @@ class PadShortKeyboardViewLayout : KeyboardViewLayout {
     static let symbolsHalf: [[[KeyCap]]] = [
         [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
         [[], ["^", "_", "|", "\\", "[", "]", "{", "}", .doubleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["*", "&", "+", "=", "•", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
+        [[.keyboardType(.numeric)], ["^_^", "*", "&", "+", "=", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
         [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
         [[], ["^", "_", "｜", "＼", "［", "］", "｛", "｝", .doubleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["*", "&", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
+        [[.keyboardType(.numeric)], ["^_^", "*", "&", "+", "=", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
