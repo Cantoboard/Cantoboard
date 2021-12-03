@@ -106,7 +106,8 @@ class PadShortLayoutConstants: LayoutConstants {
          autoCompleteBarHeight: CGFloat,
          keyboardViewLeftRightInset: CGFloat,
          keyboardViewBottomInset: CGFloat,
-         keyboardSuperviewWidth: CGFloat) {
+         keyboardSuperviewWidth: CGFloat,
+         isAir: Bool = false) {
         self.rightShiftKeyWidth = rightShiftKeyWidth
         self.returnKeyWidth = returnKeyWidth
         
@@ -119,7 +120,8 @@ class PadShortLayoutConstants: LayoutConstants {
                    keyViewInsets: isPortrait ? LayoutConstants.contentEdgeInsetsPadShortAndFullPortrait : LayoutConstants.contentEdgeInsetsPadShortAndFullLandscape,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
-                   keyboardSuperviewWidth: keyboardSuperviewWidth)
+                   keyboardSuperviewWidth: keyboardSuperviewWidth,
+                   isAir: isAir)
     }
     
     required init(copyOf: LayoutConstants) {
@@ -160,7 +162,8 @@ class PadFull4RowsLayoutConstants: LayoutConstants {
          smallSystemKeyWidth: CGFloat,
          returnKeyWidth: CGFloat,
          rightShiftKeyWidth: CGFloat,
-         largeSystemKeyWidth: CGFloat) {
+         largeSystemKeyWidth: CGFloat,
+         isAir: Bool = false) {
         self.tabDeleteKeyWidth = tabDeleteKeyWidth
         
         self.capLockKeyWidth = capLockKeyWidth
@@ -180,7 +183,8 @@ class PadFull4RowsLayoutConstants: LayoutConstants {
                    keyViewInsets: isPortrait ? LayoutConstants.contentEdgeInsetsPadShortAndFullPortrait : LayoutConstants.contentEdgeInsetsPadShortAndFullLandscape,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: keyboardViewBottomInset,
-                   keyboardSuperviewWidth: keyboardSuperviewWidth)
+                   keyboardSuperviewWidth: keyboardSuperviewWidth,
+                   isAir: isAir)
     }
     
     required init(copyOf: LayoutConstants) {
@@ -333,6 +337,7 @@ class LayoutConstants: Copyable {
         }
     }
     
+    let candidatePaneViewLeftRightInset: CGFloat
     let compositionViewHeight: CGFloat
     
     var numOfSingleCharCandidateInRow: Int {
@@ -359,6 +364,7 @@ class LayoutConstants: Copyable {
                   keyboardViewBottomInset: CGFloat,
                   keyboardSuperviewWidth: CGFloat,
                   keyRowGapY: CGFloat? = nil,
+                  isAir: Bool = false,
                   phoneLayoutConstants: PhoneLayoutConstants? = nil,
                   padShortLayoutConstants: PadShortLayoutConstants? = nil,
                   padFull4RowsLayoutConstants: PadFull4RowsLayoutConstants? = nil,
@@ -380,6 +386,16 @@ class LayoutConstants: Copyable {
         let height = ((keyboardSize.height - Self.keyboardViewTopInset - keyboardViewBottomInset - autoCompleteBarHeight) - 3 * buttonGapX) / 4
         keypadButtonUnitSize = CGSize(width: width, height: height)
         
+        switch idiom {
+        case .phone:
+            candidatePaneViewLeftRightInset = 0
+        case .pad(.padFull5Rows):
+            candidatePaneViewLeftRightInset = isPortrait ? 284 : 353
+        case .pad(.padShort) where !isAir, .pad(.padFull4Rows) where isAir:
+            candidatePaneViewLeftRightInset = isPortrait ? 153 : 179
+        default:
+            candidatePaneViewLeftRightInset = isPortrait ? 186 : 223
+        }
         compositionViewHeight = idiom == .phone ? 24 : 28
         statusMenuWidth = (idiom == .phone ? 0.5 : 0.35) * keyboardSize.width
         statusMenuItemHeight = keyboardSize.height / (idiom == .phone && !isPortrait ? 3.5 : 5.5)
@@ -398,6 +414,7 @@ class LayoutConstants: Copyable {
         self.buttonGapX = copyOf.buttonGapX
         self.keyRowGapY = copyOf.keyRowGapY
         self.keypadButtonUnitSize = copyOf.keypadButtonUnitSize
+        self.candidatePaneViewLeftRightInset = copyOf.candidatePaneViewLeftRightInset
         self.compositionViewHeight = copyOf.compositionViewHeight
         self.statusMenuWidth = copyOf.statusMenuWidth
         self.statusMenuItemHeight = copyOf.statusMenuItemHeight
@@ -703,7 +720,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         smallSystemKeyWidth: 58.5,
         returnKeyWidth: 102,
         rightShiftKeyWidth: 86,
-        largeSystemKeyWidth: 94),
+        largeSystemKeyWidth: 94,
+        isAir: true),
     // Landscape:
     IntDuplet(1180, 820): PadFull4RowsLayoutConstants(
         isPortrait: false,
@@ -721,7 +739,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         smallSystemKeyWidth: 81.5,
         returnKeyWidth: 161,
         rightShiftKeyWidth: 120,
-        largeSystemKeyWidth: 121.5),
+        largeSystemKeyWidth: 121.5,
+        isAir: true),
     
     // iPad 810×1080 iPad (gen 9/8/7) 10.2"
     // Portrait:
@@ -792,7 +811,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         autoCompleteBarHeight: 55,
         keyboardViewLeftRightInset: 6.5,
         keyboardViewBottomInset: 8,
-        keyboardSuperviewWidth: 834),
+        keyboardSuperviewWidth: 834,
+        isAir: true),
     // Landscape:
     IntDuplet(1112, 834): PadShortLayoutConstants(
         isPortrait: false,
@@ -805,7 +825,8 @@ let layoutConstantsList: [IntDuplet: LayoutConstants] = [
         autoCompleteBarHeight: 55,
         keyboardViewLeftRightInset: 7.5,
         keyboardViewBottomInset: 10,
-        keyboardSuperviewWidth: 1112),
+        keyboardSuperviewWidth: 1112,
+        isAir: true),
     
     // iPad 768x1024 iPad (gen 6/5/4/3/2/1) iPad Pro 9.7" iPad Air (gen 2/1) iPad mini (gen 5/4/3/2/1) 7.9"
     // Portrait:

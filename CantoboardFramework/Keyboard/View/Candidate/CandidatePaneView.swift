@@ -49,6 +49,7 @@ class CandidatePaneView: UIControl {
                 prevState.keyboardType != newValue.keyboardType ||
                 prevState.inputMode != newState.inputMode ||
                 prevState.activeSchema != newState.activeSchema ||
+                prevState.keyboardIdiom != newState.keyboardIdiom ||
                 prevState.symbolShape != newState.symbolShape ||
                 prevState.enableState != newValue.enableState
             
@@ -75,6 +76,7 @@ class CandidatePaneView: UIControl {
     private weak var collectionView: CandidateCollectionView!
     private weak var expandButton, backspaceButton, charFormButton: UIButton!
     private weak var inputModeButton: StatusButton!
+    private weak var leftSeparator, middleSeparator, rightSeparator: UIView!
     weak var delegate: CandidatePaneViewDelegate?
     
     private(set) var mode: Mode = .row
@@ -212,28 +214,26 @@ class CandidatePaneView: UIControl {
     }
     
     private func createButtons() {
-        expandButton = createAndAddButton(isStatusIndicator: false)
+        expandButton = createAndAddButton(SimpleHighlightableButton())
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
 
-        inputModeButton = (createAndAddButton(isStatusIndicator: true) as! StatusButton)
+        inputModeButton = createAndAddButton(StatusButton())
         inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
         inputModeButton.handleStatusMenu = { [weak self] in
             return self?.handleStatusMenu(from: $0, with: $1) ?? false
         }
-        sendSubviewToBack(inputModeButton)
         
-        backspaceButton = createAndAddButton(isStatusIndicator: false)
+        backspaceButton = createAndAddButton(UIButton())
         backspaceButton.addTarget(self, action: #selector(self.backspaceButtonClick), for: .touchUpInside)
         
-        charFormButton = createAndAddButton(isStatusIndicator: true)
+        charFormButton = createAndAddButton(StatusButton())
         charFormButton.addTarget(self, action: #selector(self.charFormButtonClick), for: .touchUpInside)
     }
     
-    private func createAndAddButton(isStatusIndicator: Bool) -> UIButton {
-        let button = isStatusIndicator ? StatusButton() : UIButton()
+    private func createAndAddButton<T: UIButton>(_ button: T) -> T {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.contentsFormat = .gray8Uint
-        //button.layer.cornerRadius = 5
+        // button.layer.cornerRadius = 5
         button.setTitleColor(.label, for: .normal)
         button.tintColor = .label
         // button.highlightedBackgroundColor = self.HIGHLIGHTED_COLOR
@@ -266,10 +266,11 @@ class CandidatePaneView: UIControl {
         inputModeButton.shouldShowMenuIndicator = shouldShowMiniIndicator && mode == .row
 
         backspaceButton.setImage(ButtonImage.backspace, for: .normal)
+        backspaceButton.setImage(ButtonImage.backspaceFilled, for: .highlighted)
         
         var charFormText: String
         if SessionState.main.lastCharForm == .simplified {
-            charFormText = "簡"
+            charFormText = "简"
         } else {
             charFormText = "繁"
         }
@@ -323,6 +324,21 @@ class CandidatePaneView: UIControl {
         
         self.addSubview(collectionView)
         self.collectionView = collectionView
+        
+        let leftSeparator = UIView()
+        leftSeparator.backgroundColor = .separator
+        self.addSubview(leftSeparator)
+        self.leftSeparator = leftSeparator
+        
+        let middleSeparator = UIView()
+        middleSeparator.backgroundColor = .separator
+        self.addSubview(middleSeparator)
+        self.middleSeparator = middleSeparator
+        
+        let rightSeparator = UIView()
+        rightSeparator.backgroundColor = .separator
+        self.addSubview(rightSeparator)
+        self.rightSeparator = rightSeparator
     }
     
     override func didMoveToSuperview() {
@@ -379,12 +395,14 @@ class CandidatePaneView: UIControl {
     }
     
     override func layoutSubviews() {
-        guard let superview = superview else { return }
+        guard let superview = superview,
+              let layoutConstants = layoutConstants else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
-        let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
+        let candidateViewWidth = superview.bounds.width - expandButtonWidth - (expandButton.isHidden ? directionalLayoutMargins.trailing : 0)
+        let leftRightInset = layoutConstants.ref.candidatePaneViewLeftRightInset
         
-        let collectionViewFrame = CGRect(origin: CGPoint.zero, size: CGSize(width: candidateViewWidth, height: height))
+        let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
         if collectionView.frame != collectionViewFrame {
             collectionView.frame = collectionViewFrame
             collectionView.collectionViewLayout.invalidateLayout()
@@ -400,19 +418,47 @@ class CandidatePaneView: UIControl {
 
         super.layoutSubviews()
         layoutButtons()
+        
+        let isPhone = layoutConstants.ref.idiom == .phone
+        let topBottomMargin: CGFloat = mode == .row ? 8 : 0
+        let separatorFrame = CGRect(x: 0, y: topBottomMargin, width: 1, height: height - topBottomMargin * 2)
+        
+        if isPhone {
+            leftSeparator.isHidden = true
+        } else {
+            leftSeparator.isHidden = false
+            leftSeparator.frame = separatorFrame.with(x: leftRightInset)
+        }
+        
+        if expandButton.isHidden {
+            middleSeparator.isHidden = true
+        } else {
+            middleSeparator.isHidden = false
+            middleSeparator.frame = separatorFrame.with(x: candidateViewWidth - leftRightInset)
+        }
+        
+        if mode == .table || isPhone {
+            rightSeparator.isHidden = true
+        } else {
+            rightSeparator.isHidden = false
+            rightSeparator.frame = separatorFrame.with(x: superview.bounds.width - leftRightInset)
+        }
     }
     
     private func layoutButtons() {
+        guard let superview = superview,
+              let layoutConstants = layoutConstants else { return }
+        
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
-        let candidateViewWidth = collectionView.bounds.width
+        let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : layoutConstants.ref.candidatePaneViewLeftRightInset)
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
-                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth + expandButtonWidth - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
+                button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - Self.miniStatusSize.width, y: 0), size: Self.miniStatusSize)
                 continue
             }
-            button.frame = CGRect(origin: CGPoint(x: candidateViewWidth, y: buttonY), size: CGSize(width: expandButtonWidth, height: expandButtonWidth))
+            button.frame = CGRect(origin: CGPoint(x: candidateViewWidth - expandButtonWidth, y: buttonY), size: CGSize(width: expandButtonWidth, height: expandButtonWidth))
             buttonY += rowHeight
         }
     }
@@ -710,6 +756,14 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         if let view = view as? CandidateSectionHeader {
             view.free()
+        }
+    }
+}
+
+class SimpleHighlightableButton: UIButton {
+    override open var isHighlighted: Bool {
+        didSet {
+            backgroundColor = isHighlighted ? .systemGray6.withAlphaComponent(0.5) : nil
         }
     }
 }

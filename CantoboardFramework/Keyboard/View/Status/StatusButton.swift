@@ -89,8 +89,8 @@ class StatusButton: UIButton {
         titleLabel?.adjustsFontSizeToFitWidth = true
         titleLabel?.textAlignment = .center
         if !isMini {
-            titleLabel?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset).offsetBy(dx: Self.statusInset, dy: 0)
-            statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset).offsetBy(dx: Self.statusInset, dy: 0)
+            titleLabel?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
+            statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         }
         statusSquareBg?.isHidden = isMini
         setTitleColor(isMini ? ButtonColor.keyHintColor : .label, for: .normal)
@@ -100,7 +100,7 @@ class StatusButton: UIButton {
             
             let width = bounds.width * Self.miniExpandImageSizeRatio
             let size = CGSize(width: width, height: width * Self.miniExpandImageAspectRatio)
-            let origin = CGPoint(x: Self.miniExpandImageInset + Self.statusInset, y: bounds.maxY - Self.miniExpandImageInset - size.height)
+            let origin = CGPoint(x: Self.miniExpandImageInset, y: bounds.maxY - Self.miniExpandImageInset - size.height)
             miniExpandImageLayer?.frame = CGRect(origin: origin, size: size)
             miniExpandImageMaskLayer?.frame = CGRect(origin: .zero, size: size)
         } else {
