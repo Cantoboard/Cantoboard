@@ -20,28 +20,28 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["-", "/", ":", ";", "(", ")", .singleQuote, .doubleQuote, "「", "」"]],
+        [["-", "/", ":", ";", "(", ")", .currency, "@", "「", "」"]],
         [[.keyboardType(.symbolic)], ["^_^", "…", ".", ",", "､", "?", "!"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]],
-        [["_", "\\", "|", "~", "<", ">", .currency, "&", "@", "•"]],
+        [["_", "\\", "|", "~", "<", ">", .singleQuote, .doubleQuote, "&", "•"]],
         [[.keyboardType(.numeric)], ["^_^", "…", ".", ",", "､", "?", "!"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]],
-        [["—", "／", "：", "；", "（", "）", .singleQuote, .doubleQuote, "「", "」"]],
+        [["—", "／", "：", "；", "（", "）", .currency, "@", "「", "」"]],
         [[.keyboardType(.symbolic)], ["^_^", "⋯", "。", "，", "、", "？", "！"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
         [["［", "］", "｛", "｝", "#", "%", "^", "*", "+", "="]],
-        [["_", "＼", "｜", "～", "《", "》", .currency, "&", "@", "·"]],
+        [["_", "＼", "｜", "～", "《", "》", .singleQuote, .doubleQuote, "&", "·"]],
         [[.keyboardType(.numeric)], ["^_^", "⋯", "。", "，", "、", "？", "！"], [.backspace]],
         [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.returnKey(.default)]]
     ]

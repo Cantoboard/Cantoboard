@@ -521,7 +521,7 @@ enum SpecialSymbol: CaseIterable {
     
     private static func determineSymbolShapeFromLastChar(textBefore: String) -> SymbolShape {
         for c in textBefore.reversed() {
-            if c.isEnglishLetter {
+            if c.isASCII {
                 return .half
             } else if c.isChineseChar {
                 return .full
