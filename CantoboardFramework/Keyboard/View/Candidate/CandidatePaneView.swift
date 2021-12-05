@@ -488,8 +488,6 @@ extension CandidatePaneView {
         
         mode = newMode
         
-        setupButtons()
-        
         if let scrollToIndexPath = firstVisibleIndexPath {
             let scrollToIndexPathDirection: UICollectionView.ScrollPosition = newMode == .row ? .left : .top
             if mode == .table && groupByEnabled && scrollToIndexPath.section <= 1 && scrollToIndexPath.row == 0 {
