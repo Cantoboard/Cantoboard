@@ -159,7 +159,7 @@ class InputController: NSObject {
         
         self.keyboardView = keyboardView
         
-        if keyboardViewPlaceholder.superview != nil {
+        if keyboardViewPlaceholder.window != nil {
             createConstraints()
         }
     }
