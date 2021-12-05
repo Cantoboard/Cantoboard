@@ -399,7 +399,7 @@ class CandidatePaneView: UIControl {
               let layoutConstants = layoutConstants else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
-        let candidateViewWidth = superview.bounds.width - expandButtonWidth - (expandButton.isHidden ? directionalLayoutMargins.trailing : 0)
+        let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
         let leftRightInset = layoutConstants.ref.candidatePaneViewLeftRightInset
         
         let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
