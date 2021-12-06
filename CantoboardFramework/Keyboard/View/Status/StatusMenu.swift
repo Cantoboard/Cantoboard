@@ -9,13 +9,10 @@ import Foundation
 import UIKit
 
 class StatusMenu: UIView {
-    private static let labelInset: CGFloat = 2
-    
     static let xInset: CGFloat = 5
     static let cornerRadius: CGFloat = 5
     static let separatorWidth: CGFloat = 1
-    static let fontSizeAtUnitHeight: CGFloat = 15
-    static let unitHeight: CGFloat = 45
+    static let fontSizePerWidth: CGFloat = 20 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).width
     
     var itemActions: [UILabel: KeyCap]
     var itemLabelInRows: [[[UILabel]]]
@@ -83,15 +80,18 @@ class StatusMenu: UIView {
         super.layoutSubviews()
         layer.shadowPath = CGPath(roundedRect: bounds, cornerWidth: Self.cornerRadius, cornerHeight: Self.cornerRadius, transform: nil)
         
+        let rowHeight = bounds.height / CGFloat(itemLabelInRows.count)
+        let font = UIFont.systemFont(ofSize: bounds.width / CGFloat(itemLabelInRows[0].count) * Self.fontSizePerWidth / 8)
         var cellSize = CGSize()
         var y = CGFloat(0)
         for labelRow in itemLabelInRows {
+            let groupWidth = bounds.width / CGFloat(labelRow.count)
             var x = CGFloat(0)
             for labelGroup in labelRow {
-                cellSize = CGSize(width: bounds.width / CGFloat(labelRow.count) / CGFloat(labelGroup.count), height: bounds.height / CGFloat(itemLabelInRows.count))
+                cellSize = CGSize(width: groupWidth / CGFloat(labelGroup.count), height: rowHeight)
                 for label in labelGroup {
                     label.frame = CGRect(origin: CGPoint(x: x, y: y), size: cellSize)
-                    label.font = .systemFont(ofSize: Self.fontSizeAtUnitHeight * (cellSize.height - 2 * Self.labelInset) / Self.unitHeight)
+                    label.font = font
                     x += cellSize.width
                 }
             }
