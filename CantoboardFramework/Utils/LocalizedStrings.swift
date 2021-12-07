@@ -15,6 +15,7 @@ class LocalizedStrings {
     static let keyTitleNextPage = localizedString("KeyNextPage")
     static let keyTitleSelect = localizedString("KeySelect")
     static let keyTitleSpace = localizedString("KeySpace")
+    static let keyTitleFullWidthSpace = localizedString("KeyFullWidthSpace")
     static let keyTitleConfirm = localizedString("KeyConfirm")
     static let keyTitleGo = localizedString("KeyGo")
     static let keyTitleNext = localizedString("KeyNext")

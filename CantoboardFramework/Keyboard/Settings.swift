@@ -70,6 +70,11 @@ public enum ShowRomanizationMode: String, Codable {
     case never = "never"
 }
 
+public enum FullWidthSpaceMode: String, Codable {
+    case off = "off"
+    case shift = "shift"
+}
+
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
@@ -104,6 +109,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultCompositionMode: CompositionMode = .multiStage
     private static let defaultEnableNumKeyRow: Bool = false
     private static let defaultEnableHKCorrection: Bool = true
+    private static let defaultFullWidthSpaceMode: FullWidthSpaceMode = .off
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -123,6 +129,7 @@ public struct Settings: Codable, Equatable {
     public var compositionMode: CompositionMode
     public var enableNumKeyRow: Bool
     public var enableHKCorrection: Bool
+    public var fullWidthSpaceMode: FullWidthSpaceMode
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -143,6 +150,7 @@ public struct Settings: Codable, Equatable {
         compositionMode = Self.defaultCompositionMode
         enableNumKeyRow = Self.defaultEnableNumKeyRow
         enableHKCorrection = Self.defaultEnableHKCorrection
+        fullWidthSpaceMode = Self.defaultFullWidthSpaceMode
     }
     
     public init(from decoder: Decoder) throws {
@@ -165,6 +173,7 @@ public struct Settings: Codable, Equatable {
         self.compositionMode = try container.decodeIfPresent(CompositionMode.self, forKey: .compositionMode) ?? Settings.defaultCompositionMode
         self.enableNumKeyRow = try container.decodeIfPresent(Bool.self, forKey: .enableNumKeyRow) ?? Settings.defaultEnableNumKeyRow
         self.enableHKCorrection = try container.decodeIfPresent(Bool.self, forKey: .enableHKCorrection) ?? Settings.defaultEnableHKCorrection
+        self.fullWidthSpaceMode = try container.decodeIfPresent(FullWidthSpaceMode.self, forKey: .fullWidthSpaceMode) ?? Settings.defaultFullWidthSpaceMode
     }
     
     private static var _cached: Settings?

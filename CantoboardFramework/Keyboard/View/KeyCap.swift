@@ -26,8 +26,16 @@ import UIKit
 */
 enum SpaceKeyMode: String {
     case space = "space"
+    case fullWidthSpace = "fullWidthSpace"
     case select = "select"
     case nextPage = "next page"
+    
+    var isSpace: Bool {
+        switch self {
+        case .space, .fullWidthSpace: return true
+        default: return false
+        }
+    }
 }
 
 enum ReturnKeyType: Int {
@@ -227,6 +235,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .space(.nextPage): return LocalizedStrings.keyTitleNextPage
         case .space(.select): return LocalizedStrings.keyTitleSelect
         case .space(.space): return LocalizedStrings.keyTitleSpace
+        case .space(.fullWidthSpace): return LocalizedStrings.keyTitleFullWidthSpace
         case .keyboardType(.numeric): return "123"
         case .keyboardType(.symbolic): return "#+="
         case .keyboardType(.alphabetic): return "ABC"
