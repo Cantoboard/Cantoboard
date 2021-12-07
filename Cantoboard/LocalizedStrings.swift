@@ -22,6 +22,7 @@ class LocalizedStrings {
     static let inputMethodSettings = localizedString("inputMethodSettings")
     static let mixedMode = localizedString("inputMethodSettings.mixedMode")
     static let mixedMode_description = localizedString("inputMethodSettings.mixedMode.description")
+    static let numKeyRow = localizedString("inputMethodSettings.numKeyRow")
     static let smartFullStop = localizedString("inputMethodSettings.smartFullStop")
     static let smartFullStop_description = localizedString("inputMethodSettings.smartFullStop.description")
     static let audioFeedback = localizedString("inputMethodSettings.audioFeedback")
