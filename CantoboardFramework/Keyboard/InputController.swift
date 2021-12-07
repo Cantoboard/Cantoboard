@@ -691,7 +691,7 @@ class InputController: NSObject {
             }
         }
         
-        if state.activeSchema.isCangjieFamily {
+        if state.activeSchema.isCangjieFamily && state.inputMode != .english {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.rimeComposition
         } else if state.inputMode == .english {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.englishComposition
