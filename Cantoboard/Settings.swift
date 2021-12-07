@@ -130,7 +130,7 @@ private class Segment<T: Equatable>: Option {
 }
 
 extension Settings {
-    public var enableCorrector: Bool {
+    private var enableCorrector: Bool {
         get { rimeSettings.enableCorrector }
         set { rimeSettings.enableCorrector = newValue }
     }

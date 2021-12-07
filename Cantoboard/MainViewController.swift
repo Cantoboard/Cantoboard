@@ -10,7 +10,16 @@ import CantoboardFramework
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate {
     var tableView: UITableView!
-    var settings: Settings = Settings.reload()
+    var settings: Settings {
+        get { Settings.cached }
+        set {
+            Settings.save(newValue)
+            
+            if let inputCell = self.tableView.cellForRow(at: [1, 0]) as? InputTableViewCell {
+                inputCell.hideKeyboard()
+            }
+        }
+    }
     var sections: [Section] = Settings.buildSections()
     var aboutCells: [(title: String, image: UIImage, action: () -> ())]!
     
