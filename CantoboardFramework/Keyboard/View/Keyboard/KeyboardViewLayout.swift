@@ -34,7 +34,7 @@ class CommonContextualKeys {
         case .symbol:
             let keyHint = "符"
             switch keyboardState.keyboardContextualType {
-            case .chinese: return .character("，", keyHint, ["。", "，", "？", "！", ".", ",", KeyCap(rime: .sym)])
+            case .chinese: return .character("，", keyHint, ["。", "，", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
             case .english: return .character(",", keyHint, [".", ",", "?", "!", "。", "，", KeyCap(rime: .sym)])
             case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
             case .url:
