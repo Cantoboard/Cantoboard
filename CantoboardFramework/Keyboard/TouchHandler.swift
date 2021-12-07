@@ -270,9 +270,13 @@ class TouchHandler {
                 case .shift, .keyboardType: supportDrag = true
                 default: supportDrag = false
                 }
-                if supportDrag,
-                   case .character = chosenAction { // FIX ME cangjie?
-                    callKeyHandler(.shiftUp)
+                NSLog("UFO chosenAction \(chosenAction)")
+                if supportDrag {
+                    switch chosenAction {
+                    case .character, .space(.fullWidthSpace):
+                        callKeyHandler(.shiftUp)
+                    default: ()
+                    }
                 }
             }
         }

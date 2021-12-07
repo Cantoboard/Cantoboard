@@ -186,6 +186,11 @@ extension Settings {
                             LocalizedStrings.spaceAction_insertCandidate: .insertCandidate,
                             LocalizedStrings.spaceAction_insertText: .insertText,
                     ]),
+                    Segment(LocalizedStrings.fullWidthSpace, \.fullWidthSpaceMode, [
+                            LocalizedStrings.fullWidthSpace_shift: .shift,
+                            LocalizedStrings.fullWidthSpace_off: .off,
+                        ], LocalizedStrings.fullWidthSpace_description
+                    ),
                     Segment(LocalizedStrings.showRomanizationMode, \.showRomanizationMode, [
                             LocalizedStrings.showRomanizationMode_never: .never,
                             LocalizedStrings.showRomanizationMode_always: .always,

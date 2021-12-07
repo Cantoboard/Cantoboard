@@ -55,6 +55,10 @@
 "chineseInputSettings.spaceAction.nextPage" = "下一頁";
 "chineseInputSettings.spaceAction.insertCandidate" = "選擇候補";
 "chineseInputSettings.spaceAction.insertText" = "保留輸入";
+"chineseInputSettings.fullWidthSpace" = "全形空格";
+"chineseInputSettings.fullWidthSpace.off" = "關閉";
+"chineseInputSettings.fullWidthSpace.shift" = "撳 Shift";
+"chineseInputSettings.fullWidthSpace.description" = "喺混合模式同埋中文模式，撳住 Shift 或者撳一下 Shift 會顯示全形空格掣。";
 "chineseInputSettings.showRomanizationMode" = "候選詞粵拼";
 "chineseInputSettings.showRomanizationMode.never" = "隱藏";
 "chineseInputSettings.showRomanizationMode.always" = "顯示";
