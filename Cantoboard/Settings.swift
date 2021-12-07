@@ -166,6 +166,13 @@ extension Settings {
                 ]
             ),
             Section(
+                LocalizedStrings.mixedInputSettings,
+                [
+                    Switch(LocalizedStrings.smartSpace, \.isSmartEnglishSpaceEnabled,
+                           LocalizedStrings.smartSpace_description),
+                ]
+            ),
+            Section(
                 LocalizedStrings.chineseInputSettings,
                 [
                     Segment(LocalizedStrings.compositionMode, \.compositionMode, [

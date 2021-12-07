@@ -88,6 +88,7 @@ public struct Settings: Codable, Equatable {
     private static let settingsKeyName = "Settings"
     private static let defaultMixedModeEnabled: Bool = true
     private static let defaultAutoCapEnabled: Bool = true
+    private static let defaultSmartEnglishSpaceEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
     private static let defaultSymbolShape: SymbolShape = .smart
@@ -106,6 +107,7 @@ public struct Settings: Codable, Equatable {
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
+    public var isSmartEnglishSpaceEnabled: Bool = true
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
     public var symbolShape: SymbolShape
@@ -125,6 +127,7 @@ public struct Settings: Codable, Equatable {
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
         isAutoCapEnabled = Self.defaultAutoCapEnabled
+        isSmartEnglishSpaceEnabled = Self.defaultSmartEnglishSpaceEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         candidateFontSize = Self.defaultCandidateFontSize
         symbolShape = Self.defaultSymbolShape
@@ -147,6 +150,7 @@ public struct Settings: Codable, Equatable {
         self.isMixedModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMixedModeEnabled) ?? Settings.defaultMixedModeEnabled
         self.isAutoCapEnabled = try container.decodeIfPresent(Bool.self, forKey: .isAutoCapEnabled) ?? Settings.defaultAutoCapEnabled
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
+        self.isSmartEnglishSpaceEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartEnglishSpaceEnabled) ?? Settings.defaultSmartEnglishSpaceEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
         self.smartSymbolShapeDefault = try container.decodeIfPresent(SymbolShape.self, forKey: .smartSymbolShapeDefault) ?? Settings.defaultSmartSymbolShapeDefault

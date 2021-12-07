@@ -693,7 +693,9 @@ class InputController: NSObject {
     
     private var shouldEnableSmartInput: Bool {
         guard let textFieldType = textDocumentProxy?.keyboardType else { return true }
-        return textFieldType != .URL &&
+        let isSmartEnglishSpaceEnabled = Settings.cached.isSmartEnglishSpaceEnabled || state.inputMode == .english
+        return isSmartEnglishSpaceEnabled &&
+            textFieldType != .URL &&
             textFieldType != .asciiCapableNumberPad &&
             textFieldType != .decimalPad &&
             textFieldType != .emailAddress &&

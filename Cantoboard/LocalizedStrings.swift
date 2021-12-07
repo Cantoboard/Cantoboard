@@ -40,6 +40,10 @@ class LocalizedStrings {
     static let smartSymbolShapeDefault_full = localizedString("inputMethodSettings.smartSymbolShapeDefault.full")
     static let smartSymbolShapeDefault_description = localizedString("inputMethodSettings.smartSymbolShapeDefault.description")
     
+    static let mixedInputSettings = localizedString("mixedInputSettings")
+    static let smartSpace = localizedString("mixedInputSettings.smartSpace")
+    static let smartSpace_description = localizedString("mixedInputSettings.smartSpace.description")
+    
     static let chineseInputSettings = localizedString("chineseInputSettings")
     static let compositionMode = localizedString("chineseInputSettings.compositionMode")
     static let compositionMode_immediate = localizedString("chineseInputSettings.compositionMode.immediate")

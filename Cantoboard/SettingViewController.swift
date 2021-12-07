@@ -12,6 +12,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak private var enableMixedModeControl: UISwitch!
     @IBOutlet weak private var autoCapControl: UISwitch!
     @IBOutlet weak private var smartFullStopControl: UISwitch!
+    @IBOutlet weak private var smartEnglishSpaceControl: UISwitch!
     @IBOutlet weak private var symbolShapeControl: UISegmentedControl!
     @IBOutlet weak private var smartSymbolShapeDefaultControl: UISegmentedControl!
     @IBOutlet weak private var candidateFontSizeControl: UISegmentedControl!
@@ -38,6 +39,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         smartFullStopControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         symbolShapeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         smartSymbolShapeDefaultControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        smartEnglishSpaceControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         candidateFontSizeControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         spaceActionControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         toneInputControl.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
@@ -118,6 +120,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
         var settings = Settings()
         settings.isMixedModeEnabled = enableMixedModeControl.isOn
         settings.isAutoCapEnabled = autoCapControl.isOn
+        settings.isSmartEnglishSpaceEnabled = smartEnglishSpaceControl.isOn
         settings.isSmartFullStopEnabled = smartFullStopControl.isOn
         settings.symbolShape = selectedSymbolShape
         settings.smartSymbolShapeDefault = smartSymbolShapeDefault
@@ -196,6 +199,7 @@ class SettingViewController: UITableViewController, UIGestureRecognizerDelegate 
     private func populateSmartInputSettings(_ settings: Settings) {
         enableMixedModeControl.isOn = settings.isMixedModeEnabled
         autoCapControl.isOn = settings.isAutoCapEnabled
+        smartEnglishSpaceControl.isOn = settings.isSmartEnglishSpaceEnabled
         smartFullStopControl.isOn = settings.isSmartFullStopEnabled
         audioFeedbackControl.isOn = settings.isAudioFeedbackEnabled
         hapticFeedbackControl.isOn = settings.isTapHapticFeedbackEnabled
