@@ -65,7 +65,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         switch section {
         case lastSection: return aboutCells.count
         case 0, 1: return 1
-        default: return sections[section - 2].options.count
+        default:
+            let sectionId = section - 2
+            guard 0 <= sectionId && sectionId < sections.count else { return 0 }
+            return sections[sectionId].options.count
         }
     }
     
