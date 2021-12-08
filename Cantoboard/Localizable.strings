@@ -35,14 +35,14 @@
 "自動標點符號會根據以下規則決定輸入半形定全形符號：
 閂咗混合模式嘅話，喺英文輸入法輸入半形符號，中文輸入法輸入全形符號。
 開咗混合模式嘅話會根據前文判斷係咩句子，喺英文句子輸入半形符號，中文句子輸入全形符號。";
-"inputMethodSettings.smartSymbolShapeDefault" = "預設標點符號";
-"inputMethodSettings.smartSymbolShapeDefault.half" = "半形";
-"inputMethodSettings.smartSymbolShapeDefault.full" = "全形";
-"inputMethodSettings.smartSymbolShapeDefault.description" = "用自動標點符號而且喺混打模式下，冇足夠前文判斷而家打緊中文定英文句子嘅時候，會根據呢個設定決定標點形態。";
 
 "mixedInputSettings" = "粵英混合輸入設定";
 "mixedInputSettings.smartSpace" = "智能英文空格";
 "mixedInputSettings.smartSpace.description" = "喺混合模式打完英文字後，自動輸入空格。喺自動輸入嘅空格後面打中文，會自動剷除智能空格。";
+"mixedInputSettings.smartSymbolShapeDefault" = "預設標點符號";
+"mixedInputSettings.smartSymbolShapeDefault.half" = "半形";
+"mixedInputSettings.smartSymbolShapeDefault.full" = "全形";
+"mixedInputSettings.smartSymbolShapeDefault.description" = "用自動標點符號而且喺混打模式下，冇足夠前文判斷而家打緊中文定英文句子嘅時候，會根據呢個設定決定標點形態。";
 
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.compositionMode" = "輸入模式";
