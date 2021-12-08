@@ -317,9 +317,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case "，", "。", "．", "？", "！",
              "－", "／", "：", "；", "（", "）", "＠", "、", "⋯", "⋯⋯", "＆",
-             "１", "２", "３", "４", "５", "６", "７", "８", "９", "０",
-             "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝",
-             "＿", "＼", "｜", "～", "〈", "＜", "＞", "〉",
+             "１", "２", "３", "４", "５", "６", "７", "８", "９", "０", "·",
+             "［", "］", "｛", "｝", "＃", "％", "＾", "＊", "＋", "＝", "—",
+             "＿", "＼", "｜", "～", "＜", "＞", "〈", "〉", "《", "》",
              "＄", "＂", "＇": return "全"
         default: return nil
         }
@@ -356,7 +356,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "0": return ["0", "０", "零", "十", "拾", "⓪", "°"]
         // 123 2nd row
         case "-": return ["-", "－", "–", "—", "•"]
-        case "/": return ["/", "／", "\\"]
+        case "/": return ["/", "／", "\\", "÷", "√"]
         case ":": return [":", "："]
         case ";": return [";", "；"]
         case "(": return ["(", "（"]
@@ -382,25 +382,23 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "#": return ["#", "＃"]
         case "%": return ["%", "％", "‰"]
         case "^": return ["^", "＾"]
-        case "*": return ["*", "＊"]
+        case "*": return ["*", "＊", "×"]
         case "+": return ["+", "＋"]
-        case "=": return ["=", "≠", "≈", "＝"]
+        case "=": return ["=", "≠", "≈", "≒", "＝"]
         // #+= 2nd row
         case "_": return ["_", "＿"]
         case "\\": return ["\\", "＼"]
         case "|": return ["|", "｜"]
         case "~": return ["~", "～"]
-        case "<": return ["<", "〈", "＜"]
-        case ">": return [">", "〉", "＞"]
-        case "«": return ["«", "《"]
-        case "»": return ["»", "》"]
+        case "<": return ["<", "〈", "≤", "≦", "＜"]
+        case ">": return [">", "〉", "≥", "≧", "＞"]
         case "&": return ["＆", "&", "§"]
         case "•": return ["•", "·", "．", "°"]
         // #+= 4th row
         case "…": return ["…", "⋯"]
         // 123 2nd row full width
         case "—": return ["—", "–", "-", "－", "·"]
-        case "／": return ["／", "/", "\\"]
+        case "／": return ["／", "/", "\\", "÷", "√"]
         case "：": return ["：", ":"]
         case "；": return ["；", ";"]
         case "（": return ["（", "("]
@@ -420,8 +418,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "＼": return ["＼", "\\"]
         case "｜": return ["｜", "|"]
         case "～": return ["～", "~"]
-        case "〈": return ["〈", "<", "＜"]
-        case "〉": return ["〉", ">", "＞"]
         case "《": return ["《", "«"]
         case "》": return ["》", "»"]
         case "·": return ["·", "．", "•", "°"]
@@ -486,16 +482,17 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 }
 
 enum SpecialSymbol: CaseIterable {
-    case slash, parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
+    case slash, backslash, verticalBar, parenthesis, curlyBracket, squareBracket, angleBracket
     
     var keyCapPairs: [(half: KeyCap, full: KeyCap)] {
         switch self {
         case .slash: return [(half: "/", full: "／")]
+        case .backslash: return [(half: "\\", full: "＼")]
+        case .verticalBar: return [(half: "|", full: "｜")]
         case .parenthesis: return [(half: "(", full: "（"), (half: ")", full: "）")]
         case .curlyBracket: return [(half: "{", full: "｛"), (half: "}", full: "｝")]
         case .squareBracket: return [(half: "[", full: "［"), (half: "]", full: "］")]
-        case .angleBracket: return [(half: "<", full: "〈"), (half: ">", full: "〉")]
-        case .doubleAngleBracket: return [(half: "«", full: "《"), (half: "»", full: "》")]
+        case .angleBracket: return [(half: "<", full: "《"), (half: ">", full: "》")]
         }
     }
     
@@ -521,8 +518,9 @@ enum SpecialSymbol: CaseIterable {
         switch symbolShape {
         case .smart:
             switch self {
-            case .slash: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
-            case .parenthesis, .curlyBracket, .squareBracket, .angleBracket, .doubleAngleBracket:
+            case .slash, .backslash, .verticalBar:
+                return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
+            case .parenthesis, .curlyBracket, .squareBracket, .angleBracket:
                 return determineSymbolShapeFromLastMatchingChar(textBefore: textBefore)
             }
         case .half: return .half
@@ -532,7 +530,7 @@ enum SpecialSymbol: CaseIterable {
     
     private static func determineSymbolShapeFromLastChar(textBefore: String) -> SymbolShape? {
         for c in textBefore.reversed() {
-            if c.isEnglishLetterOrDigit {
+            if c.isASCII {
                 return .half
             } else if c.isChineseChar {
                 return .full

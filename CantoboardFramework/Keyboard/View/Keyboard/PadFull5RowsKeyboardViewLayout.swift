@@ -30,7 +30,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
-        [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
+        [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "《", "》"], [.backspace]],
         [["\t"], ["［", "］", "｛", "｝", "#", "%", "^", "*", "+", "=", "＼", "｜", "_"], []],
         [[.placeholder(.toggleInputMode(.english, nil))], ["—", "／", "：", "；", "（", "）", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "「", "」"], [.placeholder(.shift(.lowercased))]],
