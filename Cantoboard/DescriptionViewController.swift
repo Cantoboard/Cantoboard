@@ -67,7 +67,7 @@ class DescriptionViewController: UIViewController {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 20),
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -20),
-            stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
+            stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10),
             label.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             label.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
         ])
