@@ -31,7 +31,7 @@ extension Option {
         let cell = UITableViewCell()
         
         var views: [UIView] = [UILabel(title: title), view]
-        if videoUrl != nil {
+        if description != nil || videoUrl != nil {
             let button = UIButton()
             button.setImage(CellImage.faq, for: .normal)
             button.isUserInteractionEnabled = false
@@ -148,47 +148,51 @@ extension Settings {
                     Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
                     Switch(LocalizedStrings.tapHapticFeedback, \.isTapHapticFeedbackEnabled),
                     Segment(LocalizedStrings.candidateFontSize, \.candidateFontSize, [
-                        LocalizedStrings.candidateFontSize_normal: .normal,
-                        LocalizedStrings.candidateFontSize_large: .large,
+                            LocalizedStrings.candidateFontSize_normal: .normal,
+                            LocalizedStrings.candidateFontSize_large: .large,
                     ]),
                     Segment(LocalizedStrings.symbolShape, \.symbolShape, [
-                        LocalizedStrings.symbolShape_half: .half,
-                        LocalizedStrings.symbolShape_full: .full,
-                        LocalizedStrings.symbolShape_smart: .smart,
-                    ],
-                    LocalizedStrings.symbolShape_description, "Guide9-1"),
+                            LocalizedStrings.symbolShape_half: .half,
+                            LocalizedStrings.symbolShape_full: .full,
+                            LocalizedStrings.symbolShape_smart: .smart,
+                        ],
+                        LocalizedStrings.symbolShape_description, "Guide9-1"
+                    ),
                     Segment(LocalizedStrings.smartSymbolShapeDefault, \.smartSymbolShapeDefault, [
-                        LocalizedStrings.smartSymbolShapeDefault_half: .half,
-                        LocalizedStrings.smartSymbolShapeDefault_full: .full,
-                    ],
-                    LocalizedStrings.smartSymbolShapeDefault_description, "Guide10-3"),
+                            LocalizedStrings.smartSymbolShapeDefault_half: .half,
+                            LocalizedStrings.smartSymbolShapeDefault_full: .full,
+                        ],
+                        LocalizedStrings.smartSymbolShapeDefault_description, "Guide10-3"
+                    ),
                 ]
             ),
             Section(
                 LocalizedStrings.chineseInputSettings,
                 [
                     Segment(LocalizedStrings.compositionMode, \.compositionMode, [
-                        LocalizedStrings.compositionMode_immediate: .immediate,
-                        LocalizedStrings.compositionMode_multiStage: .multiStage,
-                    ],
-                    LocalizedStrings.compositionMode_description, "Guide2-1"),
+                            LocalizedStrings.compositionMode_immediate: .immediate,
+                            LocalizedStrings.compositionMode_multiStage: .multiStage,
+                        ],
+                        LocalizedStrings.compositionMode_description, "Guide2-1"
+                    ),
                     Segment(LocalizedStrings.spaceAction, \.spaceAction, [
-                        LocalizedStrings.spaceAction_nextPage: .nextPage,
-                        LocalizedStrings.spaceAction_insertCandidate: .insertCandidate,
-                        LocalizedStrings.spaceAction_insertText: .insertText,
+                            LocalizedStrings.spaceAction_nextPage: .nextPage,
+                            LocalizedStrings.spaceAction_insertCandidate: .insertCandidate,
+                            LocalizedStrings.spaceAction_insertText: .insertText,
                     ]),
                     Segment(LocalizedStrings.showRomanizationMode, \.showRomanizationMode, [
-                        LocalizedStrings.showRomanizationMode_never: .never,
-                        LocalizedStrings.showRomanizationMode_always: .always,
-                        LocalizedStrings.showRomanizationMode_onlyInNonCantoneseMode: .onlyInNonCantoneseMode,
+                            LocalizedStrings.showRomanizationMode_never: .never,
+                            LocalizedStrings.showRomanizationMode_always: .always,
+                            LocalizedStrings.showRomanizationMode_onlyInNonCantoneseMode: .onlyInNonCantoneseMode,
                     ]),
                     Switch(LocalizedStrings.enableCorrector, \.enableCorrector,
                            LocalizedStrings.enableCorrector_description, "Guide12-1"),
                     Segment(LocalizedStrings.toneInputMode, \.toneInputMode, [
-                        LocalizedStrings.toneInputMode_vxq: .vxq,
-                        LocalizedStrings.toneInputMode_longPress: .longPress,
-                    ],
-                    LocalizedStrings.toneInputMode_description, "Guide3-2"),
+                            LocalizedStrings.toneInputMode_vxq: .vxq,
+                            LocalizedStrings.toneInputMode_longPress: .longPress,
+                        ],
+                        LocalizedStrings.toneInputMode_description, "Guide3-2"
+                    ),
                     Switch(LocalizedStrings.enableHKCorrection, \.enableHKCorrection),
                 ]
             ),
@@ -198,10 +202,10 @@ extension Settings {
                     Switch(LocalizedStrings.autoCap, \.isAutoCapEnabled),
                     Switch(LocalizedStrings.shouldShowEnglishExactMatch, \.shouldShowEnglishExactMatch),
                     Segment(LocalizedStrings.englishLocale, \.englishLocale, [
-                        LocalizedStrings.englishLocale_au: .au,
-                        LocalizedStrings.englishLocale_ca: .ca,
-                        LocalizedStrings.englishLocale_gb: .gb,
-                        LocalizedStrings.englishLocale_us: .us,
+                            LocalizedStrings.englishLocale_au: .au,
+                            LocalizedStrings.englishLocale_ca: .ca,
+                            LocalizedStrings.englishLocale_gb: .gb,
+                            LocalizedStrings.englishLocale_us: .us,
                     ]),
                 ]
             ),

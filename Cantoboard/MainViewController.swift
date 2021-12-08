@@ -125,7 +125,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func showDescription(of option: Option) {
-        guard option.videoUrl != nil else { return }
+        guard option.videoUrl != nil || option.description != nil else { return }
         
         let description = UINavigationController(rootViewController: DescriptionViewController(option: option))
         description.modalPresentationStyle = .custom
