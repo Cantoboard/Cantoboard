@@ -19,23 +19,43 @@ class DescriptionPresentationController: UIPresentationController {
     
     override var frameOfPresentedViewInContainerView: CGRect {
         let bounds = containerView!.bounds
-        let description = presentedViewController as! UINavigationController
-        description.view.layoutIfNeeded()
-        let height = (description.children[0] as! DescriptionViewController).stackView.bounds.height + description.navigationBar.bounds.height + description.view.safeAreaInsets.top + description.view.safeAreaInsets.bottom
+        let presentedController = (presentedViewController as! UINavigationController)
+        let descriptionViewController = presentedViewController.children.first as! DescriptionViewController
+        
+        presentedController.view.layoutIfNeeded()
+        
+        var height = presentedController.view.safeAreaInsets.top +
+            presentedController.navigationBar.bounds.height +
+            DescriptionViewController.paddingBetweenTitleAndDescription +
+            DescriptionViewController.stackViewInset.top +
+            descriptionViewController.stackView.bounds.height +
+            DescriptionViewController.stackViewInset.bottom +
+            presentedController.view.safeAreaInsets.bottom
+        
+        height = min(height, containerView!.bounds.height)
         return CGRect(x: 0, y: bounds.height - height, width: bounds.width, height: height)
     }
     
     override func presentationTransitionWillBegin() {
+        super.presentationTransitionWillBegin()
+        
         backdropView.alpha = 0
         containerView!.addSubview(backdropView)
         presentedViewController.transitionCoordinator?.animate(alongsideTransition: { _ in self.backdropView.alpha = 1 })
     }
     
     override func dismissalTransitionWillBegin() {
+        super.dismissalTransitionWillBegin()
+        
         backdropView.alpha = 1
         presentedViewController.transitionCoordinator?.animate(alongsideTransition: { _ in self.backdropView.alpha = 0 }) { _ in
             self.backdropView.removeFromSuperview()
         }
+    }
+    
+    override func containerViewWillLayoutSubviews() {
+        presentedView?.frame = frameOfPresentedViewInContainerView
+        backdropView.frame = containerView!.frame
     }
     
     @objc func dismissPresentedViewController() {
