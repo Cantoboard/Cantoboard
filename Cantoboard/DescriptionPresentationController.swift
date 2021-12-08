@@ -19,7 +19,7 @@ class DescriptionPresentationController: UIPresentationController {
     
     override var frameOfPresentedViewInContainerView: CGRect {
         let bounds = containerView!.bounds
-        let presentedController = (presentedViewController as! UINavigationController)
+        let presentedController = presentedViewController as! UINavigationController
         let descriptionViewController = presentedViewController.children.first as! DescriptionViewController
         
         presentedController.view.layoutIfNeeded()
@@ -32,7 +32,7 @@ class DescriptionPresentationController: UIPresentationController {
             DescriptionViewController.stackViewInset.bottom +
             presentedController.view.safeAreaInsets.bottom
         
-        height = min(height, containerView!.bounds.height)
+        height = min(height, bounds.height)
         return CGRect(x: 0, y: bounds.height - height, width: bounds.width, height: height)
     }
     

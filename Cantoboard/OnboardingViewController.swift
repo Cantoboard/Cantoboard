@@ -152,17 +152,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             let innerView = UIView()
             innerView.addSubview(innerStackView)
             
-            /*
-            let size: CGSize
-            if let track = AVURLAsset(url: videoUrl).tracks(withMediaType: .video).first {
-                size = track.naturalSize.applying(track.preferredTransform)
-            } else {
-                size = CGSize(width: 4, height: 3)
-            }
-            */
             NSLayoutConstraint.activate([
                 playerView.widthAnchor.constraint(equalTo: innerStackView.widthAnchor),
-                playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: 374 / 298), // abs(size.width / size.height)
+                playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: videoUrl.videoAspectRatio ?? 1),
                 
                 innerStackView.centerXAnchor.constraint(equalTo: innerView.centerXAnchor),
                 innerStackView.centerYAnchor.constraint(equalTo: innerView.centerYAnchor),
@@ -248,9 +240,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
                 player.seek(to: .zero)
                 player.rate = 0.1
                 previousPage = currentPage
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    if player.rate != 0 {
-                        player.rate = 1.3
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak player] in
+                    if player?.rate != 0 {
+                        player?.rate = 1.3
                     }
                 }
             }

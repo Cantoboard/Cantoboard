@@ -10,20 +10,20 @@ import AVFoundation
 import AVKit
 
 class DescriptionViewController: UIViewController {
-    static let videoAspectRatio: CGFloat = 374 / 298
-    static let stackViewInset = UIEdgeInsets(top: 10, left: 0, bottom: 15, right: 0)
+    static let stackViewInset = UIEdgeInsets(top: 10, left: 20, bottom: 15, right: 20)
     static let paddingBetweenTitleAndDescription: CGFloat = 10
     
     var option: Option!
     var stackView: UIStackView!
     var playerView: UIView?
+    var player: AVPlayer?
     var playerLooper: AVPlayerLooper?
     
     convenience init(option: Option) {
         self.init()
         self.option = option
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -48,18 +48,22 @@ class DescriptionViewController: UIViewController {
             playerController.player = player
             playerController.showsPlaybackControls = false
             addChild(playerController)
-            playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
-            playerView = playerController.view
-            playerView?.translatesAutoresizingMaskIntoConstraints = false
+            self.player = player
+            self.playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
+            
+            let playerView = playerController.view!
+            playerView.translatesAutoresizingMaskIntoConstraints = false
+            playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: videoUrl.videoAspectRatio ?? 1).isActive = true
+            self.playerView = playerView
         }
         
         let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = option.description
         label.font = .preferredFont(forTextStyle: .body)
         label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView = UIStackView(arrangedSubviews: [playerView, label].compactMap {$0})
+        stackView = UIStackView(arrangedSubviews: [playerView, label].compactMap { $0 })
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
@@ -68,25 +72,24 @@ class DescriptionViewController: UIViewController {
         
         let safeArea = view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -20),
-            stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -Self.stackViewInset.bottom),
             stackView.topAnchor.constraint(greaterThanOrEqualTo: safeArea.topAnchor, constant: Self.stackViewInset.top),
+            stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: Self.stackViewInset.left),
+            
+            safeArea.bottomAnchor.constraint(equalTo: stackView.bottomAnchor, constant: Self.stackViewInset.bottom),
+            safeArea.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: Self.stackViewInset.right),
+            
             label.leadingAnchor.constraint(equalTo: stackView.leadingAnchor),
             label.trailingAnchor.constraint(equalTo: stackView.trailingAnchor),
         ])
         
-        if let playerView = playerView {            
+        if let playerView = playerView {
             let leadingConstraint = playerView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor)
             leadingConstraint.priority = .defaultLow
+            leadingConstraint.isActive = true
             
             let trailingConstraint = playerView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor)
             trailingConstraint.priority = .defaultLow
-            
-            NSLayoutConstraint.activate([
-                leadingConstraint, trailingConstraint,
-                playerView.heightAnchor.constraint(equalTo: playerView.widthAnchor, multiplier: 1 / Self.videoAspectRatio)
-            ])
+            trailingConstraint.isActive = true
         }
     }
     
