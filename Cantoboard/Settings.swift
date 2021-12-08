@@ -157,12 +157,6 @@ extension Settings {
                         ],
                         LocalizedStrings.symbolShape_description, "Guide9-1"
                     ),
-                    Segment(LocalizedStrings.smartSymbolShapeDefault, \.smartSymbolShapeDefault, [
-                            LocalizedStrings.smartSymbolShapeDefault_half: .half,
-                            LocalizedStrings.smartSymbolShapeDefault_full: .full,
-                        ],
-                        LocalizedStrings.smartSymbolShapeDefault_description, "Guide10-3"
-                    ),
                 ]
             ),
             Section(
@@ -170,6 +164,12 @@ extension Settings {
                 [
                     Switch(LocalizedStrings.smartSpace, \.isSmartEnglishSpaceEnabled,
                            LocalizedStrings.smartSpace_description),
+                    Segment(LocalizedStrings.smartSymbolShapeDefault, \.smartSymbolShapeDefault, [
+                            LocalizedStrings.smartSymbolShapeDefault_half: .half,
+                            LocalizedStrings.smartSymbolShapeDefault_full: .full,
+                        ],
+                        LocalizedStrings.smartSymbolShapeDefault_description, "Guide10-3"
+                    ),
                 ]
             ),
             Section(
