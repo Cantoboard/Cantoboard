@@ -67,14 +67,14 @@ extension StatusMenuHandler where Self: BaseKeyboardView {
         guard statusMenu == nil, let layoutConstants = layoutConstants else { return }
         FeedbackProvider.softImpact.impactOccurred()
         
-        let menuRows: [[[KeyCap]]] = state.keyboardIdiom == .phone && layoutConstants.ref.isPortrait ? [
-            [[ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ]],
-            [[ .changeSchema(.yale) ]],
-            [[ .changeSchema(.cangjie), .changeSchema(.quick) ]],
-            [[ .changeSchema(.stroke), .changeSchema(.mandarin) ]],
+        let menuRows: [[KeyCap]] = state.keyboardIdiom == .phone && layoutConstants.ref.isPortrait ? [
+            [ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ],
+            [ .changeSchema(.yale) ],
+            [ .changeSchema(.cangjie), .changeSchema(.quick) ],
+            [ .changeSchema(.stroke), .changeSchema(.mandarin) ],
         ] : [
-            [[ .changeSchema(.yale) ], [ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ]],
-            [[ .changeSchema(.cangjie), .changeSchema(.quick) ], [ .changeSchema(.stroke), .changeSchema(.mandarin) ]],
+            [ .changeSchema(.yale), .changeSchema(.jyutping), .toggleInputMode(.english, nil) ],
+            [ .changeSchema(.cangjie), .changeSchema(.quick), .changeSchema(.stroke), .changeSchema(.mandarin) ],
         ]
         
         let statusMenu = StatusMenu(menuRows: menuRows)
