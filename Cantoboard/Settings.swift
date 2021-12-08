@@ -116,7 +116,6 @@ private class Segment<T: Equatable>: Option {
         self.controller = controller
         control = UISegmentedControl(items: options.map { $0.key })
         control.selectedSegmentIndex = options.firstIndex(where: { $1 == value })!
-        control.apportionsSegmentWidthsByContent = true
         control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
         return makeCell(with: control)
     }
