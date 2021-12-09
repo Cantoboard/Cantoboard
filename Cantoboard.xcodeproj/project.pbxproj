@@ -174,6 +174,8 @@
 		79BE976326D749720059E58A /* CandidateSegmentControlCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */; };
 		79BE976926D749A90059E58A /* CandidateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE976826D749A90059E58A /* CandidateCell.swift */; };
 		79BE977326D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BE977226D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift */; };
+		79C06B922761650E00DDAEFD /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C06B912761650E00DDAEFD /* UIImage+Extension.swift */; };
+		79C06B932761E27100DDAEFD /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9B59525F34A1200238E80 /* Collection+Extension.swift */; };
 		79CA7AF426FD9386006B561E /* CompositionRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79CA7AF326FD9386006B561E /* CompositionRenderer.swift */; };
 		79D31AB0263F95F600993949 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AAF263F95F600993949 /* CocoaLumberjackSwift */; };
 		79D31AB5263F961800993949 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 79D31AB4263F961800993949 /* CocoaLumberjack */; };
@@ -464,6 +466,7 @@
 		79BE976226D749720059E58A /* CandidateSegmentControlCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateSegmentControlCell.swift; sourceTree = "<group>"; };
 		79BE976826D749A90059E58A /* CandidateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCell.swift; sourceTree = "<group>"; };
 		79BE977226D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		79C06B912761650E00DDAEFD /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
 		79CA7AF326FD9386006B561E /* CompositionRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRenderer.swift; sourceTree = "<group>"; };
 		79D31ACC263FAC1300993949 /* InstanceCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstanceCounter.swift; sourceTree = "<group>"; };
 		79D4E1BE26422C6E00857D7D /* DataFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFileManager.swift; sourceTree = "<group>"; };
@@ -534,6 +537,7 @@
 		142AA602274C06B800D7EE39 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				79C06B912761650E00DDAEFD /* UIImage+Extension.swift */,
 				142AA603274C06E400D7EE39 /* UILabel+Extension.swift */,
 				142AA605274C06F900D7EE39 /* UITableViewCell+Extension.swift */,
 			);
@@ -579,26 +583,26 @@
 			isa = PBXGroup;
 			children = (
 				79A2D07F2661FD0C00F2EB19 /* Guide */,
-				7919A78025F3320F0075DD4D /* AppDelegate.swift */,
-				7919A78925F332100075DD4D /* Assets.xcassets */,
-				79B9B70725F43D0E00238E80 /* Cantoboard.entitlements */,
-				141A7CF42719E46100A24E92 /* MainViewController.swift */,
-				142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */,
-				142AA609274C0A8F00D7EE39 /* AboutViewController.swift */,
-				142AA602274C06B800D7EE39 /* Extension */,
-				14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */,
-				142AA607274C09AB00D7EE39 /* FaqViewController.swift */,
-				142AA600274C065100D7EE39 /* Keyboard.swift */,
-				1405FF3B2719FAA80037F724 /* InputTableViewCell.swift */,
-				7917DDA32660A41F00D0010D /* GuideViewController.swift */,
-				7919A78E25F332100075DD4D /* Info.plist */,
-				7919A78B25F332100075DD4D /* LaunchScreen.storyboard */,
-				1414B2B4271B12F200091ADF /* Settings.swift */,
-				142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */,
-				7919A78225F3320F0075DD4D /* SceneDelegate.swift */,
 				799D919C2674646D00AE9DBD /* Settings.bundle */,
+				79B9B70725F43D0E00238E80 /* Cantoboard.entitlements */,
+				7919A78E25F332100075DD4D /* Info.plist */,
 				1405FF3D2719FED60037F724 /* Localizable.strings */,
+				142AA609274C0A8F00D7EE39 /* AboutViewController.swift */,
+				7919A78025F3320F0075DD4D /* AppDelegate.swift */,
+				142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */,
+				142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */,
+				142AA607274C09AB00D7EE39 /* FaqViewController.swift */,
+				7917DDA32660A41F00D0010D /* GuideViewController.swift */,
+				1405FF3B2719FAA80037F724 /* InputTableViewCell.swift */,
+				142AA600274C065100D7EE39 /* Keyboard.swift */,
 				1405FF3F271A02330037F724 /* LocalizedStrings.swift */,
+				141A7CF42719E46100A24E92 /* MainViewController.swift */,
+				14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */,
+				7919A78225F3320F0075DD4D /* SceneDelegate.swift */,
+				1414B2B4271B12F200091ADF /* Settings.swift */,
+				7919A78925F332100075DD4D /* Assets.xcassets */,
+				142AA602274C06B800D7EE39 /* Extension */,
+				7919A78B25F332100075DD4D /* LaunchScreen.storyboard */,
 			);
 			path = Cantoboard;
 			sourceTree = "<group>";
@@ -1299,10 +1303,12 @@
 				142AA601274C065100D7EE39 /* Keyboard.swift in Sources */,
 				142AA606274C06F900D7EE39 /* UITableViewCell+Extension.swift in Sources */,
 				7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */,
+				79C06B922761650E00DDAEFD /* UIImage+Extension.swift in Sources */,
 				1405FF40271A02330037F724 /* LocalizedStrings.swift in Sources */,
 				7919A78325F3320F0075DD4D /* SceneDelegate.swift in Sources */,
 				142AA60A274C0A8F00D7EE39 /* AboutViewController.swift in Sources */,
 				141A7CF52719E46100A24E92 /* MainViewController.swift in Sources */,
+				79C06B932761E27100DDAEFD /* Collection+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
