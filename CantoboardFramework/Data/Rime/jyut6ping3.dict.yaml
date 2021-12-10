@@ -41,7 +41,7 @@ version: "2021.09.05"
 sort: by_weight
 use_preset_vocabulary: true
 import_tables:
-  - jyut6ping3.maps
+- jyut6ping3.maps
 ...
 # 單字音
 吖	a1
@@ -565,7 +565,6 @@ import_tables:
 闆	baan2
 阪	baan2
 魬	baan2
-丬	baan6	0%
 埿	baan6	0%
 扮	baan6
 昄	baan6
@@ -2148,7 +2147,6 @@ import_tables:
 鐺	caang1
 饓	caang1
 𦉘	caang1
-辶	caang1 teng5	0%
 橙	caang2
 撐	caang3	5%
 牚	caang3	3%
@@ -3866,7 +3864,6 @@ import_tables:
 䅛	coeng1
 䆫	coeng1
 䗉	coeng1
-䞎	coeng1	0%
 䤌	coeng1
 䥊	coeng1
 䮖	coeng1
@@ -3979,7 +3976,6 @@ import_tables:
 𠻘	coet2
 啋	coi1
 㥒	coi2
-䌽	coi2	0%
 䐆	coi2
 䣋	coi2
 倸	coi2	0%
@@ -4699,7 +4695,6 @@ import_tables:
 汏	daai6
 簤	daai6	0%
 軑	daai6
-轪	daai6
 釱	daai6
 咑	daak1	3%
 㚮	daam1
@@ -7064,7 +7059,6 @@ import_tables:
 䁨	fok3
 䂄	fok3
 䣤	fok3	0%
-䦆	fok3	0%
 廓	fok3
 彉	fok3	0%
 彏	fok3
@@ -8045,11 +8039,6 @@ import_tables:
 鹻	gaan2
 鹼	gaan2
 𨰝	gaan2
-丬	gaan2 baan6 bin1	0%
-钅	gaan2 faa3 gam1 zi6 bin1	0%
-讠	gaan2 faa3 jin4 zi6 bin1	0%
-纟	gaan2 faa3 kiu5 si1 bin1	0%
-饣	gaan2 faa3 sik6 zi6 bin1	0%
 㵎	gaan3
 橺	gaan3	0%
 澗	gaan3
@@ -9907,7 +9896,6 @@ import_tables:
 鵴	guk1
 麯	guk1	0%
 麴	guk1
-麹	guk1	0%
 𡡣	guk1
 𣚭	guk1
 𦥑	guk1	0%
@@ -12048,7 +12036,6 @@ import_tables:
 鶱	hin1
 𣔙	hin1
 𨪚	hin1
-𬸣	hin1
 㫫	hin2
 㬎	hin2
 䗾	hin2
@@ -12297,7 +12284,6 @@ import_tables:
 菏	ho4
 蚵	ho4
 魺	ho4
-鲄	ho4	0%
 㵑	ho6
 何	ho6	0%
 碋	ho6	0%
@@ -12955,7 +12941,6 @@ import_tables:
 𨩅	hung4
 𪃡	hung4
 㶹	hung6
-䜤	hung6	0%
 哄	hung6	3%
 汞	hung6
 澒	hung6
@@ -14878,7 +14863,6 @@ import_tables:
 礯	jing1
 緓	jing1	0%
 纓	jing1
-绬	jing1	0%
 膺	jing1
 英	jing1
 蘡	jing1
@@ -15427,7 +15411,6 @@ import_tables:
 胦	joeng1
 鉠	joeng1
 鍈	joeng1	0%
-锳	joeng1	0%
 雵	joeng1
 鞅	joeng1	3%
 鴦	joeng1
@@ -16077,7 +16060,6 @@ import_tables:
 雩	jyu4
 顬	jyu4
 餘	jyu4
-馀	jyu4	0%
 騟	jyu4	0%
 骬	jyu4	0%
 髃	jyu4
@@ -16179,7 +16161,6 @@ import_tables:
 䘘	jyu6
 䘱	jyu6
 䢩	jyu6
-䦸	jyu6	0%
 䨒	jyu6
 䴁	jyu6
 与	jyu6	0%
@@ -16440,7 +16421,6 @@ import_tables:
 謜	jyun4
 豲	jyun4
 貟	jyun4	0%
-贠	jyun4	0%
 身	jyun4	0%
 轅	jyun4
 邍	jyun4
@@ -16668,7 +16648,6 @@ import_tables:
 銬	kaau3
 靠	kaau3
 鮳	kaau3	0%
-鲓	kaau3	0%
 㕃	kai1
 㠌	kai1
 䆌	kai1	0%
@@ -17683,7 +17662,6 @@ import_tables:
 髷	kuk1
 麯	kuk1
 麴	kuk1
-麹	kuk1	0%
 㧭	kung4
 㮪	kung4
 䅃	kung4
@@ -18077,7 +18055,6 @@ import_tables:
 䏐	kyut3
 䝌	kyut3	0%
 䞵	kyut3	0%
-䦆	kyut3	0%
 䦬	kyut3	0%
 䦼	kyut3
 䳏	kyut3
@@ -18746,7 +18723,6 @@ import_tables:
 藰	lau5
 褸	lau5
 鋶	lau5	0%
-锍	lau5	0%
 㔷	lau6
 㙀	lau6
 㙧	lau6	0%
@@ -19522,7 +19498,6 @@ import_tables:
 令	ling1
 拎	ling1
 擰	ling2	0%
-〇	ling4
 㖫	ling4
 㚑	ling4	0%
 㝕	ling4
@@ -19687,7 +19662,6 @@ import_tables:
 睖	ling6
 稜	ling6	3%
 踜	ling6
-䢂	lip1
 𨋢	lip1
 㬯	lip6
 㯿	lip6
@@ -21194,7 +21168,6 @@ import_tables:
 䍪	mat6
 䛑	mat6
 䤉	mat6
-䥼	mat6	0%
 伆	mat6	0%
 勿	mat6
 嘧	mat6
@@ -21558,7 +21531,6 @@ import_tables:
 麪	min6
 麫	min6	0%
 麵	min6
-麺	min6	0%
 㝠	ming4
 㫥	ming4
 䄙	ming4
@@ -21856,7 +21828,6 @@ import_tables:
 㷻	mou4
 㹈	mou4
 䉑	mou4
-䥻	mou4	0%
 䭷	mou4
 䱯	mou4
 亡	mou4	0%
@@ -26102,7 +26073,6 @@ import_tables:
 㨚	seon1
 㰬	seon1
 䘩	seon1
-䜦	seon1	0%
 伨	seon1	0%
 侚	seon1	0%
 偱	seon1	0%
@@ -26328,7 +26298,6 @@ import_tables:
 䔮	si1
 䗐	si1
 䙾	si1
-䞏	si1	0%
 䡳	si1
 䣳	si1
 䧭	si1	0%
@@ -26774,7 +26743,6 @@ import_tables:
 綪	sin3	3%
 綫	sin3
 線	sin3
-缐	sin3	0%
 腺	sin3
 茜	sin3	3%
 蒨	sin3	0%
@@ -27423,7 +27391,6 @@ import_tables:
 鯂	sou1	0%
 鰠	sou1	0%
 鱢	sou1
-鳋	sou1	0%
 㛐	sou2
 㛮	sou2
 䈹	sou2
@@ -28845,7 +28812,6 @@ import_tables:
 蘀	tok3
 袥	tok3	0%
 託	tok3
-讬	tok3	0%
 跅	tok3
 飥	tok3
 馲	tok3
@@ -29478,7 +29444,6 @@ import_tables:
 闤	waan4
 頑	waan4
 鬟	waan4
-鹮	waan4
 𡦃	waan4
 唍	waan5	0%
 挽	waan5
@@ -29496,7 +29461,6 @@ import_tables:
 䆠	waan6
 䒛	waan6
 䗭	waan6	0%
-䜨	waan6	0%
 圂	waan6	0%
 宦	waan6
 幻	waan6
@@ -29776,7 +29740,6 @@ import_tables:
 䘙	wai6
 䜜	wai6	0%
 䡺	wai6
-䦄	wai6	0%
 䧥	wai6
 䪋	wai6
 䬑	wai6
@@ -29870,7 +29833,6 @@ import_tables:
 贇	wan1
 輼	wan1	0%
 轀	wan1
-辒	wan1
 鎾	wan1	0%
 頵	wan1
 饂	wan1	0%
@@ -30039,7 +30001,6 @@ import_tables:
 觨	wan6
 諢	wan6
 貟	wan6	0%
-贠	wan6	0%
 運	wan6
 鄆	wan6
 韗	wan6
@@ -30324,7 +30285,6 @@ import_tables:
 鑊	wok6
 鸌	wok6
 㒬	wong1	0%
-䶭	wong1	0%
 尢	wong1	0%
 尣	wong1	0%
 尩	wong1	0%
@@ -30394,7 +30354,6 @@ import_tables:
 鱑	wong4
 鷬	wong4
 黃	wong4
-黄	wong4	0%
 𤾗	wong4
 㞷	wong5
 往	wong5
@@ -31707,7 +31666,6 @@ import_tables:
 㫶	zau2
 㷌	zau2
 䖞	zau2
-䲤	zau2	0%
 帚	zau2	3%
 晭	zau2	0%
 疛	zau2	0%
@@ -33876,7 +33834,6 @@ import_tables:
 鍾	zung1
 鐘	zung1
 鑁	zung1	0%
-锺	zung1	0%
 騌	zung1
 騣	zung1
 鬃	zung1
