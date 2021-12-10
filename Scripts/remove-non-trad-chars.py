@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import sys
+import os
 
-tradCharsFile = open('trad-chinese-chars.txt', 'r') 
+scriptDir = os.path.dirname(os.path.realpath(__file__))
+tradCharsFile = open(scriptDir + '/trad-chinese-chars.txt', 'r') 
 tradChars = set()
 for line in tradCharsFile.readlines():
     tradChars.add(line.strip())

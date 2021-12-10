@@ -106,6 +106,10 @@ static void rimeNotificationHandler(void *context_object, RimeSessionId session_
     NSString *couldQuickStartFlagFilePath = [self quickStartFlagFilePath];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     bool couldQuickStart = [fileManager fileExistsAtPath: couldQuickStartFlagFilePath];
+#if TARGET_IPHONE_SIMULATOR
+    // Disable quick start in simulator to generate Rime dicts.
+    couldQuickStart = false;
+#endif
     if (couldQuickStart && RimeStartQuick()) {
         DDLogInfo(@"Quick start succeeded.");
         return;
