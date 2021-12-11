@@ -212,8 +212,8 @@ open class KeyboardViewController: UIInputViewController {
         }
     
         if self.widthConstraint == nil {
-            let widthConstraint = view.widthAnchor.constraint(equalToConstant: 1) // Just a placeholder. Value will be reset on viewWillLayoutSubviews()
-            widthConstraint.priority = .required
+            let widthConstraint = view.widthAnchor.constraint(equalToConstant: view.window?.bounds.width ?? 0)
+            widthConstraint.priority = .defaultHigh
             widthConstraint.isActive = true
             self.widthConstraint = widthConstraint
         }
@@ -289,7 +289,7 @@ open class KeyboardViewController: UIInputViewController {
     public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        guard let hostWindow = view.superview?.window else { return }
+        guard let hostWindow = view.window else { return }
         // Reset the size constraints to handle screen rotation.
         refreshLayoutConstants()
         
