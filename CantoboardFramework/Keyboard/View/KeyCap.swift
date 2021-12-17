@@ -486,11 +486,12 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 }
 
 enum SpecialSymbol: CaseIterable {
-    case slash, parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
+    case slash, dot, parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
     
     var keyCapPairs: [(half: KeyCap, full: KeyCap)] {
         switch self {
         case .slash: return [(half: "/", full: "／")]
+        case .dot: return [(half: ".", full: "。")]
         case .parenthesis: return [(half: "(", full: "（"), (half: ")", full: "）")]
         case .curlyBracket: return [(half: "{", full: "｛"), (half: "}", full: "｝")]
         case .squareBracket: return [(half: "[", full: "［"), (half: "]", full: "］")]
@@ -521,7 +522,7 @@ enum SpecialSymbol: CaseIterable {
         switch symbolShape {
         case .smart:
             switch self {
-            case .slash: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
+            case .slash, .dot: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
             case .parenthesis, .curlyBracket, .squareBracket, .angleBracket, .doubleAngleBracket:
                 return determineSymbolShapeFromLastMatchingChar(textBefore: textBefore)
             }
