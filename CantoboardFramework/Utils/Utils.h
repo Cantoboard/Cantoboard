@@ -25,4 +25,9 @@ typedef struct __attribute__((packed)) {
 + (void)createUnihanDictionary:(NSString*) csvPath dictDbPath:(NSString*) dbPath;
 @end
 
+@interface PredictiveTextEngine: NSObject
+- (id)init:(NSString*) ngramFilePath;
+- (NSArray*)predict:(NSString*) contextText;
+@end
+
 #endif /* Utils_h */

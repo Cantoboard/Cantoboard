@@ -31,6 +31,7 @@ protocol CandidateSource: AnyObject {
     func getSectionHeader(section: Int) -> String?
     var supportedGroupByModes: [GroupByMode] { get }
     var groupByMode: GroupByMode { get set }
+    var isStatic: Bool { get }
 }
 
 extension CandidateSource {
@@ -51,6 +52,8 @@ class InputEngineCandidateSource: CandidateSource {
     private weak var inputController: InputController?
     private var _groupByMode = GroupByMode.byFrequency
 
+    var isStatic: Bool { false }
+    
     init(inputController: InputController) {
         self.inputController = inputController
     }
@@ -386,6 +389,7 @@ class InputEngineCandidateSource: CandidateSource {
 class AutoSuggestionCandidateSource: CandidateSource {
     private let candidates: [String]
     let cannotExpand: Bool
+    var isStatic: Bool { true }
     
     init(_ candidates: [String], cannotExpand: Bool = false) {
         self.candidates = candidates
@@ -446,6 +450,13 @@ enum AutoSuggestionType {
 
 // This class filter, group by and sort the candidates.
 class CandidateOrganizer {
+    private static let predictiveTextEngine: PredictiveTextEngine = initPredictiveTextEngine()
+    
+    private static func initPredictiveTextEngine() -> PredictiveTextEngine {
+        let dictsPath = DataFileManager.builtInNGramDictDirectory
+        return PredictiveTextEngine(dictsPath + "/zh_HK.ngram")
+    }
+    
     private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"], cannotExpand: true)
     private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "、", "？", "！", ".", ",", "?", "!"], cannotExpand: true)
     private static let halfWidthDigitCandidateSource = AutoSuggestionCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
@@ -454,7 +465,7 @@ class CandidateOrganizer {
     private static let fullWidthUpperDigitCandidateSource = AutoSuggestionCandidateSource(["零", "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟", "萬", "億"])
     private static let emailCandidateSource = AutoSuggestionCandidateSource(["gmail.com", "outlook.com", "icloud.com", "yahoo.com", "hotmail.com"])
     private static let domainCandidateSource = AutoSuggestionCandidateSource(["com", "org", "edu", "net", SessionState.main.localDomain, "hk", "tw", "mo", "cn", "uk", "jp"].unique())
-
+    
     enum GroupBy {
         case frequency, radical, stroke, tone
     }
@@ -463,6 +474,7 @@ class CandidateOrganizer {
     var onReloadCandidates: ((CandidateOrganizer) -> Void)?
     var candidateSource: CandidateSource?
     var autoSuggestionType: AutoSuggestionType?
+    var suggestionContextualText: String = ""
     
     weak var inputController: InputController?
     
@@ -472,7 +484,9 @@ class CandidateOrganizer {
     
     func requestMoreCandidates(section: Int) {
         guard section == 0, !(inputController?.inputEngine.hasRimeLoadedAllCandidates ?? false) else { return }
-        updateCandidates(reload: false)
+        if !(candidateSource?.isStatic ?? false) {
+            updateCandidates(reload: false)
+        }
     }
     
     func updateCandidates(reload: Bool, targetCandidatesCount: Int = 0) {
@@ -489,6 +503,16 @@ class CandidateOrganizer {
             case .halfWidthPunctuation: candidateSource = Self.halfWidthPunctuationCandidateSource
             case .email: candidateSource = Self.emailCandidateSource
             case .domain: candidateSource = Self.domainCandidateSource
+            }
+            
+            if !suggestionContextualText.isEmpty &&
+               (autoSuggestionType == .halfWidthPunctuation ||
+                autoSuggestionType == .fullWidthPunctuation) {
+                let predictiveCandidates = Self.predictiveTextEngine.predict(suggestionContextualText) as NSArray as? [String]
+                if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
+                    DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")
+                    candidateSource = AutoSuggestionCandidateSource(predictiveCandidates)
+                }
             }
         } else {
             candidateSource = nil

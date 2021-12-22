@@ -20,12 +20,16 @@
 		142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */; };
 		142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */; };
 		14B9E1392742EC2B007E8679 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */; };
+		7904A1DC2771481200963CAB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1DB2771481200963CAB /* main.cpp */; };
+		7904A1E127714ACE00963CAB /* libmarisa.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7904A1E027714A9900963CAB /* libmarisa.tbd */; };
+		7904A1E327716A1300963CAB /* PredictiveTextEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7904A1E227716A1300963CAB /* PredictiveTextEngine.mm */; };
 		7906D6BA26D8A7F5004C3C0F /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7906D6B926D8A7F5004C3C0F /* Reference.swift */; };
 		7906D6E026D8D35E004C3C0F /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */; };
 		790839A726D0FCED00CA6B56 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */; };
 		790839B626D1053C00CA6B56 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 790839B826D1053C00CA6B56 /* Localizable.strings */; };
 		7912CC5A26D2173000BA89AB /* EastAsianWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7912CC5926D2173000BA89AB /* EastAsianWidth.swift */; };
 		7913D968266752FC00DB78C2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7913D967266752FC00DB78C2 /* main.swift */; };
+		791738962772CD0E007C1C7C /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 791738952772CD07007C1C7C /* libicucore.tbd */; };
 		7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7917DDA32660A41F00D0010D /* GuideViewController.swift */; };
 		7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78025F3320F0075DD4D /* AppDelegate.swift */; };
 		7919A78325F3320F0075DD4D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78225F3320F0075DD4D /* SceneDelegate.swift */; };
@@ -51,6 +55,7 @@
 		796E53FB26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */; };
 		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
+		7990347E27759D8600893C14 /* NGram.h in Headers */ = {isa = PBXBuildFile; fileRef = 7990347D27759D8600893C14 /* NGram.h */; };
 		799AE1FC26792D8F00286530 /* StatusMenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */; };
 		799AE20226792F4C00286530 /* KeypadButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE20126792F4C00286530 /* KeypadButton.swift */; };
 		799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799AE20B26793F6D00286530 /* HighlightableButton.swift */; };
@@ -240,6 +245,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		7904A1D72771481200963CAB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		7913D963266752FC00DB78C2 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -311,6 +325,10 @@
 		142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionViewController.swift; sourceTree = "<group>"; };
 		142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionPresentationController.swift; sourceTree = "<group>"; };
 		14B9E1382742EC2A007E8679 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		7904A1D92771481200963CAB /* NGramBuilder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NGramBuilder; sourceTree = BUILT_PRODUCTS_DIR; };
+		7904A1DB2771481200963CAB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		7904A1E027714A9900963CAB /* libmarisa.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libmarisa.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/lib/libmarisa.tbd; sourceTree = DEVELOPER_DIR; };
+		7904A1E227716A1300963CAB /* PredictiveTextEngine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PredictiveTextEngine.mm; sourceTree = "<group>"; };
 		7906D6B926D8A7F5004C3C0F /* Reference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
 		7906D6DF26D8D35E004C3C0F /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
@@ -321,6 +339,7 @@
 		7912CC5926D2173000BA89AB /* EastAsianWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EastAsianWidth.swift; sourceTree = "<group>"; };
 		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
 		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		791738952772CD07007C1C7C /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/lib/libicucore.tbd; sourceTree = DEVELOPER_DIR; };
 		7917DDA32660A41F00D0010D /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
 		7919A77D25F3320F0075DD4D /* Cantoboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cantoboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7919A78025F3320F0075DD4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -347,6 +366,7 @@
 		796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull4RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull5RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		7990347D27759D8600893C14 /* NGram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGram.h; sourceTree = "<group>"; };
 		799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuHandler.swift; sourceTree = "<group>"; };
 		799AE20126792F4C00286530 /* KeypadButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadButton.swift; sourceTree = "<group>"; };
 		799AE20B26793F6D00286530 /* HighlightableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightableButton.swift; sourceTree = "<group>"; };
@@ -477,6 +497,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7904A1D62771481200963CAB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7904A1E127714ACE00963CAB /* libmarisa.tbd in Frameworks */,
+				791738962772CD0E007C1C7C /* libicucore.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7913D962266752FC00DB78C2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -544,6 +573,14 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		7904A1DA2771481200963CAB /* NGramBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				7904A1DB2771481200963CAB /* main.cpp */,
+			);
+			path = NGramBuilder;
+			sourceTree = "<group>";
+		};
 		7913D966266752FC00DB78C2 /* MissingGlyphRemover */ = {
 			isa = PBXGroup;
 			children = (
@@ -559,6 +596,7 @@
 				799F2E7C25F46BC600C53416 /* CantoboardExtension */,
 				79B9B57425F3496800238E80 /* CantoboardFramework */,
 				799F2E4D25F46B0800C53416 /* CantoboardTestApp */,
+				7904A1DA2771481200963CAB /* NGramBuilder */,
 				79B9B6F625F4398C00238E80 /* Frameworks */,
 				79B9B65825F34AF100238E80 /* ISEmojiView */,
 				7913D966266752FC00DB78C2 /* MissingGlyphRemover */,
@@ -575,6 +613,7 @@
 				799F2E4C25F46B0800C53416 /* CantoboardTestApp.app */,
 				799F2E7B25F46BC600C53416 /* CantoboardExtension.appex */,
 				7913D965266752FC00DB78C2 /* MissingGlyphRemover */,
+				7904A1D92771481200963CAB /* NGramBuilder */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -617,11 +656,13 @@
 				79515A7D2609AA1500D29A5C /* LevelDbTable.mm */,
 				790839A626D0FCED00CA6B56 /* LocalizedStrings.swift */,
 				798032A42645F6AF008DC703 /* Logging.swift */,
+				7990347D27759D8600893C14 /* NGram.h */,
+				7904A1E227716A1300963CAB /* PredictiveTextEngine.mm */,
 				7906D6B926D8A7F5004C3C0F /* Reference.swift */,
-				792DF3C3274341F500F9828C /* Weak.swift */,
 				791DE95A263250F500AFA033 /* SwiftLCS.swift */,
 				79515AB82609AF5D00D29A5C /* Utils.h */,
 				79B9B59925F34A1200238E80 /* Utils.swift */,
+				792DF3C3274341F500F9828C /* Weak.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -915,6 +956,8 @@
 		79B9B6F625F4398C00238E80 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				791738952772CD07007C1C7C /* libicucore.tbd */,
+				7904A1E027714A9900963CAB /* libmarisa.tbd */,
 				79B05DB22712697300CF07D3 /* Rime.xcframework */,
 			);
 			name = Frameworks;
@@ -996,6 +1039,7 @@
 				79B9B5ED25F34A1200238E80 /* RimeKit.h in Headers */,
 				79515ABC2609AF9C00D29A5C /* Utils.h in Headers */,
 				79B9B5F125F34A1200238E80 /* RKUtils.h in Headers */,
+				7990347E27759D8600893C14 /* NGram.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1010,6 +1054,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		7904A1D82771481200963CAB /* NGramBuilder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7904A1DD2771481200963CAB /* Build configuration list for PBXNativeTarget "NGramBuilder" */;
+			buildPhases = (
+				7904A1D52771481200963CAB /* Sources */,
+				7904A1D62771481200963CAB /* Frameworks */,
+				7904A1D72771481200963CAB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NGramBuilder;
+			productName = NGramBuilder;
+			productReference = 7904A1D92771481200963CAB /* NGramBuilder */;
+			productType = "com.apple.product-type.tool";
+		};
 		7913D964266752FC00DB78C2 /* MissingGlyphRemover */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7913D96B266752FC00DB78C2 /* Build configuration list for PBXNativeTarget "MissingGlyphRemover" */;
@@ -1138,9 +1199,12 @@
 		7919A77525F3320F0075DD4D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1320;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
+					7904A1D82771481200963CAB = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
 					7913D964266752FC00DB78C2 = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -1187,6 +1251,7 @@
 				79B9B57225F3496800238E80 /* CantoboardFramework */,
 				79B9B65625F34AF100238E80 /* ISEmojiView */,
 				7913D964266752FC00DB78C2 /* MissingGlyphRemover */,
+				7904A1D82771481200963CAB /* NGramBuilder */,
 			);
 		};
 /* End PBXProject section */
@@ -1280,6 +1345,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7904A1D52771481200963CAB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7904A1DC2771481200963CAB /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7913D961266752FC00DB78C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1356,6 +1429,7 @@
 				79B9B5FB25F34A1200238E80 /* UIColor+Extension.swift in Sources */,
 				79B9B60925F34A1200238E80 /* LayoutConstants.swift in Sources */,
 				79CA7AF426FD9386006B561E /* CompositionRenderer.swift in Sources */,
+				7904A1E327716A1300963CAB /* PredictiveTextEngine.mm in Sources */,
 				79BE977326D749EA0059E58A /* CandidateCollectionViewFlowLayout.swift in Sources */,
 				79607A5D260D9E6600E23D33 /* CandidateCollectionView.swift in Sources */,
 				799AE20226792F4C00286530 /* KeypadButton.swift in Sources */,
@@ -1505,6 +1579,38 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		7904A1DE2771481200963CAB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = M6QD9W76V2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = "${PROJECT_DIR}/CantoboardFramework/include";
+				MACOSX_DEPLOYMENT_TARGET = 11.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		7904A1DF2771481200963CAB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = M6QD9W76V2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = "${PROJECT_DIR}/CantoboardFramework/include";
+				MACOSX_DEPLOYMENT_TARGET = 11.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		7913D969266752FC00DB78C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1658,7 +1764,7 @@
 				CODE_SIGN_ENTITLEMENTS = Cantoboard/Cantoboard.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1682,7 +1788,7 @@
 				CODE_SIGN_ENTITLEMENTS = Cantoboard/Cantoboard.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1705,7 +1811,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CantoboardTestApp/CantoboardTestApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1727,7 +1833,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = CantoboardTestApp/CantoboardTestApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1748,7 +1854,7 @@
 				CODE_SIGN_ENTITLEMENTS = CantoboardExtension/CantoboardExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1773,7 +1879,7 @@
 				CODE_SIGN_ENTITLEMENTS = CantoboardExtension/CantoboardExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1919,6 +2025,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7904A1DD2771481200963CAB /* Build configuration list for PBXNativeTarget "NGramBuilder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7904A1DE2771481200963CAB /* Debug */,
+				7904A1DF2771481200963CAB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7913D96B266752FC00DB78C2 /* Build configuration list for PBXNativeTarget "MissingGlyphRemover" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

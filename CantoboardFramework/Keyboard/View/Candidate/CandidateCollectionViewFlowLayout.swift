@@ -68,15 +68,15 @@ class CandidateCollectionViewFlowLayout: UICollectionViewFlowLayout {
         let section = headerAttributes.indexPath.section
         guard section < collectionView.numberOfSections else { return }
         
-        var headerSize = CGSize(width: candidatePaneView.sectionHeaderWidth, height: rowHeight)
+        var headerSizeInBytes = CGSize(width: candidatePaneView.sectionHeaderWidth, height: rowHeight)
         let numOfItemsInSection = collectionView.numberOfItems(inSection: section)
         var origin = headerAttributes.frame.origin
         if numOfItemsInSection > 0,
            let rectOfLastItemInSection = layoutAttributesForItem(at: [section, numOfItemsInSection - 1]) {
-            origin.y = min(origin.y, rectOfLastItemInSection.frame.maxY - headerSize.height)
+            origin.y = min(origin.y, rectOfLastItemInSection.frame.maxY - headerSizeInBytes.height)
             // Expand the header to cover the whole section vertically.
-            headerSize.height = rectOfLastItemInSection.frame.maxY - origin.y
+            headerSizeInBytes.height = rectOfLastItemInSection.frame.maxY - origin.y
         }
-        headerAttributes.frame = CGRect(origin: origin, size: headerSize)
+        headerAttributes.frame = CGRect(origin: origin, size: headerSizeInBytes)
     }
 }
