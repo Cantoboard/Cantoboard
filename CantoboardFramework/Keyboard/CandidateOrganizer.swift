@@ -505,9 +505,8 @@ class CandidateOrganizer {
             case .domain: candidateSource = Self.domainCandidateSource
             }
             
-            if !suggestionContextualText.isEmpty &&
-               (autoSuggestionType == .halfWidthPunctuation ||
-                autoSuggestionType == .fullWidthPunctuation) {
+            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty &&
+               (autoSuggestionType == .halfWidthPunctuation || autoSuggestionType == .fullWidthPunctuation) {
                 let predictiveCandidates = Self.predictiveTextEngine.predict(suggestionContextualText) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
                     DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")

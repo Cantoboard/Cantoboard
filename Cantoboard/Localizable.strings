@@ -45,6 +45,8 @@
 "mixedInputSettings.smartSymbolShapeDefault.description" = "用自動標點符號而且喺混打模式下，冇足夠前文判斷而家打緊中文定英文句子嘅時候，會根據呢個設定決定標點形態。";
 
 "chineseInputSettings" = "中文輸入設定";
+"chineseInputSettings.enablePredictiveText" = "關聯字";
+"chineseInputSettings.enablePredictiveText.description" = "打完字之後預測同埋建議下一個字。";
 "chineseInputSettings.compositionMode" = "輸入模式";
 "chineseInputSettings.compositionMode.immediate" = "即時";
 "chineseInputSettings.compositionMode.multiStage" = "兩段";

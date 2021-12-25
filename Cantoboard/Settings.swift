@@ -175,6 +175,8 @@ extension Settings {
             Section(
                 LocalizedStrings.chineseInputSettings,
                 [
+                    Switch(LocalizedStrings.enablePredictiveText, \.enablePredictiveText,
+                           LocalizedStrings.enablePredictiveText_description),
                     Segment(LocalizedStrings.compositionMode, \.compositionMode, [
                             LocalizedStrings.compositionMode_immediate: .immediate,
                             LocalizedStrings.compositionMode_multiStage: .multiStage,
