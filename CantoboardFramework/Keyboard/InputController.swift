@@ -852,8 +852,9 @@ class InputController: NSObject {
         guard let textDocumentProxy = textDocumentProxy else { return }
         let symbolShape = Settings.cached.symbolShape
 
-        if textDocumentProxy.keyboardType == .some(.URL) || textDocumentProxy.keyboardType == .some(.webSearch) {
+        if textDocumentProxy.keyboardType == .URL || textDocumentProxy.keyboardType == .webSearch {
             state.keyboardContextualType = .url
+            return
         } else {
             switch symbolShape {
             case .smart:
