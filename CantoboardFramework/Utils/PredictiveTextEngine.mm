@@ -17,7 +17,7 @@
 static const DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 #include "marisa/trie.h"
-#include "ngram.h"
+#include "NGram.h"
 #include "Utils.h"
 
 static short kMaxNumberOfTerms = 30;
