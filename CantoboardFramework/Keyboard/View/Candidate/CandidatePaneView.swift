@@ -22,6 +22,7 @@ protocol CandidatePaneViewDelegate: NSObject {
 
 class CandidatePaneView: UIControl {
     private static let miniStatusSize = CGSize(width: 20, height: 20)
+    private static let separatorWidth: CGFloat = 1
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidatePaneView>()
@@ -406,7 +407,7 @@ class CandidatePaneView: UIControl {
         guard let superview = superview else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
-        let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
+        let candidateViewWidth = superview.bounds.width - expandButtonWidth - Self.separatorWidth
         let leftRightInset = layoutConstants.ref.candidatePaneViewLeftRightInset
         
         let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
@@ -428,13 +429,13 @@ class CandidatePaneView: UIControl {
         
         let isPhone = layoutConstants.ref.idiom == .phone
         let topBottomMargin: CGFloat = mode == .row ? 8 : 0
-        let separatorFrame = CGRect(x: 0, y: topBottomMargin, width: 1, height: height - topBottomMargin * 2)
+        let separatorFrame = CGRect(x: 0, y: topBottomMargin, width: Self.separatorWidth, height: height - topBottomMargin * 2)
         
         if isPhone {
             leftSeparator.isHidden = true
         } else {
             leftSeparator.isHidden = false
-            leftSeparator.frame = separatorFrame.with(x: leftRightInset)
+            leftSeparator.frame = separatorFrame.with(x: leftRightInset - Self.separatorWidth)
         }
         
         if expandButton.isHidden {
