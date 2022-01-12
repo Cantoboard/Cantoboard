@@ -30,7 +30,6 @@
 		7912CC5A26D2173000BA89AB /* EastAsianWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7912CC5926D2173000BA89AB /* EastAsianWidth.swift */; };
 		7913D968266752FC00DB78C2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7913D967266752FC00DB78C2 /* main.swift */; };
 		791738962772CD0E007C1C7C /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 791738952772CD07007C1C7C /* libicucore.tbd */; };
-		7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7917DDA32660A41F00D0010D /* GuideViewController.swift */; };
 		7919A78125F3320F0075DD4D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78025F3320F0075DD4D /* AppDelegate.swift */; };
 		7919A78325F3320F0075DD4D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7919A78225F3320F0075DD4D /* SceneDelegate.swift */; };
 		7919A78A25F332100075DD4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7919A78925F332100075DD4D /* Assets.xcassets */; };
@@ -340,7 +339,6 @@
 		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
 		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		791738952772CD07007C1C7C /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/lib/libicucore.tbd; sourceTree = DEVELOPER_DIR; };
-		7917DDA32660A41F00D0010D /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
 		7919A77D25F3320F0075DD4D /* Cantoboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cantoboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7919A78025F3320F0075DD4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7919A78225F3320F0075DD4D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -631,7 +629,6 @@
 				142AA60D274CB73F00D7EE39 /* DescriptionPresentationController.swift */,
 				142AA60B274C9B1C00D7EE39 /* DescriptionViewController.swift */,
 				142AA607274C09AB00D7EE39 /* FaqViewController.swift */,
-				7917DDA32660A41F00D0010D /* GuideViewController.swift */,
 				1405FF3B2719FAA80037F724 /* InputTableViewCell.swift */,
 				142AA600274C065100D7EE39 /* Keyboard.swift */,
 				1405FF3F271A02330037F724 /* LocalizedStrings.swift */,
@@ -1367,7 +1364,6 @@
 			files = (
 				1405FF3C2719FAA80037F724 /* InputTableViewCell.swift in Sources */,
 				142AA60C274C9B1C00D7EE39 /* DescriptionViewController.swift in Sources */,
-				7917DDA42660A41F00D0010D /* GuideViewController.swift in Sources */,
 				142AA604274C06E400D7EE39 /* UILabel+Extension.swift in Sources */,
 				1414B2B5271B12F200091ADF /* Settings.swift in Sources */,
 				142AA60E274CB73F00D7EE39 /* DescriptionPresentationController.swift in Sources */,

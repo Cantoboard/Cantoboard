@@ -52,6 +52,7 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     var pageControl: UIPageControl!
 
     var pages: [UIStackView] = []
+    var pageContainers: [UIView] = []
     var previousPage: Int?
     
     var players: [AVQueuePlayer]!
@@ -93,8 +94,6 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         // view.backgroundColor = UIColor(red: 0.4, green: 0.8, blue: 0.6, alpha: 1)
         view.backgroundColor = .systemBackground
         
-        // view -> scrollView -> outerView -> outerStackView -> (innerView -> innerStackView) * items.count
-        
         players = []
         playerLoopers = []
         pages = Self.pages.map { page in
@@ -127,9 +126,9 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             
             let textStackView = UIStackView(arrangedSubviews: [headingLabel, contentLabel])
             textStackView.axis = .vertical
-            textStackView.alignment = .center
+            textStackView.alignment = .leading
             textStackView.distribution = .fill
-            textStackView.spacing = 30
+            textStackView.spacing = 24
             
             if let footnote = page.footnote {
                 let footnoteLabel = UILabel()
@@ -142,44 +141,49 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
             if let buttonTitle = page.buttonTitle,
                let buttonAction = page.buttonAction {
                 let button = HighlightableButton()
-                button.setTitle("  " + buttonTitle, for: .normal)
+                button.setTitle(buttonTitle, for: .normal)
                 button.titleLabel?.font = .systemFont(ofSize: 22)
                 button.tintColor = .white
                 button.backgroundColor = .systemBlue
                 button.layer.cornerRadius = 12
-                button.heightAnchor.constraint(equalToConstant: 48).isActive = true
                 button.addTarget(self, action: buttonAction, for: .touchUpInside)
                 textStackView.addArrangedSubview(button)
+                NSLayoutConstraint.activate([
+                    button.heightAnchor.constraint(equalToConstant: 48),
+                    button.widthAnchor.constraint(equalTo: textStackView.widthAnchor),
+                ])
             }
             
             let pageStackView = UIStackView(arrangedSubviews: [headingVideoPlayer, textStackView])
             pageStackView.translatesAutoresizingMaskIntoConstraints = false
             pageStackView.axis = .horizontal
             pageStackView.alignment = .center
-            pageStackView.spacing = 10
+            pageStackView.spacing = 36
             pageStackView.layoutMargins = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
             pageStackView.isLayoutMarginsRelativeArrangement = true
             
-            /*
-            let size: CGSize
-            if let track = AVURLAsset(url: videoUrl).tracks(withMediaType: .video).first {
-                size = track.naturalSize.applying(track.preferredTransform)
-            } else {
-                size = CGSize(width: 4, height: 3)
-            }
-            */
             let playerViewAspectConstraint = headingVideoPlayer.widthAnchor.constraint(equalTo: pageStackView.widthAnchor)
             playerViewAspectConstraint.priority = .defaultLow
             NSLayoutConstraint.activate([
-                headingVideoPlayer.widthAnchor.constraint(lessThanOrEqualToConstant: 374),
-                headingVideoPlayer.heightAnchor.constraint(equalTo: headingVideoPlayer.widthAnchor, multiplier: 1 / Self.videoAspectRatio),
+                headingVideoPlayer.widthAnchor.constraint(equalTo: headingVideoPlayer.heightAnchor, multiplier: Self.videoAspectRatio),
                 playerViewAspectConstraint,
             ])
             
             return pageStackView
         }
         
-        pagesStackView = UIStackView(arrangedSubviews: pages)
+        pageContainers = pages.map { page in
+            let container = UIView()
+            container.addSubview(page)
+            NSLayoutConstraint.activate([
+                page.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                page.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                page.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            ])
+            return container
+        }
+        
+        pagesStackView = UIStackView(arrangedSubviews: pageContainers)
         pagesStackView.translatesAutoresizingMaskIntoConstraints = false
         pagesStackView.distribution = .fillEqually
         pagesStackView.axis = .horizontal
@@ -247,8 +251,8 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
         if width > 0 {
             var currentPage = Int((scrollView.contentOffset.x / (width + 20)).rounded())
             if currentPage < 0 { currentPage = 0 }
-            if currentPage > pages.count - 1 { currentPage = pages.count - 1 }
-            if currentPage == 5 && pages[5].isHidden {
+            if currentPage > pageContainers.count - 1 { currentPage = pageContainers.count - 1 }
+            if currentPage == 5 && pageContainers[5].isHidden {
                 currentPage = 6
             }
             pageControl.currentPage = currentPage
@@ -298,11 +302,11 @@ class OnboardingViewController: UIViewController, UIScrollViewDelegate {
     
     @objc func updatePages() {
         if Keyboard.isEnabled {
-            pages[5].isHidden = true
-            pages[6].isHidden = false
+            pageContainers[5].isHidden = true
+            pageContainers[6].isHidden = false
         } else {
-            pages[6].isHidden = true
-            pages[5].isHidden = false
+            pageContainers[6].isHidden = true
+            pageContainers[5].isHidden = false
         }
         scrollViewDidScroll(pagesScrollView)
     }
