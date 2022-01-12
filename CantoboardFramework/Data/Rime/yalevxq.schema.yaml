@@ -2,8 +2,8 @@
 # encoding: utf-8
 
 schema:
-  schema_id: yale
-  name: 耶魯–劉錫祥混合拼音
+  schema_id: yalevxq
+  name: 耶魯–劉錫祥混合拼音vxq
   version: "2021.08.22"
   author:
     - sgalal <sgalal.me@outlook.com>
@@ -16,7 +16,7 @@ schema:
     - Bing Jeung <bing@ososo.io>
     - Ayaka Mikazuki <ayaka@mail.shn.hk>
 
-  description: 耶魯–劉錫祥混合拼音
+  description: 耶魯–劉錫祥混合拼音vxq
 
 switches:
   - name: ascii_mode
@@ -125,12 +125,26 @@ speller:
 
     - derive/\d// # 忽略聲調
 
+    - xform/1/v/ # 陰平
+    - xform/4/vv/ # 陽平
+    - xform/2/x/ # 陰上
+    - xform/5/xx/ # 陽上
+    - xform/3/q/ # 陰去
+    - xform/6/qq/ # 陽去
+
 translator:
   dictionary: jyut6ping3
   spelling_hints: 256
   max_homophones: 10
   always_show_comments: true
-  prism: yale
+  prism: yalevxq
+  preedit_format:
+    - xform/([aeioumngxptk])vv/${1}4/
+    - xform/([aeioumngxptk])xx/${1}5/
+    - xform/([aeioumngxptk])qq/${1}6/
+    - xform/([aeioumngxptk])v/${1}1/
+    - xform/([aeioumngxptk])x/${1}2/
+    - xform/([aeioumngxptk])q/${1}3/
 
 variants_hk:
   option_name: variants_hk
