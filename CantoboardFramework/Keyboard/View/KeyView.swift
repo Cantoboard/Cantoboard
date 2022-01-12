@@ -177,7 +177,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             backgroundColor = ButtonColor.popupBackgroundColor
             maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         } else if keyboardIdiom.isPad, case .returnKey(let type) = keyCap, type != .confirm {
-            let buttonImage = adjustImageFontSize(ButtonImage.returnKey)
+            let buttonImage = ButtonImage.returnKey
             normalImage = buttonImage
             highlightedImage = buttonImage
             //setImage(buttonImage, for: .normal)
@@ -193,21 +193,20 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             // titleLabel?.baselineAdjustment = .alignCenters
             // titleLabel?.lineBreakMode = .byClipping
             setHighlightedBackground = true
-        } else if var buttonImage = keyCap.unescaped.buttonImage {
+        } else if let buttonImage = keyCap.unescaped.buttonImage {
             if keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
                 // Special handling for emoji icon. We use different symbols in light/dark mode.
-                buttonImage = adjustImageFontSize(ButtonImage.emojiKeyboardDark)
+                normalImage = ButtonImage.emojiKeyboardDark
             } else {
-                buttonImage = adjustImageFontSize(buttonImage)
+                normalImage = buttonImage
             }
-            normalImage = buttonImage
-            highlightedImage = keyCap == .backspace ? adjustImageFontSize(ButtonImage.backspaceFilled) : buttonImage
+            highlightedImage = keyCap == .backspace ? ButtonImage.backspaceFilled : buttonImage
             // imageView?.contentMode = .scaleAspectFit
             setHighlightedBackground = true
         }
         
-        setImage(normalImage, for: .normal)
-        setImage(highlightedImage, for: .highlighted)
+        setImage(adjustImageFontSize(normalImage), for: .normal)
+        setImage(adjustImageFontSize(highlightedImage), for: .highlighted)
         setTitle(titleText, for: .normal)
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
@@ -369,8 +368,11 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         popupView.frame = popupViewFrame
     }
     
-    private func adjustImageFontSize(_ image: UIImage) -> UIImage {
-        image.withConfiguration(UIImage.SymbolConfiguration(pointSize: titleLabelFontSize))
+    private func adjustImageFontSize(_ image: UIImage?) -> UIImage? {
+        let config = UIImage.SymbolConfiguration(
+            pointSize: keyboardState?.keyboardIdiom.isPad ?? false ? 24 : 20,
+            weight: .light)
+        return image?.applyingSymbolConfiguration(config)
     }
 }
 

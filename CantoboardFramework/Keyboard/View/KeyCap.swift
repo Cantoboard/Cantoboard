@@ -213,7 +213,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .shift(.lowercased): return ButtonImage.shift
         case .shift(.uppercased): return ButtonImage.shiftFilled
         case .shift(.capsLocked): return ButtonImage.capLockFilled
-        case .dismissKeyboard: return ButtonImage.dissmissKeyboard
+        case .dismissKeyboard: return ButtonImage.dismissKeyboard
         case .keyboardType(.emojis): return ButtonImage.emojiKeyboardLight
         default: return nil
         }
@@ -563,7 +563,9 @@ let FrameworkBundle = Bundle(for: KeyView.self)
 
 class ButtonImage {
     private static func imageAssets(_ key: String) -> UIImage {
-        (UIImage(systemName: key) ?? UIImage(named: key, in: Bundle(for: ButtonImage.self), with: nil)!).resizableImage(withCapInsets: .zero)
+        let config = UIImage.SymbolConfiguration(weight: .heavy)
+        let image = UIImage(systemName: key) ?? UIImage(named: key, in: Bundle(for: ButtonImage.self), with: nil)!
+        return image.applyingSymbolConfiguration(config)!
     }
     
     static let globe = imageAssets("globe")
@@ -576,7 +578,7 @@ class ButtonImage {
     static let emojiKeyboardDark = imageAssets("face.smiling.fill")
     static let paneCollapseButtonImage = imageAssets("chevron.up")
     static let paneExpandButtonImage = imageAssets("chevron.down")
-    static let dissmissKeyboard = imageAssets("keyboard.chevron.compact.down")
+    static let dismissKeyboard = imageAssets("keyboard.chevron.compact.down")
     static let clear = imageAssets("clear")
     static let clearFilled = imageAssets("clear.fill")
     static let tab = imageAssets("arrow.right.to.line")

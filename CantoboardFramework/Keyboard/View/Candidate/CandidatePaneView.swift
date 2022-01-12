@@ -252,7 +252,7 @@ class CandidatePaneView: UIControl {
     
     func setupButtons() {
         let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
-        expandButton.setImage(expandButtonImage, for: .normal)
+        expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
         
         var title: String?
         var shouldShowMiniIndicator = false
@@ -273,8 +273,8 @@ class CandidatePaneView: UIControl {
         inputModeButton.setTitle(title, for: .normal)
         inputModeButton.shouldShowMenuIndicator = shouldShowMiniIndicator && mode == .row
 
-        backspaceButton.setImage(ButtonImage.backspace, for: .normal)
-        backspaceButton.setImage(ButtonImage.backspaceFilled, for: .highlighted)
+        backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspace), for: .normal)
+        backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspaceFilled), for: .highlighted)
         
         var charFormText: String
         if SessionState.main.lastCharForm == .simplified {
@@ -482,6 +482,10 @@ class CandidatePaneView: UIControl {
             }
         }
         return super.hitTest(point, with: event)
+    }
+    
+    private func adjustImageFontSize(_ image: UIImage) -> UIImage {
+        image.withConfiguration(UIImage.SymbolConfiguration(pointSize: keyboardState.keyboardIdiom.isPad ? 24 : 20))
     }
 }
 
