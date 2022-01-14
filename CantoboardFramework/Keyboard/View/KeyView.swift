@@ -57,7 +57,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     var heightClearance: CGFloat?
     
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    private var layoutConstants: Reference<LayoutConstants>
     
     required init?(coder: NSCoder) {
         fatalError("NSCoder is not supported")
@@ -101,8 +101,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     }
     
     internal func setupView() {
-        guard let keyboardState = keyboardState,
-              let layoutConstants = layoutConstants else { return }
+        guard let keyboardState = keyboardState else { return }
         let keyboardIdiom = keyboardState.keyboardIdiom
         
         backgroundColor = keyCap.buttonBgColor
@@ -405,7 +404,6 @@ extension KeyView {
     }
     
     private func createPopupViewIfNecessary() {
-        guard let layoutConstants = layoutConstants else { return }
         if popupView == nil {
             let popupView = KeyPopupView(layoutConstants: layoutConstants)
             addSubview(popupView)

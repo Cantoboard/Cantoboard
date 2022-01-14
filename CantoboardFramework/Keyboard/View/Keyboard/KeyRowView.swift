@@ -13,7 +13,7 @@ class KeyRowView: UIView {
     private(set) var rowId: Int = -1
     var needsInputModeSwitchKey = false
     
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    private var layoutConstants: Reference<LayoutConstants>
     
     var isEnabled: Bool = true {
         didSet {
@@ -59,7 +59,7 @@ class KeyRowView: UIView {
         prepareKeys(keyCaps: middleKeyCaps, keyboardState: keyboardState, keys: &middleKeys)
         prepareKeys(keyCaps: rightKepCaps, keyboardState: keyboardState, keys: &rightKeys, reuseKeyFromLeft: false)
         
-        guard let layoutConstants = layoutConstants?.ref else { return }
+        let layoutConstants = layoutConstants.ref
         if layoutConstants.idiom.isPadFull {
             leftKeys.forEach { $0.contentHorizontalAlignment = $0.keyCap.keyCapType == .input ? .center : .left }
             middleKeys.forEach { $0.contentHorizontalAlignment = .center }
@@ -72,9 +72,7 @@ class KeyRowView: UIView {
     }
     
     private func prepareKeys(keyCaps: [KeyCap]?, keyboardState: KeyboardState, keys: inout [KeyView], reuseKeyFromLeft: Bool = true) {
-        guard let keyCaps = keyCaps,
-              let layoutConstants = layoutConstants
-            else { return }
+        guard let keyCaps = keyCaps else { return }
         
         // Reuse keys. Only create/remove keys if necessary.
         
@@ -115,8 +113,8 @@ class KeyRowView: UIView {
 // Layout related coded.
 extension KeyRowView {
     override func layoutSubviews() {
-        guard let layoutIdiom = layoutConstants?.ref.idiom,
-              let layoutConstants = self.layoutConstants?.ref else { return }
+        let layoutIdiom = layoutConstants.ref.idiom
+        let layoutConstants = self.layoutConstants.ref
 
         let allKeys = leftKeys + middleKeys + rightKeys
         

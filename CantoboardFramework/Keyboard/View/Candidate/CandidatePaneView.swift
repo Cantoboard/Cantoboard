@@ -37,7 +37,7 @@ class CandidatePaneView: UIControl {
     let rowPadding = CGFloat(0)
     
     private var _keyboardState: KeyboardState
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    private var layoutConstants: Reference<LayoutConstants>
     
     var keyboardState: KeyboardState {
         get { _keyboardState }
@@ -89,7 +89,7 @@ class CandidatePaneView: UIControl {
         set {
             if _isShowingNumKeyRow != newValue {
                 if newValue {
-                    if numKeyRow == nil, let layoutConstants = layoutConstants {
+                    if numKeyRow == nil {
                         let numKeyRow = NumKeyRow(keyboardState: keyboardState, layoutConstants: layoutConstants)
                         addSubview(numKeyRow)
                         self.numKeyRow = numKeyRow
@@ -347,7 +347,7 @@ class CandidatePaneView: UIControl {
     }
     
     var rowHeight: CGFloat {
-        layoutConstants?.ref.autoCompleteBarHeight ?? .zero
+        layoutConstants.ref.autoCompleteBarHeight
     }
     
     private var expandButtonWidth: CGFloat {
@@ -395,8 +395,7 @@ class CandidatePaneView: UIControl {
     }
     
     override func layoutSubviews() {
-        guard let superview = superview,
-              let layoutConstants = layoutConstants else { return }
+        guard let superview = superview else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
         let candidateViewWidth = superview.bounds.width - expandButtonWidth - directionalLayoutMargins.trailing
@@ -446,8 +445,7 @@ class CandidatePaneView: UIControl {
     }
     
     private func layoutButtons() {
-        guard let superview = superview,
-              let layoutConstants = layoutConstants else { return }
+        guard let superview = superview else { return }
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
@@ -692,7 +690,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private func computeCellSize(candidateIndexPath: IndexPath) -> CGSize {
-        guard let layoutConstants = layoutConstants?.ref else { return .zero }
+        let layoutConstants = layoutConstants.ref
         guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
             return .zero

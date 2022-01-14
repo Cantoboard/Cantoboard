@@ -139,6 +139,7 @@ open class KeyboardViewController: UIInputViewController {
         let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom ||
                                layoutConstants.ref.isPortrait != newLayoutConstants.isPortrait
         layoutConstants.ref = newLayoutConstants
+        keyboardView?.layoutConstants.ref = newLayoutConstants
         if hasLayoutChanged {
             inputController?.onLayoutChanged()
         }
@@ -242,9 +243,9 @@ open class KeyboardViewController: UIInputViewController {
         let keyboardView: BaseKeyboardView
         
         if state.shouldUseKeypad {
-            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
+            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer)
         } else {
-            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
+            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
         }
         keyboardView.delegate = inputController
         keyboardView.translatesAutoresizingMaskIntoConstraints = false

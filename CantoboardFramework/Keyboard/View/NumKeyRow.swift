@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class NumKeyRow: UIView {
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    private var layoutConstants: Reference<LayoutConstants>
     private var numKeys: [Weak<KeyView>]!
     
     private var _keyboardState: KeyboardState
@@ -46,9 +46,7 @@ class NumKeyRow: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        guard let layoutConstants = layoutConstants else { return }
-        
+    override func layoutSubviews() {        
         let minX: CGFloat = layoutConstants.ref.keyboardViewInsets.left
         let maxX: CGFloat = bounds.width
         let gapX: CGFloat = layoutConstants.ref.buttonGapX

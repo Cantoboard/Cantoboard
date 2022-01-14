@@ -41,7 +41,7 @@ class KeypadView: UIView, BaseKeyboardView {
     ]
     
     private weak var candidatePaneView: CandidatePaneView?
-    internal weak var layoutConstants: Reference<LayoutConstants>?
+    public var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
     
     internal weak var statusMenu: StatusMenu?
     
@@ -56,10 +56,9 @@ class KeypadView: UIView, BaseKeyboardView {
         set { changeState(prevState: _state, newState: newValue) }
     }
     
-    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer, layoutConstants: Reference<LayoutConstants>) {
+    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer) {
         self._state = state
         self.candidateOrganizer = candidateOrganizer
-        self.layoutConstants = layoutConstants
         super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
@@ -83,8 +82,6 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func initView() {
-        guard let layoutConstants = layoutConstants else { return }
-        
         leftButtons = initButtons(buttonLayouts: leftButtonProps)
         rightButtons = initButtons(buttonLayouts: rightButtonProps)
         
@@ -131,7 +128,7 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     override func layoutSubviews() {
-        guard let layoutConstants = layoutConstants?.ref else { return }
+        let layoutConstants = layoutConstants.ref
         
         directionalLayoutMargins = NSDirectionalEdgeInsets(top: layoutConstants.keyboardViewInsets.top,
                                                            leading: layoutConstants.keyboardViewInsets.left,
@@ -230,11 +227,11 @@ extension KeypadView: CandidatePaneViewDelegate, StatusMenuHandler {
     }
     
     var statusMenuOriginY: CGFloat {
-        layoutConstants?.ref.autoCompleteBarHeight ?? .zero
+        layoutConstants.ref.autoCompleteBarHeight
     }
     
     var keyboardSize: CGSize {
-        layoutConstants?.ref.keyboardSize ?? .zero
+        layoutConstants.ref.keyboardSize
     }
 }
 

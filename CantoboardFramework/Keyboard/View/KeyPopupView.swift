@@ -31,7 +31,7 @@ class KeyPopupView: UIView {
     private(set) var leftAnchorX: CGFloat = 0
     private var defaultKeyCapIndex = 0
     private var highlightedLabelIndex: Int?
-    private weak var layoutConstants: Reference<LayoutConstants>?
+    private var layoutConstants: Reference<LayoutConstants>
     
     var selectedAction: KeyboardAction {
         actions[safe: highlightedLabelIndex ?? 0] ?? .none
@@ -100,7 +100,7 @@ class KeyPopupView: UIView {
     }
     
     private var linkHeight: CGFloat {
-        layoutConstants?.ref.idiom.isPad ?? false ? Self.padGapHeight : Self.phoneLinkHeight
+        layoutConstants.ref.idiom.isPad ? Self.padGapHeight : Self.phoneLinkHeight
     }
     
     func setup(keyCaps: [KeyCap], defaultKeyCapIndex: Int, direction: PopupDirection = .middle) {
@@ -130,9 +130,9 @@ class KeyPopupView: UIView {
     }
     
     func layoutView() {
-        guard let layoutConstants = layoutConstants?.ref,
-              let parentKeyView = superview else { return }
+        guard let parentKeyView = superview else { return }
         
+        let layoutConstants = layoutConstants.ref
         let keyWidth = parentKeyView.bounds.width
         let keyHeight = parentKeyView.bounds.height
         let keyboardWidth = layoutConstants.keyboardWidth
@@ -214,7 +214,7 @@ class KeyPopupView: UIView {
         
         path.addRoundedRect(in: bodyRect, cornerWidth: 5, cornerHeight: 5)
         
-        if !(layoutConstants?.ref.idiom.isPad ?? true) {
+        if !layoutConstants.ref.idiom.isPad {
             path.move(to: anchorLeft)
             let yVector = CGPoint(x: 0, y: linkHeight / 2)
             path.addCurve(to: neckLeft, control1: anchorLeft - yVector, control2: neckLeft + yVector)
