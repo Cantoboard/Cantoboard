@@ -18,9 +18,16 @@ open class KeyboardViewController: UIInputViewController {
     
     private var inputController: InputController?
     
-    private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
+    private var _state: KeyboardState
+    var state: KeyboardState {
+        get { _state }
+        set { changeState(prevState: _state, newState: newValue) }
+    }
     
+    private(set) weak var keyboardView: BaseKeyboardView?
     private(set) weak var keyboardViewPlaceholder: UIView?
+
+    private weak var widthConstraint, heightConstraint: NSLayoutConstraint?
     private weak var keyboardViewWidthConstraint, keyboardViewTopConstraint: NSLayoutConstraint?
 
     private(set) weak var compositionLabelView: CompositionLabel?
@@ -43,6 +50,7 @@ open class KeyboardViewController: UIInputViewController {
         os_signpost(.begin, log: log, name: "total", signpostID: signpostID, "%d", instanceId)
         
         _ = Self.isLoggerInited
+        self._state = KeyboardState()
         
         super.init(nibName: nibName, bundle: bundle)
         
@@ -216,11 +224,36 @@ open class KeyboardViewController: UIInputViewController {
         if inputController == nil {
             reloadSettings()
             
-            createKeyboardViewPlaceholder()
             inputController = InputController(keyboardViewController: self)
+            createKeyboardViewPlaceholder()
+            createKeyboardView()
             
             textWillChange(nil)
             textDidChange(nil)
+        }
+    }
+    
+    private func createKeyboardView() {
+        guard let inputController = inputController,
+              let keyboardViewPlaceholder = keyboardViewPlaceholder,
+              let candidateOrganizer = inputController.candidateOrganizer
+            else { return }
+        
+        let keyboardView: BaseKeyboardView
+        
+        if state.shouldUseKeypad {
+            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
+        } else {
+            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
+        }
+        keyboardView.delegate = inputController
+        keyboardView.translatesAutoresizingMaskIntoConstraints = false
+        keyboardViewPlaceholder.addSubview(keyboardView)
+        
+        self.keyboardView = keyboardView
+        
+        if keyboardViewPlaceholder.window != nil {
+            createConstraints()
         }
     }
     
@@ -233,8 +266,19 @@ open class KeyboardViewController: UIInputViewController {
         self.keyboardViewPlaceholder = keyboardViewPlaceholder
     }
     
+    private func recreateKeyboardViewIfNeeded() {
+        if state.shouldUseKeypad && keyboardView is KeyboardView ||
+           !state.shouldUseKeypad && keyboardView is KeypadView {
+            keyboardView?.removeFromSuperview()
+            createKeyboardView()
+        }
+    }
+    
     private func createConstraints() {
-        guard let keyboardViewPlaceholder = keyboardViewPlaceholder else { return }
+        guard let keyboardViewPlaceholder = keyboardViewPlaceholder,
+              let keyboardView = keyboardView
+            else { return }
+        
         if self.heightConstraint == nil {
             let heightConstraint = view.heightAnchor.constraint(equalToConstant: keyboardHeight)
             heightConstraint.priority = .required
@@ -265,14 +309,31 @@ open class KeyboardViewController: UIInputViewController {
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         
-        inputController?.createConstraints()
+        NSLayoutConstraint.activate([
+            keyboardView.leftAnchor.constraint(equalTo: keyboardViewPlaceholder.leftAnchor),
+            keyboardView.rightAnchor.constraint(equalTo: keyboardViewPlaceholder.rightAnchor),
+            keyboardView.topAnchor.constraint(equalTo: keyboardViewPlaceholder.topAnchor),
+            keyboardView.bottomAnchor.constraint(equalTo: keyboardViewPlaceholder.bottomAnchor),
+        ])
     }
     
     public func destroyInputController() {
+        keyboardView?.removeConstraints(keyboardView?.constraints ?? [])
+        keyboardView?.removeFromSuperview()
         keyboardViewPlaceholder?.removeFromSuperview()
 
         inputController?.keyboardDisappeared()
         inputController = nil
+    }
+    
+    private func changeState(prevState: KeyboardState, newState: KeyboardState) {
+        _state = newState
+        
+        if prevState.shouldUseKeypad != newState.shouldUseKeypad {
+            recreateKeyboardViewIfNeeded()
+        }
+        
+        keyboardView?.state = newState
     }
     
     private func setColorSchemeFromKeyboardAppearance() {

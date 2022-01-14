@@ -63,6 +63,14 @@ struct KeyboardState: Equatable {
         symbolShapeOverride ?? (!keyboardContextualType.halfWidthSymbol ? .full : .half)
     }
     
+    var shouldUseKeypad: Bool {
+        if activeSchema == .stroke && inputMode != .english,
+           case .alphabetic = keyboardType {
+            return true
+        }
+        return false
+    }
+    
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         lastKeyboardTypeChangeFromAutoCap = false
@@ -88,7 +96,6 @@ class InputController: NSObject {
     private let c = InstanceCounter<InputController>()
     
     private weak var keyboardViewController: KeyboardViewController?
-    private weak var keyboardView: BaseKeyboardView?
     private(set) var inputEngine: BilingualInputEngine!
     private var compositionRenderer: CompositionRenderer!
     private(set) var isImmediateMode: Bool!
@@ -125,60 +132,7 @@ class InputController: NSObject {
         inputEngine = BilingualInputEngine(inputController: self, rimeSchema: state.mainSchema)
         candidateOrganizer = CandidateOrganizer(inputController: self)
         
-        initKeyboardView()
         refreshInputSettings()
-    }
-    
-    private var shouldUseKeypad: Bool {
-        if state.activeSchema == .stroke, case .alphabetic = state.keyboardType, state.inputMode != .english {
-            return true
-        }
-        return false
-    }
-    
-    private func reinitInputViewIfNeeded() {
-        if shouldUseKeypad && keyboardView is KeyboardView ||
-            !shouldUseKeypad && keyboardView is KeypadView {
-            keyboardView?.removeFromSuperview()
-            initKeyboardView()
-        }
-    }
-    
-    private func initKeyboardView() {
-        guard let keyboardViewController = keyboardViewController,
-              let keyboardViewPlaceholder = keyboardViewController.keyboardViewPlaceholder else { return }
-        let keyboardView: BaseKeyboardView
-        if shouldUseKeypad {
-            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: keyboardViewController.layoutConstants)
-        } else {
-            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer, layoutConstants: keyboardViewController.layoutConstants)
-        }
-        keyboardView.delegate = self
-        keyboardView.translatesAutoresizingMaskIntoConstraints = false
-        keyboardViewPlaceholder.addSubview(keyboardView)
-        
-        self.keyboardView = keyboardView
-        
-        if keyboardViewPlaceholder.window != nil {
-            createConstraints()
-        }
-    }
-    
-    deinit {
-        keyboardView?.removeConstraints(keyboardView?.constraints ?? [])
-        keyboardView?.removeFromSuperview()
-    }
-    
-    func createConstraints() {
-        guard let keyboardView = keyboardView,
-              let keyboardViewPlaceholder = keyboardViewController?.keyboardViewPlaceholder else { return }
-        
-        NSLayoutConstraint.activate([
-            keyboardView.leftAnchor.constraint(equalTo: keyboardViewPlaceholder.leftAnchor),
-            keyboardView.rightAnchor.constraint(equalTo: keyboardViewPlaceholder.rightAnchor),
-            keyboardView.topAnchor.constraint(equalTo: keyboardViewPlaceholder.topAnchor),
-            keyboardView.bottomAnchor.constraint(equalTo: keyboardViewPlaceholder.bottomAnchor),
-        ])
     }
     
     func textWillChange(_ textInput: UITextInput?) {
@@ -214,7 +168,7 @@ class InputController: NSObject {
             }
             insertText(commitedText, requestSmartSpace: enableSmartSpace)
             if !candidateOrganizer.shouldCloseCandidatePaneOnCommit {
-                keyboardView?.changeCandidatePaneMode(.row)
+                keyboardViewController?.keyboardView?.changeCandidatePaneMode(.row)
             }
         }
     }
@@ -236,7 +190,7 @@ class InputController: NSObject {
         let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
         switch spaceKeyMode {
         case .nextPage where hasCandidate:
-            keyboardView?.scrollCandidatePaneToNextPageInRowMode()
+            keyboardViewController?.keyboardView?.scrollCandidatePaneToNextPageInRowMode()
             needReloadCandidates = false
         case .select where hasCandidate:
             candidateSelected(choice: [0, 0], enableSmartSpace: true)
@@ -303,7 +257,7 @@ class InputController: NSObject {
             cachedActions.forEach({ self.handleKey($0) })
             cachedActions = []
             state.enableState = .enabled
-            keyboardView?.state = state
+            keyboardViewController?.state = state
         }
     }
     
@@ -317,7 +271,7 @@ class InputController: NSObject {
         state.keyboardIdiom = newLayoutConstants.idiom
         state.isPortrait = newLayoutConstants.isPortrait
 
-        keyboardView?.state = state
+        keyboardViewController?.state = state
     }
     
     func handleKey(_ action: KeyboardAction) {
@@ -326,7 +280,7 @@ class InputController: NSObject {
             DDLogInfo("Disabling keyboard")
             state.enableState = .loading
             cachedActions.append(action)
-            keyboardView?.state = state
+            keyboardViewController?.state = state
             return
         }
         
@@ -334,8 +288,7 @@ class InputController: NSObject {
         
         defer {
             lastKey = action
-            reinitInputViewIfNeeded()
-            keyboardView?.state = state
+            keyboardViewController?.state = state
         }
         
         needClearInput = false
@@ -399,7 +352,7 @@ class InputController: NSObject {
                     _ = inputEngine.processBackspace()
                 }
                 if !inputEngine.isComposing {
-                    keyboardView?.changeCandidatePaneMode(.row)
+                    keyboardViewController?.keyboardView?.changeCandidatePaneMode(.row)
                 }
             } else {
                 switch action {
@@ -443,7 +396,7 @@ class InputController: NSObject {
         case .setCharForm(let cs):
             inputEngine.charForm = cs
             let currentCandidatesCount = candidateOrganizer.getCandidateCount(section: 0)
-            keyboardView?.setPreserveCandidateOffset()
+            keyboardViewController?.keyboardView?.setPreserveCandidateOffset()
             candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
             return
         case .toggleInputMode(let toInputMode):
@@ -480,7 +433,7 @@ class InputController: NSObject {
             candidateLongPressed(choice: choice)
         case .exportFile(let namePrefix, let path):
             state.enableState = .loading
-            keyboardView?.state = state
+            keyboardViewController?.keyboardView?.state = state
             
             let zipFilePath = FileManager.default.temporaryDirectory.appendingPathComponent("\(namePrefix)-\(NSDate().timeIntervalSince1970).zip")
             DispatchQueue.global(qos: .userInteractive).async { [self] in
@@ -493,12 +446,12 @@ class InputController: NSObject {
                 }
                 DispatchQueue.main.async {
                     state.enableState = .enabled
-                    keyboardView?.state = state
+                    keyboardViewController?.keyboardView?.state = state
                 }
             }
         case .enableKeyboard(let e):
             state.enableState = e ? .enabled : .disabled
-            keyboardView?.state = state
+            keyboardViewController?.keyboardView?.state = state
         case .dismissKeyboard:
             keyboardViewController?.dismissKeyboard()
         case .resetComposition:
@@ -652,7 +605,7 @@ class InputController: NSObject {
         
         updateSpaceState()
         
-        keyboardView?.state = state
+        keyboardViewController?.keyboardView?.state = state
     }
     
     private func updateSpaceState() {
