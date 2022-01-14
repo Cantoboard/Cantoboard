@@ -7,12 +7,12 @@
 
 import Foundation
 import UIKit
-
+import os
 import CocoaLumberjackSwift
 
 open class KeyboardViewController: UIInputViewController {
     private static let isLoggerInited = initLogger()
-    
+    private static var count = 0;
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<KeyboardViewController>()
     
@@ -28,8 +28,20 @@ open class KeyboardViewController: UIInputViewController {
     private weak var logView: UITextView?
     
     private(set) var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
+
+    private let log = OSLog(subsystem: "org.cantoboard.CantoboardExtension", category: "PointsOfInterest")
+    private let signpostID: OSSignpostID
+    private let instanceId: Int
     
     public override init(nibName: String?, bundle: Bundle?) {
+        instanceId = Self.count
+        Self.count += 1
+
+        signpostID = OSSignpostID(log: log)
+
+        os_signpost(.begin, log: log, name: "init", signpostID: signpostID, "%d", instanceId)
+        os_signpost(.begin, log: log, name: "total", signpostID: signpostID, "%d", instanceId)
+        
         _ = Self.isLoggerInited
         
         super.init(nibName: nibName, bundle: bundle)
@@ -49,6 +61,8 @@ open class KeyboardViewController: UIInputViewController {
             }
             return false
         })
+        
+        os_signpost(.end, log: log, name: "init", signpostID: signpostID, "%d", instanceId)
     }
     
     private func fetchLog() -> [String] {
@@ -166,19 +180,36 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public override func viewDidLoad() {
+        os_signpost(.begin, log: log, name: "viewDidLoad", signpostID: signpostID, "%d", instanceId)
+        
         super.viewDidLoad()
         
         Settings.hasFullAccess = hasFullAccess
         view.translatesAutoresizingMaskIntoConstraints = false
         
         createInputController()
+        
+        os_signpost(.end, log: log, name: "viewDidLoad", signpostID: signpostID, "%d", instanceId)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
+        os_signpost(.begin, log: log, name: "viewWillAppear", signpostID: signpostID, "%d", instanceId)
+        
         super.viewWillAppear(animated)
         
         createConstraints()
         refreshLayoutConstants()
+        
+        os_signpost(.end, log: log, name: "viewWillAppear", signpostID: signpostID, "%d", instanceId)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        os_signpost(.begin, log: log, name: "viewDidAppear", signpostID: signpostID, "%d", instanceId)
+        
+        super.viewDidAppear(animated)
+        
+        os_signpost(.end, log: log, name: "viewDidAppear", signpostID: signpostID, "%d", instanceId)
+        os_signpost(.end, log: log, name: "total", signpostID: signpostID, "%d", instanceId)
     }
     
     public func createInputController() {
