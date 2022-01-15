@@ -15,6 +15,7 @@ protocol KeyboardViewDelegate: AnyObject {
 
 protocol BaseKeyboardView: UIView {
     var layoutConstants: Reference<LayoutConstants> { get }
+    var candidateOrganizer: CandidateOrganizer? { get set }
     
     var delegate: KeyboardViewDelegate? { get set }
     var state: KeyboardState { get set }

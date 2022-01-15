@@ -59,7 +59,7 @@ class CandidatePaneView: UIControl {
                     newValue.keyboardIdiom != .pad(.padFull5Rows) &&
                     !newValue.isComposing &&
                     newValue.keyboardType.isAlphabetic &&
-                    candidateOrganizer.getCandidateCount(section: 0) == 0
+                    candidateOrganizer?.getCandidateCount(section: 0) ?? 0 == 0
             }
             
             _keyboardState = newValue
@@ -71,7 +71,82 @@ class CandidatePaneView: UIControl {
         }
     }
     
-    private var candidateOrganizer: CandidateOrganizer
+    private var _candidateOrganizer: CandidateOrganizer?
+    public var candidateOrganizer: CandidateOrganizer? {
+        get { _candidateOrganizer }
+        set {
+            guard newValue !== _candidateOrganizer else { return }
+            
+            _candidateOrganizer?.onMoreCandidatesLoaded = nil
+            _candidateOrganizer?.onReloadCandidates = nil
+            _candidateOrganizer = newValue
+            
+            if let candidateOrganizer = _candidateOrganizer {
+                candidateOrganizer.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
+                    guard let self = self,
+                          let collectionView = self.collectionView,
+                          candidateOrganizer.groupByMode == .byFrequency else { return }
+                    let section = 1
+                    
+                    guard section < collectionView.numberOfSections else { return }
+                    
+                    let newIndiceStart = collectionView.numberOfItems(inSection: section)
+                    let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
+                    
+                    UIView.performWithoutAnimation {
+                        if newIndiceStart > newIndiceEnd {
+                            DDLogInfo("Reloading candidates onMoreCandidatesLoaded().")
+                            
+                            collectionView.reloadCandidates()
+                        } else if newIndiceStart != newIndiceEnd {
+                            DDLogInfo("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
+                            collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: section) })
+                        }
+                    }
+                    self.delegate?.candidatePaneCandidateLoaded()
+                }
+                
+                candidateOrganizer.onReloadCandidates = { [weak self] candidateOrganizer in
+                    guard let self = self else { return }
+                    
+                    DDLogInfo("Reloading candidates.")
+                    
+                    let originalCandidatePaneMode = self.mode
+                    let originalContentOffset: CGPoint = self.collectionView.contentOffset
+                    
+                    UIView.performWithoutAnimation {
+                        self.collectionView.scrollOnLayoutSubviews = { [weak self] in
+                            guard let self = self,
+                                  let collectionView = self.collectionView else { return true }
+                            if originalCandidatePaneMode == self.mode && self.shouldPreserveCandidateOffset {
+                                if originalCandidatePaneMode == .table  {
+                                    // Preserve contentOffset on toggling charForm
+                                    let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, max(0, collectionView.contentSize.height - self.rowHeight)))
+                                    collectionView.setContentOffset(clampedOffset, animated: false)
+                                } else {
+                                    // Preserve contentOffset on toggling unlearn
+                                    let clampedOffset = CGPoint(x: min(originalContentOffset.x, max(0, collectionView.contentSize.width - collectionView.bounds.width)), y: 0)
+                                    collectionView.setContentOffset(clampedOffset, animated: false)
+                                }
+                            } else {
+                                let y = self.groupByEnabled ? self.rowHeight : 0
+                                
+                                collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+                            }
+                            
+                            self.shouldPreserveCandidateOffset = false
+                            return true
+                        }
+                        self.collectionView.reloadCandidates()
+                        if self.collectionView.numberOfSections < 1 ||
+                            self.collectionView(self.collectionView, numberOfItemsInSection: 1) == 0 {
+                            self.changeMode(.row)
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     private weak var collectionView: CandidateCollectionView!
     private weak var expandButton, backspaceButton, charFormButton: UIButton!
@@ -120,9 +195,8 @@ class CandidatePaneView: UIControl {
         }
     }
     
-    init(keyboardState: KeyboardState, candidateOrganizer: CandidateOrganizer, layoutConstants: Reference<LayoutConstants>) {
+    init(keyboardState: KeyboardState, layoutConstants: Reference<LayoutConstants>) {
         _keyboardState = keyboardState
-        self.candidateOrganizer = candidateOrganizer
         self.layoutConstants = layoutConstants
         
         numKeyRow = NumKeyRow(keyboardState: keyboardState, layoutConstants: layoutConstants)
@@ -130,69 +204,6 @@ class CandidatePaneView: UIControl {
         super.init(frame: .zero)
         
         translatesAutoresizingMaskIntoConstraints = false
-        
-        candidateOrganizer.onMoreCandidatesLoaded = { [weak self] candidateOrganizer in
-            guard let self = self,
-                  let collectionView = self.collectionView,
-                  candidateOrganizer.groupByMode == .byFrequency else { return }
-            let section = 1
-            
-            guard section < collectionView.numberOfSections else { return }
-            
-            let newIndiceStart = collectionView.numberOfItems(inSection: section)
-            let newIndiceEnd = candidateOrganizer.getCandidateCount(section: 0)
-            
-            UIView.performWithoutAnimation {
-                if newIndiceStart > newIndiceEnd {
-                    DDLogInfo("Reloading candidates onMoreCandidatesLoaded().")
-                    
-                    collectionView.reloadCandidates()
-                } else if newIndiceStart != newIndiceEnd {
-                    DDLogInfo("Inserting new candidates: \(newIndiceStart)..<\(newIndiceEnd)")
-                    collectionView.insertItems(at: (newIndiceStart..<newIndiceEnd).map { IndexPath(row: $0, section: section) })
-                }
-            }
-            self.delegate?.candidatePaneCandidateLoaded()
-        }
-        
-        candidateOrganizer.onReloadCandidates = { [weak self] candidateOrganizer in
-            guard let self = self else { return }
-            
-            DDLogInfo("Reloading candidates.")
-            
-            let originalCandidatePaneMode = self.mode
-            let originalContentOffset: CGPoint = self.collectionView.contentOffset
-            
-            UIView.performWithoutAnimation {
-                self.collectionView.scrollOnLayoutSubviews = { [weak self] in
-                    guard let self = self,
-                          let collectionView = self.collectionView else { return true }
-                    if originalCandidatePaneMode == self.mode && self.shouldPreserveCandidateOffset {
-                        if originalCandidatePaneMode == .table  {
-                            // Preserve contentOffset on toggling charForm
-                            let clampedOffset = CGPoint(x: 0, y: min(originalContentOffset.y, max(0, collectionView.contentSize.height - self.rowHeight)))
-                            collectionView.setContentOffset(clampedOffset, animated: false)
-                        } else {
-                            // Preserve contentOffset on toggling unlearn
-                            let clampedOffset = CGPoint(x: min(originalContentOffset.x, max(0, collectionView.contentSize.width - collectionView.bounds.width)), y: 0)
-                            collectionView.setContentOffset(clampedOffset, animated: false)
-                        }
-                    } else {
-                        let y = self.groupByEnabled ? self.rowHeight : 0
-                        
-                        collectionView.setContentOffset(CGPoint(x: 0, y: y), animated: false)
-                    }
-                    
-                    self.shouldPreserveCandidateOffset = false
-                    return true
-                }
-                self.collectionView.reloadCandidates()
-                if self.collectionView.numberOfSections < 1 ||
-                    self.collectionView(self.collectionView, numberOfItemsInSection: 1) == 0 {
-                    self.changeMode(.row)
-                }
-            }
-        }
         
         createCollectionView()
         createButtons()
@@ -285,7 +296,7 @@ class CandidatePaneView: UIControl {
                                collectionView.visibleCells.isEmpty ||
                                !canExpand ||
                                keyboardState.enableState != .enabled ||
-                               candidateOrganizer.cannotExpand
+                               candidateOrganizer?.cannotExpand ?? true
             
             expandButton.isHidden = cannotExpand
             inputModeButton.isHidden = title == nil
@@ -521,15 +532,17 @@ extension CandidatePaneView {
             flowLayout.minimumLineSpacing = rowPadding
         }
         
-        UIView.performWithoutAnimation { [self] in
-            if newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
-                candidateOrganizer.groupByMode = .byFrequency
-                collectionView.reloadData()
-                collectionView.collectionViewLayout.invalidateLayout()
-                collectionView.layoutIfNeeded()
-            } else {
-                // We have to reload collection view to add/remove the segment control.
-                collectionView.reloadSections([0])
+        if let candidateOrganizer = candidateOrganizer {
+            UIView.performWithoutAnimation { [self] in
+                if newMode == .row && candidateOrganizer.groupByMode != .byFrequency {
+                    candidateOrganizer.groupByMode = .byFrequency
+                    collectionView.reloadData()
+                    collectionView.collectionViewLayout.invalidateLayout()
+                    collectionView.layoutIfNeeded()
+                } else {
+                    // We have to reload collection view to add/remove the segment control.
+                    collectionView.reloadSections([0])
+                }
             }
         }
         
@@ -570,12 +583,12 @@ extension CandidatePaneView {
 
 extension CandidatePaneView: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1 + candidateOrganizer.getNumberOfSections()
+        return 1 + (candidateOrganizer?.getNumberOfSections() ?? 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 { return groupByEnabled ? 1 : 0 }
-        return candidateOrganizer.getCandidateCount(section: translateCollectionViewSectionToCandidateSection(section))
+        return candidateOrganizer?.getCandidateCount(section: translateCollectionViewSectionToCandidateSection(section)) ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -589,6 +602,7 @@ extension CandidatePaneView: UICollectionViewDataSource {
     private func dequeueSegmentControl(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateSegmentControlCell.reuseId, for: indexPath) as! CandidateSegmentControlCell
         
+        guard let candidateOrganizer = candidateOrganizer else { return cell }
         cell.setup(
             groupByModes: candidateOrganizer.supportedGroupByModes,
             selectedGroupByMode: candidateOrganizer.groupByMode,
@@ -598,6 +612,8 @@ extension CandidatePaneView: UICollectionViewDataSource {
     }
     
     private func onGroupBySegmentControlSelectionChanged(_ groupByMode: GroupByMode) {
+        guard let candidateOrganizer = candidateOrganizer else { return }
+        
         candidateOrganizer.groupByMode = groupByMode
         
         collectionView.reloadData()
@@ -607,13 +623,13 @@ extension CandidatePaneView: UICollectionViewDataSource {
     
     private func dequeueCandidateCell(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CandidateCell.reuseId, for: indexPath) as! CandidateCell
+        guard let candidateOrganizer = candidateOrganizer else { return cell }
         
         let candidateCount = self.collectionView.numberOfItems(inSection: translateCollectionViewSectionToCandidateSection(indexPath.section))
         if candidateOrganizer.groupByMode == .byFrequency && indexPath.row >= candidateCount - 10 {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                if indexPath.row >= self.candidateOrganizer.getCandidateCount(section: 0) - 10 {
-                    self.candidateOrganizer.requestMoreCandidates(section: 0)
+            DispatchQueue.main.async {
+                if indexPath.row >= candidateOrganizer.getCandidateCount(section: 0) - 10 {
+                    candidateOrganizer.requestMoreCandidates(section: 0)
                 }
             }
         }
@@ -622,14 +638,14 @@ extension CandidatePaneView: UICollectionViewDataSource {
     }
     
     var groupByEnabled: Bool {
-        mode == .table && candidateOrganizer.supportedGroupByModes.count > 1
+        mode == .table && (candidateOrganizer?.supportedGroupByModes.count ?? 0) > 1
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CandidateSectionHeader.reuseId, for: indexPath) as! CandidateSectionHeader
         
         let section = translateCollectionViewSectionToCandidateSection(indexPath.section)
-        let text = candidateOrganizer.getSectionHeader(section: section) ?? ""
+        let text = candidateOrganizer?.getSectionHeader(section: section) ?? ""
         header.layoutConstants = layoutConstants
         header.setup(text)
         
@@ -675,7 +691,7 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     }
     
     private func hasNoHeader(section: Int) -> Bool {
-        return mode == .row || candidateOrganizer.groupByMode == .byFrequency || section == 0
+        return mode == .row || candidateOrganizer?.groupByMode == .byFrequency || section == 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -688,12 +704,12 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
     
     private func computeCellSize(candidateIndexPath: IndexPath) -> CGSize {
         let layoutConstants = layoutConstants.ref
-        guard let text = candidateOrganizer.getCandidate(indexPath: candidateIndexPath) else {
+        guard let text = candidateOrganizer?.getCandidate(indexPath: candidateIndexPath) else {
             DDLogInfo("Invalid IndexPath \(candidateIndexPath.description). Candidate does not exist.")
             return .zero
         }
         
-        let comment = showComment ? candidateOrganizer.getCandidateComment(indexPath: candidateIndexPath) : nil
+        let comment = showComment ? candidateOrganizer?.getCandidateComment(indexPath: candidateIndexPath) : nil
         
         let numOfSingleCharCandidateInRow = CGFloat(layoutConstants.numOfSingleCharCandidateInRow)
         return CandidateCell.computeCellSize(
@@ -731,6 +747,8 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let candidateOrganizer = candidateOrganizer else { return }
+        
         if let cell = cell as? CandidateSegmentControlCell {
             cell.update(selectedGroupByMode: candidateOrganizer.groupByMode)
         } else if let cell = cell as? CandidateCell {

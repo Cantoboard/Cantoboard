@@ -23,7 +23,11 @@ class KeyboardView: UIView, BaseKeyboardView {
         set { changeState(prevState: _state, newState: newValue) }
     }
     
-    private var candidateOrganizer: CandidateOrganizer
+    public var candidateOrganizer: CandidateOrganizer? {
+        didSet {
+            candidatePaneView?.candidateOrganizer = candidateOrganizer
+        }
+    }
     
     internal weak var statusMenu: StatusMenu?
     private weak var candidatePaneView: CandidatePaneView?
@@ -50,9 +54,8 @@ class KeyboardView: UIView, BaseKeyboardView {
         self.loadingIndicatorView = loadingIndicatorView
     }
     
-    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer) {
+    init(state: KeyboardState) {
         self._state = state
-        self.candidateOrganizer = candidateOrganizer
         self.keyRows = []
         super.init(frame: .zero)
         
@@ -398,7 +401,8 @@ class KeyboardView: UIView, BaseKeyboardView {
     private func createCandidatePaneView() {
         guard candidatePaneView == nil else { return }
         
-        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
+        let candidatePaneView = CandidatePaneView(keyboardState: state, layoutConstants: layoutConstants)
+        candidatePaneView.candidateOrganizer = candidateOrganizer
         candidatePaneView.delegate = self        
         addSubview(candidatePaneView)        
         sendSubviewToBack(candidatePaneView)

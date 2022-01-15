@@ -49,16 +49,20 @@ class KeypadView: UIView, BaseKeyboardView {
     private var leftButtons: [[KeypadButton]] = []
     private var rightButtons: [[KeypadButton]] = []
     
-    private var candidateOrganizer: CandidateOrganizer
+    public var candidateOrganizer: CandidateOrganizer? {
+        didSet {
+            candidatePaneView?.candidateOrganizer = candidateOrganizer
+        }
+    }
+    
     private var _state: KeyboardState
     var state: KeyboardState {
         get { _state }
         set { changeState(prevState: _state, newState: newValue) }
     }
     
-    init(state: KeyboardState, candidateOrganizer: CandidateOrganizer) {
+    init(state: KeyboardState) {
         self._state = state
-        self.candidateOrganizer = candidateOrganizer
         super.init(frame: .zero)
         
         backgroundColor = .clearInteractable
@@ -85,7 +89,8 @@ class KeypadView: UIView, BaseKeyboardView {
         leftButtons = initButtons(buttonLayouts: leftButtonProps)
         rightButtons = initButtons(buttonLayouts: rightButtonProps)
         
-        let candidatePaneView = CandidatePaneView(keyboardState: state, candidateOrganizer: candidateOrganizer, layoutConstants: layoutConstants)
+        let candidatePaneView = CandidatePaneView(keyboardState: state, layoutConstants: layoutConstants)
+        candidatePaneView.candidateOrganizer = candidateOrganizer
         candidatePaneView.delegate = self
         addSubview(candidatePaneView)
         candidatePaneView.setupButtons()

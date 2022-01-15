@@ -243,10 +243,11 @@ open class KeyboardViewController: UIInputViewController {
         let keyboardView: BaseKeyboardView
         
         if state.shouldUseKeypad {
-            keyboardView = KeypadView(state: state, candidateOrganizer: candidateOrganizer)
+            keyboardView = KeypadView(state: state)
         } else {
-            keyboardView = KeyboardView(state: state, candidateOrganizer: candidateOrganizer)
+            keyboardView = KeyboardView(state: state)
         }
+        keyboardView.candidateOrganizer = candidateOrganizer
         keyboardView.delegate = inputController
         keyboardView.translatesAutoresizingMaskIntoConstraints = false
         keyboardViewPlaceholder.addSubview(keyboardView)
