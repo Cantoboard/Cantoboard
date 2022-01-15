@@ -9,6 +9,9 @@ import Foundation
 import UIKit
 
 class NumKeyRow: UIView {
+    // Uncomment this to debug memory leak.
+    private let c = InstanceCounter<NumKeyRow>()
+    
     private var layoutConstants: Reference<LayoutConstants>
     private var numKeys: [Weak<KeyView>]!
     
