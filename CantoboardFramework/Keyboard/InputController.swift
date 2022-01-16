@@ -520,8 +520,11 @@ class InputController: NSObject {
         guard Settings.cached.isAutoCapEnabled && !isHoldingShift && state.reverseLookupSchema == nil &&
                 (state.keyboardType == .alphabetic(.lowercased) || state.keyboardType == .alphabetic(.uppercased))
             else { return }
+        let originalKeyboardType = state.keyboardType
         state.keyboardType = shouldApplyAutoCap() ? .alphabetic(.uppercased) : .alphabetic(.lowercased)
-        state.lastKeyboardTypeChangeFromAutoCap = true
+        if originalKeyboardType != state.keyboardType {
+            state.lastKeyboardTypeChangeFromAutoCap = true
+        }
     }
     
     private func changeSchema() {
