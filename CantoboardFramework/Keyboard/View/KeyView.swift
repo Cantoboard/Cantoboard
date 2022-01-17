@@ -85,8 +85,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     func setKeyCap(_ keyCap: KeyCap, keyboardState newState: KeyboardState, isPadTopRowButton: Bool = false) {
         let hasStateChanged = keyboardState == nil ||
             keyboardState?.keyboardIdiom != newState.keyboardIdiom ||
-            keyboardState?.keyboardType != newState.keyboardType ||
-            keyboardState?.keyboardContextualType != newState.keyboardContextualType ||
             keyboardState?.isPortrait != newState.isPortrait
         guard keyCap != self.keyCap || hasStateChanged else { return }
         
