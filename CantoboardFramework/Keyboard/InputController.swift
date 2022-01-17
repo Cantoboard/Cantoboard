@@ -135,6 +135,10 @@ class InputController: NSObject {
         refreshInputSettings()
     }
     
+    func prepare() {
+        inputEngine.prepare()
+    }
+    
     func textWillChange(_ textInput: UITextInput?) {
         prevTextBefore = compositionRenderer.textBeforeInput
         // DDLogInfo("textWillChange prevTextBefore '\(prevTextBefore ?? "nil")' doc '\(textDocumentProxy?.documentContextBeforeInput ?? "nil")'")

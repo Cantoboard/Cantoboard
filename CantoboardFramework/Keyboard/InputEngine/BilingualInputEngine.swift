@@ -82,6 +82,12 @@ class BilingualInputEngine: InputEngine {
         }
     }
     
+    func prepare() {
+        DispatchQueue.main.async {
+            self.rimeInputEngine.tryCreateRimeSessionIfNeeded()
+        }
+    }
+    
     func processRimeChar(_ char: Character) -> Bool {
         if char.isASCII {
             isForcingRimeMode = rimeInputEngine.processChar(char)

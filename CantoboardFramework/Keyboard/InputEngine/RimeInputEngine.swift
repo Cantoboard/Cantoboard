@@ -95,9 +95,6 @@ class RimeInputEngine: NSObject, InputEngine {
     init(schema: RimeSchema) {
         _schema = schema
         super.init()
-        DispatchQueue.main.async {
-            self.tryCreateRimeSessionIfNeeded()
-        }
     }
     
     deinit {
@@ -249,7 +246,7 @@ class RimeInputEngine: NSObject, InputEngine {
         return charIndex
     }
     
-    private func tryCreateRimeSessionIfNeeded() {
+    func tryCreateRimeSessionIfNeeded() {
         if rimeSession == nil && RimeApi.shared.state == .succeeded {
             self.createRimeSession()
         } else {

@@ -219,6 +219,8 @@ open class KeyboardViewController: UIInputViewController {
         
         os_signpost(.end, log: log, name: "viewDidAppear", signpostID: signpostID, "%d", instanceId)
         os_signpost(.end, log: log, name: "total", signpostID: signpostID, "%d", instanceId)
+        
+        inputController?.prepare()
     }
     
     public func createInputController() {
