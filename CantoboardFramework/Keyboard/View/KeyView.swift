@@ -123,11 +123,12 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         var buttonHintTitle = keyCap.buttonHint
         var setHighlightedBackground = false
         
-        setImage(nil, for: .normal)
-        setImage(nil, for: .highlighted)
-        setTitle(nil, for: .normal)
-        imageView?.image = nil
-        titleLabel?.text = nil
+        var normalImage: UIImage?
+        var highlightedImage: UIImage?
+        var title: String?
+        
+        // imageView?.image = nil
+        // titleLabel?.text = nil
         
         if !isKeyEnabled {
             if case .shift = keyCap {
@@ -141,19 +142,21 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
         } else if keyboardIdiom.isPad, case .returnKey(let type) = keyCap, type != .confirm {
             let buttonImage = adjustImageFontSize(ButtonImage.returnKey)
-            setImage(buttonImage, for: .normal)
-            setImage(buttonImage, for: .highlighted)
-            imageView?.contentMode = .scaleAspectFit
+            normalImage = buttonImage
+            highlightedImage = buttonImage
+            //setImage(buttonImage, for: .normal)
+            //setImage(buttonImage, for: .highlighted)
+            //imageView?.contentMode = .scaleAspectFit
             setHighlightedBackground = true
         } else if let buttonText = keyCap.unescaped.buttonText {
-            setTitle(buttonText, for: .normal)
+            title = buttonText
             if keyboardState.inputMode != .english,
                case .keyboardType(.alphabetic) = keyCap {
-                setTitle(keyboardState.activeSchema.shortName, for: .normal)
+                title = keyboardState.activeSchema.shortName
             }
-            titleLabel?.baselineAdjustment = .alignCenters
-            titleLabel?.lineBreakMode = .byClipping
-            titleLabel?.adjustsFontSizeToFitWidth = true
+            // titleLabel?.baselineAdjustment = .alignCenters
+            // titleLabel?.lineBreakMode = .byClipping
+            // titleLabel?.adjustsFontSizeToFitWidth = true
             setHighlightedBackground = true
         } else if var buttonImage = keyCap.unescaped.buttonImage {
             if keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
@@ -162,10 +165,22 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             } else {
                 buttonImage = adjustImageFontSize(buttonImage)
             }
-            setImage(buttonImage, for: .normal)
-            setImage(keyCap == .backspace ? adjustImageFontSize(ButtonImage.backspaceFilled) : buttonImage, for: .highlighted)
-            imageView?.contentMode = .scaleAspectFit
+            normalImage = buttonImage
+            highlightedImage = keyCap == .backspace ? adjustImageFontSize(ButtonImage.backspaceFilled) : buttonImage
+            // imageView?.contentMode = .scaleAspectFit
             setHighlightedBackground = true
+        }
+        
+        if image(for: .normal) !== normalImage {
+            setImage(normalImage, for: .normal)
+        }
+        
+        if image(for: .highlighted) !== highlightedImage {
+            setImage(highlightedImage, for: .highlighted)
+        }
+        
+        if self.title(for: .normal) != title {
+            setTitle(title, for: .normal)
         }
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
@@ -191,7 +206,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 !(keyCap.keyCapType == .input || keyCap.keyCapType == .space) ? .bottom : .center
         }
         
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
+        // titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
