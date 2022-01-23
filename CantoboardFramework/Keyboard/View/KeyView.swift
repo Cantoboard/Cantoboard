@@ -85,7 +85,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     func setKeyCap(_ keyCap: KeyCap, keyboardState newState: KeyboardState, isPadTopRowButton: Bool = false) {
         let hasStateChanged = keyboardState == nil ||
             keyboardState?.keyboardIdiom != newState.keyboardIdiom ||
-            keyboardState?.isPortrait != newState.isPortrait
+            keyboardState?.isPortrait != newState.isPortrait ||
+            keyboardState?.isKeyboardAppearing != newState.isKeyboardAppearing
         guard keyCap != self.keyCap || hasStateChanged else { return }
         
         self.keyCap = keyCap
@@ -94,8 +95,10 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         self.isPadTopRowButton = isPadTopRowButton
         self.keyboardState = newState
         
-        swipeDownPercentage = 0
-        setupView()
+        if newState.isKeyboardAppearing {
+            swipeDownPercentage = 0
+            setupView()
+        }
     }
     
     internal func setupView() {
@@ -204,7 +207,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 !(keyCap.keyCapType == .input || keyCap.keyCapType == .space) ? .bottom : .center
         }
         
-        // titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
+        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)

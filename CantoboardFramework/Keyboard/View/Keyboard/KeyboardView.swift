@@ -105,7 +105,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             prevState.lastKeyboardTypeChangeFromAutoCap != newState.lastKeyboardTypeChangeFromAutoCap ||
             prevState.isComposing != newState.isComposing ||
             prevState.isPortrait != newState.isPortrait ||
-            prevState.specialSymbolShapeOverride != newState.specialSymbolShapeOverride
+            prevState.specialSymbolShapeOverride != newState.specialSymbolShapeOverride ||
+            prevState.isKeyboardAppearing != newState.isKeyboardAppearing
         
         if prevState.needsInputModeSwitchKey != newState.needsInputModeSwitchKey {
             keyRows.forEach { $0.needsInputModeSwitchKey = newState.needsInputModeSwitchKey }

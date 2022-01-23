@@ -40,6 +40,8 @@ open class KeyboardViewController: UIInputViewController {
     private let signpostID: OSSignpostID
     private let instanceId: Int
     
+    private let initStartTime: Date = Date()
+    
     public override init(nibName: String?, bundle: Bundle?) {
         instanceId = Self.count
         Self.count += 1
@@ -189,27 +191,35 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     public override func viewDidLoad() {
+        DDLogInfo("KeyboardViewController Profiling \(instanceId) viewDidLoad start time: \(Date().timeIntervalSince(initStartTime) * 1000)")
+        
         os_signpost(.begin, log: log, name: "viewDidLoad", signpostID: signpostID, "%d", instanceId)
         
         super.viewDidLoad()
         
         Settings.hasFullAccess = hasFullAccess
         view.translatesAutoresizingMaskIntoConstraints = false
-        
-        createInputController()
+        createKeyboardViewPlaceholder()
         
         os_signpost(.end, log: log, name: "viewDidLoad", signpostID: signpostID, "%d", instanceId)
+        DDLogInfo("KeyboardViewController Profiling \(instanceId) viewDidLoad end time: \(Date().timeIntervalSince(initStartTime) * 1000)")
     }
     
     public override func viewWillAppear(_ animated: Bool) {
+        DDLogInfo("KeyboardViewController Profiling \(instanceId) viewWillAppear start time: \(Date().timeIntervalSince(initStartTime) * 1000)")
+        
         os_signpost(.begin, log: log, name: "viewWillAppear", signpostID: signpostID, "%d", instanceId)
         
         super.viewWillAppear(animated)
         
-        createConstraints()
+        createInputController()
+        
         refreshLayoutConstants()
+        createConstraints()
         
         os_signpost(.end, log: log, name: "viewWillAppear", signpostID: signpostID, "%d", instanceId)
+        
+        DDLogInfo("KeyboardViewController Profiling \(instanceId) viewWillAppear end time: \(Date().timeIntervalSince(initStartTime) * 1000)")
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -217,23 +227,35 @@ open class KeyboardViewController: UIInputViewController {
         
         super.viewDidAppear(animated)
         
+        DispatchQueue.main.async { [self] in
+            DDLogInfo("KeyboardViewController Profiling \(instanceId) prepare start time: \(Date().timeIntervalSince(initStartTime) * 1000)")
+            
+            inputController?.prepare()
+            
+            DDLogInfo("KeyboardViewController Profiling \(instanceId) prepare end time: \(Date().timeIntervalSince(initStartTime) * 1000)")
+        }
+        
         os_signpost(.end, log: log, name: "viewDidAppear", signpostID: signpostID, "%d", instanceId)
         os_signpost(.end, log: log, name: "total", signpostID: signpostID, "%d", instanceId)
         
-        inputController?.prepare()
+        DDLogInfo("KeyboardViewController Profiling \(instanceId) total time: \(Date().timeIntervalSince(initStartTime) * 1000)")
+    }
+    
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        inputController?.unprepare()
     }
     
     public func createInputController() {
-        if inputController == nil {
-            reloadSettings()
-            
-            inputController = InputController(keyboardViewController: self)
-            createKeyboardViewPlaceholder()
-            createKeyboardView()
-            
-            textWillChange(nil)
-            textDidChange(nil)
-        }
+        guard inputController == nil else { return }
+        reloadSettings()
+        
+        inputController = InputController(keyboardViewController: self)
+        createKeyboardView()
+        
+        textWillChange(nil)
+        textDidChange(nil)
     }
     
     private func createKeyboardView() {
@@ -256,9 +278,7 @@ open class KeyboardViewController: UIInputViewController {
         
         self.keyboardView = keyboardView
         
-        if keyboardViewPlaceholder.window != nil {
-            createConstraints()
-        }
+        createConstraints()
     }
     
     private func createKeyboardViewPlaceholder() {

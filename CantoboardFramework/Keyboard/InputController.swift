@@ -48,6 +48,8 @@ struct KeyboardState: Equatable {
     var needsInputModeSwitchKey: Bool
     var spaceKeyMode: SpaceKeyMode
     
+    var isKeyboardAppearing: Bool
+    
     var keyboardIdiom: LayoutIdiom
     
     var mainSchema: RimeSchema, reverseLookupSchema: RimeSchema?
@@ -78,6 +80,7 @@ struct KeyboardState: Equatable {
         keyboardContextualType = .english
         specialSymbolShapeOverride = [:]
         let layoutConstants = LayoutConstants.forMainScreen
+        isKeyboardAppearing = false
         keyboardIdiom = layoutConstants.idiom
         isPortrait = layoutConstants.isPortrait
         
@@ -107,7 +110,7 @@ class InputController: NSObject {
         
     private var hasInsertedAutoSpace = false
     private var shouldApplyChromeSearchBarHack = false
-    private var needClearInput = false, needReloadCandidates = true
+    private var needClearInput = false, needReloadCandidates = false
     
     private var prevTextBefore: String?
     
@@ -137,6 +140,15 @@ class InputController: NSObject {
     
     func prepare() {
         inputEngine.prepare()
+        needReloadCandidates = true
+        
+        state.isKeyboardAppearing = true
+        updateInputState()
+    }
+    
+    func unprepare() {
+        state.isKeyboardAppearing = false
+        keyboardViewController?.state = state
     }
     
     func textWillChange(_ textInput: UITextInput?) {
@@ -592,6 +604,8 @@ class InputController: NSObject {
     }
     
     private func updateInputState() {
+        guard state.isKeyboardAppearing else { return }
+        
         updateContextualSuggestion()
         candidateOrganizer.updateCandidates(reload: needReloadCandidates)
         
