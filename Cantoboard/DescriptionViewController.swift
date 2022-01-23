@@ -59,7 +59,7 @@ class DescriptionViewController: UIViewController {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView = UIStackView(arrangedSubviews: [playerView, label].compactMap {$0})
+        stackView = UIStackView(arrangedSubviews: [playerView, label].compactMap { $0 })
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
@@ -85,7 +85,7 @@ class DescriptionViewController: UIViewController {
             
             NSLayoutConstraint.activate([
                 leadingConstraint, trailingConstraint,
-                playerView.heightAnchor.constraint(equalTo: playerView.widthAnchor, multiplier: 1 / Self.videoAspectRatio)
+                playerView.widthAnchor.constraint(equalTo: playerView.heightAnchor, multiplier: Self.videoAspectRatio)
             ])
         }
     }
