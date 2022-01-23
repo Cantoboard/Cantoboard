@@ -15,6 +15,7 @@ class LocalizedStrings {
     static let installCantoboard = localizedString("installCantoboard")
     static let installCantoboard_settings = localizedString("installCantoboard.settings")
     static let installCantoboard_description = localizedString("installCantoboard.description")
+    static let installCantoboard_ios15_description = localizedString("installCantoboard.ios15_description")
     
     static let testKeyboard = localizedString("testKeyboard")
     static let testKeyboard_placeholder = localizedString("testKeyboard.placeholder")

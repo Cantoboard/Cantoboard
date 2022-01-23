@@ -12,6 +12,10 @@
 "喺程式設定撳「鍵盤」→「Cantoboard」→「允許完整存取權」→「確定」，即可啓用 Cantoboard。
 
 「允許完整存取權」並唔係強制性，但係由於 iOS 嘅限制，諸如撳掣出聲同震動之類嘅功能要開咗先用得到。本程式唔會用到網絡，因此亦冇可能收集到任何資料，包括你所打嘅文字。程式嘅原始碼可以喺 GitHub 睇到。";
+"installCantoboard.ios15_description" =
+"如果你用緊 iOS 15，裝咗 Cantoboard 但係喺系統設定揾唔到 Cantoboard 的話，請重新啓動電話。因為 iOS 15 嘅 bug，要重啓之後 Cantoboard 先會系統設定出現。
+
+";
 
 "testKeyboard" = "測試鍵盤";
 "testKeyboard.placeholder" = "撳呢度打字，試下個鍵盤⋯⋯";

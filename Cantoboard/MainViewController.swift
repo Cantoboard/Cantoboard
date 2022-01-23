@@ -92,7 +92,12 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch section {
-        case 0: return LocalizedStrings.installCantoboard_description
+        case 0:
+            var installCantoboard_description = LocalizedStrings.installCantoboard_description
+            if #available(iOS 15, *) {
+                installCantoboard_description = LocalizedStrings.installCantoboard_ios15_description + installCantoboard_description
+            }
+            return installCantoboard_description
         default: return nil
         }
     }
