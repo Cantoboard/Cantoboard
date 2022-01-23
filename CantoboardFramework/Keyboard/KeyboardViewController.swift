@@ -201,6 +201,8 @@ open class KeyboardViewController: UIInputViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         createKeyboardViewPlaceholder()
         
+        view.frame = CGRect(origin: .zero, size: layoutConstants.ref.keyboardSize)
+        
         os_signpost(.end, log: log, name: "viewDidLoad", signpostID: signpostID, "%d", instanceId)
         DDLogInfo("KeyboardViewController Profiling \(instanceId) viewDidLoad end time: \(Date().timeIntervalSince(initStartTime) * 1000)")
     }
