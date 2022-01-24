@@ -13,7 +13,11 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.5
     private static let swipeDownFullYRatio: CGFloat = 0.8
     private static let padLandscapeFontRatio = 1.3
-    private static let morphingKeyFontRatio = 0.9
+    private static let morphingSymbolKeyFontRatio = 0.85
+    private static let morphingSwipeDownHintLayerMinScale = 0.6
+    private static let padTopRowButtonFontSize: CGFloat = 15
+    private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 6, right: 5)
+    private static let padTopRowButtonEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 5, right: 4)
     
     private var keyHintLayer: KeyHintLayer?
     private var swipeDownHintLayer: KeyHintLayer?
@@ -23,7 +27,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             updateColorsAccordingToSwipeDownPercentage()
         }
     }
-    private var titleLabelFontSize: CGFloat = 24
+    private var titleLabelFontSize: CGFloat = 0
     
     private var popupView: KeyPopupView?
     private var isPopupInLongPressMode: Bool?
@@ -114,7 +118,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         contentEdgeInsets = layoutConstants.ref.keyViewInsets
         titleEdgeInsets = keyCap.buttonTitleInset
         layer.cornerRadius = layoutConstants.ref.cornerRadius
-        titleLabelFontSize = isPadTopRowButton ? 17 : layoutConstants.ref.getButtonFontSize(keyCap.unescaped)
+        titleLabelFontSize = isPadTopRowButton ? Self.padTopRowButtonFontSize : layoutConstants.ref.getButtonFontSize(keyCap.unescaped)
         if keyboardIdiom.isPad && !keyboardState.isPortrait {
             titleLabelFontSize *= Self.padLandscapeFontRatio
         }
@@ -126,7 +130,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         var normalImage: UIImage?
         var highlightedImage: UIImage?
-        var title: String?
+        var titleText: String?
         
         // imageView?.image = nil
         // titleLabel?.text = nil
@@ -150,14 +154,13 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             //imageView?.contentMode = .scaleAspectFit
             setHighlightedBackground = true
         } else if let buttonText = keyCap.unescaped.buttonText {
-            title = buttonText
+            titleText = buttonText
             if keyboardState.inputMode != .english,
                case .keyboardType(.alphabetic) = keyCap {
-                title = keyboardState.activeSchema.shortName
+                titleText = keyboardState.activeSchema.shortName
             }
             // titleLabel?.baselineAdjustment = .alignCenters
             // titleLabel?.lineBreakMode = .byClipping
-            // titleLabel?.adjustsFontSizeToFitWidth = true
             setHighlightedBackground = true
         } else if var buttonImage = keyCap.unescaped.buttonImage {
             if keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
@@ -180,8 +183,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             setImage(highlightedImage, for: .highlighted)
         }
         
-        if self.title(for: .normal) != title {
-            setTitle(title, for: .normal)
+        let attributedTitleText = titleText.map { $0.toHKAttributedString }
+        if attributedTitle(for: .normal) != attributedTitleText {
+            setAttributedTitle(attributedTitleText, for: .normal)
         }
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
@@ -192,12 +196,18 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 layer.addSublayer(swipeDownHintLayer)
                 self.swipeDownHintLayer = swipeDownHintLayer
             }
-            if keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) {
-                contentEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 6, right: 5)
-                titleLabelFontSize *= Self.morphingKeyFontRatio
+            // Shrink edge insets to avoid swipeDownHintLayer and titleLabel overlapping each other.
+            contentEdgeInsets = isPadTopRowButton ? Self.padTopRowButtonEdgeInsets : Self.morphingKeyEdgeInsets
+            
+            // Keys like "@" "#" are bigger than letters. Scale them down a bit.
+            if keyboardState.keyboardType == .numSymbolic {
+                titleLabelFontSize *= Self.morphingSymbolKeyFontRatio
             }
-            swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText
-            swipeDownHintLayer?.fontSize = titleLabelFontSize
+            
+            // ScaleswipeDownHintLayer by swipeDownPercentage.
+            let swipeDownHintLayerScale = isPadTopRowButton ? 1 : (1 - swipeDownPercentage) * Self.morphingSwipeDownHintLayerMinScale + (swipeDownPercentage) * 1
+            let swipeDownHintLayerFont = UIFont.systemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
+            swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText?.toHKAttributedString(withFont: swipeDownHintLayerFont)
             updateColorsAccordingToSwipeDownPercentage()
             contentVerticalAlignment = .bottom
         } else {
@@ -207,6 +217,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 !(keyCap.keyCapType == .input || keyCap.keyCapType == .space) ? .bottom : .center
         }
         
+        titleLabel?.adjustsFontSizeToFitWidth = true
         titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
@@ -314,7 +325,13 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
                 let swipeDownKeyCapTextColor = (isSwipeDownKeyShiftMorphing ? UIColor.label : UIColor.systemGray).resolvedColor(with: traitCollection).cgColor
-                swipeDownHintLayer.foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
+                let foregroundColor = swipeDownKeyCapTextColor.interpolate(mainTextColor.cgColor, fraction: swipeDownPercentage * 3)
+                if let swipeDownHintAttributedString = swipeDownHintLayer.string as? NSAttributedString {
+                    let wholeRange = NSMakeRange(0,  swipeDownHintAttributedString.length)
+                    let textWithColor = NSMutableAttributedString(attributedString: swipeDownHintAttributedString)
+                    textWithColor.addAttribute(NSAttributedString.Key.foregroundColor, value: foregroundColor, range: wholeRange)
+                    swipeDownHintLayer.string = textWithColor
+                }
             }
         }
     }
@@ -409,6 +426,7 @@ extension KeyView {
             animation.duration = 0.2
             animation.delegate = self
             layer.add(animation, forKey: animation.keyPath)
+            swipeDownPercentage = 0
         }
         
         removePopup()

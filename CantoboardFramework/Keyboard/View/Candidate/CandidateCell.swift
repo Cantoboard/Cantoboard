@@ -44,7 +44,7 @@ class CandidateCell: UICollectionViewCell {
             self.label = label
         }
         
-        label?.text = text
+        label?.attributedText = text.toHKAttributedString
         
         let keyCap = KeyCap(stringLiteral: text)
         if let hintText = keyCap.barHint {
@@ -115,7 +115,7 @@ class CandidateCell: UICollectionViewCell {
         let candidateLabelHeight = availableHeight * Self.candidateLabelHeightRatio
         let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight
         
-        label.font = UIFont.systemFont(ofSize: candidateFontSize * fontSizeScale)
+        label.font = .systemFont(ofSize: candidateFontSize * fontSizeScale)
         
         if showComment, let commentLayer = commentLayer {
             let candidateCommentHeight = availableHeight * Self.candidateCommentHeightRatio
