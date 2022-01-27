@@ -120,8 +120,6 @@ using namespace marisa;
     return self;
 }
 
-
-
 - (NSArray*)predict:(NSString*) context {
     if (header == nullptr) {
         return [[NSArray alloc] init];

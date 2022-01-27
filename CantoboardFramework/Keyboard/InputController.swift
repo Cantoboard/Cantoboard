@@ -413,6 +413,7 @@ class InputController: NSObject {
             inputEngine.charForm = cs
             let currentCandidatesCount = candidateOrganizer.getCandidateCount(section: 0)
             keyboardViewController?.keyboardView?.setPreserveCandidateOffset()
+            candidateOrganizer.charForm = cs
             candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: currentCandidatesCount)
             return
         case .toggleInputMode(let toInputMode):

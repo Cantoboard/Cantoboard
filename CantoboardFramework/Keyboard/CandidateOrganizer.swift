@@ -448,15 +448,23 @@ enum AutoSuggestionType {
     case domain
 }
 
-// This class filter, group by and sort the candidates.
-class CandidateOrganizer {
-    private static let predictiveTextEngine: PredictiveTextEngine = initPredictiveTextEngine()
-    
-    private static func initPredictiveTextEngine() -> PredictiveTextEngine {
+extension PredictiveTextEngine {
+    private static func initPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine {
         let dictsPath = DataFileManager.builtInNGramDictDirectory
-        return PredictiveTextEngine(dictsPath + "/zh_HK.ngram")
+        let ngramFileName = charForm == .traditional ? "/zh_HK.ngram" : "/zh_CN.ngram"
+        return PredictiveTextEngine(dictsPath + ngramFileName)
     }
     
+    private static let hk = initPredictiveTextEngine(charForm: .traditional)
+    private static let cn = initPredictiveTextEngine(charForm: .simplified)
+    
+    public static func getPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine {
+        return charForm == .traditional ? .hk : .cn
+    }
+}
+
+// This class filter, group by and sort the candidates.
+class CandidateOrganizer {
     private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"], cannotExpand: true)
     private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "、", "？", "！", ".", ",", "?", "!"], cannotExpand: true)
     private static let halfWidthDigitCandidateSource = AutoSuggestionCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
@@ -475,11 +483,19 @@ class CandidateOrganizer {
     var candidateSource: CandidateSource?
     var autoSuggestionType: AutoSuggestionType?
     var suggestionContextualText: String = ""
+    var charForm: CharForm {
+        didSet {
+            predictiveTextEngine = PredictiveTextEngine.getPredictiveTextEngine(charForm: charForm)
+        }
+    }
     
-    weak var inputController: InputController?
+    private weak var inputController: InputController?
+    private var predictiveTextEngine: PredictiveTextEngine
     
     init(inputController: InputController) {
         self.inputController = inputController
+        charForm = inputController.inputEngine.charForm
+        predictiveTextEngine = PredictiveTextEngine.getPredictiveTextEngine(charForm: charForm)
     }
     
     func requestMoreCandidates(section: Int) {
@@ -507,7 +523,7 @@ class CandidateOrganizer {
             
             if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty &&
                (autoSuggestionType == .halfWidthPunctuation || autoSuggestionType == .fullWidthPunctuation) {
-                let predictiveCandidates = Self.predictiveTextEngine.predict(suggestionContextualText) as NSArray as? [String]
+                let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
                     DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")
                     candidateSource = AutoSuggestionCandidateSource(predictiveCandidates)
