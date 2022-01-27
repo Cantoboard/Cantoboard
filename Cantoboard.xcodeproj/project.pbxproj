@@ -1584,8 +1584,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				ENABLE_HARDENED_RUNTIME = YES;
-				HEADER_SEARCH_PATHS = "${PROJECT_DIR}/CantoboardFramework/include";
+				HEADER_SEARCH_PATHS = (
+					"${PROJECT_DIR}/CantoboardFramework/include",
+					"${PROJECT_DIR}/NGramBuilder/include",
+				);
+				LIBRARY_SEARCH_PATHS = "${PROJECT_DIR}/NGramBuilder/lib";
 				MACOSX_DEPLOYMENT_TARGET = 11.6;
+				OTHER_LDFLAGS = "-lopencc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -1600,8 +1605,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				ENABLE_HARDENED_RUNTIME = YES;
-				HEADER_SEARCH_PATHS = "${PROJECT_DIR}/CantoboardFramework/include";
+				HEADER_SEARCH_PATHS = (
+					"${PROJECT_DIR}/CantoboardFramework/include",
+					"${PROJECT_DIR}/NGramBuilder/include",
+				);
+				LIBRARY_SEARCH_PATHS = "${PROJECT_DIR}/NGramBuilder/lib";
 				MACOSX_DEPLOYMENT_TARGET = 11.6;
+				OTHER_LDFLAGS = "-lopencc";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
