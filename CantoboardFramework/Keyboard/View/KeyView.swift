@@ -13,6 +13,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let swipeDownMaxCutOffYRatio: CGFloat = 0.5
     private static let swipeDownFullYRatio: CGFloat = 0.8
     private static let padLandscapeFontRatio = 1.3
+    private static let morphingKeyFontRatio = 0.9
     private static let morphingSymbolKeyFontRatio = 0.85
     private static let morphingSwipeDownHintLayerMinScale = 0.6
     private static let padTopRowButtonFontSize: CGFloat = 15
@@ -204,8 +205,11 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 titleLabelFontSize *= Self.morphingSymbolKeyFontRatio
             }
             
-            // ScaleswipeDownHintLayer by swipeDownPercentage.
-            let swipeDownHintLayerScale = isPadTopRowButton ? 1 : (1 - swipeDownPercentage) * Self.morphingSwipeDownHintLayerMinScale + (swipeDownPercentage) * 1
+            // Scale swipeDownHintLayer by swipeDownPercentage.
+            // For shift morphing keys (morphing keys appearing even in autocapped mode), they should appear as large as the main titleLabel.
+            // Using morphingKeyFontRatio < 1 instead of 1 as morphing keys ,.;' look smaller than their swipe down key counterparts.
+            let swipeDownHintLayerMinScale = keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ? Self.morphingKeyFontRatio : Self.morphingSwipeDownHintLayerMinScale
+            let swipeDownHintLayerScale = isPadTopRowButton ? 1 : (1 - swipeDownPercentage) * swipeDownHintLayerMinScale + (swipeDownPercentage) * 1
             let swipeDownHintLayerFont = UIFont.systemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
             swipeDownHintLayer?.string = padSwipeDownKeyCap.buttonText?.toHKAttributedString(withFont: swipeDownHintLayerFont)
             updateColorsAccordingToSwipeDownPercentage()
