@@ -189,14 +189,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             // Shrink edge insets to avoid swipeDownHintLayer and titleLabel overlapping each other.
             contentEdgeInsets = isPadTopRowButton ? Self.padTopRowButtonEdgeInsets : Self.morphingKeyEdgeInsets
             
-            // Keys like "@" "#" are bigger than letters. Scale them down a bit.
-            if keyboardState.keyboardType == .numSymbolic {
-                titleLabelFontSize *= Self.morphingSymbolKeyFontRatio
-            }
-            
             // Scale swipeDownHintLayer by swipeDownPercentage.
             // For shift morphing keys (morphing keys appearing even in autocapped mode), they should appear as large as the main titleLabel.
-            // Using morphingKeyFontRatio < 1 instead of 1 as morphing keys ,.;' look smaller than their swipe down key counterparts.
+            // Using morphingKeyFontRatio = 0.9 to shrink the swipe down labels. As keys ,.;' look smaller than their swipe down key counterparts.
             let swipeDownHintLayerMinScale = keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ? Self.morphingKeyFontRatio : Self.morphingSwipeDownHintLayerMinScale
             let swipeDownHintLayerScale = isPadTopRowButton ? 1 : (1 - swipeDownPercentage) * swipeDownHintLayerMinScale + (swipeDownPercentage) * 1
             let swipeDownHintLayerFont = UIFont.systemFont(ofSize: titleLabelFontSize * swipeDownHintLayerScale)
@@ -211,7 +206,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         }
         
         titleLabel?.adjustsFontSizeToFitWidth = true
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
+        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
@@ -320,10 +315,11 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         guard let keyboardIdiom = keyboardState?.keyboardIdiom,
               keyboardIdiom != .phone else { return }
         
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage * 2))
+        let reverseSwipeDownPercentage = min((1 - swipeDownPercentage) * 2, 1)
+        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * reverseSwipeDownPercentage)
         
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
-            setTitleColor(mainTextColor.withAlphaComponent(mainTextColor.alpha * (1 - swipeDownPercentage * 4)), for: .highlighted)
+            setTitleColor(mainTextColor.withAlphaComponent(mainTextColor.alpha * reverseSwipeDownPercentage), for: .highlighted)
             
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
