@@ -199,6 +199,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             updateColorsAccordingToSwipeDownPercentage()
             contentVerticalAlignment = .bottom
         } else {
+            titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
             swipeDownHintLayer?.removeFromSuperlayer()
             swipeDownHintLayer = nil
             contentVerticalAlignment = keyboardIdiom.isPadFull &&
@@ -206,7 +207,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         }
         
         titleLabel?.adjustsFontSizeToFitWidth = true
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * (1 - swipeDownPercentage))
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
@@ -219,16 +219,23 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         setNeedsLayout()
     }
     
-    private func setTitle(_ title: String?) {
+    private func setTitle(_ title: String?, alpha: CGFloat = 1) {
         guard let title = title else {
             return setAttributedTitle(nil, for: .normal)
         }
         
+        let mainTextColorAlpha = titleColor(for: .normal)?.resolvedColor(with: traitCollection).alpha ?? 1
         let enabledAlpha = isEnabled ? 1 : 0.5
-        let attributedTitleText = title.toHKAttributedString(withForegroundColor: tintColor.withAlphaComponent(enabledAlpha))
+        let totalAlpha = enabledAlpha * mainTextColorAlpha * alpha
+        let attributedTitleText = title.toHKAttributedString(withForegroundColor: tintColor.withAlphaComponent(totalAlpha))
         if attributedTitle(for: .normal) != attributedTitleText {
             setAttributedTitle(attributedTitleText, for: .normal)
         }
+    }
+    
+    private func setTitleAlpha(alpha: CGFloat = 1) {
+        let title = attributedTitle(for: .normal)?.string
+        setTitle(title, alpha: alpha)
     }
     
     private func setupKeyHint(_ keyCap: KeyCap, _ buttonHintTitle: String?, _ foregroundColor: UIColor) {
@@ -315,11 +322,14 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         guard let keyboardIdiom = keyboardState?.keyboardIdiom,
               keyboardIdiom != .phone else { return }
         
-        let reverseSwipeDownPercentage = min((1 - swipeDownPercentage) * 2, 1)
-        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * reverseSwipeDownPercentage)
-        
+        let reverseSwipeDownPercentage = 1 - swipeDownPercentage
+        // Fade out original key faster by squaring
+        let fontPercentage = pow(reverseSwipeDownPercentage, 2)
+        let alphaPercentage = fontPercentage
+        titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * fontPercentage)
+
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
-            setTitleColor(mainTextColor.withAlphaComponent(mainTextColor.alpha * reverseSwipeDownPercentage), for: .highlighted)
+            setTitleAlpha(alpha: alphaPercentage)
             
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
