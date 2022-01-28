@@ -68,16 +68,22 @@ extension String {
     }
     
     // Render the string in HK Chinese style. (標點置中)
-    var toHKAttributedString: NSAttributedString {
-        NSAttributedString(string: self, attributes: [
-            NSAttributedString.Key(kCTLanguageAttributeName as String): "zh-HK",
-        ])
+    func toHKAttributedString(withFont font: UIFont? = nil, withForegroundColor foregroundColor: UIColor? = nil) -> NSAttributedString {
+        var attributes: [NSAttributedString.Key : Any] = [:]
+        attributes[NSAttributedString.Key(kCTLanguageAttributeName as String)] = "zh-HK"
+        
+        if let font = font {
+            attributes[.font] = font
+        }
+        
+        if let foregroundColor = foregroundColor {
+            attributes[.foregroundColor] = foregroundColor
+        }
+        
+        return NSAttributedString(string: self, attributes: attributes)
     }
     
-    func toHKAttributedString(withFont font: UIFont) -> NSAttributedString {
-        return NSAttributedString(string: self, attributes: [
-            NSAttributedString.Key(kCTLanguageAttributeName as String): "zh-HK",
-            NSAttributedString.Key.font: font,
-        ])
+    var toHKAttributedString: NSAttributedString {
+        toHKAttributedString()
     }
 }

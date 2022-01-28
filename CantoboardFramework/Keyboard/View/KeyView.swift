@@ -113,6 +113,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         backgroundColor = keyCap.buttonBgColor
         
         let foregroundColor = keyCap.buttonFgColor
+        isEnabled = !keyCap.isPlaceholder
         setTitleColor(foregroundColor, for: .normal)
         setTitleColor(ButtonColor.placeholderKeyForegroundColor, for: .disabled)
         tintColor = foregroundColor
@@ -132,10 +133,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         var normalImage: UIImage?
         var highlightedImage: UIImage?
         var titleText: String?
-        
-        // imageView?.image = nil
-        // titleLabel?.text = nil
-        
+
         if !isKeyEnabled {
             if case .shift = keyCap {
                 // Hide the highlighted color in swipe mode.
@@ -176,18 +174,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             setHighlightedBackground = true
         }
         
-        if image(for: .normal) !== normalImage {
-            setImage(normalImage, for: .normal)
-        }
-        
-        if image(for: .highlighted) !== highlightedImage {
-            setImage(highlightedImage, for: .highlighted)
-        }
-        
-        let attributedTitleText = titleText.map { $0.toHKAttributedString }
-        if attributedTitle(for: .normal) != attributedTitleText {
-            setAttributedTitle(attributedTitleText, for: .normal)
-        }
+        setImage(normalImage, for: .normal)
+        setImage(highlightedImage, for: .highlighted)
+        setTitle(titleText)
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
         if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState),
@@ -230,11 +219,21 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
         
-        isEnabled = !keyCap.isPlaceholder
-        
         // isUserInteractionEnabled = action == .nextKeyboard
         // layoutPopupView()
         setNeedsLayout()
+    }
+    
+    private func setTitle(_ title: String?) {
+        guard let title = title else {
+            return setAttributedTitle(nil, for: .normal)
+        }
+        
+        let enabledAlpha = isEnabled ? 1 : 0.5
+        let attributedTitleText = title.toHKAttributedString(withForegroundColor: tintColor.withAlphaComponent(enabledAlpha))
+        if attributedTitle(for: .normal) != attributedTitleText {
+            setAttributedTitle(attributedTitleText, for: .normal)
+        }
     }
     
     private func setupKeyHint(_ keyCap: KeyCap, _ buttonHintTitle: String?, _ foregroundColor: UIColor) {
@@ -333,7 +332,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 if let swipeDownHintAttributedString = swipeDownHintLayer.string as? NSAttributedString {
                     let wholeRange = NSMakeRange(0,  swipeDownHintAttributedString.length)
                     let textWithColor = NSMutableAttributedString(attributedString: swipeDownHintAttributedString)
-                    textWithColor.addAttribute(NSAttributedString.Key.foregroundColor, value: foregroundColor, range: wholeRange)
+                    textWithColor.addAttribute(.foregroundColor, value: foregroundColor, range: wholeRange)
                     swipeDownHintLayer.string = textWithColor
                 }
             }
