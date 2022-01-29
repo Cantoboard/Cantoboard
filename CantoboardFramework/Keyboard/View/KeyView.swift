@@ -40,6 +40,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private var isPadTopRowButton = false
     private var action: KeyboardAction = .none
     
+    private var layoutConstants: Reference<LayoutConstants>
+
     // TODO Remove this field and check keyboardState
     var isKeyEnabled: Bool = true {
         didSet {
@@ -62,7 +64,37 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     
     var heightClearance: CGFloat?
     
-    private var layoutConstants: Reference<LayoutConstants>
+    // We have to override the title to always render using HK style to center full width symbols.
+    override func setTitle(_ title: String?, for state: UIControl.State) {
+        super.setTitle(title, for: state)
+        if state == .normal {
+            updateTitle()
+        }
+    }
+    
+    override var isEnabled: Bool {
+        didSet {
+            updateTitle()
+        }
+    }
+    
+    var titleAlpha: CGFloat = 1 {
+        didSet {
+            updateTitle()
+        }
+    }
+    
+    private func updateTitle() {
+        let alphaFromColor = tintColor.resolvedColor(with: traitCollection).alpha
+        let enabledAlpha = isEnabled ? 1 : 0.5
+        let finalAlpha = enabledAlpha * alphaFromColor * titleAlpha
+        let finalColor = tintColor.withAlphaComponent(finalAlpha)
+        
+        let titleText = title(for: .normal)
+        
+        let attributedTitleText = titleText?.toHKAttributedString(withForegroundColor: finalColor)
+        setAttributedTitle(attributedTitleText, for: .normal)
+    }
     
     required init?(coder: NSCoder) {
         fatalError("NSCoder is not supported")
@@ -176,7 +208,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         setImage(normalImage, for: .normal)
         setImage(highlightedImage, for: .highlighted)
-        setTitle(titleText)
+        setTitle(titleText, for: .normal)
         
         let keyboardViewLayout = keyboardIdiom.keyboardViewLayout
         if let padSwipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: keyboardState),
@@ -217,25 +249,6 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         // isUserInteractionEnabled = action == .nextKeyboard
         // layoutPopupView()
         setNeedsLayout()
-    }
-    
-    private func setTitle(_ title: String?, alpha: CGFloat = 1) {
-        guard let title = title else {
-            return setAttributedTitle(nil, for: .normal)
-        }
-        
-        let mainTextColorAlpha = titleColor(for: .normal)?.resolvedColor(with: traitCollection).alpha ?? 1
-        let enabledAlpha = isEnabled ? 1 : 0.5
-        let totalAlpha = enabledAlpha * mainTextColorAlpha * alpha
-        let attributedTitleText = title.toHKAttributedString(withForegroundColor: tintColor.withAlphaComponent(totalAlpha))
-        if attributedTitle(for: .normal) != attributedTitleText {
-            setAttributedTitle(attributedTitleText, for: .normal)
-        }
-    }
-    
-    private func setTitleAlpha(alpha: CGFloat = 1) {
-        let title = attributedTitle(for: .normal)?.string
-        setTitle(title, alpha: alpha)
     }
     
     private func setupKeyHint(_ keyCap: KeyCap, _ buttonHintTitle: String?, _ foregroundColor: UIColor) {
@@ -329,7 +342,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * fontPercentage)
 
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
-            setTitleAlpha(alpha: alphaPercentage)
+            titleAlpha = alphaPercentage
             
             if let swipeDownHintLayer = swipeDownHintLayer {
                 let isSwipeDownKeyShiftMorphing = keyboardIdiom.keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap)
