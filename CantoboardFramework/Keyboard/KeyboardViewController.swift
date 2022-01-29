@@ -319,18 +319,22 @@ open class KeyboardViewController: UIInputViewController {
             self.widthConstraint = widthConstraint
         }
         
-        let keyboardViewWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
-        keyboardViewWidthConstraint.priority = .required
-        self.keyboardViewWidthConstraint = keyboardViewWidthConstraint
+        if self.keyboardViewWidthConstraint == nil {
+            let keyboardViewWidthConstraint = keyboardViewPlaceholder.widthAnchor.constraint(equalTo: view.widthAnchor)
+            keyboardViewWidthConstraint.priority = .required
+            self.keyboardViewWidthConstraint = keyboardViewWidthConstraint
+        }
         
-        // EmojiView inside KeyboardView requires AutoLayout.
-        let keyboardViewTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
-        keyboardViewTopConstraint.priority = .required
-        self.keyboardViewTopConstraint = keyboardViewTopConstraint
+        if self.keyboardViewTopConstraint == nil {
+            // EmojiView inside KeyboardView requires AutoLayout.
+            let keyboardViewTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
+            keyboardViewTopConstraint.priority = .required
+            self.keyboardViewTopConstraint = keyboardViewTopConstraint
+        }
         
         NSLayoutConstraint.activate([
-            keyboardViewWidthConstraint,
-            keyboardViewTopConstraint,
+            keyboardViewWidthConstraint!,
+            keyboardViewTopConstraint!,
             keyboardViewPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             keyboardViewPlaceholder.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
