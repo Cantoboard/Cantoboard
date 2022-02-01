@@ -340,10 +340,10 @@ class LayoutConstants: Copyable {
     let candidatePaneViewLeftRightInset: CGFloat
     let compositionViewHeight: CGFloat
     
-    var numOfSingleCharCandidateInRow: Int {
+    var numOfSingleCharCandidateInRow: Double {
         switch idiom {
         case .phone:
-            return isPortrait ? 8 : 15
+            return isPortrait ? 7.75 : 15
         case .pad:
             return isPortrait ? 15 : 20
         }
