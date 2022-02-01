@@ -47,6 +47,7 @@ using namespace marisa;
     char* data;
     const NGramHeader* header;
     const Weight* weights;
+    const char* isWordList;
     Trie trie;
 }
 
@@ -58,6 +59,7 @@ using namespace marisa;
     if (data != nullptr && data != MAP_FAILED) {
         header = nullptr;
         weights = nullptr;
+        isWordList = nullptr;
         DDLogInfo(@"Predictive text engine unmapping ngram table from memory...");
         munmap(data, fileSize);
         data = nullptr;
@@ -79,6 +81,7 @@ using namespace marisa;
     data = nullptr;
     header = nullptr;
     weights = nullptr;
+    isWordList = nullptr;
     
     fd = open([ngramFilePath UTF8String], O_RDONLY);
     
@@ -110,11 +113,14 @@ using namespace marisa;
         }
     }
     
+    const NGramSectionHeader& trieSectionHeader = header->sections[NGramSectionId::trie];
+    trie.map(data + trieSectionHeader.dataOffset, trieSectionHeader.dataSizeInBytes);
+    
     const NGramSectionHeader& weightSectionHeader = header->sections[weight];
     weights = (Weight*)(data + weightSectionHeader.dataOffset);
     
-    const NGramSectionHeader& trieSectionHeader = header->sections[NGramSectionId::trie];
-    trie.map(data + trieSectionHeader.dataOffset, trieSectionHeader.dataSizeInBytes);
+    const NGramSectionHeader& isWordListSectionHeader = header->sections[isWord];
+    isWordList = (const char*)(data + isWordListSectionHeader.dataOffset);
     
     DDLogInfo(@"Predictive text engine loaded.");
     return self;
@@ -154,33 +160,59 @@ using namespace marisa;
     return finalResults;
 }
 
+- (bool)isWord:(size_t) keyId {
+    size_t byteOffset = keyId / 8;
+    short bitOffset = keyId % 8;
+    char encodedByte = isWordList[byteOffset];
+    
+    return 1 == ((encodedByte >> bitOffset) & 1);
+}
+
+struct PredictiveResult {
+    string text;
+    bool isWord;
+};
+
 - (void)search:(NSString*) prefix output:(NSMutableArray*) output dedupSet:(NSMutableSet*) dedupSet {
     if (header == nullptr) {
         return;
     }
-    auto cmp = [&](const pair<size_t, string>& key1, const pair<size_t, string>& key2) {
+    auto cmp = [&](const pair<size_t, PredictiveResult>& key1, const pair<size_t, PredictiveResult>& key2) {
         return weights[key1.first] > weights[key2.first];
     };
-    set<pair<size_t, string>, decltype(cmp)> orderedResults(cmp);
+    set<pair<size_t, PredictiveResult>, decltype(cmp)> orderedResults(cmp);
 
     Agent trieAgent;
     trieAgent.set_query([prefix UTF8String]);
     while (trie.predictive_search(trieAgent)) {
         const Key& key = trieAgent.key();
         string keyText = string(key.ptr(), key.length());
-        orderedResults.insert({ key.id(), keyText });
+        bool isWord = [self isWord:key.id()];
+        PredictiveResult predictiveResult({ keyText, isWord });
+        orderedResults.insert({ key.id(), predictiveResult });
     }
     
     for (auto it = orderedResults.begin(); it != orderedResults.end(); ++it) {
         const auto& key = it->second;
-        NSString *fullText = [[NSString alloc] initWithBytes:key.c_str()
-                                                      length:key.length()
+        const auto& text = key.text;
+        const auto isWord = it->second.isWord;
+        NSString *fullText = [[NSString alloc] initWithBytes:text.c_str()
+                                                      length:text.length()
                                                     encoding:NSUTF8StringEncoding];
-        if (fullText.lengthOfComposedChars != prefix.lengthOfComposedChars + 1) continue;
-        // DDLogInfo(@"PredictiveTextEngine fullText: %@", fullText);
-        NSRange lastCharRange = [fullText rangeOfComposedCharacterSequenceAtIndex:fullText.length - 1];
-        NSString *lastChar = [fullText substringWithRange:lastCharRange];
-        NSString *toAdd = lastChar;
+        NSString *toAdd = nullptr;
+        if (isWord) {
+            NSRange suffixRange = NSMakeRange([prefix length], [fullText length] - [prefix length]);
+            NSString *suffix = [fullText substringWithRange:suffixRange];
+            toAdd = suffix;
+        } else if (fullText.lengthOfComposedChars == prefix.lengthOfComposedChars + 1) {
+            NSRange lastCharRange = [fullText rangeOfComposedCharacterSequenceAtIndex:fullText.length - 1];
+            NSString *lastChar = [fullText substringWithRange:lastCharRange];
+            toAdd = lastChar;
+        }
+        
+        if (toAdd == nullptr || toAdd.length == 0) continue;
+
+        // DDLogInfo(@"PredictiveTextEngine fullText %@ toAdd %@ isWord %s", fullText, toAdd, isWord ? "true" : "false");
         if (![dedupSet containsObject:toAdd]) {
             [output addObject:toAdd];
             [dedupSet addObject:toAdd];

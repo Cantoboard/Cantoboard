@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <string.h>
@@ -17,12 +18,50 @@
 
 #include "opencc.h"
 
-#include "ngram.h"
+#include "NGram.h"
+#include "dynamic_bitset.hpp"
 
 using namespace std;
 using namespace marisa;
+using namespace sul;
 
 // #define DEBUG_BUILD_DICT
+const char* rimeDictPaths[] = {
+    "../CantoboardFramework/Data/Rime/jyut6ping3.dict.yaml",
+    "../CantoboardFramework/Data/Rime/jyut6ping3.maps.dict.yaml",
+    "../CantoboardFramework/Data/Rime/jyut6ping3.phrase.dict.yaml",
+};
+
+// Treat entries in rime dict as "words"/詞組.
+unordered_set<string> readWordEntries() {
+    unordered_set<string> words;
+    
+    for (auto rimeDictPath : rimeDictPaths) {
+        ifstream dictFile(rimeDictPath);
+        
+        bool startProcessing = false;
+        std::string line;
+        
+        while (getline(dictFile, line)) {
+            if (line == "...") {
+                startProcessing = true;
+                continue;
+            }
+            
+            if (startProcessing && line.length() > 0 && *line.begin() != '#') {
+                auto first_tab_index = line.find_first_of('\t');
+                if (first_tab_index == string::npos) {
+                    first_tab_index = line.length();
+                }
+                const string word(line.data(), first_tab_index);
+                words.insert(word);
+            }
+        }
+        dictFile.close();
+    }
+    
+    return words;
+}
 
 unordered_map<string, float> readDict(opencc_t opencc) {
     unordered_map<string, float> ret;
@@ -36,8 +75,7 @@ unordered_map<string, float> readDict(opencc_t opencc) {
     bool isFirstLine = true;
     std::string line;
     int lineNum = 0;
-    while (!dictFile.eof()) {
-        getline(dictFile, line);
+    while (getline(dictFile, line)) {
         lineNum++;
         if (isFirstLine) {
             isFirstLine = false;
@@ -59,6 +97,7 @@ unordered_map<string, float> readDict(opencc_t opencc) {
                 ret[converted] = max(ret[converted], prob);
             }
             opencc_convert_utf8_free(converted);
+            converted = nullptr;
 #ifdef DEBUG_BUILD_DICT
             // cout << text << " " << converted << " " << ret[converted] << "\n";
 #endif
@@ -68,23 +107,37 @@ unordered_map<string, float> readDict(opencc_t opencc) {
         }
     }
     
+    dictFile.close();
+    
     return ret;
 }
 
-void writeNGram(size_t maxN, const Trie& trie, const Weight* weights, const string& outputFile) {
+void writeNGram(size_t maxN, const Trie& trie, const Weight* weights, const dynamic_bitset<unsigned char>& isWordList, const string& outputFile) {
     ofstream ngramFileStream(outputFile);
-    
+        
     NGramHeader header;
     header.numOfEntries = trie.size();
     header.maxN = maxN;
-    header.sections[weight].dataOffset = header.headerSizeInBytes;
-    header.sections[weight].dataSizeInBytes = header.numOfEntries * sizeof(Weight);
-    header.sections[NGramSectionId::trie].dataOffset = header.headerSizeInBytes + header.sections[weight].dataSizeInBytes;
-    header.sections[NGramSectionId::trie].dataSizeInBytes = trie.io_size();
-    ngramFileStream.write((char*)&header, sizeof(header));
     
-    ngramFileStream.write((char*)weights, trie.size() * sizeof(Weight));
+    size_t currentPtr = header.headerSizeInBytes;
+    header.sections[NGramSectionId::trie].dataOffset = currentPtr;
+    header.sections[NGramSectionId::trie].dataSizeInBytes = trie.io_size();
+    currentPtr += header.sections[NGramSectionId::trie].dataSizeInBytes;
+    
+    header.sections[weight].dataOffset = currentPtr;
+    header.sections[weight].dataSizeInBytes = header.numOfEntries * sizeof(Weight);
+    currentPtr += header.sections[weight].dataSizeInBytes;
+    
+    size_t isWordListByteLen = (isWordList.size() + 7) / 8;
+    header.sections[isWord].dataOffset = currentPtr;
+    header.sections[isWord].dataSizeInBytes = isWordListByteLen;
+    currentPtr += header.sections[isWord].dataSizeInBytes;
+    
+    ngramFileStream.write((char*)&header, header.headerSizeInBytes);
+    
     write(ngramFileStream, trie);
+    ngramFileStream.write((char*)weights, trie.size() * sizeof(Weight));
+    ngramFileStream.write((char*)isWordList.data(), isWordListByteLen);
     
     ngramFileStream.close();
 }
@@ -126,6 +179,9 @@ int buildNGram(const char* openccConfigPath, const string& ngramOutputFile) {
     
     Weight* weights = new Weight[trie.size()];
     
+    unordered_set<string> words = readWordEntries();
+    dynamic_bitset<unsigned char> isWordList(keyset.size());
+    
     for (size_t keyIndex = 0; keyIndex < keyset.size(); ++keyIndex) {
         const auto& key = keyset[keyIndex];
         const auto id = key.id();
@@ -135,6 +191,7 @@ int buildNGram(const char* openccConfigPath, const string& ngramOutputFile) {
         cout << id << "," << keyStr << "=" << w << "\n";
 #endif
         weights[id] = w;
+        isWordList[id] = words.find(keyStr) != words.end();
     }
     
     std::cout << "File size: " << trie.io_size() + trie.size() * sizeof(Weight) << "\n";
@@ -147,7 +204,7 @@ int buildNGram(const char* openccConfigPath, const string& ngramOutputFile) {
     }
 #endif
     
-    writeNGram(maxN, trie, weights, ngramOutputFile);
+    writeNGram(maxN, trie, weights, isWordList, ngramOutputFile);
     
     delete[] weights;
     

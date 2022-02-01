@@ -105,9 +105,7 @@ class EnglishInputEngine: InputEngine {
     private(set) var prefectCandidatesStartIndex = 0, worstCandidatesStartIndex = 0
     
     init() {
-        DispatchQueue.global(qos: .background).async {
-            _ = Self.englishDictionary
-        }
+        _ = Self.englishDictionary
     }
     
     func processChar(_ char: Character) -> Bool {

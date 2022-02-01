@@ -4,8 +4,9 @@
 #pragma pack(push,1)
 
 enum NGramSectionId {
-    weight = 0,
-    trie = 1
+    trie = 0,
+    weight = 1,
+    isWord = 2,
 };
 
 struct NGramSectionHeader {
@@ -19,8 +20,9 @@ struct NGramHeader {
     short version = 0;
     char maxN;
     size_t numOfEntries;
-    NGramSectionHeader sections[2];
+    NGramSectionHeader sections[3];
 };
+
 #pragma pack(pop)
 
 typedef __fp16 Weight;

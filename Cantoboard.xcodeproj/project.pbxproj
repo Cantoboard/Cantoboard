@@ -387,6 +387,7 @@
 		79A2D07F2661FD0C00F2EB19 /* Guide */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Guide; sourceTree = "<group>"; };
 		79B05DB22712697300CF07D3 /* Rime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Rime.xcframework; path = RimeFramework/Rime.xcframework; sourceTree = "<group>"; };
 		79B23737267832BD009FF854 /* KeypadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadView.swift; sourceTree = "<group>"; };
+		79B2D02027A90EC300E51CEF /* dynamic_bitset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dynamic_bitset.hpp; sourceTree = "<group>"; };
 		79B9B57325F3496800238E80 /* CantoboardFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CantoboardFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79B9B57525F3496800238E80 /* CantoboardFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CantoboardFramework.h; sourceTree = "<group>"; };
 		79B9B57625F3496800238E80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -574,6 +575,7 @@
 		7904A1DA2771481200963CAB /* NGramBuilder */ = {
 			isa = PBXGroup;
 			children = (
+				79B2D02027A90EC300E51CEF /* dynamic_bitset.hpp */,
 				7904A1DB2771481200963CAB /* main.cpp */,
 			);
 			path = NGramBuilder;

@@ -450,6 +450,10 @@ enum AutoSuggestionType {
 
 extension PredictiveTextEngine {
     private static func initPredictiveTextEngine(charForm: CharForm) -> PredictiveTextEngine {
+        if !DataFileManager.hasInstalled {
+            fatalError("Data files not installed.")
+        }
+        
         let dictsPath = DataFileManager.builtInNGramDictDirectory
         let ngramFileName = charForm == .traditional ? "/zh_HK.ngram" : "/zh_CN.ngram"
         return PredictiveTextEngine(dictsPath + ngramFileName)
