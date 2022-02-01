@@ -212,7 +212,7 @@ struct PredictiveResult {
         
         if (toAdd == nullptr || toAdd.length == 0) continue;
 
-        // DDLogInfo(@"PredictiveTextEngine fullText %@ toAdd %@ isWord %s", fullText, toAdd, isWord ? "true" : "false");
+        DDLogInfo(@"PredictiveTextEngine fullText %@ toAdd %@ weight %f isWord %s", fullText, toAdd, weights[it->first], isWord ? "true" : "false");
         if (![dedupSet containsObject:toAdd]) {
             [output addObject:toAdd];
             [dedupSet addObject:toAdd];

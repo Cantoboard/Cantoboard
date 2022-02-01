@@ -86,6 +86,8 @@ unordered_map<string, float> readDict(opencc_t opencc) {
         
         try {
             const char* text = strtok(line.data(), ",");
+            // Skip conditional prob:
+            strtok(NULL, ",");
             float prob = std::stof(strtok(NULL, ","));
             size_t textLen = strlen(text);
             if (textLen == 0) continue;
@@ -144,7 +146,7 @@ void writeNGram(size_t maxN, const Trie& trie, const Weight* weights, const dyna
 
 size_t countCodePointsInUtf8String(const string& utf8String) {
     UChar textInUtf16[1024];
-    UErrorCode pErrorCode;
+    UErrorCode pErrorCode = UErrorCode::U_ZERO_ERROR;
     u_strFromUTF8(textInUtf16, sizeof(textInUtf16) / sizeof(*textInUtf16), nullptr, utf8String.c_str(), -1, &pErrorCode);
     return u_countChar32(textInUtf16, -1);
 }
