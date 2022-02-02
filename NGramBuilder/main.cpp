@@ -27,10 +27,19 @@ using namespace sul;
 
 // #define DEBUG_BUILD_DICT
 const char* rimeDictPaths[] = {
+    "../CantoboardFramework/Data/Rime/essay.txt",
     "../CantoboardFramework/Data/Rime/jyut6ping3.dict.yaml",
     "../CantoboardFramework/Data/Rime/jyut6ping3.maps.dict.yaml",
     "../CantoboardFramework/Data/Rime/jyut6ping3.phrase.dict.yaml",
 };
+
+bool endsWith(std::string const &fullString, std::string const &ending) {
+    if (fullString.length() >= ending.length()) {
+        return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+    } else {
+        return false;
+    }
+}
 
 // Treat entries in rime dict as "words"/詞組.
 unordered_set<string> readWordEntries() {
@@ -39,7 +48,8 @@ unordered_set<string> readWordEntries() {
     for (auto rimeDictPath : rimeDictPaths) {
         ifstream dictFile(rimeDictPath);
         
-        bool startProcessing = false;
+        // Special case for essay.txt.
+        bool startProcessing = endsWith(rimeDictPath, ".txt");
         std::string line;
         
         while (getline(dictFile, line)) {
