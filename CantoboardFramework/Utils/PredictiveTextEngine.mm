@@ -200,14 +200,27 @@ struct PredictiveResult {
                                                       length:text.length()
                                                     encoding:NSUTF8StringEncoding];
         NSString *toAdd = nullptr;
+        
+        NSRange suffixRange = NSMakeRange([prefix length], [fullText length] - [prefix length]);
+        NSString *suffix = [fullText substringWithRange:suffixRange];
+        
         if (isWord) {
-            NSRange suffixRange = NSMakeRange([prefix length], [fullText length] - [prefix length]);
-            NSString *suffix = [fullText substringWithRange:suffixRange];
             toAdd = suffix;
-        } else if (fullText.lengthOfComposedChars == prefix.lengthOfComposedChars + 1) {
-            NSRange lastCharRange = [fullText rangeOfComposedCharacterSequenceAtIndex:fullText.length - 1];
-            NSString *lastChar = [fullText substringWithRange:lastCharRange];
-            toAdd = lastChar;
+        } else {
+            Agent trieAgent;
+            trieAgent.set_query([suffix UTF8String]);
+            
+            if ([suffix lengthOfComposedChars] == 1) {
+                // If the suffix has just a single char, always suggest it.
+                NSRange lastCharRange = [fullText rangeOfComposedCharacterSequenceAtIndex:fullText.length - 1];
+                NSString *lastChar = [fullText substringWithRange:lastCharRange];
+                toAdd = lastChar;
+            } else if (trie.lookup(trieAgent)) {
+                // If suffix is a word, suggest the whole word.
+                size_t suffixKeyId = trieAgent.key().id();
+                bool isSuffixWord = [self isWord:suffixKeyId];
+                if (isSuffixWord) toAdd = suffix;
+            }
         }
         
         if (toAdd == nullptr || toAdd.length == 0) continue;
