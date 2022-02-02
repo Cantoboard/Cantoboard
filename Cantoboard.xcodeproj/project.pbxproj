@@ -339,6 +339,7 @@
 		7913D965266752FC00DB78C2 /* MissingGlyphRemover */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MissingGlyphRemover; sourceTree = BUILT_PRODUCTS_DIR; };
 		7913D967266752FC00DB78C2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		791738952772CD07007C1C7C /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/usr/lib/libicucore.tbd; sourceTree = DEVELOPER_DIR; };
+		7919403727AA801000CBEE0C /* correction.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = correction.csv; sourceTree = "<group>"; };
 		7919A77D25F3320F0075DD4D /* Cantoboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cantoboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7919A78025F3320F0075DD4D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7919A78225F3320F0075DD4D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -575,6 +576,7 @@
 		7904A1DA2771481200963CAB /* NGramBuilder */ = {
 			isa = PBXGroup;
 			children = (
+				7919403727AA801000CBEE0C /* correction.csv */,
 				79B2D02027A90EC300E51CEF /* dynamic_bitset.hpp */,
 				7904A1DB2771481200963CAB /* main.cpp */,
 			);
