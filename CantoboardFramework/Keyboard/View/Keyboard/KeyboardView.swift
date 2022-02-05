@@ -282,7 +282,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
-        let isInLongPressMode = state.activeSchema == .jyutping && Settings.cached.toneInputMode == .longPress || state.activeSchema == .yale
+        let isInLongPressMode = state.activeSchema.isCantonese && Settings.cached.toneInputMode == .longPress
         let keyboardViewLayout = state.keyboardIdiom.keyboardViewLayout
         
         var keyCap: KeyCap
