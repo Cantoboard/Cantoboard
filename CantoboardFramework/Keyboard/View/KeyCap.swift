@@ -563,7 +563,7 @@ let FrameworkBundle = Bundle(for: KeyView.self)
 
 class ButtonImage {
     private static func imageAssets(_ key: String) -> UIImage {
-        let config = UIImage.SymbolConfiguration(weight: .heavy)
+        let config = UIImage.SymbolConfiguration(weight: .light)
         let image = UIImage(systemName: key) ?? UIImage(named: key, in: Bundle(for: ButtonImage.self), with: nil)!
         return image.applyingSymbolConfiguration(config)!
     }
