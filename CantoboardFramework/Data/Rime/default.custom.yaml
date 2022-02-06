@@ -9,4 +9,5 @@ patch:
     - {schema: luna_pinyin}
     - {schema: stroke}
     - {schema: loengfan}
+    - {schema: jyut6ping3_10keys}
   "menu/page_size": 10
