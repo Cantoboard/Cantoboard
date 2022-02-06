@@ -117,6 +117,11 @@ class KeypadView: UIView, BaseKeyboardView {
     
     private func setupButtons() {
         let isFullWidth = !state.keyboardContextualType.halfWidthSymbol
+        for row in leftButtons {
+            for button in row {
+                button.setupView()
+            }
+        }
         for row in rightButtons {
             for button in row {
                 var props = button.props
@@ -165,7 +170,8 @@ class KeypadView: UIView, BaseKeyboardView {
     }
 
     private func changeState(prevState: KeyboardState, newState: KeyboardState) {
-        let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType
+        let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType ||
+            prevState.isKeyboardAppearing != newState.isKeyboardAppearing
         
         _state = newState
         if isViewDirty { setupButtons() }
