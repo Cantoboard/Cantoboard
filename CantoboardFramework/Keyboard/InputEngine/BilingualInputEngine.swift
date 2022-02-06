@@ -66,7 +66,8 @@ class BilingualInputEngine: InputEngine {
             
             var updateEnglishEngineState = false, updateRimeEngineState = false
             queue.async(group: group) {
-                updateRimeEngineState = self.rimeInputEngine.processChar(char.lowercasedChar)
+                updateRimeEngineState =
+                self.rimeInputEngine.processChar(char)//self.rimeInputEngine.processChar(char.lowercasedChar)
             }
             englishInputEngine.textBeforeInput = inputController?.textDocumentProxy?.documentContextBeforeInput
             englishInputEngine.textAfterInput = inputController?.textDocumentProxy?.documentContextAfterInput

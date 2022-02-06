@@ -18,6 +18,7 @@ public enum RimeSchema: String, Codable {
     case mandarin = "luna_pinyin"
     case stroke = "stroke"
     case loengfan = "loengfan"
+    case jyutping10keys = "jyut6ping3_10keys"
     
     var signChar: String {
         switch self {
@@ -28,6 +29,7 @@ public enum RimeSchema: String, Codable {
         case .loengfan: return "兩"
         case .mandarin: return "普"
         case .stroke: return "筆"
+        case .jyutping10keys: return "粵"
         }
     }
     
@@ -40,6 +42,7 @@ public enum RimeSchema: String, Codable {
         case .loengfan: return "兩分"
         case .mandarin: return "普拼"
         case .stroke: return "筆劃"
+        case .jyutping10keys: return "粵格"
         }
     }
     
@@ -60,7 +63,7 @@ public enum RimeSchema: String, Codable {
     
     var supportMixedMode: Bool {
         switch self {
-        case .stroke: return false
+        case .stroke, .jyutping10keys: return false
         default: return true
         }
     }
