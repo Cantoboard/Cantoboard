@@ -75,7 +75,7 @@
 "chineseInputSettings.toneInputMode.vxq" = "vxq";
 "chineseInputSettings.toneInputMode.longPress" = "長撳";
 "chineseInputSettings.toneInputMode.description" =
-"喺粵拼模式打聲調，可以減少重碼字。
+"喺打粵文嗰陣打聲調，可以減少重碼字。
 呢個選項決定聲調點打：
 vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
 　　 撳兩下 v/x/q 輸入 4/5/6 聲。

@@ -285,8 +285,8 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func setCurrentSchema(_ schemaId: RimeSchema) {
         var rimeSchemaId = schemaId.rawValue
-        if schemaId == .jyutping && Settings.cached.toneInputMode == .vxq {
-            rimeSchemaId = "jyut6ping3vxq"
+        if schemaId.isCantonese && Settings.cached.toneInputMode == .vxq {
+            rimeSchemaId += "vxq"
         }
         rimeSession?.setCurrentSchema(rimeSchemaId)
     }
