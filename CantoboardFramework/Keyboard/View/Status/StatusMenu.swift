@@ -9,10 +9,13 @@ import Foundation
 import UIKit
 
 class StatusMenu: UIView {
+    private static let labelInset: CGFloat = 2
+    
     static let xInset: CGFloat = 5
     static let cornerRadius: CGFloat = 5
     static let separatorWidth: CGFloat = 1
-    static let fontSizePerWidth: CGFloat = 20 / "＠".size(withFont: UIFont.systemFont(ofSize: 20)).width
+    static let fontSizeAtUnitHeight: CGFloat = 15
+    static let unitHeight: CGFloat = 45
     
     var itemActions: [UILabel: KeyCap]
     var itemLabelInRows: [[UILabel]]
@@ -67,7 +70,7 @@ class StatusMenu: UIView {
     
     private static func createLabel(keyCap: KeyCap) -> UILabel {
         let label = UILabel()
-        label.text = keyCap.buttonText
+        label.text = " \(keyCap.buttonText ?? "") "
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
         label.layer.cornerRadius = Self.cornerRadius
@@ -78,27 +81,18 @@ class StatusMenu: UIView {
         super.layoutSubviews()
         layer.shadowPath = CGPath(roundedRect: bounds, cornerWidth: Self.cornerRadius, cornerHeight: Self.cornerRadius, transform: nil)
         
-        let countEveryRow = itemLabelInRows.map { $0.count }
-        let countMax = countEveryRow.max() ?? 0, countMin = countEveryRow.min() ?? 0
-        let countDiff = CGFloat(countMax - countMin)
-        
-        let noOfCharsEveryRow = itemLabelInRows.map { $0.reduce(0, { $0 + ($1.text?.count ?? 0) }) }
-        let noOfCharsMax = noOfCharsEveryRow.max() ?? 0, noOfCharsMin = noOfCharsEveryRow.min() ?? 0
-        let noOfCharsDiff = CGFloat(noOfCharsMax - noOfCharsMin)
-        
-        let gapPerChar = noOfCharsDiff / countDiff
-        let font = UIFont.systemFont(ofSize: bounds.width / CGFloat(countMax * noOfCharsMax - countMin * noOfCharsMin) * countDiff * Self.fontSizePerWidth)
-        
-        let height = bounds.height / CGFloat(itemLabelInRows.count)
-        for (row, labelRow) in itemLabelInRows.enumerated() {
-            let rowUnitWidth = bounds.width / (CGFloat(noOfCharsEveryRow[row]) + CGFloat(countEveryRow[row]) * gapPerChar)
+        var cellSize = CGSize()
+        var y = CGFloat(0)
+        for labelRow in itemLabelInRows {
             var x = CGFloat(0)
             for label in labelRow {
-                let width = (CGFloat(label.text?.count ?? 0) + gapPerChar) * rowUnitWidth
-                label.frame = CGRect(x: x, y: CGFloat(row) * height, width: width, height: height)
-                label.font = font
-                x += width
+                cellSize = CGSize(width: bounds.width / CGFloat(labelRow.count), height: bounds.height / CGFloat(itemLabelInRows.count))
+                label.frame = CGRect(origin: CGPoint(x: x, y: y), size: cellSize)
+                label.font = .systemFont(ofSize: Self.fontSizeAtUnitHeight * (cellSize.height - 2 * Self.labelInset) / Self.unitHeight)
+                label.adjustsFontSizeToFitWidth = true
+                x += cellSize.width
             }
+            y += cellSize.height
         }
     }
     
