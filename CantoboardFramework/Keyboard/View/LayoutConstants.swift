@@ -345,7 +345,7 @@ class LayoutConstants: Copyable {
         case .phone:
             return isPortrait ? 7.75 : 15
         case .pad:
-            return isPortrait ? 15 : 20
+            return isPortrait ? 16 : 22
         }
     }
     
