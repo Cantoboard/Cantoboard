@@ -96,7 +96,7 @@ speller:
     # - abbrev/^([a-z]).+(\d)$/$1$2/      # 首字母聲調簡拼
     # - abbrev/^([gk]w|ng).+(\d)$/$1$2/   # 首2字母聲調簡拼
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
-    - abbrev/^([gk]w|ng).+$/$1/   # 首2字母簡拼
+    # - abbrev/^([gk]w|ng).+$/$1/   # 首2字母簡拼
 
 translator:
   dictionary: jyut6ping3
