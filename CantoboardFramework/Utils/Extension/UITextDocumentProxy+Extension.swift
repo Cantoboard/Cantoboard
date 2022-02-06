@@ -18,72 +18,74 @@ extension UITextDocumentProxy {
         }
     }
     
-    func deleteBackwardWord() {
+    func deleteBackwardWord(retry: Bool = true) {
         DispatchQueue.main.async { [self] in
-            guard let documentContextBeforeInput = documentContextBeforeInput,
-                  var lastChar = documentContextBeforeInput.last else {
-                      // In case if documentContextBeforeInput goes out of sync, fallback to delete single char.
-                      deleteBackward()
-                      return
-                  }
-            // TODO Remove this.
-            // DDLogInfo("deleteBackwardWord documentContextBeforeInput \(documentContextBeforeInput)")
-            let secondLastCharIdx = documentContextBeforeInput.index(documentContextBeforeInput.endIndex, offsetBy: -2, limitedBy: documentContextBeforeInput.startIndex) ?? documentContextBeforeInput.startIndex
-            let secondLastChar = documentContextBeforeInput[safe: secondLastCharIdx]
-            var deleteCount = 0
-            // Cases:
-            // Delete likekind.
-            //   Eng:
-            //     <space>English<bs> -> delete English
-            //     中文English<bs> -> delete English
-            //     123English<bs> -> delete English
-            //   Num:
-            //     <space>123<bs> -> delete 123
-            //     中文123<bs> -> delete 123
-            //     English123<bs> -> delete 123
-            //  Space:
-            //    <space><space><bs> -> delete all spaces
-            // Delete 1 char.
-            //   中:
-            //     中文<bs> -> delete 1 char
-            //   Sym:
-            //     <whatever>. -> delete 1 char
-            // Special case:
-            //   Eng:
-            //     <space>English<space><bs> -> delete English<space>
-            
-            let shouldDeleteLikekind = lastChar.isASCII && (lastChar.isNumber || lastChar.isLetter) || lastChar == " "
-            
-            if !shouldDeleteLikekind {
-                // case 中 & sym.
+            guard let string = documentContextBeforeInput else {
+                // In case if documentContextBeforeInput goes out of sync, fallback to delete single char.
                 deleteBackward()
+                if retry {
+                    DispatchQueue.main.async { // Another async is required for the code to run properly
+                        deleteBackwardWord(retry: false)
+                    }
+                }
                 return
             }
             
-            // Handle special case: English<space>
-            if let secondLastChar = secondLastChar, lastChar == " " && secondLastChar.isEnglishLetter {
-                lastChar = secondLastChar
-                deleteCount += 1
+            // Delete CCC, CCW, CW, WCC, WC, WW where C is an ideograph and W is a sequence of letters. Ignore whitespaces and non-letter characters.
+            var index = string.endIndex
+            var next: Bool!
+            var ideographCount = 0
+            let isApostrophe: () -> Bool = {
+                guard let prevIndex = string.index(index, offsetBy: -1, limitedBy: string.startIndex),
+                      let nextIndex = string.index(index, offsetBy: 1, limitedBy: string.endIndex) else { return false }
+                return string[prevIndex].isLetterLike && string[index].isApostrophe && string[nextIndex].isLetterLike
             }
-            
-            let reversedTextBeforeInput = documentContextBeforeInput.reversed().suffix(documentContextBeforeInput.count - deleteCount)
-            // For case num & eng, find the first char from the tail that doesn't match the current type.
-            let firstMismatchingCharIndex = reversedTextBeforeInput.firstIndex(where: {
-                if lastChar == " " {
-                    return $0 != " "
-                } else if lastChar.isNumber {
-                    return !$0.isNumber
-                } else {
-                    return !$0.isEnglishLetter
+            let prev = {
+                next = string.formIndex(&index, offsetBy: -1, limitedBy: string.startIndex)
+            }
+            let eatWhitespace = {
+                while next && string[index].isWhitespace { prev() }
+            }
+            let eatNonLetterLike = {
+                while next && string[index].isNonLetterLike { prev() }
+            }
+            let eatLetterLike = {
+                while next && string[index].isLetterLike || isApostrophe() { prev() }
+            }
+            let eatSpace = {
+                while next && string[index].isSpace { prev() }
+            }
+            let eatIdeograph = {
+                while next && string[index].isIdeographic && ideographCount < 3 {
+                    ideographCount += 1
+                    prev()
                 }
-            }) ?? reversedTextBeforeInput.endIndex
-            
-            // Delete char between the end and the first mismatching char.
-            deleteCount += reversedTextBeforeInput.distance(from: reversedTextBeforeInput.startIndex, to: firstMismatchingCharIndex)
-            // Delete at least one character in case if documentContextBeforeInput goes out of sync.
-            for _ in 0..<max(1, deleteCount) {
-                deleteBackward()
             }
+            
+            prev()
+            eatWhitespace()
+            eatNonLetterLike()
+            eatIdeograph()
+            if ideographCount < 3 {
+                if ideographCount == 0 {
+                    eatLetterLike()
+                }
+                eatNonLetterLike()
+                eatWhitespace()
+                eatNonLetterLike()
+                let oldIdeographCount = ideographCount
+                eatIdeograph()
+                if oldIdeographCount == ideographCount {
+                    eatLetterLike()
+                }
+            }
+            eatSpace()
+            
+            if next {
+                next = string.formIndex(&index, offsetBy: 1, limitedBy: string.endIndex)
+            }
+            // Delete at least one character in case if documentContextBeforeInput goes out of sync.
+            deleteBackward(times: max(1, string.distance(from: index, to: string.endIndex)))
         }
     }
 }
