@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     common.custom: 0
-    default: 1639099687
-    default.custom: 1639099687
-    loengfan.schema: 1639099687
-    symbols: 1639099687
+    default: 1644267299
+    default.custom: 1644267299
+    loengfan.schema: 1644267300
+    symbols: 1644267299
     symbols.custom: 0
-    symbols_cantonese: 1639099687
+    symbols_cantonese: 1644267299
 engine:
   filters:
     - "simplifier@variants_hk"

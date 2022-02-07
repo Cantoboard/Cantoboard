@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     common.custom: 0
-    default: 1639099687
-    default.custom: 1639099687
-    symbols: 1639099687
+    default: 1644267299
+    default.custom: 1644267299
+    symbols: 1644267299
     symbols.custom: 0
-    symbols_cantonese: 1639099687
-    yale.schema: 1639099687
+    symbols_cantonese: 1644267299
+    yale.schema: 1644267299
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -352,7 +352,6 @@ speller:
     - "derive/z/j/"
     - "derive/c/ch/"
     - "abbrev/^([a-z]).+$/$1/"
-    - "abbrev/^([gk]w|ng).+$/$1/"
     - "derive/j/zh/"
     - "derive/s/sh/"
     - "derive/(?<!a)a(?=m|p)/u/"

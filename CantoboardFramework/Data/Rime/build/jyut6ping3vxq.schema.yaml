@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     common.custom: 0
-    default: 1639099687
-    default.custom: 1639099687
-    jyut6ping3vxq.schema: 1639099687
-    symbols: 1639099687
+    default: 1644267299
+    default.custom: 1644267299
+    jyut6ping3vxq.schema: 1644267299
+    symbols: 1644267299
     symbols.custom: 0
-    symbols_cantonese: 1639099687
+    symbols_cantonese: 1644267299
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -340,15 +340,20 @@ simp_hk2s:
   option_name: simp_hk2s
 speller:
   algebra:
-    - "derive/[123456]//"
+    - "derive/^(?=[aeiou])/q/"
     - "derive/^jy?([aeiou])/y$1/"
     - "derive/^jyu/ju/"
     - "derive/yu/y/"
-    - "derive/eoi$/oey/"
-    - "derive/eoi$/eoy/"
+    - "erase/y(ng|k)/"
+    - "derive/eoi(?=\\d)/oey/"
+    - "derive/eoi(?=\\d)/eoy/"
+    - "derive/aa/r/"
+    - "derive/oe|eo/v/"
+    - "derive/ng/x/"
     - "derive/eo/oe/"
-    - "derive/oe(ng|k)$/eo$1/"
-    - "derive/aa$/a/"
+    - "derive/oe/eo/"
+    - "derive/aa(?=\\d)/a/"
+    - "derive/\\d//"
     - "abbrev/^([a-z]).+$/$1/"
     - "xform/1/v/"
     - "xform/4/vv/"
@@ -374,12 +379,12 @@ translator:
   dictionary: jyut6ping3
   max_homophones: 10
   preedit_format:
-    - "xform/([aeioumngptk])vv/${1}4/"
-    - "xform/([aeioumngptk])xx/${1}5/"
-    - "xform/([aeioumngptk])qq/${1}6/"
-    - "xform/([aeioumngptk])v/${1}1/"
-    - "xform/([aeioumngptk])x/${1}2/"
-    - "xform/([aeioumngptk])q/${1}3/"
+    - "xform/([aeioumngxptk])vv/${1}4/"
+    - "xform/([aeioumngxptk])xx/${1}5/"
+    - "xform/([aeioumngxptk])qq/${1}6/"
+    - "xform/([aeioumngxptk])v/${1}1/"
+    - "xform/([aeioumngxptk])x/${1}2/"
+    - "xform/([aeioumngxptk])q/${1}3/"
   prism: jyut6ping3vxq
   spelling_hints: 256
 variants_hk:

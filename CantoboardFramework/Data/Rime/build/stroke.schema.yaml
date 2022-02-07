@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1639099687
-    default.custom: 1639099687
+    default: 1644267299
+    default.custom: 1644267299
     stroke.custom: 0
-    stroke.schema: 1639099687
-    symbols: 1639099687
+    stroke.schema: 1644267299
+    symbols: 1644267299
     symbols.custom: 0
-    symbols_cantonese: 1639099687
+    symbols_cantonese: 1644267299
 engine:
   filters:
     - uniquifier
@@ -377,6 +377,6 @@ translator:
     - "xlit/hspnz/一丨丿丶乙/"
   dictionary: stroke
   enable_charset_filter: false
-  enable_completion: false
+  enable_completion: true
   preedit_format:
     - "xlit/hspnz/一丨丿丶乙/"

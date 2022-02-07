@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     common.custom: 0
-    default: 1639099687
-    default.custom: 1639099687
-    jyut6ping3.schema: 1639099687
-    symbols: 1639099687
+    default: 1644267299
+    default.custom: 1644267299
+    jyut6ping3.schema: 1644267299
+    symbols: 1644267299
     symbols.custom: 0
-    symbols_cantonese: 1639099687
+    symbols_cantonese: 1644267299
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -340,15 +340,20 @@ simp_hk2s:
   option_name: simp_hk2s
 speller:
   algebra:
-    - "derive/[123456]//"
+    - "derive/^(?=[aeiou])/q/"
     - "derive/^jy?([aeiou])/y$1/"
     - "derive/^jyu/ju/"
     - "derive/yu/y/"
-    - "derive/eoi$/oey/"
-    - "derive/eoi$/eoy/"
+    - "erase/y(ng|k)/"
+    - "derive/eoi(?=\\d)/oey/"
+    - "derive/eoi(?=\\d)/eoy/"
+    - "derive/aa/r/"
+    - "derive/oe|eo/v/"
+    - "derive/ng/x/"
     - "derive/eo/oe/"
-    - "derive/oe(ng|k)$/eo$1/"
-    - "derive/aa$/a/"
+    - "derive/oe/eo/"
+    - "derive/aa(?=\\d)/a/"
+    - "derive/\\d//"
     - "abbrev/^([a-z]).+$/$1/"
   alphabet: zyxwvutsrqponmlkjihgfedcba654321
   delimiter: " '"
@@ -367,6 +372,7 @@ translator:
   always_show_comments: true
   dictionary: jyut6ping3
   max_homophones: 10
+  prism: jyut6ping3
   spelling_hints: 256
 variants_hk:
   opencc_config: t2hk.json
