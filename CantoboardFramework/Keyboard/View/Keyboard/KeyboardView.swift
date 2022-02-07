@@ -113,10 +113,6 @@ class KeyboardView: UIView, BaseKeyboardView {
             isViewDirty = true
         }
         
-        if prevState.activeSchema != newState.activeSchema {
-            isViewDirty = true
-        }
-        
         if prevState.returnKeyType != newState.returnKeyType {
             newLineKey?.setKeyCap(.returnKey(newState.returnKeyType), keyboardState: state)
         }

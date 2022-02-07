@@ -904,6 +904,7 @@ extension LayoutConstants {
         case .keyboardType(.symbolic) where idiom == .phone, .keyboardType(.alphabetic) where idiom == .phone: return 14
         case .keyboardType(.emojis): return 22
         case .character(".com", _, _),
+             .jyutPing10Keys,
              .keyboardType,
              .returnKey where idiom == .phone, .returnKey(.confirm),
              .rime,

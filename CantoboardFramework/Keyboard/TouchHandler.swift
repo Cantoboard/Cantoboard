@@ -205,9 +205,10 @@ class TouchHandler {
             // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
             let tapStartAction = currentTouchState.initialAction
             let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2 && deltaX > Self.swipeXThreshold
+            let isKeypadKeys = key as? KeypadButton != nil
             switch tapStartAction {
             case .space,
-                 .character(_) where isForceSwiping:
+                 .character(_) where isForceSwiping && !isKeypadKeys:
                 currentTouchState.cursorMoveStartPosition = cursorMoveStartPosition
                 currentTouchState.hasTakenAction = false
                 key.keyTouchEnded()

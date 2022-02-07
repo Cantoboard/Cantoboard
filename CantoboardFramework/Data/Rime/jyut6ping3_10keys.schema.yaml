@@ -85,9 +85,9 @@ speller:
     - erase/y(ng|k)/              # y + ng/k 視作簡拼而非 jung/juk
     - derive/eoi(?=\d)/oey/       # 容錯
     - derive/eoi(?=\d)/eoy/       # 容錯
-    - derive/aa/r/                # 韻母簡拼
-    - derive/oe|eo/v/             # 韻母簡拼
-    - derive/ng/x/                # 韻母簡拼
+    # - derive/aa/r/                # 韻母簡拼
+    # - derive/oe|eo/v/             # 韻母簡拼
+    # - derive/ng/x/                # 韻母簡拼
     - derive/eo/oe/               # 容錯 eo/oe 不分
     - derive/oe/eo/               # 容錯 eo/oe 不分
     - derive/aa(?=\d)/a/          # 容錯
@@ -128,6 +128,3 @@ recognizer:
   import_preset: default
   patterns:
     punct: "^/([0-9]0?|[a-z]+)$"
-
-__patch:
-  - common.custom:/patch?

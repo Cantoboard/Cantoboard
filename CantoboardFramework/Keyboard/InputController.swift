@@ -66,7 +66,7 @@ struct KeyboardState: Equatable {
     }
     
     var shouldUseKeypad: Bool {
-        if activeSchema == .stroke && inputMode != .english,
+        if activeSchema.isKeypadBased && inputMode != .english,
            case .alphabetic = keyboardType {
             return true
         }

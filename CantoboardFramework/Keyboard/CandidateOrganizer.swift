@@ -116,7 +116,7 @@ class InputEngineCandidateSource: CandidateSource {
             curRimeCandidateIndex += 1
             // TODO, change N to change with candidate cell width. Show 1 English candidate at the end of the row.
             // For every N Rime candidates, mix an English candidate.
-            if curRimeCandidateIndex % 4 == 0 {
+            if curRimeCandidateIndex % 4 == 0 && isEnglishActive {
                 while curEnglishCandidateIndex < inputEngine.englishPrefectCandidatesStartIndex {
                     let hasAddedCandidate = appendEnglishCandidate(curEnglishCandidateIndex)
                     curEnglishCandidateIndex += 1

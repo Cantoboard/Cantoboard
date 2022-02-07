@@ -10,21 +10,15 @@ import UIKit
 
 // TODO Don't use KeyView here
 class KeypadButton: KeyView {
-    let colRowOrigin: CGPoint
-    let colRowSize: CGSize
-    var props: KeypadButtonProps
+    var colRowOrigin: CGPoint?
+    var colRowSize: CGSize?
     
     // TODO HACK Remove
     private let layoutConstants = Reference(LayoutConstants.forMainScreen)
     
-    init(props: KeypadButtonProps, keyboardState: KeyboardState, colRowOrigin: CGPoint, colRowSize: CGSize) {
-        self.colRowOrigin = colRowOrigin
-        self.colRowSize = colRowSize
-        self.props = props
-        
+    init() {
         super.init(layoutConstants: layoutConstants)
         shouldDisablePopup = true
-        setKeyCap(props.keyCap, keyboardState: keyboardState)
     }
     
     required init?(coder: NSCoder) {
@@ -32,6 +26,12 @@ class KeypadButton: KeyView {
     }
     
     func getSize(layoutConstants: LayoutConstants) -> CGSize {
+        guard let colRowOrigin = colRowOrigin,
+              let colRowSize = colRowSize else {
+            return .zero;
+        }
+
+        
         let unitSize = layoutConstants.keypadButtonUnitSize
         let numOfColumns = colRowSize.width
         let numOfRows = colRowSize.height
@@ -51,7 +51,5 @@ class KeypadButton: KeyView {
             titleLabel?.font = .systemFont(ofSize: 26)
         default:()
         }
-        
-        highlightedColor = props.keyCap.keypadButtonBgHighlightedColor
     }
 }

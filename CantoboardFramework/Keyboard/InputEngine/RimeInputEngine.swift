@@ -46,6 +46,13 @@ public enum RimeSchema: String, Codable {
         }
     }
     
+    var isKeypadBased: Bool {
+        switch self {
+        case .stroke, .jyutping10keys: return true
+        default: return false
+        }
+    }
+    
     var isCangjieFamily: Bool {
         self == .cangjie || self == .quick
     }
@@ -106,6 +113,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     func processChar(_ char: Character) -> Bool {
+        let char = schema != .jyutping10keys ? char.lowercasedChar : char
         if let asciiValue = char.asciiValue {
             processKey(Int32(asciiValue))
             return true

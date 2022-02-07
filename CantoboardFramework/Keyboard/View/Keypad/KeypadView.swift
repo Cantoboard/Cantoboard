@@ -28,7 +28,7 @@ class KeypadView: UIView, BaseKeyboardView {
         [ KeypadButtonProps(keyCap: .keyboardType(.emojis)) ],
     ]
     
-    private let rightButtonProps: [[KeypadButtonProps]] = [
+    private let rightButtonStrokeProps: [[KeypadButtonProps]] = [
         [ KeypadButtonProps(keyCap: .stroke("h")),
           KeypadButtonProps(keyCap: .stroke("s")),
           KeypadButtonProps(keyCap: .stroke("p")),
@@ -36,7 +36,25 @@ class KeypadView: UIView, BaseKeyboardView {
         [ KeypadButtonProps(keyCap: .stroke("n")),
           KeypadButtonProps(keyCap: .stroke("z")),
           KeypadButtonProps(keyCap: "?") ],
-        [ KeypadButtonProps(keyCap: ","), KeypadButtonProps(keyCap: "."), KeypadButtonProps(keyCap: "!"), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
+        [ KeypadButtonProps(keyCap: ","),
+          KeypadButtonProps(keyCap: "."),
+          KeypadButtonProps(keyCap: "!"),
+          KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
+        [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
+    ]
+    
+    private let rightButtonJyutPingProps: [[KeypadButtonProps]] = [
+        [ KeypadButtonProps(keyCap: " "),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("A")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("B")),
+          KeypadButtonProps(keyCap: .backspace) ],
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("C")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("D")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("E")),
+          KeypadButtonProps(keyCap: .rime(RimeChar.delimiter, nil, nil))],
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("F")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("G")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("H")), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
         [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
     ]
     
@@ -86,9 +104,6 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func initView() {
-        leftButtons = initButtons(buttonLayouts: leftButtonProps)
-        rightButtons = initButtons(buttonLayouts: rightButtonProps)
-        
         let candidatePaneView = CandidatePaneView(keyboardState: state, layoutConstants: layoutConstants)
         candidatePaneView.candidateOrganizer = candidateOrganizer
         candidatePaneView.delegate = self
@@ -96,45 +111,59 @@ class KeypadView: UIView, BaseKeyboardView {
         candidatePaneView.setupButtons()
 
         self.candidatePaneView = candidatePaneView
+        
+        if (state.isKeyboardAppearing) {
+            setupButtons()
+        }
     }
     
-    private func initButtons(buttonLayouts: [[KeypadButtonProps]]) -> [[KeypadButton]] {
+    private func initButtons(buttonLayouts: [[KeypadButtonProps]], existingButtons: [[KeypadButton]]) -> [[KeypadButton]] {
+        var existingButtons = existingButtons.flatMap { $0 }
         var buttons: [[KeypadButton]] = []
         var x: CGFloat = 0, y: CGFloat = 0
+        
+        let isFullWidth = !state.keyboardContextualType.halfWidthSymbol
+        
         for row in buttonLayouts {
             var buttonRow: [KeypadButton] = []
             for props in row {
-                let button = KeypadButton(props: props, keyboardState: state, colRowOrigin: CGPoint(x: x, y: y), colRowSize: props.colRowSize)
-                addSubview(button)
+                let button: KeypadButton
+                if !existingButtons.isEmpty {
+                    button = existingButtons.removeFirst()
+                } else {
+                    button = KeypadButton()
+                    button.titleLabel?.adjustsFontSizeToFitWidth = true
+                    addSubview(button)
+                }
+                
+                var keyCap = props.keyCap
+                switch keyCap.action {
+                case ",", "，": keyCap = isFullWidth ? "，" : ","
+                case ".", "。": keyCap = isFullWidth ? "。" : "."
+                case "?", "？": keyCap = isFullWidth ? "？" : "?"
+                case "!", "！": keyCap = isFullWidth ? "！" : "!"
+                default: ()
+                }
+                
+                button.colRowOrigin = CGPoint(x: x, y: y)
+                button.colRowSize = props.colRowSize
+                button.setKeyCap(keyCap, keyboardState: state)
+                button.highlightedColor = keyCap.buttonBgHighlightedColor
                 buttonRow.append(button)
                 x += 1
             }
             buttons.append(buttonRow)
             y += 1
         }
+        existingButtons.forEach { $0.removeFromSuperview() }
         return buttons
     }
     
     private func setupButtons() {
-        let isFullWidth = !state.keyboardContextualType.halfWidthSymbol
-        for row in leftButtons {
-            for button in row {
-                button.setupView()
-            }
-        }
-        for row in rightButtons {
-            for button in row {
-                var props = button.props
-                switch props.keyCap.action {
-                case ",", "，": props.keyCap = isFullWidth ? "，" : ","
-                case ".", "。": props.keyCap = isFullWidth ? "。" : "."
-                case "?", "？": props.keyCap = isFullWidth ? "？" : "?"
-                case "!", "！": props.keyCap = isFullWidth ? "！" : "!"
-                default: ()
-                }
-                button.setKeyCap(props.keyCap, keyboardState: state)
-            }
-        }
+        leftButtons = initButtons(buttonLayouts: leftButtonProps, existingButtons: leftButtons)
+        
+        let rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : rightButtonJyutPingProps
+        rightButtons = initButtons(buttonLayouts: rightButtonProps, existingButtons: rightButtons)
     }
     
     override func layoutSubviews() {
@@ -171,7 +200,9 @@ class KeypadView: UIView, BaseKeyboardView {
 
     private func changeState(prevState: KeyboardState, newState: KeyboardState) {
         let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType ||
-            prevState.isKeyboardAppearing != newState.isKeyboardAppearing
+            prevState.isKeyboardAppearing != newState.isKeyboardAppearing ||
+            prevState.keyboardType != newState.keyboardType ||
+            prevState.activeSchema != newState.activeSchema
         
         _state = newState
         if isViewDirty { setupButtons() }
@@ -250,7 +281,7 @@ extension KeypadView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         guard let touch = touches.first,
-              let keypadButton = touch.view as? KeypadButton else { return }
+              let keypadButton = touch.view as? KeyView else { return }
         
         touchHandler?.touchBegan(touch, key: keypadButton, with: event)
     }
@@ -258,7 +289,7 @@ extension KeypadView {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         guard let touch = touches.first,
-              let keypadButton = touch.view as? KeypadButton else { return }
+              let keypadButton = touch.view as? KeyView else { return }
         
         touchHandler?.touchMoved(touch, key: keypadButton, with: event)
     }
@@ -266,7 +297,7 @@ extension KeypadView {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         guard let touch = touches.first,
-              let keypadButton = touch.view as? KeypadButton else { return }
+              let keypadButton = touch.view as? KeyView else { return }
         
         touchHandler?.touchEnded(touch, key: keypadButton, with: event)
     }

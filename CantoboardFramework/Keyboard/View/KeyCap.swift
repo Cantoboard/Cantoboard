@@ -82,6 +82,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     character(String, /* hint */ String?, /* children key caps */ [KeyCap]?),
     cangjie(String, Bool),
     stroke(String),
+    jyutPing10Keys(String),
     emoji(String),
     keyboardType(KeyboardType),
     returnKey(ReturnKeyType),
@@ -121,7 +122,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _): return .character(c)
-        case .stroke(let c): return .character(c)
+        case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
         case .returnKey: return .newLine
@@ -176,7 +177,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapType: KeyCapType {
         switch self {
         case "\t": return .system
-        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .rime: return .input
+        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .jyutPing10Keys, .rime: return .input
         case .space: return .space
         case .returnKey: return .returnKey
         default: return .system
@@ -250,6 +251,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .rime(.sym, _, _): return "符"
         case .reverseLookup(let schema): return schema.signChar
         case .changeSchema(.yale): return "耶魯／劉錫祥"
+        case .changeSchema(.jyutping10keys): return "九宮格粵拼"
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
         case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
@@ -285,6 +287,18 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "p": return "丿"
             case "n": return "丶"
             case "z": return "乛"
+            default: return nil
+            }
+        case .jyutPing10Keys(let c):
+            switch c {
+            case "A": return "A B C"
+            case "B": return "D E F"
+            case "C": return "G H I"
+            case "D": return "J K L"
+            case "E": return "M N O"
+            case "F": return "P Q R S"
+            case "G": return "T U V"
+            case "H": return "W X Y Z"
             default: return nil
             }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
