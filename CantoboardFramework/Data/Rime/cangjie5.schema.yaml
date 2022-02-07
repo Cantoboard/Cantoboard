@@ -58,7 +58,7 @@ translator:
   enable_sentence: true
   enable_encoder: true
   encode_commit_history: true
-  enable_completion: false
+  enable_completion: true
   max_phrase_length: 5
   preedit_format:
     - 'xform/^([a-z ]*)$/\U$1\E/'

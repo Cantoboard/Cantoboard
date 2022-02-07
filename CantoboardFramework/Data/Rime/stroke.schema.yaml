@@ -54,7 +54,7 @@ speller:
 translator:
   dictionary: stroke
   enable_charset_filter: false
-  enable_completion: false
+  enable_completion: true
   
   preedit_format:
     - xlit/hspnz/一丨丿丶乙/
