@@ -53,6 +53,13 @@ public enum RimeSchema: String, Codable {
         }
     }
     
+    var is10Keys: Bool {
+        switch self {
+        case .jyutping10keys: return true
+        default: return false
+        }
+    }
+    
     var isCangjieFamily: Bool {
         self == .cangjie || self == .quick
     }

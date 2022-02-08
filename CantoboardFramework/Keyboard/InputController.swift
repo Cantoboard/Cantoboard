@@ -649,6 +649,28 @@ class InputController: NSObject {
     
     private func updateComposition() {
         refreshInputSettings()
+        
+        if state.activeSchema.is10Keys && state.inputMode != .english {
+            let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " "}) ?? ""
+            let rimeRawInput = inputEngine.rimeRawInput?.text ?? ""
+            let pendingInput = rimeRawInput.commonSuffix(with: rimeCompositionText)
+            let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - pendingInput.count)
+            
+            let firstCandidateComment = inputEngine.getRimeCandidateComment(0) ?? ""
+            let firstCommentWithoutToneMatchingPendingInput = firstCandidateComment.reduce(("", 0), { strAndCounter, c in
+                var str = strAndCounter.0
+                var counter = strAndCounter.1
+                if strAndCounter.1 >= pendingInput.count || c.isNumber { return strAndCounter }
+                str.append(c)
+                if c != " " { counter += 1 }
+                return (str, counter)
+            }).0
+            
+            let composition = String(selectedInput + firstCommentWithoutToneMatchingPendingInput)
+            updateComposition(Composition(text: composition, caretIndex: composition.count))
+            return
+        }
+        
         switch state.inputMode {
         case .chinese: updateComposition(inputEngine.composition)
         case .english: updateComposition(inputEngine.englishComposition)
@@ -711,7 +733,9 @@ class InputController: NSObject {
         if let englishText = inputEngine.englishComposition?.text,
            var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
-            if state.inputMode == .english || state.inputMode == .mixed && composingText.first?.isEnglishLetter ?? false {
+            if inputEngine.rimeSchema.is10Keys && state.inputMode != .english {
+                composingText = inputEngine.getRimeCandidate(0) ?? ""
+            } else if state.inputMode == .english || state.inputMode == .mixed && composingText.first?.isEnglishLetter ?? false {
                 composingText = englishText
             } else if inputEngine.rimeSchema.isCantonese && Settings.cached.toneInputMode == .vxq {
                 var englishTailLength = 0

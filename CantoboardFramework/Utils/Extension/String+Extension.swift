@@ -29,6 +29,10 @@ extension String {
         return Self.caseMorph(rimeText: self, englishText: caseForm)
     }
     
+    func commonSuffix(with: String) -> String {
+        String(self.reversed()).commonPrefix(with: String(with.reversed()))
+    }
+    
     // Apply the case if english text to rime text. e.g. rime text: a b'c, english text: Abc. Return A b'c
     private static func caseMorph(rimeText: String, englishText: String) -> String {
         var casedMorphedText = ""

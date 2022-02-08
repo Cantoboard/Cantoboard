@@ -200,6 +200,10 @@ class BilingualInputEngine: InputEngine {
         return updateEnglishEngineState
     }
     
+    var rimeRawInput: Composition? {
+        rimeInputEngine.rawInput
+    }
+    
     var rimeComposition: Composition? {
         rimeInputEngine.composition
     }
