@@ -150,8 +150,8 @@ class CandidatePaneView: UIControl {
     }
     
     private weak var collectionView: CandidateCollectionView!
-    private weak var expandButton, backspaceButton, charFormButton: UIButton!
-    private weak var inputModeButton: StatusButton!
+    private weak var backspaceButton, charFormButton: UIButton!
+    private weak var expandButton, inputModeButton: StatusButton!
     private weak var leftSeparator, middleSeparator, rightSeparator: UIView!
     weak var delegate: CandidatePaneViewDelegate?
     
@@ -223,9 +223,14 @@ class CandidatePaneView: UIControl {
     }
     
     private func createButtons() {
-        expandButton = createAndAddButton(SimpleHighlightableButton())
+        expandButton = createAndAddButton(StatusButton())
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
-
+        expandButton.shouldShowMenuIndicator = true
+        expandButton.shouldShowStatusBackground = false
+        expandButton.handleStatusMenu = { [weak self] in
+            return self?.handleStatusMenu(from: $0, with: $1) ?? false
+        }
+        
         inputModeButton = createAndAddButton(StatusButton())
         inputModeButton.addTarget(self, action: #selector(self.filterButtonClick), for: .touchUpInside)
         inputModeButton.handleStatusMenu = { [weak self] in

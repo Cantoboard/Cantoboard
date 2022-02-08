@@ -57,6 +57,12 @@ class StatusButton: UIButton {
         }
     }
     
+    var shouldShowStatusBackground: Bool = true {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -92,7 +98,7 @@ class StatusButton: UIButton {
             titleLabel?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
             statusSquareBg?.frame = bounds.insetBy(dx: Self.statusInset, dy: Self.statusInset)
         }
-        statusSquareBg?.isHidden = isMini
+        statusSquareBg?.isHidden = isMini || !shouldShowStatusBackground
         setTitleColor(isMini ? ButtonColor.keyHintColor : .label, for: .normal)
         
         if !isMini && shouldShowMenuIndicator {
