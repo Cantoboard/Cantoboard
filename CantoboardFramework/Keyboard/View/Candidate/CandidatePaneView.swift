@@ -225,10 +225,11 @@ class CandidatePaneView: UIControl {
     private func createButtons() {
         expandButton = createAndAddButton(StatusButton())
         expandButton.addTarget(self, action: #selector(self.expandButtonClick), for: .touchUpInside)
-        expandButton.shouldShowMenuIndicator = true
         expandButton.shouldShowStatusBackground = false
         expandButton.handleStatusMenu = { [weak self] in
-            return self?.handleStatusMenu(from: $0, with: $1) ?? false
+            guard let self = self else { return false }
+            guard self.expandButton.shouldShowMenuIndicator else { return false }
+            return self.handleStatusMenu(from: $0, with: $1)
         }
         
         inputModeButton = createAndAddButton(StatusButton())
@@ -259,6 +260,7 @@ class CandidatePaneView: UIControl {
     func setupButtons() {
         let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
+        expandButton.shouldShowMenuIndicator = mode == .row
         
         var title: String?
         var shouldShowMiniIndicator = false
