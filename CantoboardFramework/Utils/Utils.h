@@ -27,7 +27,7 @@ typedef struct __attribute__((packed)) {
 
 @interface PredictiveTextEngine: NSObject
 - (id)init:(NSString*) ngramFilePath;
-- (NSArray*)predict:(NSString*) contextText;
+- (NSArray*)predict:(NSString*) contextText filterOffensiveWords:(bool) shouldFilterOffensiveWords;
 @end
 
 #endif /* Utils_h */

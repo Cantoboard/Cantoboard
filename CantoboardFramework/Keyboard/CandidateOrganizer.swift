@@ -527,7 +527,8 @@ class CandidateOrganizer {
             
             if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty &&
                (autoSuggestionType == .halfWidthPunctuation || autoSuggestionType == .fullWidthPunctuation) {
-                let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText) as NSArray as? [String]
+                let shouldFilterOffensiveWords = !Settings.cached.predictiveTextOffensiveWord
+                let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText, filterOffensiveWords: shouldFilterOffensiveWords) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
                     DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")
                     candidateSource = AutoSuggestionCandidateSource(predictiveCandidates)

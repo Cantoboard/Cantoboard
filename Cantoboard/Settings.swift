@@ -177,6 +177,8 @@ extension Settings {
                 [
                     Switch(LocalizedStrings.enablePredictiveText, \.enablePredictiveText,
                            LocalizedStrings.enablePredictiveText_description),
+                    Switch(LocalizedStrings.predictiveTextOffensiveWord, \.predictiveTextOffensiveWord,
+                           LocalizedStrings.predictiveTextOffensiveWord_description),
                     Segment(LocalizedStrings.compositionMode, \.compositionMode, [
                             LocalizedStrings.compositionMode_immediate: .immediate,
                             LocalizedStrings.compositionMode_multiStage: .multiStage,

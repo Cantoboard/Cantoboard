@@ -111,6 +111,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultEnableHKCorrection: Bool = true
     private static let defaultFullWidthSpaceMode: FullWidthSpaceMode = .off
     private static let defaultEnablePredictiveText: Bool = true
+    private static let defaultPredictiveTextOffensiveWord: Bool = false
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -132,6 +133,7 @@ public struct Settings: Codable, Equatable {
     public var enableHKCorrection: Bool
     public var fullWidthSpaceMode: FullWidthSpaceMode
     public var enablePredictiveText: Bool
+    public var predictiveTextOffensiveWord: Bool
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -154,6 +156,7 @@ public struct Settings: Codable, Equatable {
         enableHKCorrection = Self.defaultEnableHKCorrection
         fullWidthSpaceMode = Self.defaultFullWidthSpaceMode
         enablePredictiveText = Self.defaultEnablePredictiveText
+        predictiveTextOffensiveWord = Self.defaultPredictiveTextOffensiveWord
     }
     
     public init(from decoder: Decoder) throws {
@@ -178,6 +181,7 @@ public struct Settings: Codable, Equatable {
         self.enableHKCorrection = try container.decodeIfPresent(Bool.self, forKey: .enableHKCorrection) ?? Settings.defaultEnableHKCorrection
         self.fullWidthSpaceMode = try container.decodeIfPresent(FullWidthSpaceMode.self, forKey: .fullWidthSpaceMode) ?? Settings.defaultFullWidthSpaceMode
         self.enablePredictiveText = try container.decodeIfPresent(Bool.self, forKey: .enablePredictiveText) ?? Settings.defaultEnablePredictiveText
+        self.predictiveTextOffensiveWord = try container.decodeIfPresent(Bool.self, forKey: .predictiveTextOffensiveWord) ?? Settings.defaultPredictiveTextOffensiveWord
     }
     
     private static var _cached: Settings?

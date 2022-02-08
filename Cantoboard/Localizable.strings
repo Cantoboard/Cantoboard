@@ -51,6 +51,8 @@
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.enablePredictiveText" = "關聯字";
 "chineseInputSettings.enablePredictiveText.description" = "打完字之後預測同埋建議下一個字。";
+"chineseInputSettings.predictiveTextOffensiveWord" = "粗口關聯字";
+"chineseInputSettings.predictiveTextOffensiveWord.description" = "關聯字顯唔顯示粗口。";
 "chineseInputSettings.compositionMode" = "輸入模式";
 "chineseInputSettings.compositionMode.immediate" = "即時";
 "chineseInputSettings.compositionMode.multiStage" = "兩段";

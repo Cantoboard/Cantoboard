@@ -48,6 +48,8 @@ class LocalizedStrings {
     static let chineseInputSettings = localizedString("chineseInputSettings")
     static let enablePredictiveText = localizedString("chineseInputSettings.enablePredictiveText")
     static let enablePredictiveText_description = localizedString("chineseInputSettings.enablePredictiveText.description")
+    static let predictiveTextOffensiveWord = localizedString("chineseInputSettings.predictiveTextOffensiveWord")
+    static let predictiveTextOffensiveWord_description = localizedString("chineseInputSettings.predictiveTextOffensiveWord.description")
     static let compositionMode = localizedString("chineseInputSettings.compositionMode")
     static let compositionMode_immediate = localizedString("chineseInputSettings.compositionMode.immediate")
     static let compositionMode_multiStage = localizedString("chineseInputSettings.compositionMode.multiStage")
