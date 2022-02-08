@@ -418,8 +418,6 @@ class InputController: NSObject {
             return
         case .toggleInputMode(let toInputMode):
             guard state.reverseLookupSchema == nil else {
-                // Disable reverse look up mode on tap.
-                state.reverseLookupSchema = nil
                 changeSchema()
                 return
             }
@@ -437,7 +435,7 @@ class InputController: NSObject {
             }
         case .reverseLookup(let schema):
             state.reverseLookupSchema = schema
-            changeSchema()
+            changeSchema(shouldLeaveReverseLookupMode: false)
             return
         case .changeSchema(let schema):
             state.mainSchema = schema
@@ -544,12 +542,12 @@ class InputController: NSObject {
         }
     }
     
-    private func changeSchema() {
+    private func changeSchema(shouldLeaveReverseLookupMode: Bool = true) {
         inputEngine.rimeSchema = state.activeSchema
         if state.inputMode == .english {
             handleKey(.toggleInputMode(state.inputMode.afterToggle))
         }
-        clearInput(shouldLeaveReverseLookupMode: false)
+        clearInput(shouldLeaveReverseLookupMode: shouldLeaveReverseLookupMode)
     }
     
     private func clearInput(shouldLeaveReverseLookupMode: Bool = true) {
