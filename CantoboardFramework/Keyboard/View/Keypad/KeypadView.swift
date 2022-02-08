@@ -58,6 +58,21 @@ class KeypadView: UIView, BaseKeyboardView {
         [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
     ]
     
+    private let rightButtonCiPingProps: [[KeypadButtonProps]] = [
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("I")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("J")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("K")),
+          KeypadButtonProps(keyCap: .backspace) ],
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("L")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("M")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("N")),
+          KeypadButtonProps(keyCap: .rime(RimeChar.delimiter, nil, nil))],
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("O")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("P")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("Q")), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
+        [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
+    ]
+    
     private weak var candidatePaneView: CandidatePaneView?
     public var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
     
@@ -166,7 +181,7 @@ class KeypadView: UIView, BaseKeyboardView {
         
         leftButtons = initButtons(buttonLayouts: leftButtonProps, existingButtons: leftButtons)
         
-        let rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : rightButtonJyutPingProps
+        let rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : state.activeSchema == .ciping ? rightButtonCiPingProps : rightButtonJyutPingProps
         rightButtons = initButtons(buttonLayouts: rightButtonProps, existingButtons: rightButtons)
     }
     

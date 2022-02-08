@@ -10,4 +10,5 @@ patch:
     - {schema: stroke}
     - {schema: loengfan}
     - {schema: jyut6ping3_10keys}
+    - {schema: jyut6ping3_ciping}
   "menu/page_size": 10

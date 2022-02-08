@@ -252,6 +252,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .reverseLookup(let schema): return schema.signChar
         case .changeSchema(.yale): return "耶魯／劉錫祥"
         case .changeSchema(.jyutping10keys): return "九宮格粵拼"
+        case .changeSchema(.ciping): return "九宮格馳拼"
         case .changeSchema(let schema): return schema.shortName
         case .toggleInputMode(.english, _): return "英文"
         case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
@@ -299,6 +300,15 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "F": return "P Q R S"
             case "G": return "T U V"
             case "H": return "W X Y Z"
+            case "I": return "j  i  f"
+            case "J": return "w  u  l"
+            case "K": return "q  yu  h"
+            case "L": return "m  e  b"
+            case "M": return "n  o  d"
+            case "N": return "ng  eo  g"
+            case "O": return "z  a  p"
+            case "P": return "c  aa  t"
+            case "Q": return "s  oe  k"
             default: return nil
             }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized

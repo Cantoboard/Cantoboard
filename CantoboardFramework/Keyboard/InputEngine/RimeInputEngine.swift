@@ -19,6 +19,7 @@ public enum RimeSchema: String, Codable {
     case stroke = "stroke"
     case loengfan = "loengfan"
     case jyutping10keys = "jyut6ping3_10keys"
+    case ciping = "jyut6ping3_ciping"
     
     var signChar: String {
         switch self {
@@ -30,6 +31,7 @@ public enum RimeSchema: String, Codable {
         case .mandarin: return "普"
         case .stroke: return "筆"
         case .jyutping10keys: return "粵"
+        case .ciping: return "粵"
         }
     }
     
@@ -43,19 +45,20 @@ public enum RimeSchema: String, Codable {
         case .mandarin: return "普拼"
         case .stroke: return "筆劃"
         case .jyutping10keys: return "粵格"
+        case .ciping: return "馳拼"
         }
     }
     
     var isKeypadBased: Bool {
         switch self {
-        case .stroke, .jyutping10keys: return true
+        case .stroke, .jyutping10keys, .ciping: return true
         default: return false
         }
     }
     
     var is10Keys: Bool {
         switch self {
-        case .jyutping10keys: return true
+        case .jyutping10keys, .ciping: return true
         default: return false
         }
     }
@@ -77,7 +80,7 @@ public enum RimeSchema: String, Codable {
     
     var supportMixedMode: Bool {
         switch self {
-        case .stroke, .jyutping10keys: return false
+        case .stroke, .jyutping10keys, .ciping: return false
         default: return true
         }
     }
@@ -120,7 +123,7 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     func processChar(_ char: Character) -> Bool {
-        let char = schema != .jyutping10keys ? char.lowercasedChar : char
+        let char = !schema.is10Keys ? char.lowercasedChar : char
         if let asciiValue = char.asciiValue {
             processKey(Int32(asciiValue))
             return true

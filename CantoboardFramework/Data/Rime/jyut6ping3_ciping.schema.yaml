@@ -1,0 +1,132 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: jyut6ping3_ciping
+  name: 九宮格（馳拼）粵語拼音
+  version: "2020.11.26"
+  author:
+    - sgalal <sgalal.me@outlook.com>
+    - LeiMaau <leimaau@qq.com>
+    - chaaklau <chaakming@gmail.com>
+    - laubonghaudoi <laubonghaudoi@icloud.com>
+    - tanxpyox <tanxpyox@gmail.com>
+    - William915 <William915@gmail.com>
+    - szc126 (@szc126)
+    - Bing Jeung <bing@ososo.io>
+    - Ayaka Mikazuki <ayaka@mail.shn.hk>
+
+  description: |-
+    採用香港語言學學會粵語拼音方案
+    https://www.lshk.org/jyutping
+    支援聲調顯示同輸入
+    Telegram 用户交流組 https://t.me/rime_cantonese
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - options: [ noop, variants_hk, simp_hk2s ]
+    states: [ 傳統漢字, 香港傳統漢字, 大陆简化汉字 ]
+    reset: 1
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+  filters:
+    - simplifier@variants_hk
+    - simplifier@simp_hk2s
+    - simplifier
+    - uniquifier
+
+menu:
+  alternative_select_keys: "          " # Change select key to 0x7f to allow us to type number keys for tone input.
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba654321IJKLMNOPQ
+  delimiter: " '"
+  algebra:
+    # 取消下兩行註釋，支援疑影交替： ng- 併入 Ø-
+    #- derive/^ng(?=[aeiou])//
+
+    # 取消下行註釋，支援泥來合流： n- 併入 l- ，如「你」讀若「理」
+    #- derive/^n(?!g)/l/
+
+    # 取消下行註釋，支援圓唇輔音合口韻缺位： gwo-, kwo- 併入 go-, ko- ，如「國」讀若「各」、「廓」讀若「確」
+    #- derive/^(g|k)w(?=o)/$1/
+
+    # 取消下行註釋，支援獨立鼻音韻 ng 併入 m，如「吳」讀若「唔」
+    #- derive/^ng(?=\d)/m/
+
+    - derive/^(?=[aeiou])/q/
+    - xform/aa/r/
+    - xform/oe|eo/v/
+    - xform/ng/x/
+    - xform/yu/y/
+    - derive/v/N/
+    - derive/v/Q/
+    - derive/jy/ju/
+    - derive/ji/i/
+    - derive/wu/u/
+    - derive/jy/y/
+    - derive/jy/qy/
+    - derive/r(?=\d)/a/
+    - derive/\d//
+
+    # - abbrev/^([a-z]).+(\d)$/$1$2/
+    # - abbrev/^([gk]w).+(\d)$/$1$2/
+    - abbrev/^([a-z]).+$/$1/
+    # - abbrev/^([gk]w).+$/$1/
+
+    - derive/[jif]/I/
+    - derive/[wul]/J/
+    - derive/[qyh]/K/
+    - derive/[meb]/L/
+    - derive/[nod]/M/
+    - derive/[xvg]/N/
+    - derive/[zap]/O/
+    - derive/[crt]/P/
+    - derive/[svk]/Q/
+
+translator:
+  dictionary: jyut6ping3
+  spelling_hints: 256
+  max_homophones: 10
+  always_show_comments: true
+  prism: jyut6ping3_ciping
+
+variants_hk:
+  option_name: variants_hk
+  opencc_config: t2hk.json
+
+simp_hk2s:
+  option_name: simp_hk2s
+  opencc_config: hk2s.json
+
+punctuator:
+  import_preset: symbols_cantonese
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/([0-9]0?|[a-z]+)$"
