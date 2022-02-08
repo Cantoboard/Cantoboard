@@ -95,7 +95,9 @@ class KeypadView: UIView, BaseKeyboardView {
         if superview == nil {
             touchHandler = nil
         } else {
-            touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
+            let touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
+            touchHandler.allowCaretSwiping = !state.activeSchema.is10Keys
+            self.touchHandler = touchHandler
         }
     }
     
@@ -160,6 +162,8 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func setupButtons() {
+        touchHandler?.allowCaretSwiping = !state.activeSchema.is10Keys
+        
         leftButtons = initButtons(buttonLayouts: leftButtonProps, existingButtons: leftButtons)
         
         let rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : rightButtonJyutPingProps

@@ -72,6 +72,7 @@ class TouchHandler {
         }
     }
     var keyboardIdiom: LayoutIdiom
+    var allowCaretSwiping = true
     
     private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
@@ -198,6 +199,8 @@ class TouchHandler {
                 return
             }
             
+            if !allowCaretSwiping { return }
+            
             // Ignore short swipe.
             let point = touch.location(in: keyboardView), deltaX = abs(point.x - cursorMoveStartPosition.x)
             guard deltaX >= Self.initialCursorMovingThreshold else { return }
@@ -205,10 +208,10 @@ class TouchHandler {
             // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
             let tapStartAction = currentTouchState.initialAction
             let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2 && deltaX > Self.swipeXThreshold
-            let isKeypadKeys = key as? KeypadButton != nil
+            
             switch tapStartAction {
             case .space,
-                 .character(_) where isForceSwiping && !isKeypadKeys:
+                 .character(_) where isForceSwiping:
                 currentTouchState.cursorMoveStartPosition = cursorMoveStartPosition
                 currentTouchState.hasTakenAction = false
                 key.keyTouchEnded()
