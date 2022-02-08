@@ -20,7 +20,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 6, right: 5)
     private static let padTopRowButtonEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 5, right: 4)
     
-    private var keyHintLayer: KeyHintLayer?
+    private var leftKeyHintLayer: KeyHintLayer?
+    private var rightKeyHintLayer: KeyHintLayer?
     private var swipeDownHintLayer: KeyHintLayer?
     private var swipeDownPercentage: CGFloat = 0 {
         didSet {
@@ -159,7 +160,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
-        var buttonHintTitle = keyCap.buttonHint
+        var buttonLeftHintTitle = keyCap.buttonLeftHint
+        var buttonRightHintTitle = keyCap.buttonRightHint
         var setHighlightedBackground = false
         
         var normalImage: UIImage?
@@ -172,7 +174,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 backgroundColor = ButtonColor.systemKeyBackgroundColor
             }
             shadowOpacity = 0
-            buttonHintTitle = nil
+            buttonLeftHintTitle = nil
+            buttonRightHintTitle = nil
         } else if popupView != nil && keyboardIdiom == .phone {
             backgroundColor = ButtonColor.popupBackgroundColor
             maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
@@ -240,7 +243,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         titleLabel?.adjustsFontSizeToFitWidth = true
         highlightedColor = setHighlightedBackground ? keyCap.buttonBgHighlightedColor : nil
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
-        setupKeyHint(keyCap, buttonHintTitle, keyCap.buttonHintFgColor)
+        
+        setupKeyHint(keyCap, buttonRightHintTitle, keyCap.buttonHintFgColor, keyHintLayer: &rightKeyHintLayer)
+        setupKeyHint(keyCap, buttonLeftHintTitle, keyCap.buttonHintFgColor, keyHintLayer: &leftKeyHintLayer)
         
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
@@ -250,16 +255,16 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         setNeedsLayout()
     }
     
-    private func setupKeyHint(_ keyCap: KeyCap, _ buttonHintTitle: String?, _ foregroundColor: UIColor) {
+    private func setupKeyHint(_ keyCap: KeyCap, _ buttonHintTitle: String?, _ foregroundColor: UIColor, keyHintLayer: inout KeyHintLayer?) {
         if let buttonHintTitle = buttonHintTitle {
             if keyHintLayer == nil {
-                let keyHintLayer = KeyHintLayer()
-                keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
-                self.keyHintLayer = keyHintLayer
-                layer.addSublayer(keyHintLayer)
-                keyHintLayer.layoutSublayers()
+                let newKeyHintLayer = KeyHintLayer()
+                newKeyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
+                keyHintLayer = newKeyHintLayer
+                layer.addSublayer(newKeyHintLayer)
+                newKeyHintLayer.layoutSublayers()
             }
-            self.keyHintLayer?.setup(keyCap: keyCap, hintText: buttonHintTitle)
+            keyHintLayer?.setup(keyCap: keyCap, hintText: buttonHintTitle)
         } else {
             keyHintLayer?.removeFromSuperlayer()
             keyHintLayer = nil
@@ -283,7 +288,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         if keyCap == .keyboardType(.emojis) { setupView() }
         
-        if let keyHintLayer = keyHintLayer {
+        if let keyHintLayer = rightKeyHintLayer {
             keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
         }
         
@@ -292,9 +297,14 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     }
     
     override func layoutSubviews() {
-        if let keyHintLayer = keyHintLayer {
+        if let keyHintLayer = rightKeyHintLayer {
             keyHintLayer.isHidden = popupView != nil
-            layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.topRightInsets)
+            layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
+        }
+        
+        if let keyHintLayer = leftKeyHintLayer {
+            keyHintLayer.isHidden = popupView != nil
+            layout(textLayer: keyHintLayer, atBottomLeftCornerWithInsets: KeyHintLayer.hintInsets)
         }
         
         if let swipeDownHintLayer = swipeDownHintLayer {

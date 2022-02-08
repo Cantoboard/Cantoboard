@@ -79,7 +79,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     none,
     backspace,
     toggleInputMode(/* toMode */ InputMode, RimeSchema?),
-    character(String, /* hint */ String?, /* children key caps */ [KeyCap]?),
+    character(String, /* rightHint */ String?, /* leftHint */ String?, /* children key caps */ [KeyCap]?),
     cangjie(String, Bool),
     stroke(String),
     jyutPing10Keys(String),
@@ -104,11 +104,11 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
     public init(stringLiteral value: String) {
-        self = .character(value, nil, nil)
+        self = .character(value, nil, nil, nil)
     }
     
     public init(_ char: String) {
-        self = .character(char, nil, nil)
+        self = .character(char, nil, nil, nil)
     }
     
     public init(rime char: RimeChar) {
@@ -120,7 +120,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .none: return .none
         case .backspace: return .backspace
         case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
-        case .character(let c, _, _): return .character(c)
+        case .character(let c, _, _, _): return .character(c)
         case .cangjie(let c, _): return .character(c)
         case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
@@ -144,7 +144,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var character: Character? {
         switch self {
-        case .character(let c, _, _): return c.first ?? nil
+        case .character(let c, _, _, _): return c.first ?? nil
         default: return nil
         }
     }
@@ -275,7 +275,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "】": return "⠀】"
         case "\t": return nil
         case "——": return "⸻"
-        case .character(let text, _, _): return text
+        case .character(let text, _, _, _): return text
         case .cangjie(let c, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
@@ -317,13 +317,20 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 
     }
     
-    var buttonHint: String? {
+    var buttonRightHint: String? {
         switch self {
-        case .character(_, let hint, _) where hint != nil: return hint
+        case .character(_, let rightHint, _, _) where rightHint != nil: return rightHint
         case .rime(_, let hint, _) where hint != nil: return hint
         case .cangjie(let c, true): return c
         case .space: return "Cantoboard"
         default: return barHint
+        }
+    }
+    
+    var buttonLeftHint: String? {
+        switch self {
+        case .character(_, _, let leftHint, _): return leftHint
+        default: return nil
         }
     }
     
@@ -355,7 +362,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
-        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .character(_, _, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
@@ -455,7 +462,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var defaultChildKeyCapTitle: String? {
         switch self {
-        case .character(".", "/", _): return nil // Contextual sym key in url mode
+        case .character(".", "/", _, _): return nil // Contextual sym key in url mode
         default: return self.buttonText
         }
     }

@@ -90,7 +90,7 @@ class KeyPopupView: UIView {
             label.baselineAdjustment = .alignCenters
             label.backgroundColor = .clear
             
-            if let hint = keyCaps[i].buttonHint {
+            if let hint = keyCaps[i].buttonRightHint {
                 let hintLayer = KeyHintLayer()
                 hintLayer.setup(keyCap: keyCap, hintText: hint)
                 hintLayers.append(hintLayer)

@@ -292,7 +292,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         switch keyCap {
         case .toggleInputMode:
             return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
-        case .character(let c, var hint, var childrenKeyCaps):
+        case .character(let c, var rightHint, var leftHint, var childrenKeyCaps):
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased && c.count == 1 ? c.uppercased() : c
             
@@ -306,44 +306,61 @@ class KeyboardView: UIView, BaseKeyboardView {
             }
             
             if !isInEnglishMode && state.activeSchema.isCantonese {
+                if isInLongPressMode {
+                    switch c {
+                    case "r":
+                        leftHint = "aa"
+                    case "v":
+                        switch state.activeSchema {
+                        case .jyutping: leftHint = "oe/eo"
+                        case .yale: leftHint = "eu"
+                        default: ()
+                        }
+                    case "x":
+                        leftHint = "ng"
+                    default: ()
+                    }
+                }
+                
                 if c == "r" {
-                    hint = "反"
+                    rightHint = "反"
                     childrenKeyCaps = [KeyCap(keyChar), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
                 } else if state.isComposing {
                     if isInLongPressMode {
                         switch c {
                         case "f":
-                            hint = "4"
+                            rightHint = "4"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone4)]
                         case "g":
-                            hint = "5"
+                            rightHint = "5"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone5)]
                         case "h":
-                            hint = "6"
+                            rightHint = "6"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone6)]
                         case "c":
-                            hint = "1"
+                            rightHint = "1"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone1)]
                         case "v":
-                            hint = "2"
+                            rightHint = "2"
+                            leftHint = "oe/eo"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone2)]
                         case "b":
-                            hint = "3"
+                            rightHint = "3"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone3)]
                         default: ()
                         }
                     } else {
                         switch c {
-                        case "v": hint = "1/4"
-                        case "x": hint = "2/5"
-                        case "q": hint = "3/6"
+                        case "v": rightHint = "1/4"
+                        case "x": rightHint = "2/5"
+                        case "q": rightHint = "3/6"
                         default: ()
                         }
                     }
                 }
             }
             
-            return .character(keyChar, hint, childrenKeyCaps)
+            return .character(keyChar, rightHint, leftHint, childrenKeyCaps)
         case .shift: return .shift(shiftState)
         case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
             switch state.keyboardContextualType {

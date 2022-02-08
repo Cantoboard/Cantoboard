@@ -10,8 +10,8 @@ import UIKit
 
 // TODO Don't use KeyView here
 class KeypadButton: KeyView {
-    var colRowOrigin: CGPoint?
-    var colRowSize: CGSize?
+    var colRowOrigin: CGPoint = .zero
+    var colRowSize: CGSize = CGSize(width: 1, height: 1)
     
     // TODO HACK Remove
     private let layoutConstants = Reference(LayoutConstants.forMainScreen)
@@ -26,12 +26,6 @@ class KeypadButton: KeyView {
     }
     
     func getSize(layoutConstants: LayoutConstants) -> CGSize {
-        guard let colRowOrigin = colRowOrigin,
-              let colRowSize = colRowSize else {
-            return .zero;
-        }
-
-        
         let unitSize = layoutConstants.keypadButtonUnitSize
         let numOfColumns = colRowSize.width
         let numOfRows = colRowSize.height

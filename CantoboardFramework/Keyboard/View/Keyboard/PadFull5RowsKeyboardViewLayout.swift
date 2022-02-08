@@ -100,7 +100,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case .nextKeyboard,
                  .keyboardType where index <= 2:
                 width = (padFull5RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
-            case .keyboardType, .dismissKeyboard, .character(".com", _, _):
+            case .keyboardType, .dismissKeyboard, .character(".com", _, _, _):
                 width = padFull5RowsLayoutConstants.largeSystemKeyWidth
             case .character, .cangjie, .currency, .singleQuote, .doubleQuote: width = inputKeyWidth
             default:

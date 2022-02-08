@@ -102,7 +102,7 @@ class CandidateCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         guard let keyHintLayer = keyHintLayer else { return }
-        layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.topRightInsets)
+        layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
     }
     
     private func layout(_ bounds: CGRect) {

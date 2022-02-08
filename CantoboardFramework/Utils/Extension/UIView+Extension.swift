@@ -9,6 +9,25 @@ import Foundation
 import UIKit
 
 internal extension UIView {
+    func layout(textLayer: CATextLayer, atBottomLeftCornerWithInsets insets: UIEdgeInsets) {
+        guard !textLayer.isHidden,
+              let text = textLayer.string as? String,
+              let superlayerBounds = textLayer.superlayer?.bounds
+            else { return }
+        
+        // let wightAdjustmentRatio: CGFloat = UIScreen.main.bounds.size.isPortrait && bounds ? 1 : 1.25
+        var height = superlayerBounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
+        let minHeight: CGFloat = 10
+        height = max(height, minHeight)
+        
+        textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height
+        textLayer.alignmentMode = .left
+        
+        let size = text.size(withFont: UIFont.systemFont(ofSize: textLayer.fontSize))
+        
+        textLayer.frame = CGRect(origin: CGPoint(x: insets.left, y: superlayerBounds.height - size.height - insets.bottom), size: size)
+    }
+    
     func layout(textLayer: CATextLayer, atTopRightCornerWithInsets insets: UIEdgeInsets) {
         guard !textLayer.isHidden,
               let text = textLayer.string as? String,
