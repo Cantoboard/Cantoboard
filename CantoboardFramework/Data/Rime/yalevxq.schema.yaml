@@ -79,9 +79,6 @@ speller:
     - derive/yu(?!ng|k)/y/
     - erase/^y\d$/
     - derive/oe|eo/eu/
-    - derive/aa/r/
-    - derive/eu/v/
-    - derive/ng/x/
     - derive/aa(?=\d)/a/
     - derive/z/j/
     - derive/c/ch/
