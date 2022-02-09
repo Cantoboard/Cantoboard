@@ -46,15 +46,15 @@ class KeypadView: UIView, BaseKeyboardView {
     private let rightButtonJyutPingProps: [[KeypadButtonProps]] = [
         [ KeypadButtonProps(keyCap: " "),
           KeypadButtonProps(keyCap: .jyutPing10Keys("A")),
-          KeypadButtonProps(keyCap: .jyutPing10Keys("B")),
-          KeypadButtonProps(keyCap: .backspace) ],
-        [ KeypadButtonProps(keyCap: .jyutPing10Keys("C")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("D")),
-          KeypadButtonProps(keyCap: .jyutPing10Keys("E")),
+          KeypadButtonProps(keyCap: .backspace) ],
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("G")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("J")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("M")),
           KeypadButtonProps(keyCap: .rime(RimeChar.delimiter, nil, nil))],
-        [ KeypadButtonProps(keyCap: .jyutPing10Keys("F")),
-          KeypadButtonProps(keyCap: .jyutPing10Keys("G")),
-          KeypadButtonProps(keyCap: .jyutPing10Keys("H")), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
+        [ KeypadButtonProps(keyCap: .jyutPing10Keys("P")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("T")),
+          KeypadButtonProps(keyCap: .jyutPing10Keys("W")), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
         [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
     ]
     

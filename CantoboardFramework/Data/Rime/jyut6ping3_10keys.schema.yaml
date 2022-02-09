@@ -63,7 +63,7 @@ menu:
   alternative_select_keys: "          " # Change select key to 0x7f to allow us to type number keys for tone input.
 
 speller:
-  alphabet: zyxwvutsrqponmlkjihgfedcba654321ABCDEFGH
+  alphabet: zyxwvutsrqponmlkjihgfedcba654321ADGJMPTW
   delimiter: " '"
   algebra:
     # 取消下兩行註釋，支援疑影交替： ng- 併入 Ø-
@@ -98,13 +98,13 @@ speller:
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
     # - abbrev/^([gk]w|ng).+$/$1/   # 首2字母簡拼
     - xform/[a-c]/A/
-    - xform/[d-f]/B/
-    - xform/[g-i]/C/
-    - xform/[j-l]/D/
-    - xform/[m-o]/E/
-    - xform/[p-s]/F/
-    - xform/[t-v]/G/
-    - xform/[w-z]/H/
+    - xform/[d-f]/D/
+    - xform/[g-i]/G/
+    - xform/[j-l]/J/
+    - xform/[m-o]/M/
+    - xform/[p-s]/P/
+    - xform/[t-v]/T/
+    - xform/[w-z]/W/
 
 translator:
   dictionary: jyut6ping3

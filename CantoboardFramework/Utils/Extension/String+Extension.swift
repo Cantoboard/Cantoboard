@@ -29,8 +29,14 @@ extension String {
         return Self.caseMorph(rimeText: self, englishText: caseForm)
     }
     
-    func commonSuffix(with: String) -> String {
-        String(self.reversed()).commonPrefix(with: String(with.reversed()))
+    func commonSuffix<T: StringProtocol>(with aString: T, options: String.CompareOptions = []) -> String {
+        return String(zip(reversed(), aString.reversed())
+            .lazy
+            .prefix(while: { (lhs: Character, rhs: Character) in
+                String(lhs).compare(String(rhs), options: options) == .orderedSame
+            })
+            .map { (lhs: Character, _: Character) in lhs }
+            .reversed())
     }
     
     // Apply the case if english text to rime text. e.g. rime text: a b'c, english text: Abc. Return A b'c
@@ -89,5 +95,10 @@ extension String {
     
     var toHKAttributedString: NSAttributedString {
         toHKAttributedString()
+    }
+    
+    func char(at: Int) -> Character? {
+        guard 0 <= at && at < count else { return nil }
+        return self[index(startIndex, offsetBy: at)]
     }
 }

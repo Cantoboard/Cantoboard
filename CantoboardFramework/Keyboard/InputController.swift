@@ -647,27 +647,99 @@ class InputController: NSObject {
         state.spaceKeyMode = isFullWidth ? .fullWidthSpace : .space
     }
     
+    private static func areCompatible10Keys(_ ic: Character, _ cc: Character) -> Bool {
+        switch cc {
+        case "a"..."c": return ic == "A"
+        case "d"..."f": return ic == "D"
+        case "g"..."i": return ic == "G"
+        case "j"..."l": return ic == "J"
+        case "m"..."o": return ic == "M"
+        case "p"..."s": return ic == "P"
+        case "t"..."v": return ic == "T"
+        case "w"..."z": return ic == "W"
+        default: return false
+        }
+    }
+    
+    private func update10KeysComposition() {
+        let rimeRawInput = inputEngine.rimeRawInput?.text ?? ""
+        guard !rimeRawInput.isEmpty else {
+            updateComposition(nil)
+            return
+        }
+        let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " "}) ?? ""
+        
+        // Remaining input excluding selected text.
+        let inputRemaining = rimeRawInput.commonSuffix(with: rimeCompositionText)
+        
+        NSLog("UFO rimeCompositionText \(rimeCompositionText) rimeRawInput \(rimeRawInput) pendingInput \(inputRemaining)")
+        
+        let candidateCode = (inputEngine.getRimeCandidateComment(0) ?? "").filter { !$0.isNumber }
+        
+        var cIndex = candidateCode.startIndex
+        var iIndex = inputRemaining.startIndex
+        
+        var morphedInput = ""
+        // Scan the pending input string.
+        while (iIndex < inputRemaining.endIndex) {
+            let ic = inputRemaining[iIndex]
+            
+            // Ran out of candidate code. Just copy what's left in the input.
+            if cIndex == candidateCode.endIndex {
+                morphedInput.append(ic.lowercasedChar)
+                iIndex = inputRemaining.index(after: iIndex)
+                continue
+            }
+            
+            let cc = candidateCode[cIndex]
+            
+            NSLog("UFO iteration \(ic) \(cc)")
+            if cc == " " {
+                // If the candidate code is a space, append.
+                if ic == "'" {
+                    // Consume the "'" in input buffer
+                    morphedInput.append("'")
+                    iIndex = inputRemaining.index(after: iIndex)
+                } else {
+                    morphedInput.append(" ")
+                }
+                cIndex = candidateCode.index(after: cIndex)
+            } else if ic == "'" {
+                // Insert ' and skip to the code of the next candidate char
+                morphedInput.append(ic)
+                iIndex = inputRemaining.index(after: iIndex)
+                
+                while cIndex < candidateCode.endIndex && candidateCode[cIndex] != " " {
+                    cIndex = candidateCode.index(after: cIndex)
+                }
+            } else {
+                // Overwrite input char by the candidate code.
+                if !Self.areCompatible10Keys(ic, cc) {
+                    // If we encounter an input letter cannot be mapped to the current candidate letter,
+                    // skip to next candidate char.
+                    while cIndex < candidateCode.endIndex && candidateCode[cIndex] != " " {
+                        cIndex = candidateCode.index(after: cIndex)
+                    }
+                    continue
+                }
+                morphedInput.append(cc)
+                cIndex = candidateCode.index(after: cIndex)
+                iIndex = inputRemaining.index(after: iIndex)
+            }
+        }
+        
+        let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
+        //NSLog("UFO selectedInput \(selectedInput)")
+        
+        let composition = String(selectedInput + morphedInput)
+        updateComposition(Composition(text: composition, caretIndex: composition.count))
+    }
+    
     private func updateComposition() {
         refreshInputSettings()
         
         if state.activeSchema.is10Keys && state.inputMode != .english {
-            let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " "}) ?? ""
-            let rimeRawInput = inputEngine.rimeRawInput?.text ?? ""
-            let pendingInput = rimeRawInput.commonSuffix(with: rimeCompositionText)
-            let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - pendingInput.count)
-            
-            let firstCandidateComment = inputEngine.getRimeCandidateComment(0) ?? ""
-            let firstCommentWithoutToneMatchingPendingInput = firstCandidateComment.reduce(("", 0), { strAndCounter, c in
-                var str = strAndCounter.0
-                var counter = strAndCounter.1
-                if strAndCounter.1 >= pendingInput.count || c.isNumber { return strAndCounter }
-                str.append(c)
-                if c != " " { counter += 1 }
-                return (str, counter)
-            }).0
-            
-            let composition = String(selectedInput + firstCommentWithoutToneMatchingPendingInput)
-            updateComposition(Composition(text: composition, caretIndex: composition.count))
+            update10KeysComposition()
             return
         }
         
@@ -734,7 +806,12 @@ class InputController: NSObject {
            var composingText = inputEngine.composition?.text.filter({ $0 != " " }),
            !composingText.isEmpty {
             if inputEngine.rimeSchema.is10Keys && state.inputMode != .english {
-                composingText = inputEngine.getRimeCandidate(0) ?? ""
+                let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " "}) ?? ""
+                let rimeRawInput = inputEngine.rimeRawInput?.text ?? ""
+                let inputRemaining = rimeRawInput.commonSuffix(with: rimeCompositionText)
+                let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
+                let bestCandidate = inputEngine.getRimeCandidate(0) ?? ""
+                composingText = selectedInput + bestCandidate
             } else if state.inputMode == .english || state.inputMode == .mixed && composingText.first?.isEnglishLetter ?? false {
                 composingText = englishText
             } else if inputEngine.rimeSchema.isCantonese && Settings.cached.toneInputMode == .vxq {

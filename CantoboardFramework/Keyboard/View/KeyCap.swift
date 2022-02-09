@@ -292,13 +292,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .jyutPing10Keys(let c):
             switch c {
             case "A": return "A B C"
-            case "B": return "D E F"
-            case "C": return "G H I"
-            case "D": return "J K L"
-            case "E": return "M N O"
-            case "F": return "P Q R S"
-            case "G": return "T U V"
-            case "H": return "W X Y Z"
+            case "D": return "D E F"
+            case "G": return "G H I"
+            case "J": return "J K L"
+            case "M": return "M N O"
+            case "P": return "P Q R S"
+            case "T": return "T U V"
+            case "W": return "W X Y Z"
             default: return nil
             }
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
