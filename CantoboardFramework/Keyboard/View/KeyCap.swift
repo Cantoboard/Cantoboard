@@ -376,7 +376,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "0": return ["0", "０", "零", "十", "拾", "⓪", "°"]
         // 123 2nd row
         case "-": return ["-", "－", "–", "—", "•"]
-        case "/": return ["/", "／", "\\"]
+        case "/": return ["/", "／", "\\", "÷"]
         case ":": return [":", "："]
         case ";": return [";", "；"]
         case "(": return ["(", "（"]
@@ -402,7 +402,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "#": return ["#", "＃"]
         case "%": return ["%", "％", "‰"]
         case "^": return ["^", "＾"]
-        case "*": return ["*", "＊"]
+        case "*": return ["*", "＊", "×"]
         case "+": return ["+", "＋"]
         case "=": return ["=", "≠", "≈", "＝"]
         // #+= 2nd row
@@ -506,12 +506,15 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
 }
 
 enum SpecialSymbol: CaseIterable {
-    case slash, dot, parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
+    case colon, dot, minus, slash,
+         parenthesis, curlyBracket, squareBracket, angleBracket, doubleAngleBracket
     
     var keyCapPairs: [(half: KeyCap, full: KeyCap)] {
         switch self {
-        case .slash: return [(half: "/", full: "／")]
+        case .colon: return [(half: ":", full: "：")]
         case .dot: return [(half: ".", full: "。")]
+        case .minus: return [(half: "-", full: "—")]
+        case .slash: return [(half: "/", full: "／")]
         case .parenthesis: return [(half: "(", full: "（"), (half: ")", full: "）")]
         case .curlyBracket: return [(half: "{", full: "｛"), (half: "}", full: "｝")]
         case .squareBracket: return [(half: "[", full: "［"), (half: "]", full: "］")]
@@ -542,7 +545,7 @@ enum SpecialSymbol: CaseIterable {
         switch symbolShape {
         case .smart:
             switch self {
-            case .slash, .dot: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
+            case .colon, .dot, .minus, .slash: return Self.determineSymbolShapeFromLastChar(textBefore: textBefore)
             case .parenthesis, .curlyBracket, .squareBracket, .angleBracket, .doubleAngleBracket:
                 return determineSymbolShapeFromLastMatchingChar(textBefore: textBefore)
             }
