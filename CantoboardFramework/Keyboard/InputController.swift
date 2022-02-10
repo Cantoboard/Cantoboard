@@ -647,23 +647,24 @@ class InputController: NSObject {
         state.spaceKeyMode = isFullWidth ? .fullWidthSpace : .space
     }
     
-    private static func areCompatible10Keys(_ ic: Character, _ cc: Character) -> Bool {
-        switch cc {
-        case "a"..."c": return ic == "A"
-        case "d"..."f": return ic == "D"
-        case "g"..."i": return ic == "G"
-        case "j"..."l": return ic == "J"
-        case "m"..."o": return ic == "M"
-        case "p"..."s": return ic == "P"
-        case "t"..."v": return ic == "T"
-        case "w"..."z": return ic == "W"
+    private static func is10KeysSubKey(_ inputCode: Character, _ candidateCode: Character) -> Bool {
+        switch candidateCode {
+        case "a"..."c": return inputCode == "A"
+        case "d"..."f": return inputCode == "D"
+        case "g"..."i": return inputCode == "G"
+        case "j"..."l": return inputCode == "J"
+        case "m"..."o": return inputCode == "M"
+        case "p"..."s": return inputCode == "P"
+        case "t"..."v": return inputCode == "T"
+        case "w"..."z": return inputCode == "W"
         default: return false
         }
     }
     
     private func update10KeysComposition() {
         let rimeRawInput = inputEngine.rimeRawInput?.text ?? ""
-        guard !rimeRawInput.isEmpty else {
+        guard !rimeRawInput.isEmpty,
+              let rimeComposition = inputEngine.rimeComposition else {
             updateComposition(nil)
             return
         }
@@ -672,7 +673,7 @@ class InputController: NSObject {
         // Remaining input excluding selected text.
         let inputRemaining = rimeRawInput.commonSuffix(with: rimeCompositionText)
         
-        NSLog("UFO rimeCompositionText \(rimeCompositionText) rimeRawInput \(rimeRawInput) pendingInput \(inputRemaining)")
+        NSLog("UFO rimeCompositionText \(rimeCompositionText) rimeRawInput \(rimeRawInput) pendingInput \(inputRemaining) \(inputEngine.rimeRawInput?.caretIndex ?? 0)")
         
         let candidateCode = (inputEngine.getRimeCandidateComment(0) ?? "").filter { !$0.isNumber }
         
@@ -714,7 +715,7 @@ class InputController: NSObject {
                 }
             } else {
                 // Overwrite input char by the candidate code.
-                if !Self.areCompatible10Keys(ic, cc) {
+                if !Self.is10KeysSubKey(ic, cc) {
                     // If we encounter an input letter cannot be mapped to the current candidate letter,
                     // skip to next candidate char.
                     while cIndex < candidateCode.endIndex && candidateCode[cIndex] != " " {
@@ -732,7 +733,9 @@ class InputController: NSObject {
         //NSLog("UFO selectedInput \(selectedInput)")
         
         let composition = String(selectedInput + morphedInput)
-        updateComposition(Composition(text: composition, caretIndex: composition.count))
+        let inputCaretPosFromTheRight = rimeComposition.text.count - rimeComposition.caretIndex
+        let caretPos = composition.count - inputCaretPosFromTheRight
+        updateComposition(Composition(text: composition, caretIndex: caretPos))
     }
     
     private func updateComposition() {

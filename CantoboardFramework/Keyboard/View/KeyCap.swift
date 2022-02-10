@@ -148,7 +148,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         default: return nil
         }
     }
-        
+    
     var buttonBgColor: UIColor {
         switch self {
         case .shift(.uppercased), .shift(.capsLocked): return ButtonColor.shiftKeyHighlightedBackgroundColor
@@ -314,7 +314,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         default: return .zero
         }
-
     }
     
     var buttonRightHint: String? {

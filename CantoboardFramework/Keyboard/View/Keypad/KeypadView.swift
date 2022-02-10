@@ -96,7 +96,7 @@ class KeypadView: UIView, BaseKeyboardView {
             touchHandler = nil
         } else {
             let touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
-            touchHandler.allowCaretSwiping = !state.activeSchema.is10Keys
+            touchHandler.isKeypadSwiping = !state.activeSchema.is10Keys
             self.touchHandler = touchHandler
         }
     }
@@ -162,7 +162,7 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func setupButtons() {
-        touchHandler?.allowCaretSwiping = !state.activeSchema.is10Keys
+        touchHandler?.isKeypadSwiping = !state.activeSchema.is10Keys
         
         leftButtons = initButtons(buttonLayouts: leftButtonProps, existingButtons: leftButtons)
         
