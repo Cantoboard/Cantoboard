@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1644267299
-    default.custom: 1644267299
+    default: 1644442801
+    default.custom: 1644442801
     jyut6ping3_10keys.custom: 0
-    jyut6ping3_10keys.schema: 1644267299
-    symbols: 1644267299
+    jyut6ping3_10keys.schema: 1644442801
+    symbols: 1644442801
     symbols.custom: 0
-    symbols_cantonese: 1644267299
+    symbols_cantonese: 1644442801
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -353,14 +353,14 @@ speller:
     - "derive/\\d//"
     - "abbrev/^([a-z]).+$/$1/"
     - "xform/[a-c]/A/"
-    - "xform/[d-f]/B/"
-    - "xform/[g-i]/C/"
-    - "xform/[j-l]/D/"
-    - "xform/[m-o]/E/"
-    - "xform/[p-s]/F/"
-    - "xform/[t-v]/G/"
-    - "xform/[w-z]/H/"
-  alphabet: zyxwvutsrqponmlkjihgfedcba654321ABCDEFGH
+    - "xform/[d-f]/D/"
+    - "xform/[g-i]/G/"
+    - "xform/[j-l]/J/"
+    - "xform/[m-o]/M/"
+    - "xform/[p-s]/P/"
+    - "xform/[t-v]/T/"
+    - "xform/[w-z]/W/"
+  alphabet: zyxwvutsrqponmlkjihgfedcba654321ADGJMPTW
   delimiter: " '"
 switches:
   - name: ascii_mode
