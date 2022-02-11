@@ -99,7 +99,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     currency,
     dismissKeyboard,
     exit,
-    placeholder(KeyCap)
+    placeholder(KeyCap),
+    combo(/* Combo keycaps */ [String]) // e.g. combo(["A", "B"]) click once to insert A, click twice to replace A with B.
     
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
@@ -138,6 +139,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .singleQuote: return .quote(false)
         case .doubleQuote: return .quote(true)
         case .dismissKeyboard: return .dismissKeyboard
+        case .combo: return .none // Dynamically evaluated in KeyView.
         default: return .none
         }
     }
@@ -177,7 +179,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var keyCapType: KeyCapType {
         switch self {
         case "\t": return .system
-        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .jyutPing10Keys, .rime: return .input
+        case .character, .cangjie, .contextual, .currency, .singleQuote, .doubleQuote, .stroke, .jyutPing10Keys, .rime, .combo: return .input
         case .space: return .space
         case .returnKey: return .returnKey
         default: return .system
@@ -304,6 +306,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
         case .currency: return SessionState.main.currencySymbol
         case .exit: return "Exit"
+        case .combo(let items): return items.joined()
         default: return nil
         }
     }

@@ -44,7 +44,7 @@ class KeypadView: UIView, BaseKeyboardView {
     ]
     
     private let rightButtonJyutPingProps: [[KeypadButtonProps]] = [
-        [ KeypadButtonProps(keyCap: " "),
+        [ KeypadButtonProps(keyCap: .combo(["，", "。", "？", "！"])),
           KeypadButtonProps(keyCap: .jyutPing10Keys("A")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("D")),
           KeypadButtonProps(keyCap: .backspace) ],
@@ -286,6 +286,14 @@ extension KeypadView {
         super.touchesBegan(touches, with: event)
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
+        
+        // Reset other combo buttons.
+        let allButtons = (leftButtons + rightButtons).flatMap { $0 }
+        allButtons.forEach { button in
+            if keypadButton !== button {
+                button.updateComboMode(enabled: false)
+            }
+        }
         
         touchHandler?.touchBegan(touch, key: keypadButton, with: event)
     }

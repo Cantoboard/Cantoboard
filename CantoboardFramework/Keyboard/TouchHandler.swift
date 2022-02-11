@@ -64,7 +64,7 @@ class TouchHandler {
         set {
             if _inputMode != newValue {
                 // Enable keyboard when we exit cursor moving.
-                callKeyHandler(.enableKeyboard(newValue != .cursorMoving))
+                callKeyHandler(nil, .enableKeyboard(newValue != .cursorMoving))
                 if newValue == .cursorMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
                 
                 _inputMode = newValue
@@ -116,7 +116,7 @@ class TouchHandler {
         case .backspace:
             inputMode = .backspacing
         case .keyboardType where action != .keyboardType(.emojis):
-            callKeyHandler(key.selectedAction)
+            callKeyHandler(key, key.selectedAction)
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }
             inputMode = .nextKeyboard
@@ -126,14 +126,14 @@ class TouchHandler {
                case .shift = lastTouchAction,
                (touch.timestamp - lastTouchTimestamp).isLess(than: Self.capsLockDoubleTapDelay) {
                 // Double tap, switch to caps locked.
-                callKeyHandler(.keyboardType(.alphabetic(.capsLocked)))
+                callKeyHandler(key, .keyboardType(.alphabetic(.capsLocked)))
             } else {
                 // Single tag, hold shift.
-                callKeyHandler(.shiftDown)
+                callKeyHandler(key, .shiftDown)
             }
         case .shift(.capsLocked):
             touches[touch]?.initialAction = .shift(.uppercased)
-            callKeyHandler(.shiftDown)
+            callKeyHandler(key, .shiftDown)
         default: () // Ignore other keys on key down.
         }
     }
@@ -154,7 +154,7 @@ class TouchHandler {
             if dX < -Self.swipeXThreshold && !currentTouchState.hasTakenAction {
                 cancelKeyRepeatTimer()
                 currentTouchState.hasTakenAction = true
-                callKeyHandler(.deleteWordSwipe)
+                callKeyHandler(key, .deleteWordSwipe)
                 FeedbackProvider.mediumImpact.impactOccurred()
             }
         case .cursorMoving:
@@ -165,7 +165,7 @@ class TouchHandler {
             let threshold = Self.cursorMovingStepX
             while dX > threshold {
                 dX -= threshold
-                callKeyHandler(isLeft ? .moveCursorBackward : .moveCursorForward)
+                callKeyHandler(key, isLeft ? .moveCursorBackward : .moveCursorForward)
                 currentTouchState.hasTakenAction = true
             }
             currentTouchState.cursorMoveStartPosition = point
@@ -242,9 +242,9 @@ class TouchHandler {
         
         switch inputMode {
         case .backspacing:
-            if !currentTouchState.hasTakenAction { callKeyHandler(.backspace) }
+            if !currentTouchState.hasTakenAction { callKeyHandler(currentTouchState.activeKeyView, .backspace) }
         case .cursorMoving:
-            callKeyHandler(.moveCursorEnded)
+            callKeyHandler(currentTouchState.activeKeyView, .moveCursorEnded)
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }
             keyboardView?.delegate?.handleInputModeList(from: touchView, with: event)
@@ -255,9 +255,9 @@ class TouchHandler {
             switch chosenAction {
             case .shift(.uppercased):
                 if case .shift(.lowercased) = lastTouchAction {
-                    callKeyHandler(.shiftRelax)
+                    callKeyHandler(chosenKey, .shiftRelax)
                 } else {
-                    callKeyHandler(.shiftUp)
+                    callKeyHandler(chosenKey, .shiftUp)
                 }
             case .shift(.capsLocked), .keyboardType(.alphabetic), .keyboardType(.numeric), .keyboardType(.symbolic), .keyboardType(.numSymbolic): ()
             default:
@@ -267,7 +267,7 @@ class TouchHandler {
                 }
                 // We cannot use chosenAction as endTouchesUpTo() might have changed the keyboard type and hence selectedActions of KeyViews.
                 // We have use the latest selectedAction of the keyView.
-                callKeyHandler(currentTouchState.activeKeyView.selectedAction)
+                callKeyHandler(chosenKey, currentTouchState.activeKeyView.selectedAction)
                 // If the user was dragging from the shift key (not locked) to a char key, change keyboard mode back to lowercase after typing.
                 let supportDrag: Bool
                 switch currentTouchState.initialAction {
@@ -277,7 +277,7 @@ class TouchHandler {
                 if supportDrag {
                     switch chosenAction {
                     case .character, .space(.fullWidthSpace):
-                        callKeyHandler(.shiftUp)
+                        callKeyHandler(chosenKey, .shiftUp)
                     default: ()
                     }
                 }
@@ -370,7 +370,7 @@ class TouchHandler {
                 } else {
                     action = .deleteWord
                 }
-                callKeyHandler(action)
+                callKeyHandler(touchState.activeKeyView, action)
                 touchState.hasTakenAction = true
                 FeedbackProvider.play(keyboardAction: action)
             } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay && !shouldDisableLongPress {
@@ -394,7 +394,12 @@ class TouchHandler {
         keyRepeatTimer = nil
     }
     
-    private func callKeyHandler(_ action: KeyboardAction) {
-        keyboardView?.delegate?.handleKey(action)
+    private func callKeyHandler(_ keyView: KeyView?, _ action: KeyboardAction) {
+        guard let delegate = keyboardView?.delegate else { return }
+        if let keyView = keyView {
+            keyView.dispatchKeyAction(action, delegate)
+        } else {
+            keyboardView?.delegate?.handleKey(action)
+        }
     }
 }
