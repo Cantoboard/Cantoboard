@@ -910,7 +910,8 @@ extension LayoutConstants {
              .rime,
              .space,
              .toggleInputMode,
-             "^_^": return 16
+             "^_^",
+             .keypadRimeDelimiter: return 16
         case .returnKey, "\t", .shift, .nextKeyboard, .dismissKeyboard: return 18
         case .cangjie(_, true), .backspace: return 20
         case .currency where idiom.isPad: return 20

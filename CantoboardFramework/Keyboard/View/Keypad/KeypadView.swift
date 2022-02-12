@@ -53,7 +53,7 @@ class KeypadView: UIView, BaseKeyboardView {
         [ KeypadButtonProps(keyCap: .jyutPing10Keys("G")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("J")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("M")),
-          KeypadButtonProps(keyCap: .rime(RimeChar.delimiter, nil, nil))],
+          KeypadButtonProps(keyCap: .keypadRimeDelimiter)],
         [ KeypadButtonProps(keyCap: .jyutPing10Keys("P")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("T")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("W")), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
