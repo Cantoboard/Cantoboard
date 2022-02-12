@@ -1014,7 +1014,7 @@ class InputController: NSObject {
         switch state.keyboardContextualType {
         case .english where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty:
             newAutoSuggestionType = .halfWidthPunctuation
-        case .chinese where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty, .url:
+        case .chinese where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty:
             newAutoSuggestionType = .fullWidthPunctuation
         default:
             if lastCharBefore.isNumber {
