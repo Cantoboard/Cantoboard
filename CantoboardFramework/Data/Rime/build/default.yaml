@@ -38,7 +38,7 @@ key_binder:
     - {accept: "Shift+space", toggle: full_shape, when: always}
     - {accept: "Control+period", toggle: ascii_punct, when: always}
 menu:
-  page_size: 10
+  page_size: 500 # The most common JyutPing "zi" maps to 409 chars.
 punctuator:
   full_shape:
     " ": {commit: "　"}

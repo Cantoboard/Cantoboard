@@ -157,8 +157,12 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func refreshCandidates() {
+        loadedCandidatesCount = 0
         hasLoadedAllCandidates = false
         rimeSession?.setCandidateMenuToFirstPage()
+        
+        rimeSession?.loadMoreCandidates()
+        loadedCandidatesCount = min(20, Int(rimeSession?.getLoadedCandidatesCount() ?? 0))
     }
         
     func moveCaret(offset: Int) -> Bool {
@@ -202,20 +206,17 @@ class RimeInputEngine: NSObject, InputEngine {
         return rimeSession?.getComment(UInt32(index))
     }
     
+    private(set) var loadedCandidatesCount = 0
+    
     // Return false if it loaded all candidates
     func loadMoreCandidates() -> Bool {
-        guard let rimeSession = rimeSession else {
-            DDLogInfo("loadMoreCandidates RimeSession is nil.")
-            hasLoadedAllCandidates = true
-            return false
-        }
-        let hasRemainingCandidates = rimeSession.loadMoreCandidates()
-        hasLoadedAllCandidates = !hasRemainingCandidates
-        return hasRemainingCandidates
-    }
-    
-    var loadedCandidatesCount: Int {
-        Int(rimeSession?.getLoadedCandidatesCount() ?? 0)
+        guard !hasLoadedAllCandidates, let rimeSession = rimeSession else { return false }
+        
+        let totalCandidateCount = Int(rimeSession.getLoadedCandidatesCount())
+        loadedCandidatesCount = min(loadedCandidatesCount + 20, totalCandidateCount)
+        
+        hasLoadedAllCandidates = loadedCandidatesCount == totalCandidateCount
+        return !hasLoadedAllCandidates
     }
     
     func selectCandidate(_ index: Int) -> String? {
