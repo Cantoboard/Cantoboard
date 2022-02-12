@@ -12,6 +12,7 @@ import UIKit
 class KeypadButton: KeyView {
     var colRowOrigin: CGPoint = .zero
     var colRowSize: CGSize = CGSize(width: 1, height: 1)
+    var autoSuggestionOverride: AutoSuggestionType?
     
     // TODO HACK Remove
     private let layoutConstants = Reference(LayoutConstants.forMainScreen)
@@ -44,6 +45,18 @@ class KeypadButton: KeyView {
         case .character, .stroke:
             titleLabel?.font = .systemFont(ofSize: 26)
         default:()
+        }
+    }
+    
+    override func dispatchKeyAction(_ action: KeyboardAction, _ delegate: KeyboardViewDelegate) {
+        super.dispatchKeyAction(action, delegate)
+        if let autoSuggestionOverride = autoSuggestionOverride {
+            let replaceTextLen: Int
+            switch keyCap {
+            case .combo(let items): replaceTextLen = items[safe: 0]?.count ?? 0
+            default: replaceTextLen = keyCap.buttonText?.count ?? 0
+            }
+            delegate.handleKey(.setAutoSuggestion(autoSuggestionOverride, replaceTextLen))
         }
     }
 }

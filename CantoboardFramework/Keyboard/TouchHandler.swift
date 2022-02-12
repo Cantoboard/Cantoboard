@@ -72,7 +72,7 @@ class TouchHandler {
         }
     }
     var keyboardIdiom: LayoutIdiom
-    var isKeypadSwiping = true
+    var isInKeyboardMode = true
     
     private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
@@ -199,7 +199,7 @@ class TouchHandler {
                 return
             }
             
-            if !isKeypadSwiping && !key.keyCap.action.isSpace && key is KeypadButton { return }
+            if !isInKeyboardMode && !key.keyCap.action.isSpace && key is KeypadButton { return }
             
             // Ignore short swipe.
             let point = touch.location(in: keyboardView), deltaX = abs(point.x - cursorMoveStartPosition.x)

@@ -39,6 +39,7 @@ class CandidatePaneView: UIControl {
     
     private var _keyboardState: KeyboardState
     private var layoutConstants: Reference<LayoutConstants>
+    private var setNeedsSetupButtons = false
     
     var keyboardState: KeyboardState {
         get { _keyboardState }
@@ -115,6 +116,8 @@ class CandidatePaneView: UIControl {
                     let originalCandidatePaneMode = self.mode
                     let originalContentOffset: CGPoint = self.collectionView.contentOffset
                     
+                    self.setNeedsSetupButtons = true
+                    
                     UIView.performWithoutAnimation {
                         self.collectionView.scrollOnLayoutSubviews = { [weak self] in
                             guard let self = self,
@@ -190,8 +193,9 @@ class CandidatePaneView: UIControl {
     var canExpand: Bool {
         get { _canExpand }
         set {
-            guard _canExpand != newValue else { return }
+            guard _canExpand != newValue || setNeedsSetupButtons else { return }
             _canExpand = newValue
+            setNeedsSetupButtons = false
             setupButtons()
         }
     }

@@ -389,6 +389,25 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             weight: .light)
         return image?.applyingSymbolConfiguration(config)
     }
+    
+    func dispatchKeyAction(_ action: KeyboardAction, _ delegate: KeyboardViewDelegate) {
+        if case .combo(let items) = keyCap {
+            for _ in 0..<(lastComboText?.count ?? 0) {
+                delegate.handleKey(.backspace)
+            }
+            
+            if let chosenItem = items[safe: comboCount] {
+                delegate.handleKey(.character(chosenItem))
+                lastComboText = chosenItem
+            }
+            
+            comboCount = (comboCount + 1) % items.count
+            updateComboMode(enabled: true)
+        } else {
+            delegate.handleKey(action)
+        }
+    }
+    
 }
 
 extension KeyView {
@@ -474,24 +493,6 @@ extension KeyView {
     func keyLongPressed(_ touch: UITouch) {
         guard shouldAcceptLongPress else { return }
         updatePopup(isLongPress: true)
-    }
-    
-    func dispatchKeyAction(_ action: KeyboardAction, _ delegate: KeyboardViewDelegate) {
-        if case .combo(let items) = keyCap {
-            for _ in 0..<(lastComboText?.count ?? 0) {
-                delegate.handleKey(.backspace)
-            }
-            
-            if let chosenItem = items[safe: comboCount] {
-                delegate.handleKey(.character(chosenItem))
-                lastComboText = chosenItem
-            }
-            
-            comboCount = (comboCount + 1) % items.count
-            updateComboMode(enabled: true)
-        } else {
-            delegate.handleKey(action)
-        }
     }
     
     func updateComboMode(enabled: Bool) {

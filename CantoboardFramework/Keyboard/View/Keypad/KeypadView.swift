@@ -11,10 +11,12 @@ import UIKit
 struct KeypadButtonProps {
     var keyCap: KeyCap
     let colRowSize: CGSize
+    let autoSuggestionOverride: AutoSuggestionType?
     
-    init(keyCap: KeyCap, colRowSize: CGSize? = nil) {
+    init(keyCap: KeyCap, colRowSize: CGSize? = nil, autoSuggestionOverride: AutoSuggestionType? = nil) {
         self.keyCap = keyCap
         self.colRowSize = colRowSize ?? CGSize(width: 1, height: 1)
+        self.autoSuggestionOverride = autoSuggestionOverride
     }
 }
 
@@ -44,7 +46,7 @@ class KeypadView: UIView, BaseKeyboardView {
     ]
     
     private let rightButtonJyutPingProps: [[KeypadButtonProps]] = [
-        [ KeypadButtonProps(keyCap: .combo(["，", "。", "？", "！"])),
+        [ KeypadButtonProps(keyCap: .combo(["，", "。", "？", "！"]), autoSuggestionOverride: .keypadSymbols),
           KeypadButtonProps(keyCap: .jyutPing10Keys("A")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("D")),
           KeypadButtonProps(keyCap: .backspace) ],
@@ -96,7 +98,7 @@ class KeypadView: UIView, BaseKeyboardView {
             touchHandler = nil
         } else {
             let touchHandler = TouchHandler(keyboardView: self, keyboardIdiom: state.keyboardIdiom)
-            touchHandler.isKeypadSwiping = !state.activeSchema.is10Keys
+            touchHandler.isInKeyboardMode = !state.activeSchema.is10Keys
             self.touchHandler = touchHandler
         }
     }
@@ -151,6 +153,7 @@ class KeypadView: UIView, BaseKeyboardView {
                 button.colRowSize = props.colRowSize
                 button.setKeyCap(keyCap, keyboardState: state)
                 button.highlightedColor = keyCap.buttonBgHighlightedColor
+                button.autoSuggestionOverride = props.autoSuggestionOverride
                 buttonRow.append(button)
                 x += 1
             }
@@ -162,7 +165,7 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     private func setupButtons() {
-        touchHandler?.isKeypadSwiping = !state.activeSchema.is10Keys
+        touchHandler?.isInKeyboardMode = !state.activeSchema.is10Keys
         
         leftButtons = initButtons(buttonLayouts: leftButtonProps, existingButtons: leftButtons)
         

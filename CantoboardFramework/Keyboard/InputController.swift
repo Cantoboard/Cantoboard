@@ -112,10 +112,13 @@ class InputController: NSObject {
     private var shouldApplyChromeSearchBarHack = false
     private var needClearInput = false, needReloadCandidates = false
     
+    private var autoSuggestionTypeOverride: AutoSuggestionType?
+    private var replaceTextLen = 0;
+
     private var prevTextBefore: String?
     
     private(set) var candidateOrganizer: CandidateOrganizer!
-    
+
     var textDocumentProxy: UITextDocumentProxy? {
         keyboardViewController?.textDocumentProxy
     }
@@ -179,6 +182,18 @@ class InputController: NSObject {
     
     private func candidateSelected(choice: IndexPath, enableSmartSpace: Bool) {
         if let commitedText = candidateOrganizer.selectCandidate(indexPath: choice) {
+            if candidateOrganizer?.autoSuggestionType?.replaceTextOnInsert ?? false {
+                textDocumentProxy?.deleteBackward(times: replaceTextLen)
+                replaceTextLen = 0
+                if candidateOrganizer?.autoSuggestionType == .keypadSymbols {
+                    // If we are inserting pairs e.g. bracket, move the caret inside the pair.
+                    insertText(commitedText, requestSmartSpace: enableSmartSpace)
+                    if commitedText.count == 2 && commitedText.char(at: 0) != commitedText.char(at: 1) {
+                        textDocumentProxy?.adjustTextPosition(byCharacterOffset: -1)
+                    }
+                    return
+                }
+            }
             if commitedText.allSatisfy({ $0.isEnglishLetter }) {
                 EnglishInputEngine.userDictionary.learnWord(word: commitedText)
             }
@@ -472,6 +487,11 @@ class InputController: NSObject {
         case .resetComposition:
             compositionRenderer.textReset()
             needClearInput = true
+        case .setAutoSuggestion(let newAutoSuggestionType, let replaceTextLen):
+            autoSuggestionTypeOverride = newAutoSuggestionType
+            self.replaceTextLen = replaceTextLen
+            updateInputState()
+            return
         case .exit: exit(0)
         default: ()
         }
@@ -556,6 +576,7 @@ class InputController: NSObject {
             state.reverseLookupSchema = nil
             inputEngine.rimeSchema = state.activeSchema
         }
+        replaceTextLen = 0
         updateInputState()
         updateComposition()
     }
@@ -998,6 +1019,12 @@ class InputController: NSObject {
         }
         
         guard let lastCharBefore = textBeforeInput.last else {
+            return
+        }
+        
+        if let autoSuggestionTypeOverride = autoSuggestionTypeOverride {
+            newAutoSuggestionType = autoSuggestionTypeOverride
+            self.autoSuggestionTypeOverride = nil
             return
         }
         

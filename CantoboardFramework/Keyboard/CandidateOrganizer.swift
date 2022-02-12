@@ -446,6 +446,14 @@ enum AutoSuggestionType {
     case fullWidthUpperDigit
     case email
     case domain
+    case keypadSymbols
+    
+    var replaceTextOnInsert: Bool {
+        switch self {
+        case .keypadSymbols: return true
+        default: return false
+        }
+    }
 }
 
 extension PredictiveTextEngine {
@@ -477,7 +485,20 @@ class CandidateOrganizer {
     private static let fullWidthUpperDigitCandidateSource = AutoSuggestionCandidateSource(["零", "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟", "萬", "億"])
     private static let emailCandidateSource = AutoSuggestionCandidateSource(["gmail.com", "outlook.com", "icloud.com", "yahoo.com", "hotmail.com"])
     private static let domainCandidateSource = AutoSuggestionCandidateSource(["com", "org", "edu", "net", SessionState.main.localDomain, "hk", "tw", "mo", "cn", "uk", "jp"].unique())
-    
+    private static let keypadSymbolCandidateSource = AutoSuggestionCandidateSource([
+        "。", "？", "！", "⋯⋯", "～", "#",
+        "：", "、", "「」", "『』", "（）", "-",
+        "——", "；", "@", "*", "_", "~",
+        "%", "&", "．", "•", "/", "\\",
+        "《》", "〈〉", "“”", "‘’", "〔〕", "【】",
+        "［］", "[]", "｛｝", "{}", "()", "<>",
+        "+", "-", "×", "÷", "=", "^",
+        "$", "¥", "£", "€", "℃", "℉",
+        ",", ".", ":", ";", "?", "!",
+        "｜", "|", " ", "←", "↑", "→", "↓",
+        "\"", "'", "…", "＄", "￥", "￡",
+        "＋", "－", "／", "＼", "＝", "°",
+        "＊", "＃", "＠", "％", "＆", "＿"].unique())
     enum GroupBy {
         case frequency, radical, stroke, tone
     }
@@ -523,6 +544,7 @@ class CandidateOrganizer {
             case .halfWidthPunctuation: candidateSource = Self.halfWidthPunctuationCandidateSource
             case .email: candidateSource = Self.emailCandidateSource
             case .domain: candidateSource = Self.domainCandidateSource
+            case .keypadSymbols: candidateSource = Self.keypadSymbolCandidateSource
             }
             
             if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty &&

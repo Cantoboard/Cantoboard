@@ -89,6 +89,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     enableKeyboard(Bool),
     dismissKeyboard,
     resetComposition,
+    setAutoSuggestion(AutoSuggestionType, /* replaceTextLen */ Int),
     exit
     
     init(stringLiteral value: String) {
