@@ -40,6 +40,7 @@
 		7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7922EF3426D61A99007E1699 /* CGRect+Extension.swift */; };
 		792DF3C4274341F500F9828C /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 792DF3C3274341F500F9828C /* Weak.swift */; };
 		79305FF4260A6EF7002131EF /* DefaultDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79305FF3260A6EF7002131EF /* DefaultDictionary.swift */; };
+		794753B927B79A9A00D63EBC /* FilterBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794753B827B79A9A00D63EBC /* FilterBarView.swift */; };
 		79515A7E2609AA1500D29A5C /* LevelDbTable.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79515A7D2609AA1500D29A5C /* LevelDbTable.mm */; };
 		79515ABC2609AF9C00D29A5C /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79515AB82609AF5D00D29A5C /* Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		795A69DC2700810F00CDDC52 /* CompositionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795A69DB2700810F00CDDC52 /* CompositionLabel.swift */; };
@@ -351,6 +352,7 @@
 		7922EF3426D61A99007E1699 /* CGRect+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extension.swift"; sourceTree = "<group>"; };
 		792DF3C3274341F500F9828C /* Weak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weak.swift; sourceTree = "<group>"; };
 		79305FF3260A6EF7002131EF /* DefaultDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultDictionary.swift; sourceTree = "<group>"; };
+		794753B827B79A9A00D63EBC /* FilterBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBarView.swift; sourceTree = "<group>"; };
 		79515A7D2609AA1500D29A5C /* LevelDbTable.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LevelDbTable.mm; sourceTree = "<group>"; };
 		79515AB82609AF5D00D29A5C /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		79515AD72609BFB400D29A5C /* Data */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; name = Data; path = CantoboardFramework/Data; sourceTree = SOURCE_ROOT; };
@@ -769,6 +771,7 @@
 				79B9B5A325F34A1200238E80 /* LayoutConstants.swift */,
 				79BE977F26D74B460059E58A /* Status */,
 				796DB25E273DAA7E0062E09E /* NumKeyRow.swift */,
+				794753B827B79A9A00D63EBC /* FilterBarView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1447,6 +1450,7 @@
 				79B9B60425F34A1200238E80 /* KeyboardViewController.swift in Sources */,
 				7906D6BA26D8A7F5004C3C0F /* Reference.swift in Sources */,
 				79B9B5F925F34A1200238E80 /* FeedbackProvider.swift in Sources */,
+				794753B927B79A9A00D63EBC /* FilterBarView.swift in Sources */,
 				7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */,
 				795B22D5261EEE1400271D9F /* UserDictionary.swift in Sources */,
 				799AE20C26793F6D00286530 /* HighlightableButton.swift in Sources */,

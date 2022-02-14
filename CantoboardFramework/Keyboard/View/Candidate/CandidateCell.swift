@@ -19,10 +19,30 @@ class CandidateCell: UICollectionViewCell {
     private static let candidateCommentPaddingHeightRatio: CGFloat = 0.05
     
     var showComment: Bool = false
+    var isFilterCell: Bool = false
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                if selectedRectLayer == nil {
+                    let selectedRectLayer = CALayer()
+                    selectedRectLayer.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
+                    selectedRectLayer.cornerRadius = 5
+                    selectedRectLayer.zPosition = -1
+                    layer.addSublayer(selectedRectLayer)
+                    self.selectedRectLayer = selectedRectLayer
+                    setNeedsLayout()
+                }
+            } else {
+                selectedRectLayer?.removeFromSuperlayer()
+                selectedRectLayer = nil
+            }
+        }
+    }
     
     weak var label: UILabel?
     weak var keyHintLayer: KeyHintLayer?
     weak var commentLayer: CATextLayer?
+    weak var selectedRectLayer: CALayer?
     
     // Uncomment this to debug memory leak.
     private let c = InstanceCounter<CandidateCell>()
@@ -89,6 +109,9 @@ class CandidateCell: UICollectionViewCell {
         
         commentLayer?.removeFromSuperlayer()
         commentLayer = nil
+        
+        selectedRectLayer?.removeFromSuperlayer()
+        selectedRectLayer = nil
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -101,6 +124,11 @@ class CandidateCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        if let selectedRectLayer = selectedRectLayer {
+            selectedRectLayer.frame = bounds.insetBy(dx: 4, dy: 4)
+        }
+        
         guard let keyHintLayer = keyHintLayer else { return }
         layout(textLayer: keyHintLayer, atTopRightCornerWithInsets: KeyHintLayer.hintInsets)
     }
@@ -112,7 +140,7 @@ class CandidateCell: UICollectionViewCell {
         let availableHeight = bounds.height - margin.top - margin.bottom
         let fontSizeScale = Settings.cached.candidateFontSize.scale
         
-        let candidateLabelHeight = availableHeight * Self.candidateLabelHeightRatio
+        let candidateLabelHeight = availableHeight * (isFilterCell ? 0.7 : Self.candidateLabelHeightRatio)
         let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight
         
         label.font = .systemFont(ofSize: candidateFontSize * fontSizeScale)
@@ -137,12 +165,9 @@ class CandidateCell: UICollectionViewCell {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        if let keyHintLayer = keyHintLayer {
-            keyHintLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
-        }
-        if let commentLayer = commentLayer {
-            commentLayer.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
-        }
+        keyHintLayer?.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
+        commentLayer?.foregroundColor = label?.textColor.resolvedColor(with: traitCollection).cgColor
+        selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
     
     static func computeCellSize(cellHeight: CGFloat, minWidth: CGFloat, candidateText: String, comment: String?) -> CGSize {

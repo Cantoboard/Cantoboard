@@ -79,7 +79,6 @@ speller:
     #- derive/^ng(?=\d)/m/
 
     - derive/^(?=[aeiou])/q/      # 增加 q 表示喉塞
-    - derive/^jy?([aeiou])/y$1/   # 容錯 je -> ye, jyu -> yu
     - derive/^jyu/ju/             # 容錯 jyu -> ju
     - derive/yu/y/                # 容錯 jyu -> jy
     - erase/y(ng|k)/              # y + ng/k 視作簡拼而非 jung/juk
@@ -91,7 +90,7 @@ speller:
     - derive/eo/oe/               # 容錯 eo/oe 不分
     - derive/oe/eo/               # 容錯 eo/oe 不分
     - derive/aa(?=\d)/a/          # 容錯
-    - derive/\d//                 # 忽略聲調
+    - xform/\d//                  # 忽略聲調
 
     # - abbrev/^([a-z]).+(\d)$/$1$2/      # 首字母聲調簡拼
     # - abbrev/^([gk]w|ng).+(\d)$/$1$2/   # 首2字母聲調簡拼

@@ -73,6 +73,9 @@ struct KeyboardState: Equatable {
         return false
     }
     
+    var filters: [String]?
+    var selectedFilterIndex: Int?
+    
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         lastKeyboardTypeChangeFromAutoCap = false
@@ -459,6 +462,7 @@ class InputController: NSObject {
             return
         case .selectCandidate(let choice):
             candidateSelected(choice: choice, enableSmartSpace: true)
+            candidateOrganizer.filterPrefix = nil
         case .longPressCandidate(let choice):
             candidateLongPressed(choice: choice)
         case .exportFile(let namePrefix, let path):
@@ -492,6 +496,11 @@ class InputController: NSObject {
             self.replaceTextLen = replaceTextLen
             updateInputState()
             return
+        case .setFilter(let filterIndex):
+            candidateOrganizer.filterPrefix = state.filters?[safe: filterIndex]
+            candidateOrganizer.updateCandidates(reload: true)
+            state.selectedFilterIndex = filterIndex
+            return
         case .exit: exit(0)
         default: ()
         }
@@ -518,8 +527,11 @@ class InputController: NSObject {
             }
         }
         
-        keyboardViewController?.hasCompositionView = isImmediateMode || state.activeSchema.isCangjieFamily && state.inputMode == .mixed
-        keyboardViewController?.hasCompositionResetButton = isImmediateMode && state.isComposing
+        let activeSchema = state.activeSchema
+        let is10Keys = activeSchema == .jyutping10keys && state.inputMode != .english
+        keyboardViewController?.hasFilterBar = is10Keys
+        keyboardViewController?.hasCompositionView = !is10Keys && (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed)
+        keyboardViewController?.hasCompositionResetButton = !is10Keys && isImmediateMode && state.isComposing
     }
     
     func isTextFieldWebSearch() -> Bool {
@@ -694,8 +706,6 @@ class InputController: NSObject {
         // Remaining input excluding selected text.
         let inputRemaining = rimeRawInput.commonSuffix(with: rimeCompositionText)
         
-        NSLog("UFO rimeCompositionText \(rimeCompositionText) rimeRawInput \(rimeRawInput) pendingInput \(inputRemaining) \(inputEngine.rimeRawInput?.caretIndex ?? 0)")
-        
         let candidateCode = (inputEngine.getRimeCandidateComment(0) ?? "").filter { !$0.isNumber }
         
         var cIndex = candidateCode.startIndex
@@ -715,7 +725,7 @@ class InputController: NSObject {
             
             let cc = candidateCode[cIndex]
             
-            NSLog("UFO iteration \(ic) \(cc)")
+            // NSLog("UFO iteration \(ic) \(cc)")
             if cc == " " {
                 // If the candidate code is a space, append.
                 if ic == "'" {
@@ -757,11 +767,46 @@ class InputController: NSObject {
         let inputCaretPosFromTheRight = rimeComposition.text.count - rimeComposition.caretIndex
         let caretPos = composition.count - inputCaretPosFromTheRight
         updateComposition(Composition(text: composition, caretIndex: caretPos))
+        
+        updateFilterBar(inputRemaining)
+    }
+    
+    private func updateFilterBar(_ inputRemaining: String) {
+        let prefixes = candidateOrganizer.candidateSource?.getCandidatePrefixes()
+        var filterSet = Set<String>()
+        let filters = prefixes?.compactMap { prefix -> String? in
+            var iIndex = inputRemaining.startIndex
+            var cIndex = prefix.startIndex
+            
+            var filter = ""
+            while (iIndex < inputRemaining.endIndex && cIndex < prefix.endIndex) {
+                let ic = inputRemaining[iIndex]
+                let cc = prefix[cIndex]
+                
+                if Self.is10KeysSubKey(ic, cc) {
+                    filter.append(cc)
+                } else {
+                    break
+                }
+                cIndex = prefix.index(after: cIndex)
+                iIndex = inputRemaining.index(after: iIndex)
+            }
+            guard !filter.isEmpty && !filterSet.contains(filter) else { return nil }
+            // NSLog("UFO \(inputRemaining) \(prefix) \(filter)")
+            filterSet.insert(filter)
+            return filter
+        }
+        candidateOrganizer.filterPrefix = nil
+        state.filters = filters
+        // DDLogInfo("UFO \(filters)")
     }
     
     private func updateComposition() {
         refreshInputSettings()
-        
+        state.filters = []
+        state.selectedFilterIndex = nil
+        candidateOrganizer.filterPrefix = nil
+
         if state.activeSchema.is10Keys && state.inputMode != .english {
             update10KeysComposition()
             return

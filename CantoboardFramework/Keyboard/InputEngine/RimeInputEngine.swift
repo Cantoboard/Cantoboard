@@ -158,6 +158,7 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func refreshCandidates() {
         loadedCandidatesCount = 0
+        totalCandidatesCount = 0
         hasLoadedAllCandidates = false
         rimeSession?.setCandidateMenuToFirstPage()
         
@@ -207,15 +208,16 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private(set) var loadedCandidatesCount = 0
+    private(set) var totalCandidatesCount = 0
     
     // Return false if it loaded all candidates
     func loadMoreCandidates() -> Bool {
         guard !hasLoadedAllCandidates, let rimeSession = rimeSession else { return false }
         
-        let totalCandidateCount = Int(rimeSession.getLoadedCandidatesCount())
-        loadedCandidatesCount = min(loadedCandidatesCount + 20, totalCandidateCount)
+        totalCandidatesCount = Int(rimeSession.getLoadedCandidatesCount())
+        loadedCandidatesCount = min(loadedCandidatesCount + 20, totalCandidatesCount)
         
-        hasLoadedAllCandidates = loadedCandidatesCount == totalCandidateCount
+        hasLoadedAllCandidates = loadedCandidatesCount == totalCandidatesCount
         return !hasLoadedAllCandidates
     }
     

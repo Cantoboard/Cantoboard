@@ -32,6 +32,9 @@ open class KeyboardViewController: UIInputViewController {
 
     private(set) weak var compositionLabelView: CompositionLabel?
     private(set) weak var compositionResetButton: UIButton?
+    
+    private(set) weak var filterBarView: FilterBarView?
+    
     private weak var logView: UITextView?
     
     private(set) var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
@@ -182,12 +185,33 @@ open class KeyboardViewController: UIInputViewController {
         }
     }
     
-    private var compositionViewHeight: CGFloat {
-        return hasCompositionView ? layoutConstants.ref.compositionViewHeight : .zero
+    var hasFilterBar: Bool = false {
+        didSet {
+            if hasFilterBar {
+                if filterBarView == nil {
+                    let filterBarView = FilterBarView(keyboardState: state)
+                    view.addSubview(filterBarView)
+                    filterBarView.delegate = inputController
+                    self.filterBarView = filterBarView
+                }
+            } else {
+                filterBarView?.removeFromSuperview()
+                filterBarView = nil
+            }
+        }
+    }
+    
+    private var topViewHeight: CGFloat {
+        if hasFilterBar {
+            return layoutConstants.ref.filterBarViewHeight
+        } else if hasCompositionView {
+            return layoutConstants.ref.compositionViewHeight
+        }
+        return .zero
     }
     
     private var keyboardHeight: CGFloat {
-        layoutConstants.ref.keyboardHeight + compositionViewHeight
+        layoutConstants.ref.keyboardHeight + topViewHeight
     }
     
     public override func viewDidLoad() {
@@ -255,6 +279,7 @@ open class KeyboardViewController: UIInputViewController {
         
         inputController = InputController(keyboardViewController: self)
         createKeyboardView()
+        filterBarView?.delegate = inputController
         
         textWillChange(nil)
         textDidChange(nil)
@@ -327,7 +352,7 @@ open class KeyboardViewController: UIInputViewController {
         
         if self.keyboardViewTopConstraint == nil {
             // EmojiView inside KeyboardView requires AutoLayout.
-            let keyboardViewTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: compositionViewHeight)
+            let keyboardViewTopConstraint = keyboardViewPlaceholder.topAnchor.constraint(equalTo: view.topAnchor, constant: topViewHeight)
             keyboardViewTopConstraint.priority = .required
             self.keyboardViewTopConstraint = keyboardViewTopConstraint
         }
@@ -364,6 +389,7 @@ open class KeyboardViewController: UIInputViewController {
         }
         
         keyboardView?.state = newState
+        filterBarView?.keyboardState = newState
     }
     
     private func setColorSchemeFromKeyboardAppearance() {
@@ -420,10 +446,10 @@ open class KeyboardViewController: UIInputViewController {
         layoutConstants.keyboardWidth = hostWindowWidth
         heightConstraint?.constant = keyboardHeight
         widthConstraint?.constant = hostWindowWidth
-        keyboardViewTopConstraint?.constant = compositionViewHeight
+        keyboardViewTopConstraint?.constant = topViewHeight
         
-        let compositionLabelHeight = compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
-        let compositionResetButtonWidth = compositionViewHeight
+        let compositionLabelHeight = topViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
+        let compositionResetButtonWidth = topViewHeight
         if let compositionResetButton = compositionResetButton {
             compositionResetButton.frame = CGRect(
                 origin: CGPoint(
@@ -442,6 +468,11 @@ open class KeyboardViewController: UIInputViewController {
                 size: CGSize(width: compositionLabelViewWidth, height: compositionLabelHeight))
         }
         
+        if let filterBarView = filterBarView {
+            filterBarView.frame = CGRect(
+                origin: .zero,
+                size: CGSize(width: hostWindowWidth, height: topViewHeight))
+        }
         // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
     }
     

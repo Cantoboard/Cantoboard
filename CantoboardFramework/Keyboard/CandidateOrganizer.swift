@@ -29,9 +29,11 @@ protocol CandidateSource: AnyObject {
     func getCandidateComment(indexPath: IndexPath) -> String?
     func getCandidateCount(section: Int) -> Int
     func getSectionHeader(section: Int) -> String?
+    func getCandidatePrefixes() -> [String]
     var supportedGroupByModes: [GroupByMode] { get }
     var groupByMode: GroupByMode { get set }
     var isStatic: Bool { get }
+    var filterPrefix: String? { get set }
 }
 
 extension CandidateSource {
@@ -51,7 +53,8 @@ class InputEngineCandidateSource: CandidateSource {
     private var hasPopulatedBestEnglishCandidates = false, hasPopulatedWorstEnglishCandidates = false
     private weak var inputController: InputController?
     private var _groupByMode = GroupByMode.byFrequency
-
+    private var _filterPrefix: String?
+    
     var isStatic: Bool { false }
     
     init(inputController: InputController) {
@@ -112,6 +115,11 @@ class InputEngineCandidateSource: CandidateSource {
                 break
             }
             
+            if filterRimeCandidate(inputEngine.getRimeCandidateComment(curRimeCandidateIndex)) {
+                curRimeCandidateIndex += 1
+                continue
+            }
+            
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
             // TODO, change N to change with candidate cell width. Show 1 English candidate at the end of the row.
@@ -138,6 +146,11 @@ class InputEngineCandidateSource: CandidateSource {
         
         // Populate remaining Rime candidates.
         while inputMode != .english && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
+            if filterRimeCandidate(inputEngine.getRimeCandidateComment(curRimeCandidateIndex)) {
+                curRimeCandidateIndex += 1
+                continue
+            }
+            
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
         }
@@ -149,6 +162,15 @@ class InputEngineCandidateSource: CandidateSource {
             }
             hasPopulatedWorstEnglishCandidates = true
         }
+    }
+    
+    private func filterRimeCandidate(_ romanization: String?) -> Bool {
+        if let romanization = romanization,
+           let filterPrefix = filterPrefix,
+           !romanization.starts(with: filterPrefix) {
+            return true
+        }
+        return false
     }
     
     private func appendEnglishCandidate(_ i: Int) -> Bool {
@@ -182,6 +204,8 @@ class InputEngineCandidateSource: CandidateSource {
         for i in 0..<inputEngine.rimeLoadedCandidatesCount {
             guard let romanization = inputEngine.getRimeCandidateComment(i), !romanization.isEmpty else { continue }
             let firstCharRomanizations = String(romanization.prefix(while: { $0 != " " })).split(separator: "/").map({ String($0) })
+            
+            if filterRimeCandidate(romanization) { continue }
             
             for firstCharRomanization in firstCharRomanizations {
                 if !candidateGroupByRomanization.keys.contains(firstCharRomanization) {
@@ -249,6 +273,8 @@ class InputEngineCandidateSource: CandidateSource {
             guard let candidate = inputEngine.getRimeCandidate(i),
                   let candidateFirstCharInUtf32 = candidate.first?.unicodeScalars.first?.value else { continue }
             
+            if filterRimeCandidate(inputEngine.getRimeCandidateComment(i)) { continue }
+            
             let unihanEntry = Self.unihanDict.getUnihanEntry(candidateFirstCharInUtf32)
             let radical = unihanEntry.radical
             guard radical != 0 else { continue }
@@ -284,6 +310,8 @@ class InputEngineCandidateSource: CandidateSource {
         for i in 0..<inputEngine.rimeLoadedCandidatesCount {
             guard let candidate = inputEngine.getRimeCandidate(i),
                   let candidateFirstCharInUtf32 = candidate.first?.unicodeScalars.first?.value else { continue }
+            
+            if filterRimeCandidate(inputEngine.getRimeCandidateComment(i)) { continue }
             
             let unihanEntry = Self.unihanDict.getUnihanEntry(candidateFirstCharInUtf32)
             let totalStroke = unihanEntry.totalStroke
@@ -372,6 +400,16 @@ class InputEngineCandidateSource: CandidateSource {
         return candidatePaths[safe: section]?.count ?? 0
     }
     
+    func getCandidatePrefixes() -> [String] {
+        guard let inputEngine = inputController?.inputEngine else { return [] }
+        var result: [String] = []
+        for i in 0..<inputEngine.rimeTotalCandidatesCount {
+            guard let prefix = inputEngine.getRimeCandidateComment(i)?.prefix(while: { $0.isEnglishLetter }) else { continue }
+            result.append(String(prefix))
+        }
+        return result
+    }
+    
     var supportedGroupByModes: [GroupByMode] {
         [ .byFrequency, .byRomanization, .byRadical, .byTotalStroke ]
     }
@@ -381,6 +419,15 @@ class InputEngineCandidateSource: CandidateSource {
         set {
             guard newValue != _groupByMode else { return }
             _groupByMode = newValue
+            updateCandidates(reload: true)
+        }
+    }
+    
+    var filterPrefix: String? {
+        get { _filterPrefix }
+        set {
+            guard newValue != _filterPrefix else { return }
+            _filterPrefix = newValue
             updateCandidates(reload: true)
         }
     }
@@ -424,9 +471,15 @@ class AutoSuggestionCandidateSource: CandidateSource {
         return candidates.count
     }
     
+    func getCandidatePrefixes() -> [String] {
+        return []
+    }
+    
     var supportedGroupByModes: [GroupByMode] { [ .byFrequency ] }
     
     var groupByMode: GroupByMode = .byFrequency
+    
+    var filterPrefix: String?
 }
 
 struct CandidatePath {
@@ -513,6 +566,10 @@ class CandidateOrganizer {
             predictiveTextEngine = PredictiveTextEngine.getPredictiveTextEngine(charForm: charForm)
         }
     }
+    var filterPrefix: String? {
+        get { candidateSource?.filterPrefix }
+        set { candidateSource?.filterPrefix = newValue }
+    }
     
     private weak var inputController: InputController?
     private var predictiveTextEngine: PredictiveTextEngine
@@ -533,7 +590,9 @@ class CandidateOrganizer {
     func updateCandidates(reload: Bool, targetCandidatesCount: Int = 0) {
         if let inputController = inputController,
            inputController.inputEngine.isComposing {
-            candidateSource = InputEngineCandidateSource(inputController: inputController)
+            let candidateSource = InputEngineCandidateSource(inputController: inputController)
+            candidateSource.filterPrefix = filterPrefix
+            self.candidateSource = candidateSource
         } else if let autoSuggestionType = autoSuggestionType {
             switch autoSuggestionType {
             case .fullWidthArabicDigit: candidateSource = Self.fullWidthArabicDigitCandidateSource

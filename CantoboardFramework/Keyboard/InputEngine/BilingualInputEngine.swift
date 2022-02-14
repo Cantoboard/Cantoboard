@@ -224,6 +224,10 @@ class BilingualInputEngine: InputEngine {
         rimeInputEngine.loadedCandidatesCount
     }
     
+    var rimeTotalCandidatesCount: Int {
+        rimeInputEngine.totalCandidatesCount
+    }
+    
     var hasRimeLoadedAllCandidates: Bool {
         rimeInputEngine.hasLoadedAllCandidates
     }
