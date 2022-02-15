@@ -504,6 +504,7 @@ class InputController: NSObject {
         case .exit: exit(0)
         default: ()
         }
+        autoSuggestionTypeOverride = nil
         if needClearInput {
             clearInput()
         } else {
@@ -1069,7 +1070,6 @@ class InputController: NSObject {
         
         if let autoSuggestionTypeOverride = autoSuggestionTypeOverride {
             newAutoSuggestionType = autoSuggestionTypeOverride
-            self.autoSuggestionTypeOverride = nil
             return
         }
         
