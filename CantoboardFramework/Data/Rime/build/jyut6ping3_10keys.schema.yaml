@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1644442801
-    default.custom: 1644442801
+    default: 1645337733
+    default.custom: 1645337733
     jyut6ping3_10keys.custom: 0
-    jyut6ping3_10keys.schema: 1644442801
-    symbols: 1644442801
+    jyut6ping3_10keys.schema: 1645337732
+    symbols: 1645337733
     symbols.custom: 0
-    symbols_cantonese: 1644442801
+    symbols_cantonese: 1645337732
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -34,7 +34,7 @@ engine:
     - script_translator
 menu:
   alternative_select_keys: "          "
-  page_size: 10
+  page_size: 500
 punctuator:
   full_shape:
     " ": {commit: "　"}
@@ -340,8 +340,6 @@ simp_hk2s:
   option_name: simp_hk2s
 speller:
   algebra:
-    - "derive/^(?=[aeiou])/q/"
-    - "derive/^jy?([aeiou])/y$1/"
     - "derive/^jyu/ju/"
     - "derive/yu/y/"
     - "erase/y(ng|k)/"
@@ -350,8 +348,9 @@ speller:
     - "derive/eo/oe/"
     - "derive/oe/eo/"
     - "derive/aa(?=\\d)/a/"
-    - "derive/\\d//"
+    - "xform/\\d//"
     - "abbrev/^([a-z]).+$/$1/"
+    - "erase/ng/"
     - "xform/[a-c]/A/"
     - "xform/[d-f]/D/"
     - "xform/[g-i]/G/"
