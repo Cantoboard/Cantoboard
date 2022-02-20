@@ -78,24 +78,19 @@ speller:
     # 取消下行註釋，支援獨立鼻音韻 ng 併入 m，如「吳」讀若「唔」
     #- derive/^ng(?=\d)/m/
 
-    - derive/^(?=[aeiou])/q/      # 增加 q 表示喉塞
     - derive/^jyu/ju/             # 容錯 jyu -> ju
     - derive/yu/y/                # 容錯 jyu -> jy
     - erase/y(ng|k)/              # y + ng/k 視作簡拼而非 jung/juk
     - derive/eoi(?=\d)/oey/       # 容錯
     - derive/eoi(?=\d)/eoy/       # 容錯
-    # - derive/aa/r/                # 韻母簡拼
-    # - derive/oe|eo/v/             # 韻母簡拼
-    # - derive/ng/x/                # 韻母簡拼
     - derive/eo/oe/               # 容錯 eo/oe 不分
     - derive/oe/eo/               # 容錯 eo/oe 不分
     - derive/aa(?=\d)/a/          # 容錯
     - xform/\d//                  # 忽略聲調
 
-    # - abbrev/^([a-z]).+(\d)$/$1$2/      # 首字母聲調簡拼
-    # - abbrev/^([gk]w|ng).+(\d)$/$1$2/   # 首2字母聲調簡拼
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
-    # - abbrev/^([gk]w|ng).+$/$1/   # 首2字母簡拼
+    - erase/ng/                   # 刪除m/ng容錯
+    
     - xform/[a-c]/A/
     - xform/[d-f]/D/
     - xform/[g-i]/G/
