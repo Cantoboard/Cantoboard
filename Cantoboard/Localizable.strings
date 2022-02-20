@@ -48,6 +48,11 @@
 "mixedInputSettings.smartSymbolShapeDefault.full" = "全形";
 "mixedInputSettings.smartSymbolShapeDefault.description" = "用自動標點符號而且喺混打模式下，冇足夠前文判斷而家打緊中文定英文句子嘅時候，會根據呢個設定決定標點形態。";
 
+"padSettings" = "iPad 設定";
+"padSettings.candidateBarStyle" = "候選詞列表風格";
+"padSettings.candidateBarStyle.full" = "全寬度";
+"padSettings.candidateBarStyle.ios" = "iOS 預設鍵盤";
+
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.enablePredictiveText" = "關聯字";
 "chineseInputSettings.enablePredictiveText.description" = "打完字之後預測同埋建議下一個字。";

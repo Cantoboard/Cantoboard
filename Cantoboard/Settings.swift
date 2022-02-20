@@ -135,7 +135,17 @@ extension Settings {
     }
     
     static func buildSections() -> [Section] {
-        [
+        let padSection = Section(
+            LocalizedStrings.padSettings,
+            [
+                Segment(LocalizedStrings.candidateBarStyle, \.fullPadCandidateBar, [
+                        LocalizedStrings.candidateBarStyle_full: true,
+                        LocalizedStrings.candidateBarStyle_ios: false,
+                ]),
+            ]
+        )
+        
+        return [
             Section(
                 LocalizedStrings.inputMethodSettings,
                 [
@@ -159,6 +169,7 @@ extension Settings {
                     ),
                 ]
             ),
+            UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,
             Section(
                 LocalizedStrings.mixedInputSettings,
                 [
@@ -224,6 +235,6 @@ extension Settings {
                     ]),
                 ]
             ),
-        ]
+        ].compactMap({ $0 })
     }
 }

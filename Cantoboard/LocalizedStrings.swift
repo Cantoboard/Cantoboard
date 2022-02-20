@@ -41,6 +41,11 @@ class LocalizedStrings {
     static let smartSymbolShapeDefault_full = localizedString("mixedInputSettings.smartSymbolShapeDefault.full")
     static let smartSymbolShapeDefault_description = localizedString("mixedInputSettings.smartSymbolShapeDefault.description")
     
+    static let padSettings = localizedString("padSettings")
+    static let candidateBarStyle = localizedString("padSettings.candidateBarStyle")
+    static let candidateBarStyle_full = localizedString("padSettings.candidateBarStyle.full")
+    static let candidateBarStyle_ios = localizedString("padSettings.candidateBarStyle.ios")
+    
     static let mixedInputSettings = localizedString("mixedInputSettings")
     static let smartSpace = localizedString("mixedInputSettings.smartSpace")
     static let smartSpace_description = localizedString("mixedInputSettings.smartSpace.description")

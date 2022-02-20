@@ -112,6 +112,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultFullWidthSpaceMode: FullWidthSpaceMode = .off
     private static let defaultEnablePredictiveText: Bool = true
     private static let defaultPredictiveTextOffensiveWord: Bool = false
+    private static let defaultFullPadCandidateBar: Bool = true
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -134,6 +135,7 @@ public struct Settings: Codable, Equatable {
     public var fullWidthSpaceMode: FullWidthSpaceMode
     public var enablePredictiveText: Bool
     public var predictiveTextOffensiveWord: Bool
+    public var fullPadCandidateBar: Bool
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -157,6 +159,7 @@ public struct Settings: Codable, Equatable {
         fullWidthSpaceMode = Self.defaultFullWidthSpaceMode
         enablePredictiveText = Self.defaultEnablePredictiveText
         predictiveTextOffensiveWord = Self.defaultPredictiveTextOffensiveWord
+        fullPadCandidateBar = Self.defaultFullPadCandidateBar
     }
     
     public init(from decoder: Decoder) throws {
@@ -182,6 +185,7 @@ public struct Settings: Codable, Equatable {
         self.fullWidthSpaceMode = try container.decodeIfPresent(FullWidthSpaceMode.self, forKey: .fullWidthSpaceMode) ?? Settings.defaultFullWidthSpaceMode
         self.enablePredictiveText = try container.decodeIfPresent(Bool.self, forKey: .enablePredictiveText) ?? Settings.defaultEnablePredictiveText
         self.predictiveTextOffensiveWord = try container.decodeIfPresent(Bool.self, forKey: .predictiveTextOffensiveWord) ?? Settings.defaultPredictiveTextOffensiveWord
+        self.fullPadCandidateBar = try container.decodeIfPresent(Bool.self, forKey: .fullPadCandidateBar) ?? Settings.defaultFullPadCandidateBar
     }
     
     private static var _cached: Settings?

@@ -414,12 +414,17 @@ class CandidatePaneView: UIControl {
         delegate?.handleKey(action)
     }
     
+    private var isFullPadCandidateBar: Bool {
+        let isPhone = layoutConstants.ref.idiom == .phone
+        return isPhone || Settings.cached.fullPadCandidateBar
+    }
+    
     override func layoutSubviews() {
         guard let superview = superview else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
         let candidateViewWidth = superview.bounds.width - expandButtonWidth - Self.separatorWidth
-        let leftRightInset = layoutConstants.ref.candidatePaneViewLeftRightInset
+        let leftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         
         let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
         if collectionView.frame != collectionViewFrame {
@@ -438,11 +443,10 @@ class CandidatePaneView: UIControl {
         super.layoutSubviews()
         layoutButtons()
         
-        let isPhone = layoutConstants.ref.idiom == .phone
         let topBottomMargin: CGFloat = mode == .row ? 8 : 0
         let separatorFrame = CGRect(x: 0, y: topBottomMargin, width: Self.separatorWidth, height: height - topBottomMargin * 2)
         
-        if isPhone {
+        if isFullPadCandidateBar {
             leftSeparator.isHidden = true
         } else {
             leftSeparator.isHidden = false
@@ -456,7 +460,7 @@ class CandidatePaneView: UIControl {
             middleSeparator.frame = separatorFrame.with(x: candidateViewWidth - leftRightInset)
         }
         
-        if mode == .table || isPhone {
+        if mode == .table || isFullPadCandidateBar {
             rightSeparator.isHidden = true
         } else {
             rightSeparator.isHidden = false
@@ -469,7 +473,8 @@ class CandidatePaneView: UIControl {
         
         let buttons = [expandButton, inputModeButton, backspaceButton, charFormButton]
         var buttonY: CGFloat = 0
-        let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : layoutConstants.ref.candidatePaneViewLeftRightInset)
+        let candidatePaneViewLeftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
+        let candidateViewWidth = superview.bounds.width - (expandButton.isHidden ? directionalLayoutMargins.trailing - StatusButton.statusInset : candidatePaneViewLeftRightInset)
         for button in buttons {
             guard let button = button, !button.isHidden else { continue }
             if button == inputModeButton && inputModeButton.isMini {
