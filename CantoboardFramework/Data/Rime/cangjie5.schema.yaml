@@ -57,6 +57,7 @@ translator:
   enable_charset_filter: false
   enable_sentence: true
   enable_encoder: true
+  enable_user_dict: false
   encode_commit_history: true
   enable_completion: true
   max_phrase_length: 5
