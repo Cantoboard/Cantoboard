@@ -50,7 +50,7 @@
 
 "padSettings" = "iPad 設定";
 "padSettings.candidateBarStyle" = "候選詞列表風格";
-"padSettings.candidateBarStyle.full" = "全寬度";
+"padSettings.candidateBarStyle.full" = "最闊";
 "padSettings.candidateBarStyle.ios" = "iOS 預設鍵盤";
 
 "chineseInputSettings" = "中文輸入設定";
