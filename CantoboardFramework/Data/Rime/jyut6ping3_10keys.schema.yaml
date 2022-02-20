@@ -89,8 +89,7 @@ speller:
     - xform/\d//                  # 忽略聲調
 
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
-    - erase/ng/                   # 刪除m/ng容錯
-    
+
     - xform/[a-c]/A/
     - xform/[d-f]/D/
     - xform/[g-i]/G/
