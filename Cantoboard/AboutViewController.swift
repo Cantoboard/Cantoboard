@@ -16,6 +16,9 @@ class AboutViewController: UIViewController, UITableViewDelegate, UITableViewDat
         [
             (CellImage.repository, "Rime Input Method Engine", "https://github.com/rime/librime"),
             (CellImage.repository, "Rime Cantonese Input Schema", "https://github.com/rime/rime-cantonese"),
+            (CellImage.repository, "Rime 倉頡五代", "https://github.com/Jackchows/Cangjie5"),
+            (CellImage.repository, "Rime 速成", "https://github.com/rime/rime-quick"),
+            (CellImage.repository, "Rime 筆劃", "https://github.com/rime/rime-stroke"),
             (CellImage.repository, "Open Chinese Convert (OpenCC)", "https://github.com/BYVoid/OpenCC"),
             (CellImage.repository, "ISEmojiView", "https://github.com/isaced/ISEmojiView"),
         ],
