@@ -426,6 +426,7 @@ class InputController: NSObject {
             state.lastKeyboardTypeChangeFromAutoCap = false
             checkAutoCap()
             updateSpaceState()
+            refreshInputSettings()
             return
         case .setCharForm(let cs):
             inputEngine.charForm = cs
@@ -530,7 +531,7 @@ class InputController: NSObject {
         
         let activeSchema = state.activeSchema
         let is10Keys = activeSchema == .jyutping10keys && state.inputMode != .english
-        keyboardViewController?.hasFilterBar = is10Keys
+        keyboardViewController?.hasFilterBar = is10Keys && state.keyboardType != .emojis
         keyboardViewController?.hasCompositionView = !is10Keys && (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed)
         keyboardViewController?.hasCompositionResetButton = !is10Keys && isImmediateMode && state.isComposing
     }
