@@ -426,9 +426,12 @@ class InputEngineCandidateSource: CandidateSource {
     var filterPrefix: String? {
         get { _filterPrefix }
         set {
-            guard newValue != _filterPrefix else { return }
+            guard newValue != _filterPrefix,
+                  let inputEngine = inputController?.inputEngine else { return }
             _filterPrefix = newValue
-            updateCandidates(reload: true)
+            // Add all available candidates to the collection view, in case if they are not added to the view yet.
+            let totalCandidatesCount = inputEngine.rimeTotalCandidatesCount + inputEngine.englishCandidates.count
+            updateCandidates(reload: true, targetCandidatesCount: totalCandidatesCount)
         }
     }
 }
