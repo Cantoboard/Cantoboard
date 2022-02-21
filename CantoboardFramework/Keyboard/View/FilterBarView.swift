@@ -43,9 +43,9 @@ class FilterBarView: UIView {
             updateView()
         }
         
-        if let selectedFilterIndex = newState.selectedFilterIndex,
-           let filterCollectionView = filterCollectionView {
-            filterCollectionView.selectItem(at: [0, selectedFilterIndex], animated: false, scrollPosition: .left)
+        if let filterCollectionView = filterCollectionView {
+            let selectedFilterIndexPath = newState.selectedFilterIndex.map({ IndexPath(row: $0, section: 0) })
+            filterCollectionView.selectItem(at: selectedFilterIndexPath, animated: false, scrollPosition: .left)
         }
     }
     
