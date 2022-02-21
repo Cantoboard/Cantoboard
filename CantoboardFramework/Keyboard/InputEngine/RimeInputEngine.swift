@@ -70,6 +70,13 @@ public enum RimeSchema: String, Codable {
     
     var isCantonese: Bool {
         switch self {
+        case .jyutping, .yale, .jyutping10keys: return true
+        default: return false
+        }
+    }
+    
+    var supportCantoneseTonalInput: Bool {
+        switch self {
         case .jyutping, .yale: return true
         default: return false
         }
@@ -307,7 +314,7 @@ class RimeInputEngine: NSObject, InputEngine {
     
     private func setCurrentSchema(_ schemaId: RimeSchema) {
         var rimeSchemaId = schemaId.rawValue
-        if schemaId.isCantonese && Settings.cached.toneInputMode == .vxq {
+        if schemaId.supportCantoneseTonalInput && Settings.cached.toneInputMode == .vxq {
             rimeSchemaId += "vxq"
         }
         rimeSession?.setCurrentSchema(rimeSchemaId)

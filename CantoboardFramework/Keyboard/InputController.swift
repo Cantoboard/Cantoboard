@@ -902,7 +902,7 @@ class InputController: NSObject {
                 composingText = selectedInput + bestCandidate
             } else if state.inputMode == .english || state.inputMode == .mixed && composingText.first?.isEnglishLetter ?? false {
                 composingText = englishText
-            } else if inputEngine.rimeSchema.isCantonese && Settings.cached.toneInputMode == .vxq {
+            } else if inputEngine.rimeSchema.supportCantoneseTonalInput && Settings.cached.toneInputMode == .vxq {
                 var englishTailLength = 0
                 for c in composingText.reversed() {
                     switch c {

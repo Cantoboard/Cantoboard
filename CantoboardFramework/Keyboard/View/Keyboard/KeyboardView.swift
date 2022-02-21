@@ -278,7 +278,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
-        let isInLongPressMode = state.activeSchema.isCantonese && Settings.cached.toneInputMode == .longPress
+        let isInLongPressMode = state.activeSchema.supportCantoneseTonalInput && Settings.cached.toneInputMode == .longPress
         let keyboardViewLayout = state.keyboardIdiom.keyboardViewLayout
         
         var keyCap: KeyCap
@@ -305,7 +305,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                 return .cangjie(keyChar, isInMixedMode)
             }
             
-            if !isInEnglishMode && state.activeSchema.isCantonese {
+            if !isInEnglishMode && state.activeSchema.supportCantoneseTonalInput {
                 if isInLongPressMode {
                     switch c {
                     case "r":
