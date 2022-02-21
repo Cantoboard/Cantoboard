@@ -434,6 +434,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         guard self.emojiView == nil else { return }
         let keyboardSettings = KeyboardSettings(bottomType: .categories)
         keyboardSettings.needToShowAbcButton = true
+        keyboardSettings.updateRecentEmojiImmediately = false
         
         let emojiView = EmojiView(keyboardSettings: keyboardSettings)
         emojiView.delegate = self
