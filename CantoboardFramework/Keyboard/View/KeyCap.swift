@@ -317,7 +317,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonTitleInset: UIEdgeInsets {
         switch self {
         case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 2, right: 0)
+        case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         default: return .zero
         }
     }
@@ -362,6 +362,14 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     private static var logsPath: String = DataFileManager.logsDirectory
     private static let userDataPath: String = DataFileManager.userDataDirectory
     private static let tmpPath: String = FileManager.default.temporaryDirectory.path
+    
+    var withoutHints: KeyCap {
+        switch self {
+        case .character(let c, _, _, _): return KeyCap(c)
+        // case .cangjie(let c, _): return .cangjie(c, false)
+        default: return self
+        }
+    }
     
     var childrenKeyCaps: [KeyCap] {
         switch self {

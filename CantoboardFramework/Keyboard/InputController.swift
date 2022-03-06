@@ -76,6 +76,10 @@ struct KeyboardState: Equatable {
     var filters: [String]?
     var selectedFilterIndex: Int?
     
+    var showCommonSwipeDownKeysInLongPress: Bool {
+        keyboardIdiom == .phone && !activeSchema.isCangjieFamily
+    }
+    
     init() {
         keyboardType = KeyboardType.alphabetic(.lowercased)
         lastKeyboardTypeChangeFromAutoCap = false

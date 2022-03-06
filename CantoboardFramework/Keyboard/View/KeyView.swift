@@ -17,7 +17,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private static let morphingSymbolKeyFontRatio = 0.85
     private static let morphingSwipeDownHintLayerMinScale = 0.6
     private static let padTopRowButtonFontSize: CGFloat = 15
-    private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 6, right: 5)
+    private static let morphingKeyEdgeInsets = UIEdgeInsets(top: 4, left: 5, bottom: 8, right: 5)
     private static let padTopRowButtonEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 5, right: 4)
     
     private var leftKeyHintLayer: KeyHintLayer?
@@ -293,7 +293,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         if keyCap == .keyboardType(.emojis) { setupView() }
         
-        if let keyHintLayer = rightKeyHintLayer {
+        [rightKeyHintLayer, leftKeyHintLayer].compactMap({ $0 }).forEach { keyHintLayer in
             keyHintLayer.foregroundColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
         }
         
@@ -546,8 +546,15 @@ extension KeyView {
         
         let popupDirection = computePopupDirection()
         
+        let defaultChildKeyCapTitle: String?
+        if keyboardState.showCommonSwipeDownKeysInLongPress {
+            defaultChildKeyCapTitle = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: keyboardState)?.buttonText ?? keyCap.defaultChildKeyCapTitle
+        } else {
+            defaultChildKeyCapTitle = keyCap.defaultChildKeyCapTitle
+        }
+        
         let defaultKeyCapIndex: Int
-        defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == keyCap.defaultChildKeyCapTitle }) ?? 0
+        defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == defaultChildKeyCapTitle }) ?? 0
         popupView.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
         selectedAction = popupView.selectedAction
         

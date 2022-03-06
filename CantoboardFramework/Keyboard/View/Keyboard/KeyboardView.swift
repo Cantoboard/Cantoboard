@@ -301,6 +301,13 @@ class KeyboardView: UIView, BaseKeyboardView {
                 return swipeDownKeyCap
             }
             
+            if state.showCommonSwipeDownKeysInLongPress {
+                if let longPressKeyCap = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: state) {
+                    rightHint = longPressKeyCap.buttonText
+                    childrenKeyCaps = [longPressKeyCap, keyCap.withoutHints]
+                }
+            }
+            
             if isInCangjieMode && !isInEnglishMode && isLetterKey {
                 return .cangjie(keyChar, isInMixedMode)
             }
@@ -322,32 +329,43 @@ class KeyboardView: UIView, BaseKeyboardView {
                     }
                 }
                 
+                let orgChildren = childrenKeyCaps ?? keyCap.childrenKeyCaps
                 if c == "r" {
                     rightHint = "反"
-                    childrenKeyCaps = [KeyCap(keyChar), .reverseLookup(.cangjie), .reverseLookup(.quick), .reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+                    childrenKeyCaps = [.reverseLookup(.cangjie), .reverseLookup(.quick)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
                 } else if state.isComposing {
                     if isInLongPressMode {
+                        var toneKeyCap: KeyCap? = nil
+                        var reverse = false
                         switch c {
                         case "f":
                             rightHint = "4"
-                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone4)]
+                            toneKeyCap = KeyCap(rime: RimeChar.tone4)
                         case "g":
                             rightHint = "5"
-                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone5)]
+                            toneKeyCap = KeyCap(rime: RimeChar.tone5)
                         case "h":
                             rightHint = "6"
-                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone6)]
+                            toneKeyCap = KeyCap(rime: RimeChar.tone6)
+                            reverse = true
                         case "c":
                             rightHint = "1"
-                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone1)]
+                            toneKeyCap = KeyCap(rime: RimeChar.tone1)
                         case "v":
                             rightHint = "2"
                             bottomHint = "oe/eo"
-                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone2)]
+                            toneKeyCap = KeyCap(rime: RimeChar.tone2)
                         case "b":
                             rightHint = "3"
-                            childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone3)]
+                            toneKeyCap = KeyCap(rime: RimeChar.tone3)
+                            reverse = true
                         default: ()
+                        }
+                        if let toneKeyCap = toneKeyCap {
+                            childrenKeyCaps = orgChildren.reversed() + [toneKeyCap]
+                            if reverse {
+                                childrenKeyCaps?.reverse()
+                            }
                         }
                     } else {
                         switch c {
