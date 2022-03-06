@@ -1102,26 +1102,10 @@ class InputController: NSObject {
         }
         
         switch state.keyboardContextualType {
-        case .english where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty:
-            newAutoSuggestionType = .halfWidthPunctuation
-        case .chinese where !lastCharBefore.isNumber && lastCharBefore.isLetter && textAfterInput.isEmpty:
-            newAutoSuggestionType = .fullWidthPunctuation
-        default:
-            if lastCharBefore.isNumber {
-                if lastCharBefore.isASCII && !Settings.cached.enableNumKeyRow {
-                    newAutoSuggestionType = .halfWidthDigit
-                } else {
-                    switch lastCharBefore {
-                    case "０", "１", "２", "３", "４", "５", "６", "７", "８", "９":
-                        newAutoSuggestionType = .fullWidthArabicDigit
-                    case "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億":
-                        newAutoSuggestionType = .fullWidthLowerDigit
-                    case "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟":
-                        newAutoSuggestionType = .fullWidthUpperDigit
-                    default: ()
-                    }
-                }
-            }
+        case .english where textAfterInput.isEmpty: newAutoSuggestionType = .halfWidthPunctuation
+        case .chinese where textAfterInput.isEmpty: newAutoSuggestionType = .fullWidthPunctuation
+        case .url: newAutoSuggestionType = .domain
+        default: ()
         }
     }
 }

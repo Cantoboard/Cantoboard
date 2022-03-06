@@ -496,10 +496,6 @@ struct CandidatePath {
 enum AutoSuggestionType {
     case halfWidthPunctuation
     case fullWidthPunctuation
-    case halfWidthDigit
-    case fullWidthArabicDigit
-    case fullWidthLowerDigit
-    case fullWidthUpperDigit
     case email
     case domain
     case keypadSymbols
@@ -535,10 +531,6 @@ extension PredictiveTextEngine {
 class CandidateOrganizer {
     private static let halfWidthPunctuationCandidateSource = AutoSuggestionCandidateSource([".", ",", "?", "!", "。", "，", "？", "！"], cannotExpand: true)
     private static let fullWidthPunctuationCandidateSource = AutoSuggestionCandidateSource(["。", "，", "、", "？", "！", ".", ",", "?", "!"], cannotExpand: true)
-    private static let halfWidthDigitCandidateSource = AutoSuggestionCandidateSource(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"])
-    private static let fullWidthArabicDigitCandidateSource = AutoSuggestionCandidateSource(["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"])
-    private static let fullWidthLowerDigitCandidateSource = AutoSuggestionCandidateSource(["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "零", "廿", "百", "千", "萬", "億"])
-    private static let fullWidthUpperDigitCandidateSource = AutoSuggestionCandidateSource(["零", "壹", "貳", "叄", "肆", "伍", "陸", "柒", "捌", "玖", "拾", "佰", "仟", "萬", "億"])
     private static let emailCandidateSource = AutoSuggestionCandidateSource(["gmail.com", "outlook.com", "icloud.com", "yahoo.com", "hotmail.com"])
     private static let domainCandidateSource = AutoSuggestionCandidateSource(["com", "org", "edu", "net", SessionState.main.localDomain, "hk", "tw", "mo", "cn", "uk", "jp"].unique())
     private static let keypadSymbolCandidateSource = AutoSuggestionCandidateSource([
@@ -598,19 +590,14 @@ class CandidateOrganizer {
             self.candidateSource = candidateSource
         } else if let autoSuggestionType = autoSuggestionType {
             switch autoSuggestionType {
-            case .fullWidthArabicDigit: candidateSource = Self.fullWidthArabicDigitCandidateSource
-            case .fullWidthLowerDigit: candidateSource = Self.fullWidthLowerDigitCandidateSource
             case .fullWidthPunctuation: candidateSource = Self.fullWidthPunctuationCandidateSource
-            case .fullWidthUpperDigit: candidateSource = Self.fullWidthUpperDigitCandidateSource
-            case .halfWidthDigit: candidateSource = Self.halfWidthDigitCandidateSource
             case .halfWidthPunctuation: candidateSource = Self.halfWidthPunctuationCandidateSource
             case .email: candidateSource = Self.emailCandidateSource
             case .domain: candidateSource = Self.domainCandidateSource
             case .keypadSymbols: candidateSource = Self.keypadSymbolCandidateSource
             }
             
-            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty &&
-               (autoSuggestionType == .halfWidthPunctuation || autoSuggestionType == .fullWidthPunctuation) {
+            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty {
                 let shouldFilterOffensiveWords = !Settings.cached.predictiveTextOffensiveWord
                 let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText, filterOffensiveWords: shouldFilterOffensiveWords) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
@@ -658,10 +645,7 @@ class CandidateOrganizer {
     }
     
     var shouldCloseCandidatePaneOnCommit: Bool {
-        candidateSource === Self.fullWidthArabicDigitCandidateSource ||
-        candidateSource === Self.fullWidthLowerDigitCandidateSource ||
-        candidateSource === Self.fullWidthUpperDigitCandidateSource ||
-        candidateSource === Self.halfWidthDigitCandidateSource
+        true
     }
     
     var supportedGroupByModes: [GroupByMode] {
