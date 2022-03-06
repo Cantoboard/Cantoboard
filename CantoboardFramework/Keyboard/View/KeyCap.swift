@@ -79,8 +79,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     none,
     backspace,
     toggleInputMode(/* toMode */ InputMode, RimeSchema?),
-    character(String, /* rightHint */ String?, /* leftHint */ String?, /* children key caps */ [KeyCap]?),
-    cangjie(String, Bool),
+    character(String, /* rightHint */ String?, /* bottomHint */ String?, /* children key caps */ [KeyCap]?),
+    cangjie(String, /* isInMixedMode */ Bool),
     stroke(String),
     jyutPing10Keys(String),
     emoji(String),
@@ -317,7 +317,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonTitleInset: UIEdgeInsets {
         switch self {
         case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
-        case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
+        case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 2, right: 0)
         default: return .zero
         }
     }
@@ -332,9 +332,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
-    var buttonLeftHint: String? {
+    var buttonBottomHint: String? {
         switch self {
-        case .character(_, _, let leftHint, _): return leftHint
+        case .character(_, _, let bottomHint, _): return bottomHint
         default: return nil
         }
     }

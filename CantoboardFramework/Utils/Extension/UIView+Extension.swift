@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 internal extension UIView {
-    func layout(textLayer: CATextLayer, atBottomLeftCornerWithInsets insets: UIEdgeInsets) {
+    func layout(textLayer: CATextLayer, atBottomCenterWithInsets insets: UIEdgeInsets) {
         guard !textLayer.isHidden,
               let text = textLayer.string as? String,
               let superlayerBounds = textLayer.superlayer?.bounds
@@ -21,11 +21,11 @@ internal extension UIView {
         height = max(height, minHeight)
         
         textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height
-        textLayer.alignmentMode = .left
+        textLayer.alignmentMode = .center
         
-        let size = text.size(withFont: UIFont.systemFont(ofSize: textLayer.fontSize))
+        let size = text.size(withFont: UIFont.systemFont(ofSize: textLayer.fontSize)).with(newWidth: superlayerBounds.width)
         
-        textLayer.frame = CGRect(origin: CGPoint(x: insets.left, y: superlayerBounds.height - size.height - insets.bottom), size: size)
+        textLayer.frame = CGRect(origin: CGPoint(x: 0, y: superlayerBounds.height - size.height - insets.bottom), size: size)
     }
     
     func layout(textLayer: CATextLayer, atTopRightCornerWithInsets insets: UIEdgeInsets) {

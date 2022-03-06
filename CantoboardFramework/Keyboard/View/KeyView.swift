@@ -165,7 +165,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
-        var buttonLeftHintTitle = keyCap.buttonLeftHint
+        var buttonBottomHintTitle = keyCap.buttonBottomHint
         var buttonRightHintTitle = keyCap.buttonRightHint
         var setHighlightedBackground = false
         
@@ -179,7 +179,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
                 backgroundColor = ButtonColor.systemKeyBackgroundColor
             }
             shadowOpacity = 0
-            buttonLeftHintTitle = nil
+            buttonBottomHintTitle = nil
             buttonRightHintTitle = nil
         } else if popupView != nil && keyboardIdiom == .phone {
             backgroundColor = ButtonColor.popupBackgroundColor
@@ -250,7 +250,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         highlightedShadowColor = setHighlightedBackground ? keyCap.buttonBgHighlightedShadowColor : nil
         
         setupKeyHint(keyCap, buttonRightHintTitle, keyCap.buttonHintFgColor, keyHintLayer: &rightKeyHintLayer)
-        setupKeyHint(keyCap, buttonLeftHintTitle, keyCap.buttonHintFgColor, keyHintLayer: &leftKeyHintLayer)
+        setupKeyHint(keyCap, buttonBottomHintTitle, keyCap.buttonHintFgColor, keyHintLayer: &leftKeyHintLayer)
         
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
@@ -309,7 +309,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         if let keyHintLayer = leftKeyHintLayer {
             keyHintLayer.isHidden = popupView != nil
-            layout(textLayer: keyHintLayer, atBottomLeftCornerWithInsets: KeyHintLayer.hintInsets)
+            layout(textLayer: keyHintLayer, atBottomCenterWithInsets: KeyHintLayer.hintInsets)
         }
         
         if let swipeDownHintLayer = swipeDownHintLayer {

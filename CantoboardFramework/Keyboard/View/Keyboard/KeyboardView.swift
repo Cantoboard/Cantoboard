@@ -292,7 +292,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         switch keyCap {
         case .toggleInputMode:
             return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
-        case .character(let c, var rightHint, var leftHint, var childrenKeyCaps):
+        case .character(let c, var rightHint, var bottomHint, var childrenKeyCaps):
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased && c.count == 1 ? c.uppercased() : c
             
@@ -309,15 +309,15 @@ class KeyboardView: UIView, BaseKeyboardView {
                 if isInLongPressMode {
                     switch c {
                     case "r":
-                        leftHint = "aa"
+                        bottomHint = "aa"
                     case "v":
                         switch state.activeSchema {
-                        case .jyutping: leftHint = "oe/eo"
-                        case .yale: leftHint = "eu"
+                        case .jyutping: bottomHint = "oe/eo"
+                        case .yale: bottomHint = "eu"
                         default: ()
                         }
                     case "x":
-                        leftHint = "ng"
+                        bottomHint = "ng"
                     default: ()
                     }
                 }
@@ -342,7 +342,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone1)]
                         case "v":
                             rightHint = "2"
-                            leftHint = "oe/eo"
+                            bottomHint = "oe/eo"
                             childrenKeyCaps = [KeyCap(keyChar), KeyCap(rime: RimeChar.tone2)]
                         case "b":
                             rightHint = "3"
@@ -360,7 +360,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                 }
             }
             
-            return .character(keyChar, rightHint, leftHint, childrenKeyCaps)
+            return .character(keyChar, rightHint, bottomHint, childrenKeyCaps)
         case .shift: return .shift(shiftState)
         case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
             switch state.keyboardContextualType {
