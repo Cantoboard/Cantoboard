@@ -78,7 +78,7 @@ class CommonSwipeDownKeys {
         case "p": return "0"
         case "a": return "@"
         case "s": return "#"
-        case "d": return .currency
+        case "d": return KeyCap(SessionState.main.currencySymbol)
         case "f": return isInChineseContextualMode ? "／" : "/"
         case "g": return isInChineseContextualMode ? "（" : "("
         case "h": return isInChineseContextualMode ? "）" : ")"
