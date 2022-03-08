@@ -151,7 +151,7 @@ extension Settings {
                 [
                     Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled,
                            LocalizedStrings.mixedMode_description, "Guide1-2"),
-                    Switch(LocalizedStrings.numKeyRow, \.enableNumKeyRow),
+                    // Switch(LocalizedStrings.numKeyRow, \.enableNumKeyRow),
                     Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
                            LocalizedStrings.smartFullStop_description, "Guide8-1"),
                     Switch(LocalizedStrings.audioFeedback, \.isAudioFeedbackEnabled),
