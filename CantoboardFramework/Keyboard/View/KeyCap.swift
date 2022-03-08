@@ -438,7 +438,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "^": return ["^", "＾", "↑", "↓"]
         case "*": return ["*", "＊", "×"]
         case "+": return ["+", "＋"]
-        case "=": return ["=", "≠", "≈", "＝", "⇔"]
+        case "=": return ["=", "≠", "≈", "＝"]
         // #+= 2nd row
         case "_": return ["_", "＿"]
         case "\\": return ["\\", "＼"]
@@ -446,7 +446,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "~": return ["~", "～"]
         case "<": return ["<", "〈", "＜", "←"]
         case ">": return [">", "〉", "＞", "→"]
-        case "«": return ["«", "《", "⇐"]
+        case "«": return ["«", "《", "⇔"]
         case "»": return ["»", "》", "⇒"]
         case "&": return ["＆", "&", "§"]
         case "•": return ["•", "·", "．", "°"]
@@ -476,7 +476,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "～": return ["～", "~"]
         case "〈": return ["〈", "<", "＜", "←"]
         case "〉": return ["〉", ">", "＞", "→"]
-        case "《": return ["《", "«", "⇐"]
+        case "《": return ["《", "«", "⇔"]
         case "》": return ["》", "»", "⇒"]
         case "·": return ["·", "．", "•", "°"]
         // #+= 4th row full width
