@@ -1017,7 +1017,7 @@ class InputController: NSObject {
     private func refreshKeyboardContextualType() {
         guard let textDocumentProxy = textDocumentProxy else { return }
         let symbolShape = Settings.cached.symbolShape
-
+        
         if textDocumentProxy.keyboardType == .URL || textDocumentProxy.keyboardType == .webSearch {
             state.keyboardContextualType = .url
             return
@@ -1077,7 +1077,6 @@ class InputController: NSObject {
     
     private func showAutoSuggestCandidates() {
         let textBeforeInput = documentContextBeforeInput
-        let textAfterInput = documentContextAfterInput
         
         var newAutoSuggestionType: AutoSuggestionType?
         
@@ -1106,8 +1105,8 @@ class InputController: NSObject {
         }
         
         switch state.keyboardContextualType {
-        case .english where textAfterInput.isEmpty: newAutoSuggestionType = .halfWidthPunctuation
-        case .chinese where textAfterInput.isEmpty: newAutoSuggestionType = .fullWidthPunctuation
+        case .english: newAutoSuggestionType = .halfWidthPunctuation
+        case .chinese: newAutoSuggestionType = .fullWidthPunctuation
         case .url: newAutoSuggestionType = .domain
         default: ()
         }
