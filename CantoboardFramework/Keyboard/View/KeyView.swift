@@ -100,6 +100,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         let attributedTitleText = titleText?.toHKAttributedString(withForegroundColor: finalColor)
         setAttributedTitle(attributedTitleText, for: .normal)
+        
+        let originalHintColor = keyCap.buttonHintFgColor.resolvedColor(with: traitCollection).cgColor
+        bottomKeyHintLayer?.foregroundColor = originalHintColor.copy(alpha: originalHintColor.alpha * enabledAlpha * titleAlpha)
     }
     
     required init?(coder: NSCoder) {
@@ -362,7 +365,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         let fontPercentage = pow(reverseSwipeDownPercentage, 2)
         let alphaPercentage = fontPercentage
         titleLabel?.font = .systemFont(ofSize: titleLabelFontSize * fontPercentage)
-
+        
         if let mainTextColor = titleColor(for: .normal)?.resolvedColor(with: traitCollection) {
             titleAlpha = alphaPercentage
             
