@@ -24,6 +24,8 @@
 "inputMethodSettings.mixedMode" = "粵英混合輸入";
 "inputMethodSettings.mixedMode.description" = "熄咗呢個選項，打粵文嗰陣就唔會顯示英文候選詞。";
 "inputMethodSettings.numKeyRow" = "數字鍵列";
+"inputMethodSettings.longPressSymbolKeys" = "長撳選擇符號或數字";
+"inputMethodSettings.longPressSymbolKeys.description" = "喺電話模式，長撳字母鍵可以輸入符號或者數字。";
 "inputMethodSettings.smartFullStop" = "句號快捷鍵";
 "inputMethodSettings.smartFullStop.description" = "打字之後撳兩下空白鍵，快速輸入句號。";
 "inputMethodSettings.audioFeedback" = "按鍵聲音";

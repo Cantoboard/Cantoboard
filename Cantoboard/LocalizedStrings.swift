@@ -24,6 +24,8 @@ class LocalizedStrings {
     static let mixedMode = localizedString("inputMethodSettings.mixedMode")
     static let mixedMode_description = localizedString("inputMethodSettings.mixedMode.description")
     static let numKeyRow = localizedString("inputMethodSettings.numKeyRow")
+    static let longPressSymbolKeys = localizedString("inputMethodSettings.longPressSymbolKeys")
+    static let longPressSymbolKeys_description = localizedString("inputMethodSettings.longPressSymbolKeys.description")
     static let smartFullStop = localizedString("inputMethodSettings.smartFullStop")
     static let smartFullStop_description = localizedString("inputMethodSettings.smartFullStop.description")
     static let audioFeedback = localizedString("inputMethodSettings.audioFeedback")
