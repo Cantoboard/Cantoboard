@@ -309,7 +309,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             }
             
             if isInCangjieMode && !isInEnglishMode && isLetterKey {
-                return .cangjie(keyChar, isInMixedMode)
+                return .cangjie(keyChar, isInMixedMode, childrenKeyCaps)
             }
             
             if !isInEnglishMode && state.activeSchema.supportCantoneseTonalInput {

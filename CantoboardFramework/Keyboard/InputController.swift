@@ -77,7 +77,7 @@ struct KeyboardState: Equatable {
     var selectedFilterIndex: Int?
     
     var showCommonSwipeDownKeysInLongPress: Bool {
-        keyboardIdiom == .phone && !activeSchema.isCangjieFamily
+        keyboardIdiom == .phone
     }
     
     init() {

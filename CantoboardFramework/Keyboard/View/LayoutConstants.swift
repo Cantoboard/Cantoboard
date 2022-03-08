@@ -916,7 +916,7 @@ extension LayoutConstants {
              "^_^",
              .keypadRimeDelimiter: return 16
         case .returnKey, "\t", .shift, .nextKeyboard, .dismissKeyboard: return 18
-        case .cangjie(_, true), .backspace: return 20
+        case .cangjie(_, true, _), .backspace: return 20
         case .currency where idiom.isPad: return 20
         case .character(let c, _, _, _), .contextual(.character(let c)):
             if c.first?.isEnglishLetter ?? false { return c.first!.isUppercase ? 22 : 23 }

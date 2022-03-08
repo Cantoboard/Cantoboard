@@ -59,7 +59,7 @@ class CommonSwipeDownKeys {
         let isInChineseContextualMode = !keyboardState.keyboardContextualType.halfWidthSymbol
         let keyCapCharacter: String?
         switch keyCap {
-        case .character(let c, _, _, _), .cangjie(let c, _): keyCapCharacter = c.lowercased()
+        case .character(let c, _, _, _), .cangjie(let c, _, _): keyCapCharacter = c.lowercased()
         case .currency: keyCapCharacter = "$"
         case .singleQuote: keyCapCharacter = "'"
         case .doubleQuote: keyCapCharacter = "\""

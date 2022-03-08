@@ -80,7 +80,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     backspace,
     toggleInputMode(/* toMode */ InputMode, RimeSchema?),
     character(String, /* rightHint */ String?, /* bottomHint */ String?, /* children key caps */ [KeyCap]?),
-    cangjie(String, /* isInMixedMode */ Bool),
+    cangjie(String, /* isInMixedMode */ Bool, /* children key caps */ [KeyCap]?),
     stroke(String),
     jyutPing10Keys(String),
     emoji(String),
@@ -123,7 +123,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .backspace: return .backspace
         case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _, _): return .character(c)
-        case .cangjie(let c, _): return .character(c)
+        case .cangjie(let c, _, _): return .character(c)
         case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
@@ -280,7 +280,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "\t": return nil
         case "——": return "⸻"
         case .character(let text, _, _, _): return text
-        case .cangjie(let c, _):
+        case .cangjie(let c, _, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
             return Self.cangjieKeyCaps[safe: letterIndex] ?? c
@@ -316,7 +316,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .cangjie(_, true): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        case .cangjie(_, true, _): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         default: return .zero
         }
@@ -326,7 +326,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .character(_, let rightHint, _, _) where rightHint != nil: return rightHint
         case .rime(_, let hint, _) where hint != nil: return hint
-        case .cangjie(let c, true): return c
+        case .cangjie(let c, true, _): return c
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -376,6 +376,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         // For debugging
         case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
         case .character(_, _, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .cangjie(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]
