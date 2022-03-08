@@ -906,7 +906,7 @@ extension LayoutConstants {
         case .returnKey(.emergencyCall) where idiom == .phone: return 12
         case .keyboardType(.symbolic) where idiom == .phone, .keyboardType(.alphabetic) where idiom == .phone: return 14
         case .keyboardType(.emojis): return 22
-        case .character(".com", _, _, _),
+        case .character(".com", _, _),
              .jyutPing10Keys,
              .keyboardType,
              .returnKey where idiom == .phone, .returnKey(.confirm),
@@ -916,9 +916,10 @@ extension LayoutConstants {
              "^_^",
              .keypadRimeDelimiter: return 16
         case .returnKey, "\t", .shift, .nextKeyboard, .dismissKeyboard: return 18
-        case .cangjie(_, true, _), .backspace: return 20
+        case .cangjie(_, let hints, _) where hints != nil: return 20
+        case .backspace: return 20
         case .currency where idiom.isPad: return 20
-        case .character(let c, _, _, _), .contextual(.character(let c)):
+        case .character(let c, _, _), .contextual(.character(let c)):
             if c.first?.isEnglishLetter ?? false { return c.first!.isUppercase ? 22 : 23 }
             
             if idiom == .pad(.padFull5Rows) && "[]/\\".contains(c) {

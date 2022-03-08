@@ -32,23 +32,23 @@ class CommonContextualKeys {
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
         switch key {
         case .symbol:
-            let keyHint = "符"
+            let keyHint = KeyCapHints(rightHint: "符")
             switch keyboardState.keyboardContextualType {
-            case .chinese: return .character("，", keyHint, nil, ["。", "，", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
-            case .english: return .character(",", keyHint, nil, [".", ",", "?", "!", "。", "，", KeyCap(rime: .sym)])
+            case .chinese: return .character("，", keyHint, ["。", "，", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
+            case .english: return .character(",", keyHint, [".", ",", "?", "!", "。", "，", KeyCap(rime: .sym)])
             case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
             case .url:
                 var children: [KeyCap] = ["/", ".", ".com", ".net", ".org", ".edu"]
                 if (keyboardState.isComposing) {
                     children.append(KeyCap(rime: .delimiter))
                 }
-                return .character(".", "/", nil, children)
+                return .character(".", KeyCapHints(rightHint: "/"), children)
             }
         case ",": return keyboardState.keyboardContextualType.halfWidthSymbol ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"
         case .url: // For iPads
             let domains = [".net", ".org", ".edu", ".com", String("." + SessionState.main.localDomain), ".hk", ".tw", ".mo", ".cn", ".uk", ".jp"].unique()
-            return .character(".com", nil, nil, domains.map{ .character($0, nil, nil, nil) })
+            return .character(".com", nil, domains.map{ .character($0, nil, nil) })
         default: return nil
         }
     }
@@ -59,7 +59,7 @@ class CommonSwipeDownKeys {
         let isInChineseContextualMode = !keyboardState.keyboardContextualType.halfWidthSymbol
         let keyCapCharacter: String?
         switch keyCap {
-        case .character(let c, _, _, _), .cangjie(let c, _, _): keyCapCharacter = c.lowercased()
+        case .character(let c, _, _), .cangjie(let c, _, _): keyCapCharacter = c.lowercased()
         case .currency: keyCapCharacter = "$"
         case .singleQuote: keyCapCharacter = "'"
         case .doubleQuote: keyCapCharacter = "\""

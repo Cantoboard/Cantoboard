@@ -74,13 +74,27 @@ enum ContextualKey: Equatable, ExpressibleByStringLiteral {
     }
 }
 
+struct KeyCapHints: Equatable {
+    let leftHint, rightHint, bottomHint: String?
+    
+    public init(rightHint: String) {
+        self.init(leftHint: nil, rightHint: rightHint, bottomHint: nil)
+    }
+    
+    public init(leftHint: String? = nil, rightHint: String? = nil, bottomHint: String? = nil) {
+        self.leftHint = leftHint
+        self.rightHint = rightHint
+        self.bottomHint = bottomHint
+    }
+}
+
 indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
     backspace,
     toggleInputMode(/* toMode */ InputMode, RimeSchema?),
-    character(String, /* rightHint */ String?, /* bottomHint */ String?, /* children key caps */ [KeyCap]?),
-    cangjie(String, /* isInMixedMode */ Bool, /* children key caps */ [KeyCap]?),
+    character(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
+    cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
     stroke(String),
     jyutPing10Keys(String),
     emoji(String),
@@ -89,7 +103,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     nextKeyboard,
     space(SpaceKeyMode),
     shift(_ state: KeyboardShiftState),
-    rime(RimeChar, String?, [KeyCap]?),
+    rime(RimeChar, KeyCapHints?, /* children key caps */ [KeyCap]?),
     contextual(ContextualKey),
     reverseLookup(RimeSchema),
     changeSchema(RimeSchema),
@@ -106,11 +120,11 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
     
     public init(stringLiteral value: String) {
-        self = .character(value, nil, nil, nil)
+        self = .character(value, nil, nil)
     }
     
     public init(_ char: String) {
-        self = .character(char, nil, nil, nil)
+        self = .character(char, nil, nil)
     }
     
     public init(rime char: RimeChar) {
@@ -122,7 +136,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .none: return .none
         case .backspace: return .backspace
         case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
-        case .character(let c, _, _, _): return .character(c)
+        case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _, _): return .character(c)
         case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
@@ -148,7 +162,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var character: Character? {
         switch self {
-        case .character(let c, _, _, _): return c.first ?? nil
+        case .character(let c, _, _): return c.first ?? nil
         default: return nil
         }
     }
@@ -279,7 +293,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "】": return "⠀】"
         case "\t": return nil
         case "——": return "⸻"
-        case .character(let text, _, _, _): return text
+        case .character(let text, _, _): return text
         case .cangjie(let c, _, _):
             guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
             let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
@@ -316,17 +330,22 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .cangjie(_, true, _): return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        case .cangjie(_, let hints, _) where hints != nil: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         default: return .zero
         }
     }
     
+    var buttonLeftHint: String? {
+        switch self {
+        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.leftHint
+        default: return nil
+        }
+    }
+    
     var buttonRightHint: String? {
         switch self {
-        case .character(_, let rightHint, _, _) where rightHint != nil: return rightHint
-        case .rime(_, let hint, _) where hint != nil: return hint
-        case .cangjie(let c, true, _): return c
+        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.rightHint ?? barHint
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -334,7 +353,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBottomHint: String? {
         switch self {
-        case .character(_, _, let bottomHint, _): return bottomHint
+        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.bottomHint
         default: return nil
         }
     }
@@ -365,7 +384,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var withoutHints: KeyCap {
         switch self {
-        case .character(let c, _, _, _): return KeyCap(c)
+        case .character(let c, _, _): return KeyCap(c)
         // case .cangjie(let c, _): return .cangjie(c, false)
         default: return self
         }
@@ -375,7 +394,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
-        case .character(_, _, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .cangjie(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
@@ -476,7 +495,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var defaultChildKeyCapTitle: String? {
         switch self {
-        case .character(".", "/", _, _): return nil // Contextual sym key in url mode
+        case .character(".", KeyCapHints(rightHint: "/"), _): return nil // Contextual sym key in url mode
         default: return self.buttonText
         }
     }

@@ -292,7 +292,10 @@ class KeyboardView: UIView, BaseKeyboardView {
         switch keyCap {
         case .toggleInputMode:
             return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
-        case .character(let c, var rightHint, var bottomHint, var childrenKeyCaps):
+        case .character(let c, let hints, var childrenKeyCaps):
+            var leftHint = hints?.leftHint
+            var rightHint = hints?.rightHint
+            var bottomHint = hints?.bottomHint
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased && c.count == 1 ? c.uppercased() : c
             
@@ -303,13 +306,14 @@ class KeyboardView: UIView, BaseKeyboardView {
             
             if state.showCommonSwipeDownKeysInLongPress {
                 if let longPressKeyCap = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: state) {
-                    rightHint = longPressKeyCap.buttonText
+                    leftHint = longPressKeyCap.buttonText
                     childrenKeyCaps = [longPressKeyCap, keyCap.withoutHints]
                 }
             }
             
             if isInCangjieMode && !isInEnglishMode && isLetterKey {
-                return .cangjie(keyChar, isInMixedMode, childrenKeyCaps)
+                let keyCapHints = KeyCapHints(leftHint: leftHint, rightHint: isInMixedMode ? c : rightHint, bottomHint: bottomHint)
+                return .cangjie(keyChar, keyCapHints, childrenKeyCaps)
             }
             
             if !isInEnglishMode && state.activeSchema.supportCantoneseTonalInput {
@@ -378,7 +382,7 @@ class KeyboardView: UIView, BaseKeyboardView {
                 }
             }
             
-            return .character(keyChar, rightHint, bottomHint, childrenKeyCaps)
+            return .character(keyChar, KeyCapHints(leftHint: leftHint, rightHint: rightHint, bottomHint: bottomHint), childrenKeyCaps)
         case .shift: return .shift(shiftState)
         case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
             switch state.keyboardContextualType {
