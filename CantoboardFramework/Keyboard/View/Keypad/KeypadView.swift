@@ -25,7 +25,7 @@ class KeypadView: UIView, BaseKeyboardView {
     
     private let leftButtonProps: [[KeypadButtonProps]] = [
         [ KeypadButtonProps(keyCap: .keyboardType(.numeric)) ],
-        [ KeypadButtonProps(keyCap: .toggleInputMode(.english, nil)) ],
+        [ KeypadButtonProps(keyCap: .placeholder(.none)) ],
         [ KeypadButtonProps(keyCap: .keyboardType(.symbolic)) ],
         [ KeypadButtonProps(keyCap: .keyboardType(.emojis)) ],
     ]
