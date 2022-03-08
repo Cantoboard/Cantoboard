@@ -495,6 +495,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var defaultChildKeyCapTitle: String? {
         switch self {
+        case .character(",", KeyCapHints(rightHint: "符"), _): return "." // Contextual sym key in English mode
+        case .character("，", KeyCapHints(rightHint: "符"), _): return "。" // Contextual sym key in Chinese mode
         case .character(".", KeyCapHints(rightHint: "/"), _): return nil // Contextual sym key in url mode
         default: return self.buttonText
         }

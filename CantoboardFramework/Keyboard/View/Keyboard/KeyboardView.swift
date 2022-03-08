@@ -284,7 +284,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         var keyCap: KeyCap
         if case .contextual(let contextualKey) = hardcodedKeyCap {
             guard let contextualTranslatedKey = keyboardViewLayout.getContextualKeys(key: contextualKey, keyboardState: state) else { return nil }
-            keyCap = contextualTranslatedKey
+            return contextualTranslatedKey
         } else {
             keyCap = hardcodedKeyCap
         }

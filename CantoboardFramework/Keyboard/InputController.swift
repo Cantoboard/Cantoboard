@@ -1026,7 +1026,7 @@ class InputController: NSObject {
             case .smart:
                 switch state.inputMode {
                 case .chinese: state.keyboardContextualType = .chinese
-                case .english where !Settings.cached.isMixedModeEnabled: state.keyboardContextualType = .english
+                case .english: state.keyboardContextualType = .english
                 default:
                     let isEnglish = isUserTypingEnglish(documentContextBeforeInput: documentContextBeforeInput)
                     state.keyboardContextualType = isEnglish ? .english : .chinese
