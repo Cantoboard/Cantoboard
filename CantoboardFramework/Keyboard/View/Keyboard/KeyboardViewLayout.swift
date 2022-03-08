@@ -79,9 +79,9 @@ class CommonSwipeDownKeys {
         case "a": return "@"
         case "s": return "#"
         case "d": return KeyCap(SessionState.main.currencySymbol)
-        case "f": return isInChineseContextualMode ? "／" : "/"
-        case "g": return isInChineseContextualMode ? "（" : "("
-        case "h": return isInChineseContextualMode ? "）" : ")"
+        case "f": return KeyCap("/").symbolTransform(state: keyboardState)
+        case "g": return KeyCap("(").symbolTransform(state: keyboardState)
+        case "h": return KeyCap(")").symbolTransform(state: keyboardState)
         case "j": return "「"
         case "k": return "」"
         case "l": return .singleQuote
@@ -91,7 +91,7 @@ class CommonSwipeDownKeys {
         case "v": return isInChineseContextualMode ? "⋯" : "…"
         case "b": return isInChineseContextualMode ? "、" : "､"
         case "n": return isInChineseContextualMode ? "；" : ";"
-        case "m": return isInChineseContextualMode ? "：" : ":"
+        case "m": return KeyCap(":").symbolTransform(state: keyboardState)
         case ",": return "!"
         case ".": return "?"
         case "，": return "！"
