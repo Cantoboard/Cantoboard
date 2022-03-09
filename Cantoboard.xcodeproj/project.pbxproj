@@ -166,7 +166,6 @@
 		79B9B6D225F34B2D00238E80 /* ic_animals_nature@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B69D25F34B2D00238E80 /* ic_animals_nature@3x.png */; };
 		79B9B6D325F34B2D00238E80 /* ic_travel_places@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B69E25F34B2D00238E80 /* ic_travel_places@2x.png */; };
 		79B9B6D425F34B2D00238E80 /* ic_activity@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B69F25F34B2D00238E80 /* ic_activity@3x.png */; };
-		79B9B6D525F34B2D00238E80 /* ISEmojiList.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A025F34B2D00238E80 /* ISEmojiList.plist */; };
 		79B9B6D625F34B2D00238E80 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A125F34B2D00238E80 /* Images.xcassets */; };
 		79B9B6D725F34B2D00238E80 /* ISEmojiList_iOS10.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A225F34B2D00238E80 /* ISEmojiList_iOS10.plist */; };
 		79B9B6D825F34B2D00238E80 /* PageControlBottomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 79B9B6A425F34B2D00238E80 /* PageControlBottomView.xib */; };
@@ -190,6 +189,10 @@
 		79D4E23B264251C600857D7D /* EnglishDictSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E23A264251C600857D7D /* EnglishDictSource */; };
 		79D4E244264262D200857D7D /* UnihanSource in Resources */ = {isa = PBXBuildFile; fileRef = 79D4E243264262D200857D7D /* UnihanSource */; };
 		79E98DBD2672FC92006E32DE /* StatusMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E98DBC2672FC92006E32DE /* StatusMenu.swift */; };
+		79ECF80227D95E360008873D /* ISEmojiList_iOS12.1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80127D95E360008873D /* ISEmojiList_iOS12.1.plist */; };
+		79ECF80B27D962560008873D /* ISEmojiList_iOS13.2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80427D962560008873D /* ISEmojiList_iOS13.2.plist */; };
+		79ECF80D27D962560008873D /* ISEmojiList_iOS14.2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */; };
+		79ECF81027D962560008873D /* ISEmojiList_iOS14.5.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79ECF80927D962560008873D /* ISEmojiList_iOS14.5.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -474,7 +477,6 @@
 		79B9B69D25F34B2D00238E80 /* ic_animals_nature@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_animals_nature@3x.png"; sourceTree = "<group>"; };
 		79B9B69E25F34B2D00238E80 /* ic_travel_places@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_travel_places@2x.png"; sourceTree = "<group>"; };
 		79B9B69F25F34B2D00238E80 /* ic_activity@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_activity@3x.png"; sourceTree = "<group>"; };
-		79B9B6A025F34B2D00238E80 /* ISEmojiList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList.plist; sourceTree = "<group>"; };
 		79B9B6A125F34B2D00238E80 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		79B9B6A225F34B2D00238E80 /* ISEmojiList_iOS10.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS10.plist; sourceTree = "<group>"; };
 		79B9B6A425F34B2D00238E80 /* PageControlBottomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PageControlBottomView.xib; sourceTree = "<group>"; };
@@ -496,6 +498,10 @@
 		79D4E243264262D200857D7D /* UnihanSource */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UnihanSource; sourceTree = "<group>"; };
 		79D7180525FDA0C400A25AC3 /* CantoboardTestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CantoboardTestApp.entitlements; sourceTree = "<group>"; };
 		79E98DBC2672FC92006E32DE /* StatusMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenu.swift; sourceTree = "<group>"; };
+		79ECF80127D95E360008873D /* ISEmojiList_iOS12.1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS12.1.plist; sourceTree = "<group>"; };
+		79ECF80427D962560008873D /* ISEmojiList_iOS13.2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS13.2.plist; sourceTree = "<group>"; };
+		79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS14.2.plist; sourceTree = "<group>"; };
+		79ECF80927D962560008873D /* ISEmojiList_iOS14.5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS14.5.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -901,11 +907,14 @@
 			isa = PBXGroup;
 			children = (
 				79B9B68125F34B2D00238E80 /* Images */,
-				79B9B6A025F34B2D00238E80 /* ISEmojiList.plist */,
 				79B9B6A125F34B2D00238E80 /* Images.xcassets */,
 				79B9B6A225F34B2D00238E80 /* ISEmojiList_iOS10.plist */,
-				79B9B6A325F34B2D00238E80 /* Views */,
 				79B9B6A725F34B2D00238E80 /* ISEmojiList_iOS11.plist */,
+				79ECF80127D95E360008873D /* ISEmojiList_iOS12.1.plist */,
+				79ECF80427D962560008873D /* ISEmojiList_iOS13.2.plist */,
+				79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */,
+				79ECF80927D962560008873D /* ISEmojiList_iOS14.5.plist */,
+				79B9B6A325F34B2D00238E80 /* Views */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -1308,6 +1317,7 @@
 			files = (
 				79B9B6D325F34B2D00238E80 /* ic_travel_places@2x.png in Resources */,
 				79B9B6D625F34B2D00238E80 /* Images.xcassets in Resources */,
+				79ECF81027D962560008873D /* ISEmojiList_iOS14.5.plist in Resources */,
 				79B9B6C225F34B2D00238E80 /* ic_objects@3x.png in Resources */,
 				79B9B6C025F34B2D00238E80 /* ic_animals_nature.png in Resources */,
 				79B9B6CE25F34B2D00238E80 /* ic_smileys_people@2x.png in Resources */,
@@ -1318,6 +1328,7 @@
 				79B9B6D825F34B2D00238E80 /* PageControlBottomView.xib in Resources */,
 				79B9B6B825F34B2D00238E80 /* ic_flags.png in Resources */,
 				79B9B6BE25F34B2D00238E80 /* ic_objects@2x.png in Resources */,
+				79ECF80B27D962560008873D /* ISEmojiList_iOS13.2.plist in Resources */,
 				79B9B6DB25F34B2D00238E80 /* ISEmojiList_iOS11.plist in Resources */,
 				79B9B6D225F34B2D00238E80 /* ic_animals_nature@3x.png in Resources */,
 				79B9B6BF25F34B2D00238E80 /* ic_smileys_people.png in Resources */,
@@ -1329,19 +1340,20 @@
 				79B9B6C325F34B2D00238E80 /* ic_emojiDelete.png in Resources */,
 				79B9B6C825F34B2D00238E80 /* ic_symbols.png in Resources */,
 				79B9B6C625F34B2D00238E80 /* ic_smileys_people@3x.png in Resources */,
+				79ECF80D27D962560008873D /* ISEmojiList_iOS14.2.plist in Resources */,
 				79B9B6C925F34B2D00238E80 /* ic_flags@2x.png in Resources */,
 				79B9B6D725F34B2D00238E80 /* ISEmojiList_iOS10.plist in Resources */,
 				79B9B6CC25F34B2D00238E80 /* ic_flags@3x.png in Resources */,
 				79B9B6D925F34B2D00238E80 /* EmojiCollectionView.xib in Resources */,
 				79B9B6CA25F34B2D00238E80 /* ic_recents@3x.png in Resources */,
 				79B9B6D425F34B2D00238E80 /* ic_activity@3x.png in Resources */,
+				79ECF80227D95E360008873D /* ISEmojiList_iOS12.1.plist in Resources */,
 				79B9B6C725F34B2D00238E80 /* ic_symbols@3x.png in Resources */,
 				79B9B6BD25F34B2D00238E80 /* ic_food_drink@2x.png in Resources */,
 				79B9B6B925F34B2D00238E80 /* ic_activity.png in Resources */,
 				79B9B6D125F34B2D00238E80 /* ic_animals_nature@2x.png in Resources */,
 				79B9B6CF25F34B2D00238E80 /* ic_activity@2x.png in Resources */,
 				79B9B6C125F34B2D00238E80 /* ic_recents.png in Resources */,
-				79B9B6D525F34B2D00238E80 /* ISEmojiList.plist in Resources */,
 				79B9B6BA25F34B2D00238E80 /* ic_travel_places.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
