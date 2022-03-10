@@ -1022,6 +1022,7 @@ class InputController: NSObject {
             state.keyboardContextualType = .url
             return
         } else {
+            state.specialSymbolShapeOverride.removeAll()
             switch symbolShape {
             case .smart:
                 switch state.inputMode {
@@ -1030,14 +1031,14 @@ class InputController: NSObject {
                 default:
                     let isEnglish = isUserTypingEnglish(documentContextBeforeInput: documentContextBeforeInput)
                     state.keyboardContextualType = isEnglish ? .english : .chinese
+                    
+                    for specialSymbol in SpecialSymbol.allCases {
+                        let symbolShape = specialSymbol.determineSymbolShape(textBefore: documentContextBeforeInput)
+                        state.specialSymbolShapeOverride[specialSymbol] = symbolShape
+                    }
                 }
             case .half: state.keyboardContextualType = .english
             case .full: state.keyboardContextualType = .chinese
-            }
-            
-            for specialSymbol in SpecialSymbol.allCases {
-                let symbolShape = specialSymbol.determineSymbolShape(textBefore: documentContextBeforeInput)
-                state.specialSymbolShapeOverride[specialSymbol] = symbolShape
             }
         }
         if inputEngine.isComposing {
