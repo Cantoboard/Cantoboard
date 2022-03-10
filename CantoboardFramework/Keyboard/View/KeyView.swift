@@ -132,7 +132,9 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         let hasStateChanged = keyboardState == nil ||
             keyboardState?.keyboardIdiom != newState.keyboardIdiom ||
             keyboardState?.isPortrait != newState.isPortrait ||
-            keyboardState?.isKeyboardAppearing != newState.isKeyboardAppearing
+            keyboardState?.isKeyboardAppearing != newState.isKeyboardAppearing ||
+            keyboardState?.keyboardType != newState.keyboardType || // Refresh top num key rows on iPad Pro 5 rows layout to hide swipe down key.
+            self.isPadTopRowButton != isPadTopRowButton
         guard keyCap != self.keyCap || hasStateChanged else { return }
         
         self.keyCap = keyCap
