@@ -36,17 +36,16 @@ internal extension UIView {
               let superlayerBounds = textLayer.superlayer?.bounds
             else { return }
         
-        let size = setupFontAndTextLayerSize(textLayer: textLayer, superlayerBounds: superlayerBounds)
+        let size = setupFontAndTextLayerSize(textLayer: textLayer, superlayerBounds: superlayerBounds, minHeight: 5)
         
         textLayer.alignmentMode = .center
         textLayer.frame = CGRect(origin: CGPoint(x: 0, y: superlayerBounds.height - size.height - insets.bottom), size: size)
     }
     
-    private func setupFontAndTextLayerSize(textLayer: CATextLayer, superlayerBounds: CGRect) -> CGSize {
+    private func setupFontAndTextLayerSize(textLayer: CATextLayer, superlayerBounds: CGRect, minHeight: CGFloat = 10) -> CGSize {
         guard let text = textLayer.string as? String else { return .zero }
         // let wightAdjustmentRatio: CGFloat = UIScreen.main.bounds.size.isPortrait && bounds ? 1 : 1.25
         var height = superlayerBounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
-        let minHeight: CGFloat = 10
         height = max(height, minHeight)
         
         textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height

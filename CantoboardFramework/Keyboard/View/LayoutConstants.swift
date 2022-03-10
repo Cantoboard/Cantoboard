@@ -38,7 +38,8 @@ protocol Copyable {
 }
 
 class PhoneLayoutConstants: LayoutConstants {
-    private static let contentEdgeInsetsPhone = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+    private static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+    private static let contentEdgeInsetsPhoneLandscape = UIEdgeInsets(top: 2, left: 2, bottom: 5, right: 2)
     
     let systemKeyWidthRatio: CGFloat
     let shiftKeyWidthRatio: CGFloat
@@ -74,7 +75,7 @@ class PhoneLayoutConstants: LayoutConstants {
                    buttonGapX: buttonGapX,
                    keyHeight: keyHeight,
                    autoCompleteBarHeight: autoCompleteBarHeight,
-                   keyViewInsets: Self.contentEdgeInsetsPhone,
+                   keyViewInsets: isPortrait ? Self.contentEdgeInsetsPhonePortrait : Self.contentEdgeInsetsPhoneLandscape,
                    keyboardViewLeftRightInset: keyboardViewLeftRightInset,
                    keyboardViewBottomInset: 4,
                    keyboardSuperviewWidth: keyboardSuperviewWidth)
