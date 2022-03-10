@@ -188,7 +188,11 @@ struct PredictiveResult {
     set<pair<size_t, PredictiveResult>, decltype(cmp)> orderedResults(cmp);
 
     Agent trieAgent;
-    trieAgent.set_query([prefix UTF8String]);
+    const char* prefixCStr = [prefix UTF8String];
+    if (prefixCStr == nullptr) {
+        return;
+    }
+    trieAgent.set_query(prefixCStr);
     while (trie.predictive_search(trieAgent)) {
         const Key& key = trieAgent.key();
         string keyText = string(key.ptr(), key.length());
@@ -225,7 +229,11 @@ struct PredictiveResult {
             toAdd = suffix;
         } else {
             Agent trieAgent;
-            trieAgent.set_query([suffix UTF8String]);
+            const char* suffixCStr = [suffix UTF8String];
+            if (suffixCStr == nullptr) {
+                continue;
+            }
+            trieAgent.set_query(suffixCStr);
             
             if ([suffix lengthOfComposedChars] == 1) {
                 // If the suffix has just a single char, always suggest it.
