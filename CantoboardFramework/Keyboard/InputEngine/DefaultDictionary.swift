@@ -37,6 +37,6 @@ public class DefaultDictionary {
         try? FileManager.default.createDirectory(atPath: "\(DataFileManager.documentDirectory)/build", withIntermediateDirectories: false, attributes: nil)
         LevelDbTable.createEnglishDictionary([dictTextPath, commonDictPath], dictDbPath: dictDbPath)
         
-        NSLog("Dictionary genereated at \(dictDbPath)")
+        DDLogInfo("Dictionary genereated at \(dictDbPath)")
     }
 }

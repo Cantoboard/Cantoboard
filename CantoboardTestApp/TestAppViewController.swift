@@ -70,7 +70,7 @@ class TestAppViewController: UIViewController, UITextViewDelegate {
         DefaultDictionary.createDb(locale: "en_CA")
         DefaultDictionary.createDb(locale: "en_GB")
         DefaultDictionary.createDb(locale: "en_AU")
-        NSLog("EnglishDictionary Created.")
+        DDLogInfo("EnglishDictionary Created.")
          */
         
         /*

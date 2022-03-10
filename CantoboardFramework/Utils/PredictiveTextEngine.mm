@@ -88,7 +88,7 @@ using namespace marisa;
     DDLogInfo(@"Predictive text engine opening ngram...");
     if (fd == -1) {
         NSString *s = [NSString stringWithFormat:@"Failed to open %@ ngram file. %s", ngramFilePath, strerror(errno)];
-        DDLogInfo(@"%@", s);
+        DDLogInfo(@"Error: %@", s);
         return self;
     }
     
@@ -100,7 +100,7 @@ using namespace marisa;
     DDLogInfo(@"Predictive text engine mapping ngram table into memory...");
     if (data == MAP_FAILED) {
         NSString *s = [NSString stringWithFormat:@"Predictive text engine failed to mmap ngram file. %s", strerror(errno)];
-        DDLogInfo(@"%@", s);
+        DDLogInfo(@"Error: %@", s);
         [self close];
         return self;
     } else {

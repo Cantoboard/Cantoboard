@@ -751,7 +751,7 @@ class InputController: NSObject {
             
             let cc = candidateCode[cIndex]
             
-            // NSLog("UFO iteration \(ic) \(cc)")
+            // DDLogInfo("UFO iteration \(ic) \(cc)")
             if cc == " " {
                 // If the candidate code is a space, append.
                 if ic == "'" {
@@ -787,7 +787,7 @@ class InputController: NSObject {
         }
         
         let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
-        //NSLog("UFO selectedInput \(selectedInput)")
+        // DDLogInfo("UFO selectedInput \(selectedInput)")
         
         let composition = String(selectedInput + morphedInput)
         let inputCaretPosFromTheRight = rimeComposition.text.count - rimeComposition.caretIndex
@@ -818,7 +818,7 @@ class InputController: NSObject {
                 iIndex = inputRemaining.index(after: iIndex)
             }
             guard !filter.isEmpty && !filterSet.contains(filter) else { return nil }
-            // NSLog("UFO \(inputRemaining) \(prefix) \(filter)")
+            // DDLogInfo("UFO \(inputRemaining) \(prefix) \(filter)")
             filterSet.insert(filter)
             return filter
         }
