@@ -45,9 +45,9 @@ class TouchHandler {
     enum InputMode: Equatable {
         case typing, backspacing, nextKeyboard, cursorMoving
     }
-    static let keyRepeatInitialDelay = 7 // Unit is keyRepeatInterval
+    static let keyRepeatInitialDelay = 8 // Unit is keyRepeatInterval
     static let longPressDelay = 3
-    static let keyRepeatInterval = 0.08
+    static let keyRepeatInterval = 0.07
     static let cursorMovingStepX: CGFloat = 15
     static let initialCursorMovingThreshold = cursorMovingStepX * 1.25
     static let swipeXThreshold: CGFloat = 30
