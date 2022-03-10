@@ -169,7 +169,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         var maskedCorners: CACornerMask = [.layerMaxXMaxYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMinXMinYCorner]
         var shadowOpacity: Float = 1.0
-        let buttonLeftHintTitle = keyCap.buttonLeftHint
+        var buttonLeftHintTitle = keyCap.buttonLeftHint
         var buttonBottomHintTitle = keyCap.buttonBottomHint
         var buttonRightHintTitle = keyCap.buttonRightHint
         var setHighlightedBackground = false
@@ -185,6 +185,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             }
             shadowOpacity = 0
             buttonBottomHintTitle = nil
+            buttonLeftHintTitle = nil
             buttonRightHintTitle = nil
         } else if popupView != nil && keyboardIdiom == .phone {
             backgroundColor = ButtonColor.popupBackgroundColor
