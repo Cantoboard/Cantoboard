@@ -382,7 +382,8 @@ class KeyboardView: UIView, BaseKeyboardView {
                 }
             }
             
-            return .character(keyChar, KeyCapHints(leftHint: leftHint, rightHint: rightHint, bottomHint: bottomHint), childrenKeyCaps)
+            let keyCapHints = leftHint == nil && rightHint == nil && bottomHint == nil ? nil : KeyCapHints(leftHint: leftHint, rightHint: rightHint, bottomHint: bottomHint)
+            return .character(keyChar, keyCapHints, childrenKeyCaps)
         case .shift: return .shift(shiftState)
         case .keyboardType where groupId == 2 && state.keyboardIdiom.isPad:
             switch state.keyboardContextualType {
