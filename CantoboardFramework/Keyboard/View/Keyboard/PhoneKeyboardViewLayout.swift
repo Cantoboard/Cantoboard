@@ -15,7 +15,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard], [.space(.space)], [.contextual(.symbol), .returnKey(.default)]]
+        [[.keyboardType(.numeric), .nextKeyboard, .toggleInputMode(.english, nil)], [.space(.space)], [.contextual(.symbol), .returnKey(.default)]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -84,7 +84,12 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         }
         
         let frames: [CGRect] = keys.map { key in
-            let keyWidth = getKeyWidth(key, layoutConstants)
+            let keyWidth: CGFloat
+            if keyRowView.rowId == 3 && direction == .left && keys.count > 2 {
+                keyWidth = (layoutConstants.asPhoneLayoutConstants!.letterKeyWidth + layoutConstants.asPhoneLayoutConstants!.systemKeyWidth) / 2
+            } else {
+                keyWidth = getKeyWidth(key, layoutConstants)
+            }
             let rect = CGRect(x: x, y: directionalLayoutMargins.top, width: keyWidth, height: layoutConstants.keyHeight)
             x += keyWidth + layoutConstants.buttonGapX
             
