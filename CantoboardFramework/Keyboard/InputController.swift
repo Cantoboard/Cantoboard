@@ -459,7 +459,14 @@ class InputController: NSObject {
             }
             
             if (state.mainSchema == .stroke || state.mainSchema.is10Keys) {
-                clearInput()
+                let hasCandidate = isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+                if (state.inputMode == .english) {
+                    _ = insertComposingText(shouldDisableSmartSpace: true)
+                } else if hasCandidate {
+                    candidateSelected(choice: [0, 0], enableSmartSpace: false)
+                } else {
+                    clearInput()
+                }
             }
             
             state.inputMode = toInputMode
