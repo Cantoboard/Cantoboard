@@ -38,10 +38,8 @@ class LocalizedStrings {
     static let symbolShape_full = localizedString("inputMethodSettings.symbolShape.full")
     static let symbolShape_smart = localizedString("inputMethodSettings.symbolShape.smart")
     static let symbolShape_description = localizedString("inputMethodSettings.symbolShape.description")
-    static let smartSymbolShapeDefault = localizedString("mixedInputSettings.smartSymbolShapeDefault")
-    static let smartSymbolShapeDefault_half = localizedString("mixedInputSettings.smartSymbolShapeDefault.half")
-    static let smartSymbolShapeDefault_full = localizedString("mixedInputSettings.smartSymbolShapeDefault.full")
-    static let smartSymbolShapeDefault_description = localizedString("mixedInputSettings.smartSymbolShapeDefault.description")
+    static let showBottomLeftSwitchLangButton = localizedString("inputMethodSettings.showBottomLeftSwitchLangButton")
+    static let showBottomLeftSwitchLangButton_description = localizedString("inputMethodSettings.showBottomLeftSwitchLangButton.description")
     
     static let padSettings = localizedString("padSettings")
     static let candidateBarStyle = localizedString("padSettings.candidateBarStyle")
@@ -51,6 +49,10 @@ class LocalizedStrings {
     static let mixedInputSettings = localizedString("mixedInputSettings")
     static let smartSpace = localizedString("mixedInputSettings.smartSpace")
     static let smartSpace_description = localizedString("mixedInputSettings.smartSpace.description")
+    static let smartSymbolShapeDefault = localizedString("mixedInputSettings.smartSymbolShapeDefault")
+    static let smartSymbolShapeDefault_half = localizedString("mixedInputSettings.smartSymbolShapeDefault.half")
+    static let smartSymbolShapeDefault_full = localizedString("mixedInputSettings.smartSymbolShapeDefault.full")
+    static let smartSymbolShapeDefault_description = localizedString("mixedInputSettings.smartSymbolShapeDefault.description")
     
     static let chineseInputSettings = localizedString("chineseInputSettings")
     static let enablePredictiveText = localizedString("chineseInputSettings.enablePredictiveText")

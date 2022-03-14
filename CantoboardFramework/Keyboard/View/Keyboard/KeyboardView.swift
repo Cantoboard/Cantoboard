@@ -267,14 +267,14 @@ class KeyboardView: UIView, BaseKeyboardView {
         for (index, var keyCaps) in layout.letters.enumerated() {
             keyCaps = keyCaps.enumerated().map { groupId, keyCapGroup in
                 keyCapGroup.compactMap {
-                    return configureAlphabeticKeyCap($0, groupId: groupId, shiftState: shiftState)
+                    return configureAlphabeticKeyCap($0, rowId: index, groupId: groupId, shiftState: shiftState)
                 }
             }
             keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
         }
     }
     
-    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap? {
+    private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, rowId: Int, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap? {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
         let isInMixedMode = state.inputMode == .mixed
@@ -291,7 +291,11 @@ class KeyboardView: UIView, BaseKeyboardView {
                 
         switch keyCap {
         case .toggleInputMode:
-            return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
+            if rowId == 3 && !Settings.cached.showBottomLeftSwitchLangButton {
+                return nil
+            } else {
+                return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
+            }
         case .character(let c, let hints, var childrenKeyCaps):
             var leftHint = hints?.leftHint
             var rightHint = hints?.rightHint

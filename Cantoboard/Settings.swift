@@ -168,6 +168,8 @@ extension Settings {
                         ],
                         LocalizedStrings.symbolShape_description, "Guide9-1"
                     ),
+                    Switch(LocalizedStrings.showBottomLeftSwitchLangButton, \.showBottomLeftSwitchLangButton,
+                           LocalizedStrings.showBottomLeftSwitchLangButton_description),
                 ]
             ),
             UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,

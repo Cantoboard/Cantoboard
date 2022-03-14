@@ -114,6 +114,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultEnablePredictiveText: Bool = true
     private static let defaultPredictiveTextOffensiveWord: Bool = false
     private static let defaultFullPadCandidateBar: Bool = true
+    private static let defaultShowBottomLeftSwitchLangButton: Bool = true
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -138,6 +139,7 @@ public struct Settings: Codable, Equatable {
     public var enablePredictiveText: Bool
     public var predictiveTextOffensiveWord: Bool
     public var fullPadCandidateBar: Bool
+    public var showBottomLeftSwitchLangButton: Bool
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -163,6 +165,7 @@ public struct Settings: Codable, Equatable {
         enablePredictiveText = Self.defaultEnablePredictiveText
         predictiveTextOffensiveWord = Self.defaultPredictiveTextOffensiveWord
         fullPadCandidateBar = Self.defaultFullPadCandidateBar
+        showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
     }
     
     public init(from decoder: Decoder) throws {
@@ -190,6 +193,7 @@ public struct Settings: Codable, Equatable {
         self.enablePredictiveText = try container.decodeIfPresent(Bool.self, forKey: .enablePredictiveText) ?? Settings.defaultEnablePredictiveText
         self.predictiveTextOffensiveWord = try container.decodeIfPresent(Bool.self, forKey: .predictiveTextOffensiveWord) ?? Settings.defaultPredictiveTextOffensiveWord
         self.fullPadCandidateBar = try container.decodeIfPresent(Bool.self, forKey: .fullPadCandidateBar) ?? Settings.defaultFullPadCandidateBar
+        self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
     }
     
     private static var _cached: Settings?
