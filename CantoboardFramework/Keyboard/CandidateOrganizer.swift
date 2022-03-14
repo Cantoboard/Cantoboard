@@ -583,8 +583,8 @@ class CandidateOrganizer {
     }
     
     func updateCandidates(reload: Bool, targetCandidatesCount: Int = 0) {
-        if let inputController = inputController,
-           inputController.inputEngine.isComposing {
+        guard let inputController = inputController else { return }
+        if inputController.inputEngine.isComposing {
             let candidateSource = InputEngineCandidateSource(inputController: inputController)
             candidateSource.filterPrefix = filterPrefix
             self.candidateSource = candidateSource
@@ -597,7 +597,7 @@ class CandidateOrganizer {
             case .keypadSymbols: candidateSource = Self.keypadSymbolCandidateSource
             }
             
-            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty {
+            if Settings.cached.enablePredictiveText && !suggestionContextualText.isEmpty && inputController.state.inputMode != .english {
                 let shouldFilterOffensiveWords = !Settings.cached.predictiveTextOffensiveWord
                 let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText, filterOffensiveWords: shouldFilterOffensiveWords) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
