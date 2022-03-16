@@ -31,6 +31,7 @@ class EmojiSpider(scrapy.Spider):
         'https://emojipedia.org/apple/ios-13.2/show_all/#more',
         'https://emojipedia.org/apple/ios-14.2/show_all/#more',
         'https://emojipedia.org/apple/ios-14.5/show_all/#more',
+        'https://emojipedia.org/apple/ios-15.4/show_all/#more',
     ]
 
     emoji_cp = load_emoji_cp_dict()

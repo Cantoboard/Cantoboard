@@ -53,6 +53,7 @@
 		796E53EB26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */; };
 		796E53F126E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */; };
 		796E53FB26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */; };
+		7978A0E327E1DA1E00451A00 /* ISEmojiList_iOS15.4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7978A0E227E1DA1E00451A00 /* ISEmojiList_iOS15.4.plist */; };
 		797DEB05266B3AA8008BAB23 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 797DEB04266B3AA8008BAB23 /* ZIPFoundation */; };
 		798032A52645F6AF008DC703 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798032A42645F6AF008DC703 /* Logging.swift */; };
 		7990347E27759D8600893C14 /* NGram.h in Headers */ = {isa = PBXBuildFile; fileRef = 7990347D27759D8600893C14 /* NGram.h */; };
@@ -369,6 +370,7 @@
 		796E53EA26E6E1F400C9B187 /* PhoneKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53F026E6E3CD00C9B187 /* PadFull4RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull4RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
 		796E53FA26E71CEA00C9B187 /* PadFull5RowsKeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadFull5RowsKeyboardViewLayout.swift; sourceTree = "<group>"; };
+		7978A0E227E1DA1E00451A00 /* ISEmojiList_iOS15.4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS15.4.plist; sourceTree = "<group>"; };
 		798032A42645F6AF008DC703 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		7990347D27759D8600893C14 /* NGram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NGram.h; sourceTree = "<group>"; };
 		799AE1FB26792D8F00286530 /* StatusMenuHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuHandler.swift; sourceTree = "<group>"; };
@@ -914,6 +916,7 @@
 				79ECF80427D962560008873D /* ISEmojiList_iOS13.2.plist */,
 				79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */,
 				79ECF80927D962560008873D /* ISEmojiList_iOS14.5.plist */,
+				7978A0E227E1DA1E00451A00 /* ISEmojiList_iOS15.4.plist */,
 				79B9B6A325F34B2D00238E80 /* Views */,
 			);
 			path = Assets;
@@ -1350,6 +1353,7 @@
 				79ECF80227D95E360008873D /* ISEmojiList_iOS12.1.plist in Resources */,
 				79B9B6C725F34B2D00238E80 /* ic_symbols@3x.png in Resources */,
 				79B9B6BD25F34B2D00238E80 /* ic_food_drink@2x.png in Resources */,
+				7978A0E327E1DA1E00451A00 /* ISEmojiList_iOS15.4.plist in Resources */,
 				79B9B6B925F34B2D00238E80 /* ic_activity.png in Resources */,
 				79B9B6D125F34B2D00238E80 /* ic_animals_nature@2x.png in Resources */,
 				79B9B6CF25F34B2D00238E80 /* ic_activity@2x.png in Resources */,

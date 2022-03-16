@@ -23,6 +23,7 @@ final public class EmojiLoader {
         if #available(iOS 13.2, *) { emojiPListFileName = "ISEmojiList_iOS13.2" }
         if #available(iOS 14.2, *) { emojiPListFileName = "ISEmojiList_iOS14.2" }
         if #available(iOS 14.5, *) { emojiPListFileName = "ISEmojiList_iOS14.5" }
+        if #available(iOS 15.4, *) { emojiPListFileName = "ISEmojiList_iOS15.4" }
 
         guard let filePath = Bundle.podBundle.path(forResource: emojiPListFileName, ofType: "plist") else {
             return []

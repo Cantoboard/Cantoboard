@@ -61,3 +61,4 @@ fastlane/test_output
 
 NGramBuilder/zh_HK.ngram
 
+__pycache__
