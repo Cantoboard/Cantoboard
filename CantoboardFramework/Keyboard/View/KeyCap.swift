@@ -117,8 +117,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     combo(/* Combo keycaps */ [String]), // e.g. combo(["A", "B"]) click once to insert A, click twice to replace A with B.
     keypadRimeDelimiter
     
-    private static let cangjieKeyCaps = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
-    
     public init(stringLiteral value: String) {
         self = .character(value, nil, nil)
     }
@@ -294,10 +292,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "\t": return nil
         case "——": return "⸻"
         case .character(let text, _, _): return text
-        case .cangjie(let c, _, _):
-            guard let asciiCode = c.lowercased().first?.asciiValue else { return nil }
-            let letterIndex = Int(asciiCode - "a".first!.asciiValue!)
-            return Self.cangjieKeyCaps[safe: letterIndex] ?? c
+        case .cangjie(let c, _, _): return CangjieConstants.cangjieKeyCaps(c)
         case .stroke(let c):
             switch c.lowercased() {
             case "h": return "一"

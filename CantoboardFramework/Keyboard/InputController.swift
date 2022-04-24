@@ -26,6 +26,16 @@ indirect enum ContextualType: Equatable {
     }
 }
 
+class CangjieConstants {
+    private static let cangjieKeyCapsByAscii = ["日", "月", "金", "木", "水", "火", "土", "竹", "戈", "十", "大", "中", "一", "弓", "人", "心", "手", "口", "尸", "廿", "山", "女", "田", "難", "卜", "符"]
+    
+    static func cangjieKeyCaps(_ c: String) -> String {
+        guard let asciiCode = c.lowercased().first?.asciiValue else { return c }
+        let letterIndex = Int(asciiCode) - Int("a".first!.asciiValue!)
+        return Self.cangjieKeyCapsByAscii[safe: letterIndex] ?? c
+    }
+}
+
 struct KeyboardState: Equatable {
     var keyboardType: KeyboardType {
         didSet {
@@ -843,22 +853,16 @@ class InputController: NSObject {
         }
         
         switch state.inputMode {
-        case .chinese: updateComposition(inputEngine.composition)
+        case .chinese, .mixed: updateComposition(inputEngine.composition)
         case .english: updateComposition(inputEngine.englishComposition)
-        case .mixed:
-            if state.activeSchema.isCangjieFamily {
-                // Show both Cangjie radicals and english composition in marked text.
-                // let composition = inputEngine.rimeComposition
-                // composition?.text += " " + (inputEngine.englishComposition?.text ?? "")
-                // updateComposition(composition)
-                updateComposition(inputEngine.englishComposition)
-            } else {
-                updateComposition(inputEngine.composition)
-            }
         }
         
         if state.activeSchema.isCangjieFamily && state.inputMode != .english {
-            keyboardViewController?.compositionLabelView?.composition = inputEngine.rimeComposition
+            let composition = inputEngine.rimeComposition
+            composition?.text = composition?.text.map({ c in
+                CangjieConstants.cangjieKeyCaps(String(c))
+            }).joined() ?? ""
+            keyboardViewController?.compositionLabelView?.composition = composition
         } else if state.inputMode == .english {
             keyboardViewController?.compositionLabelView?.composition = inputEngine.englishComposition
         } else {
