@@ -49,7 +49,6 @@ class TouchHandler {
     static let longPressDelay = 3
     static let keyRepeatInterval = 0.07
     static let cursorMovingStepX: CGFloat = 15
-    static let initialCursorMovingThreshold = cursorMovingStepX * 1.25
     static let swipeXThreshold: CGFloat = 30
     static let capsLockDoubleTapDelay = 0.2
     
@@ -201,24 +200,19 @@ class TouchHandler {
             
             if !isInKeyboardMode && !key.keyCap.action.isSpace && key is KeypadButton { return }
             
-            // Ignore short swipe.
-            let point = touch.location(in: keyboardView), deltaX = abs(point.x - cursorMoveStartPosition.x)
-            guard deltaX >= Self.initialCursorMovingThreshold else { return }
+            // If the user is force pressing the keyboard, enter cursor moving mode.
+            let isForceSwiping = touch.force >= 2
             
-            // If the user is swiping the space key, or force swiping char keys, enter cursor moving mode.
             let tapStartAction = currentTouchState.initialAction
-            let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2 && deltaX > Self.swipeXThreshold
-            
-            switch tapStartAction {
-            case .space,
-                 .character(_) where isForceSwiping:
-                currentTouchState.cursorMoveStartPosition = cursorMoveStartPosition
+            // We support drag typing from shift, don't switch to cursor moving mode even if user's force pressing.
+            if !tapStartAction.isShift && isForceSwiping {
+                let point = touch.location(in: keyboardView)
+                currentTouchState.cursorMoveStartPosition = point
                 currentTouchState.hasTakenAction = false
                 key.keyTouchEnded()
                 
                 endTouches(commit: false, except: touch, exceptShiftKey: false)
                 inputMode = .cursorMoving
-            default: ()
             }
         }
     }
@@ -373,8 +367,16 @@ class TouchHandler {
                 callKeyHandler(touchState.activeKeyView, action)
                 touchState.hasTakenAction = true
                 FeedbackProvider.play(keyboardAction: action)
-            } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay && !shouldDisableLongPress {
-                touchState.activeKeyView.keyLongPressed(touchState.touch)
+            } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay {
+                if touchState.activeKeyView.keyCap.action.isSpace {
+                    let point = touchState.touch.location(in: keyboardView)
+                    touchState.cursorMoveStartPosition = point
+                    touchState.hasTakenAction = false
+                    
+                    inputMode = .cursorMoving
+                } else if !shouldDisableLongPress {
+                    touchState.activeKeyView.keyLongPressed(touchState.touch)
+                }
                 cancelKeyRepeatTimer()
             }
         }
