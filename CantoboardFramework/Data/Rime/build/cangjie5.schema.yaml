@@ -2,12 +2,12 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     cangjie5.custom: 0
-    cangjie5.schema: 1645337732
-    default: 1645337733
-    default.custom: 1645337733
-    symbols: 1645337733
+    cangjie5.schema: 1650775571
+    default: 1650775572
+    default.custom: 1650775571
+    symbols: 1650775572
     symbols.custom: 0
-    symbols_cantonese: 1645337732
+    symbols_cantonese: 1650775571
 engine:
   filters:
     - uniquifier
@@ -385,6 +385,3 @@ translator:
   enable_user_dict: false
   encode_commit_history: true
   max_phrase_length: 5
-  preedit_format:
-    - "xform/^([a-z ]*)$/\\U$1\\E/"
-    - "xlit|ABCDEFGHIJKLMNOPQRSTUVWXYZ|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
