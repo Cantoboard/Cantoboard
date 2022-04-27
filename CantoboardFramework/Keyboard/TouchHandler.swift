@@ -72,6 +72,7 @@ class TouchHandler {
     }
     var keyboardIdiom: LayoutIdiom
     var isInKeyboardMode = true
+    var isComposing = false
     
     private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
@@ -144,6 +145,8 @@ class TouchHandler {
         
         guard let currentTouchState = touches[touch] else { return }
         let cursorMoveStartPosition = currentTouchState.cursorMoveStartPosition
+        // Speed up cursor moving if we aren't in composing mode.
+        let cursorMovingStepX = Self.cursorMovingStepX * (isComposing ? 1 : 0.75)
         
         switch inputMode {
         case .backspacing:
@@ -161,7 +164,7 @@ class TouchHandler {
             var dX = point.x - cursorMoveStartPosition.x
             let isLeft = dX < 0
             dX = isLeft ? -dX : dX
-            let threshold = Self.cursorMovingStepX
+            let threshold = cursorMovingStepX
             while dX > threshold {
                 dX -= threshold
                 callKeyHandler(key, isLeft ? .moveCursorBackward : .moveCursorForward)
@@ -200,13 +203,16 @@ class TouchHandler {
             
             if !isInKeyboardMode && !key.keyCap.action.isSpace && key is KeypadButton { return }
             
-            // If the user is force pressing the keyboard, enter cursor moving mode.
-            let isForceSwiping = touch.force >= 2
+            // If the user is swiping the spacebar beyond the threshold, enter cursor moving mode.
+            let point = touch.location(in: keyboardView)
+            let hasSwiped = abs(point.x - cursorMoveStartPosition.x) > cursorMovingStepX
             
+            // If the user is force pressing the keyboard, enter cursor moving mode.
+            let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2
             let tapStartAction = currentTouchState.initialAction
             // We support drag typing from shift, don't switch to cursor moving mode even if user's force pressing.
-            if !tapStartAction.isShift && isForceSwiping {
-                let point = touch.location(in: keyboardView)
+            if !tapStartAction.isShift && isForceSwiping ||
+                tapStartAction.isSpace && hasSwiped {
                 currentTouchState.cursorMoveStartPosition = point
                 currentTouchState.hasTakenAction = false
                 key.keyTouchEnded()

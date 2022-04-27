@@ -129,6 +129,8 @@ class KeyboardView: UIView, BaseKeyboardView {
             touchHandler?.keyboardIdiom = newState.keyboardIdiom
         }
         
+        touchHandler?.isComposing = newState.isComposing
+        
         _state = newState
         if isViewDirty { setupView() }
         
