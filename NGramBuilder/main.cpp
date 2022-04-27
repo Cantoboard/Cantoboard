@@ -103,18 +103,50 @@ unordered_map<string, float> readDict(opencc_t opencc) {
             if (textLen == 0) continue;
             
             char* converted = opencc_convert_utf8(opencc, text, textLen);
-            if (ret.find(converted) == ret.end()) {
-                ret[converted] = prob;
-            } else {
-                ret[converted] = max(ret[converted], prob);
+            
+            UErrorCode errorCode = UErrorCode::U_ZERO_ERROR;
+            
+            UChar ustrBuf[10240];
+            int32_t ustrDestLength = 0;
+            u_strFromUTF8(ustrBuf, sizeof(ustrBuf)/sizeof(*ustrBuf), &ustrDestLength, converted, -1, &errorCode);
+            
+            UChar32 ustr32Buf[10240];
+            int32_t ustr32DestLength = 0;
+            u_strToUTF32(ustr32Buf, sizeof(ustr32Buf)/sizeof(*ustr32Buf), &ustr32DestLength, ustrBuf, ustrDestLength, &errorCode);
+            
+            if (errorCode != UErrorCode::U_ZERO_ERROR) {
+                cerr << "Error converting line to utf32: " << lineNum << " content: " << line << " exception: " << u_errorName(errorCode) << "\n";
+                exit(-1);
             }
+            
+            bool isValidString = true;
+            for (size_t i = 0; i < ustr32DestLength; ++i) {
+                UChar32 cUtf32 = ustr32Buf[i];
+                bool isValidChar = (0x4E00 <= cUtf32 && cUtf32 <= 0x9FFF) ||
+                                   (0x3400 <= cUtf32 && cUtf32 <= 0x4DBF) ||
+                                   (0x20000 <= cUtf32 && cUtf32 <= 0x2A6DF);
+                if (!isValidChar) {
+                    isValidString = false;
+                    cerr << "Removing line " << lineNum << " content: '" << converted << "'\n";
+                    break;
+                };
+            }
+            
+            if (isValidString) {
+                if (ret.find(converted) == ret.end()) {
+                    ret[converted] = prob;
+                } else {
+                    ret[converted] = max(ret[converted], prob);
+                }
+            }
+
             opencc_convert_utf8_free(converted);
             converted = nullptr;
 #ifdef DEBUG_BUILD_DICT
             // cout << text << " " << converted << " " << ret[converted] << "\n";
 #endif
         } catch (exception& ex) {
-            cerr << "Error parsing line: " << lineNum << " content: " << line << " exception: " << ex.what();
+            cerr << "Error parsing line: " << lineNum << " content: " << line << " exception: " << ex.what() << "\n";
             throw;
         }
     }
