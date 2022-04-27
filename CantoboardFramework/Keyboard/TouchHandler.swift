@@ -73,6 +73,7 @@ class TouchHandler {
     var keyboardIdiom: LayoutIdiom
     var isInKeyboardMode = true
     var isComposing = false
+    var hasForceTouchSupport = false
     
     private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
@@ -205,10 +206,11 @@ class TouchHandler {
             
             // If the user is swiping the spacebar beyond the threshold, enter cursor moving mode.
             let point = touch.location(in: keyboardView)
-            let hasSwiped = abs(point.x - cursorMoveStartPosition.x) > cursorMovingStepX
+            let initialSwipeThreshold = cursorMovingStepX * 2
+            let hasSwiped = abs(point.x - cursorMoveStartPosition.x) > initialSwipeThreshold
             
             // If the user is force pressing the keyboard, enter cursor moving mode.
-            let isForceSwiping = touch.force >= touch.maximumPossibleForce / 2
+            let isForceSwiping = hasForceTouchSupport ? touch.force >= touch.maximumPossibleForce / 2 : false
             let tapStartAction = currentTouchState.initialAction
             // We support drag typing from shift, don't switch to cursor moving mode even if user's force pressing.
             if !tapStartAction.isShift && isForceSwiping ||

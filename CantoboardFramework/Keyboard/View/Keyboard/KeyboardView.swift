@@ -130,6 +130,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
         
         touchHandler?.isComposing = newState.isComposing
+        touchHandler?.hasForceTouchSupport = traitCollection.forceTouchCapability == .available
         
         _state = newState
         if isViewDirty { setupView() }
