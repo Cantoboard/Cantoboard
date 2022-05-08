@@ -8,7 +8,7 @@
 #ifndef RKUtils_h
 #define RKUtils_h
 
-@import CocoaLumberjack;
+#import <CocoaLumberjack/DDLogMacros.h>
 static const DDLogLevel ddLogLevel = DDLogLevelDebug;
 
 // #define DDLogInfo(__FORMAT__, ...) DDLogInfo((@"%s:%d %s " __FORMAT__), __FILE_NAME__, __LINE__, __func__, ##__VA_ARGS__)

@@ -8,6 +8,8 @@
 #ifndef Utils_h
 #define Utils_h
 
+#import "RimePluginExtension.h"
+
 typedef struct __attribute__((packed)) {
     // There are just 214 radicals.
     // The most complicated Chinese char has 58 stroke.

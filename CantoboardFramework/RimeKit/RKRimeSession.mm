@@ -65,6 +65,10 @@
     [self validateSession];
     // DDLogInfo(@"Process key %p %c", (void*)_sessionId, (char)keycode);
     _rimeApi->process_key(_sessionId, keycode, modifier);
+    [self resetAndUpdateContext];
+}
+
+-(void)resetAndUpdateContext {
     _candidatesAllLoaded = false;
     _candidates = [NSMutableArray array];
     _comments = [NSMutableArray array];
@@ -148,7 +152,7 @@
         _isFirstCandidateCompleteMatch = ctx.composition.sel_end == ctx.composition.length;
         _rawInputCaretBytePosition = (int)_rimeApi->get_caret_pos(_sessionId);
         
-        // DDLogInfo(@"updateContext");
+        // DDLogInfo(@"updateContext _compositionCaretBytePosition %d sel_start %d _rawInputCaretBytePosition %d", _compositionCaretBytePosition, sel_start, _rawInputCaretBytePosition);
         return;
     } @finally {
         _rimeApi->free_context(&ctx);
