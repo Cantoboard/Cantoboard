@@ -510,11 +510,11 @@ class InputController: NSObject {
                 do {
                     try FileManager.default.zipItem(at: URL(fileURLWithPath: path, isDirectory: true), to: zipFilePath)
                     let share = UIActivityViewController(activityItems: [zipFilePath], applicationActivities: nil)
-                    DispatchQueue.main.async { keyboardViewController?.present(share, animated: true, completion: nil) }
+                    DispatchQueue.main.async { self.keyboardViewController?.present(share, animated: true, completion: nil) }
                 } catch {
                     DDLogError("Failed to export \(namePrefix) at \(path).")
                 }
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     state.enableState = .enabled
                     keyboardViewController?.keyboardView?.state = state
                 }
