@@ -137,12 +137,15 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             self.isPadTopRowButton != isPadTopRowButton
         guard keyCap != self.keyCap || hasStateChanged else { return }
         
+        let shouldDisableCombo = self.keyCap.isCombo != keyCap.isCombo
         self.keyCap = keyCap
         self.action = keyCap.action
         self.selectedAction = keyCap.action
         self.isPadTopRowButton = isPadTopRowButton
         self.keyboardState = newState
-        updateComboMode(enabled: false)
+        if shouldDisableCombo {
+            updateComboMode(enabled: false)
+        }
         
         if newState.isKeyboardAppearing {
             swipeDownPercentage = 0

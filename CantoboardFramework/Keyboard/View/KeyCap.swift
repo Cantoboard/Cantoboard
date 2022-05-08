@@ -497,6 +497,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    var isCombo: Bool {
+        switch self {
+        case .combo: return true
+        default: return false
+        }
+    }
+    
     var isContextual: Bool {
         switch self {
         case .contextual: return true
