@@ -1,8 +1,8 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1644267299
-    default.custom: 1644267299
+    default: 1639099840
+    default.custom: 1644658314
 ascii_composer:
   switch_key:
     Control_L: noop
@@ -38,7 +38,7 @@ key_binder:
     - {accept: "Shift+space", toggle: full_shape, when: always}
     - {accept: "Control+period", toggle: ascii_punct, when: always}
 menu:
-  page_size: 500 # The most common JyutPing "zi" maps to 409 chars.
+  page_size: 500
 punctuator:
   full_shape:
     " ": {commit: "　"}

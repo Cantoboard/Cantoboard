@@ -2,15 +2,15 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     common.custom: 0
-    default: 1644267299
-    default.custom: 1644267299
+    default: 1639099840
+    default.custom: 1644658314
     luna_pinyin.custom: 0
-    luna_pinyin.schema: 1644267299
-    pinyin: 1644267299
+    luna_pinyin.schema: 1639099840
+    pinyin: 1614731070
     pinyin.custom: 0
-    symbols: 1644267299
+    symbols: 1610967803
     symbols.custom: 0
-    symbols_cantonese: 1644267299
+    symbols_cantonese: 1629626926
 custom_phrase:
   db_class: stabledb
   dictionary: ""
@@ -78,7 +78,7 @@ key_binder:
     - {accept: "Control+period", toggle: ascii_punct, when: always}
   import_preset: default
 menu:
-  page_size: 10
+  page_size: 500
 punctuator:
   full_shape:
     " ": {commit: "　"}

@@ -1,13 +1,13 @@
 __build_info:
   rime_version: 1.7.3
   timestamps:
-    default: 1650775572
-    default.custom: 1650775571
+    default: 1639099840
+    default.custom: 1644658314
     quick5.custom: 0
-    quick5.schema: 1650775571
-    symbols: 1650775572
+    quick5.schema: 1650774744
+    symbols: 1610967803
     symbols.custom: 0
-    symbols_cantonese: 1650775571
+    symbols_cantonese: 1629626926
 engine:
   filters:
     - uniquifier
