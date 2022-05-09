@@ -202,12 +202,14 @@ open class KeyboardViewController: UIInputViewController {
     }
     
     private var topViewHeight: CGFloat {
+        var height: CGFloat = 0
         if hasFilterBar {
-            return layoutConstants.ref.filterBarViewHeight
-        } else if hasCompositionView {
-            return layoutConstants.ref.compositionViewHeight
+            height += layoutConstants.ref.filterBarViewHeight
         }
-        return .zero
+        if hasCompositionView {
+            height += layoutConstants.ref.compositionViewHeight
+        }
+        return height
     }
     
     private var keyboardHeight: CGFloat {
@@ -448,13 +450,14 @@ open class KeyboardViewController: UIInputViewController {
         widthConstraint?.constant = hostWindowWidth
         keyboardViewTopConstraint?.constant = topViewHeight
         
-        let compositionLabelHeight = topViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
-        let compositionResetButtonWidth = topViewHeight
+        var topViewY: CGFloat = 0
+        let compositionLabelHeight = layoutConstants.compositionViewHeight - CompositionLabel.insets.top - CompositionLabel.insets.bottom
+        let compositionResetButtonWidth = layoutConstants.compositionViewHeight
         if let compositionResetButton = compositionResetButton {
             compositionResetButton.frame = CGRect(
                 origin: CGPoint(
                     x: hostWindowWidth - compositionResetButtonWidth,
-                    y: 0),
+                    y: topViewY),
                 size: CGSize(width: compositionResetButtonWidth, height: compositionResetButtonWidth))
         }
         
@@ -464,14 +467,16 @@ open class KeyboardViewController: UIInputViewController {
             let compositionLabelViewWidth = max(compositionLabelViewWidthByText, compositionLabelViewMinWidth)
             let compositionLabelViewExcessWidth = max(0, compositionLabelViewWidth - compositionLabelViewMinWidth)
             compositionLabelView.frame = CGRect(
-                origin: CGPoint(x: CompositionLabel.insets.left - compositionLabelViewExcessWidth, y: CompositionLabel.insets.top),
+                origin: CGPoint(x: CompositionLabel.insets.left - compositionLabelViewExcessWidth, y: topViewY + CompositionLabel.insets.top),
                 size: CGSize(width: compositionLabelViewWidth, height: compositionLabelHeight))
+            
+            topViewY += layoutConstants.compositionViewHeight
         }
-        
+
         if let filterBarView = filterBarView {
             filterBarView.frame = CGRect(
-                origin: .zero,
-                size: CGSize(width: hostWindowWidth, height: topViewHeight))
+                origin: CGPoint(x: 0, y: topViewY),
+                size: CGSize(width: hostWindowWidth, height: layoutConstants.filterBarViewHeight))
         }
         // DDLogInfo("nextKeyboardSize \(widthConstraint?.constant) \(heightConstraint?.constant) \(view.frame)")
     }

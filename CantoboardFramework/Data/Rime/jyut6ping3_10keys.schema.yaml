@@ -90,14 +90,14 @@ speller:
 
     - abbrev/^([a-z]).+$/$1/      # 首字母簡拼
 
-    - xform/[a-c]/A/
-    - xform/[d-f]/D/
-    - xform/[g-i]/G/
-    - xform/[j-l]/J/
-    - xform/[m-o]/M/
-    - xform/[p-s]/P/
-    - xform/[t-v]/T/
-    - xform/[w-z]/W/
+    - derive/[a-c]/A/
+    - derive/[d-f]/D/
+    - derive/[g-i]/G/
+    - derive/[j-l]/J/
+    - derive/[m-o]/M/
+    - derive/[p-s]/P/
+    - derive/[t-v]/T/
+    - derive/[w-z]/W/
 
 translator:
   dictionary: jyut6ping3

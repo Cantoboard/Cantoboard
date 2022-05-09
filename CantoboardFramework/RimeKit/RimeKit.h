@@ -9,6 +9,7 @@ NS_SWIFT_NAME(RimeSession)
 @interface RKRimeSession: NSObject
 
 -(void)processKey:(int)keycode modifier:(int)modifier;
+-(void)setCaretPos:(size_t) caretPos;
 -(void)resetAndUpdateContext;
 
 -(NSString *)getCandidate:(unsigned int) index;

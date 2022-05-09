@@ -37,26 +37,21 @@ class FilterBarView: UIView {
     private func changeState(prevState: KeyboardState, newState: KeyboardState) {
         _keyboardState = newState
         
-        let isViewDirty = prevState.filters != newState.filters
+        let isViewDirty = prevState.tenKeysState != newState.tenKeysState
         
         if isViewDirty {
             updateView()
         }
         
         if let filterCollectionView = filterCollectionView {
-            let selectedFilterIndexPath = newState.selectedFilterIndex.map({ IndexPath(row: $0, section: 0) })
-            filterCollectionView.selectItem(at: selectedFilterIndexPath, animated: false, scrollPosition: .left)
+            let selectedFilterIndexPath = newState.tenKeysState.selectedSpecializationCandidateIndex
+                .filter({ $0 < filterCollectionView.numberOfItems(inSection: 0) })
+                .map({ IndexPath(row: $0, section: 0) })
+            filterCollectionView.selectItem(at: selectedFilterIndexPath, animated: false, scrollPosition: .right)
         }
     }
     
     func updateView() {
-        let filters = _keyboardState.filters
-        
-        guard !(filters?.isEmpty ?? true) else {
-            filterCollectionView?.reloadData()
-            return
-        }
-        
         if filterCollectionView == nil {
             let collectionViewFlowLayout = UICollectionViewFlowLayout()
             collectionViewFlowLayout.scrollDirection = .horizontal
@@ -98,7 +93,7 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return keyboardState.filters?.count ?? 0
+        return keyboardState.tenKeysState.specializationCandidates.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -108,10 +103,12 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
-        if let text = keyboardState.filters?[safe: indexPath.row],
+        if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row],
            let cell = cell as? CandidateCell {
             cell.setup(text, nil, showComment: false)
+            if indexPath.row == keyboardState.tenKeysState.selectedSpecializationCandidateIndex {
+                cell.isSelected = true
+            }
         }
     }
     
@@ -123,15 +120,14 @@ extension FilterBarView: UICollectionViewDataSource, UICollectionViewDelegate, U
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if let text = keyboardState.filters?[safe: indexPath.row] {
+        if let text = keyboardState.tenKeysState.specializationCandidates[safe: indexPath.row] {
             return CandidateCell.computeCellSize(cellHeight: bounds.height, minWidth: bounds.height * 1.25, candidateText: text, comment: nil)
         }
         return .zero
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.handleKey(.setFilter(indexPath.row))
-        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)
+        delegate?.handleKey(.selectTenKeysSpecialization(indexPath.row))
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

@@ -86,11 +86,11 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     selectCandidate(IndexPath),
     longPressCandidate(IndexPath),
     exportFile(String, String),
-    enableKeyboard(Bool),
+    caretMovingMode(Bool),
     dismissKeyboard,
     resetComposition,
     setAutoSuggestion(AutoSuggestionType, /* replaceTextLen */ Int),
-    setFilter(Int),
+    selectTenKeysSpecialization(Int),
     exit
     
     init(stringLiteral value: String) {

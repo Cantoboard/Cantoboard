@@ -214,6 +214,8 @@ class KeypadView: UIView, BaseKeyboardView {
         _state = newState
         if isViewDirty { setupButtons() }
         
+        touchHandler?.allowCaretMoving = !newState.isComposing
+        
         candidatePaneView?.keyboardState = state
     }
     

@@ -164,13 +164,8 @@ class RimeInputEngine: NSObject, InputEngine {
     }
     
     private func refreshCandidates() {
-        loadedCandidatesCount = 0
-        totalCandidatesCount = 0
         hasLoadedAllCandidates = false
         rimeSession?.setCandidateMenuToFirstPage()
-        
-        rimeSession?.loadMoreCandidates()
-        loadedCandidatesCount = min(20, Int(rimeSession?.getLoadedCandidatesCount() ?? 0))
     }
         
     func moveCaret(offset: Int) -> Bool {
@@ -214,18 +209,20 @@ class RimeInputEngine: NSObject, InputEngine {
         return rimeSession?.getComment(UInt32(index))
     }
     
-    private(set) var loadedCandidatesCount = 0
-    private(set) var totalCandidatesCount = 0
-    
     // Return false if it loaded all candidates
     func loadMoreCandidates() -> Bool {
-        guard !hasLoadedAllCandidates, let rimeSession = rimeSession else { return false }
-        
-        totalCandidatesCount = Int(rimeSession.getLoadedCandidatesCount())
-        loadedCandidatesCount = min(loadedCandidatesCount + 20, totalCandidatesCount)
-        
-        hasLoadedAllCandidates = loadedCandidatesCount == totalCandidatesCount
-        return !hasLoadedAllCandidates
+        guard let rimeSession = rimeSession else {
+            DDLogInfo("loadMoreCandidates RimeSession is nil.")
+            hasLoadedAllCandidates = true
+            return false
+        }
+        let hasRemainingCandidates = rimeSession.loadMoreCandidates()
+        hasLoadedAllCandidates = !hasRemainingCandidates
+        return hasRemainingCandidates
+    }
+    
+    var loadedCandidatesCount: Int {
+        Int(rimeSession?.getLoadedCandidatesCount() ?? 0)
     }
     
     func selectCandidate(_ index: Int) -> String? {
@@ -266,6 +263,16 @@ class RimeInputEngine: NSObject, InputEngine {
     
     var isFirstCandidateCompleteMatch: Bool {
         rimeSession?.isFirstCandidateCompleteMatch ?? false
+    }
+    
+    var userSelectedTextLength: Int {
+        return rimeSession?.userSelectedTextLength ?? 0
+    }
+    
+    func setInput(_ composition: Composition) {
+        rimeSession?.setInput(composition.text)
+        rimeSession?.setCaretPos(composition.caretIndex)
+        refreshCandidates()
     }
     
     private func convertUtf8ByteIndexToCharIndex(_ text: String, _ byteIndex: Int) -> Int {

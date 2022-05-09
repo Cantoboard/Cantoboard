@@ -61,6 +61,12 @@
     }
 }
 
+-(void)setCaretPos:(size_t) caretPos {
+    [self validateSession];
+    _rimeApi->set_caret_pos(_sessionId, caretPos);
+    [self resetAndUpdateContext];
+}
+
 -(void)processKey:(int)keycode modifier:(int)modifier {
     [self validateSession];
     // DDLogInfo(@"Process key %p %c", (void*)_sessionId, (char)keycode);

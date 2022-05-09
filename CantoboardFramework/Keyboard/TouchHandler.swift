@@ -43,7 +43,7 @@ class TouchHandler {
     private let c = InstanceCounter<TouchHandler>()
     
     enum InputMode: Equatable {
-        case typing, backspacing, nextKeyboard, cursorMoving
+        case typing, backspacing, nextKeyboard, caretMoving
     }
     static let keyRepeatInitialDelay = 8 // Unit is keyRepeatInterval
     static let longPressDelay = 3
@@ -63,8 +63,8 @@ class TouchHandler {
         set {
             if _inputMode != newValue {
                 // Enable keyboard when we exit cursor moving.
-                callKeyHandler(nil, .enableKeyboard(newValue != .cursorMoving))
-                if newValue == .cursorMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
+                callKeyHandler(nil, .caretMovingMode(newValue == .caretMoving))
+                if newValue == .caretMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
                 
                 _inputMode = newValue
             }
@@ -74,6 +74,7 @@ class TouchHandler {
     var isInKeyboardMode = true
     var isComposing = false
     var hasForceTouchSupport = false
+    var allowCaretMoving = true
     
     private weak var keyboardView: BaseKeyboardView?
     private var keyRepeatTimer: Timer?
@@ -160,7 +161,7 @@ class TouchHandler {
                 callKeyHandler(key, .deleteWordSwipe)
                 FeedbackProvider.mediumImpact.impactOccurred()
             }
-        case .cursorMoving:
+        case .caretMoving:
             let point = touch.location(in: keyboardView)
             var dX = point.x - cursorMoveStartPosition.x
             let isLeft = dX < 0
@@ -204,6 +205,8 @@ class TouchHandler {
             
             if !isInKeyboardMode && !key.keyCap.action.isSpace && key is KeypadButton { return }
             
+            guard allowCaretMoving else { return }
+            
             // If the user is swiping the spacebar beyond the threshold, enter cursor moving mode.
             let point = touch.location(in: keyboardView)
             let initialSwipeThreshold = cursorMovingStepX * 2
@@ -220,7 +223,7 @@ class TouchHandler {
                 key.keyTouchEnded()
                 
                 endTouches(commit: false, except: touch, exceptShiftKey: false)
-                inputMode = .cursorMoving
+                inputMode = .caretMoving
             }
         }
     }
@@ -245,7 +248,7 @@ class TouchHandler {
         switch inputMode {
         case .backspacing:
             if !currentTouchState.hasTakenAction { callKeyHandler(currentTouchState.activeKeyView, .backspace) }
-        case .cursorMoving:
+        case .caretMoving:
             callKeyHandler(currentTouchState.activeKeyView, .moveCursorEnded)
         case .nextKeyboard:
             guard let event = event, let touchView = touch.view else { return }
@@ -376,12 +379,12 @@ class TouchHandler {
                 touchState.hasTakenAction = true
                 FeedbackProvider.play(keyboardAction: action)
             } else if self.inputMode == .typing && keyRepeatCounter > Self.longPressDelay {
-                if touchState.activeKeyView.keyCap.action.isSpace {
+                if allowCaretMoving && touchState.activeKeyView.keyCap.action.isSpace {
                     let point = touchState.touch.location(in: keyboardView)
                     touchState.cursorMoveStartPosition = point
                     touchState.hasTakenAction = false
                     
-                    inputMode = .cursorMoving
+                    inputMode = .caretMoving
                 } else if !shouldDisableLongPress {
                     touchState.activeKeyView.keyLongPressed(touchState.touch)
                 }

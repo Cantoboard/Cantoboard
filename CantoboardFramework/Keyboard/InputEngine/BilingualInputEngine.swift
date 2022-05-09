@@ -224,12 +224,12 @@ class BilingualInputEngine: InputEngine {
         rimeInputEngine.loadedCandidatesCount
     }
     
-    var rimeTotalCandidatesCount: Int {
-        rimeInputEngine.totalCandidatesCount
-    }
-    
     var hasRimeLoadedAllCandidates: Bool {
         rimeInputEngine.hasLoadedAllCandidates
+    }
+    
+    var rimeUserSelectedTextLength: Int {
+        rimeInputEngine.userSelectedTextLength
     }
     
     func loadMoreRimeCandidates() -> Bool {
@@ -248,5 +248,12 @@ class BilingualInputEngine: InputEngine {
         }
         updateComposition()
         return commitedText
+    }
+    
+    func setRimeInput(_ input: String) {
+        // Set caret to the end of the string after
+        // TODO To support editing input buffer in 10 keys mode, fix the following function to properly preserve caret pos.
+        rimeInputEngine.setInput(Composition(text: input, caretIndex: input.count))
+        _ = englishInputEngine.setCaret(position: englishInputEngine.composition?.text.count ?? 0)
     }
 }
