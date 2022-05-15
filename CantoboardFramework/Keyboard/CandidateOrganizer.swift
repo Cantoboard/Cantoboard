@@ -50,7 +50,6 @@ class InputEngineCandidateSource: CandidateSource {
     private var hasLoadedAllBestRimeCandidates = false
     private var hasPopulatedBestEnglishCandidates = false, hasPopulatedWorstEnglishCandidates = false
     private weak var inputController: InputController?
-    private var _groupByMode = GroupByMode.byFrequency
     
     var isStatic: Bool { false }
     
@@ -376,11 +375,9 @@ class InputEngineCandidateSource: CandidateSource {
         [ .byFrequency, .byRomanization, .byRadical, .byTotalStroke ]
     }
     
-    var groupByMode: GroupByMode {
-        get { _groupByMode }
-        set {
-            guard newValue != _groupByMode else { return }
-            _groupByMode = newValue
+    var groupByMode: GroupByMode = GroupByMode.byFrequency {
+        didSet {
+            guard oldValue != groupByMode else { return }
             updateCandidates(reload: true)
         }
     }

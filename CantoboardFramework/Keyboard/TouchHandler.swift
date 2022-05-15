@@ -57,17 +57,13 @@ class TouchHandler {
     private var lastTouchTimestamp: TimeInterval?
     private var lastTouchAction: KeyboardAction?
     
-    private var _inputMode: InputMode = .typing
-    private var inputMode: InputMode {
-        get { _inputMode }
-        set {
-            if _inputMode != newValue {
-                // Enable keyboard when we exit cursor moving.
-                callKeyHandler(nil, .caretMovingMode(newValue == .caretMoving))
-                if newValue == .caretMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
-                
-                _inputMode = newValue
-            }
+    private var inputMode: InputMode = .typing {
+        didSet {
+            guard oldValue != inputMode else { return }
+            
+            // Enable keyboard when we exit cursor moving.
+            callKeyHandler(nil, .caretMovingMode(inputMode == .caretMoving))
+            if inputMode == .caretMoving { FeedbackProvider.selectionFeedback.selectionChanged() }
         }
     }
     var keyboardIdiom: LayoutIdiom
