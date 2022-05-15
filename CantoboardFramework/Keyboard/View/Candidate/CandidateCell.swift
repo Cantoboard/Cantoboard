@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import CocoaLumberjackSwift
 
 class CandidateCell: UICollectionViewCell {
     static var reuseId: String = "CandidateCell"
@@ -170,22 +171,50 @@ class CandidateCell: UICollectionViewCell {
         selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
     
+    private static var unitFontWidthCache: [CGFloat:(halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
+    
     static func computeCellSize(cellHeight: CGFloat, minWidth: CGFloat, candidateText: String, comment: String?) -> CGSize {
         let fontSizeScale = Settings.cached.candidateFontSize.scale
         
         let candidateLabelHeight = cellHeight * Self.candidateLabelHeightRatio
-        let candidateFontSize = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
+        let candidateFontSizeUnrounded = candidateLabelHeight * Self.fontSizePerHeight * fontSizeScale
+        let candidateFontSize = candidateFontSizeUnrounded.roundTo(q: 4)
         
-        var cellWidth = candidateText.size(withFont: UIFont.systemFont(ofSize: candidateFontSize)).width
+        var cellWidth = estimateStringWidth(candidateText, ofSize: candidateFontSize)
         
         if let comment = comment {
             let candidateCommentHeight = cellHeight * Self.candidateCommentHeightRatio
-            let candidateCommentFontSize = candidateCommentHeight * Self.fontSizePerHeight
+            let candidateCommentFontSizeUnrounded = candidateCommentHeight * Self.fontSizePerHeight
+            let candidateCommentFontSize = candidateCommentFontSizeUnrounded.roundTo(q: 4)
             
-            let commentWidth = comment.size(withFont: UIFont.systemFont(ofSize: candidateCommentFontSize)).width
+            let commentWidth = estimateStringWidth(comment, ofSize: candidateCommentFontSize)
             cellWidth = max(cellWidth, commentWidth)
         }
         
         return Self.margin.wrap(widthOnly: CGSize(width: cellWidth, height: cellHeight)).with(minWidth: minWidth)
+    }
+    
+    static func estimateStringWidth(_ s: String, ofSize fontSize: CGFloat) -> CGFloat {
+        var unitWidth = unitFontWidthCache[fontSize]
+        if unitWidth == nil {
+            var halfWidths = Array(repeating: CGFloat.zero, count: 256)
+            for b in UInt8.min...UInt8.max {
+                let c = Character(UnicodeScalar(b))
+                halfWidths[Int(b)] = String(c).size(withFont: UIFont.systemFont(ofSize: fontSize)).width
+            }
+            let fullWidth = "　".size(withFont: UIFont.systemFont(ofSize: fontSize)).width
+            unitWidth = (halfWidths: halfWidths, fullWidth: fullWidth)
+            unitFontWidthCache[fontSize] = unitWidth
+        }
+        
+        let estimate = s.reduce(CGFloat.zero, { r, c in
+            if c.isASCII {
+                return r + unitWidth!.halfWidths[Int(c.asciiValue!)]
+            } else {
+                return r + unitWidth!.fullWidth
+            }
+        })
+
+        return estimate
     }
 }
