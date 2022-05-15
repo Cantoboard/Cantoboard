@@ -524,7 +524,9 @@ class CandidateOrganizer {
     
     func updateCandidates(reload: Bool, targetCandidatesCount: Int = 0) {
         guard let inputController = inputController else { return }
-        if inputController.inputEngine.isComposing {
+        if inputController.state.isInCaretMovingMode {
+            candidateSource = nil
+        } else if inputController.inputEngine.isComposing {
             candidateSource = InputEngineCandidateSource(inputController: inputController)
         } else if let autoSuggestionType = autoSuggestionType {
             switch autoSuggestionType {

@@ -59,6 +59,7 @@ struct KeyboardState: Equatable {
     var spaceKeyMode: SpaceKeyMode
     
     var isKeyboardAppearing: Bool
+    var isInCaretMovingMode: Bool
     
     var keyboardIdiom: LayoutIdiom
     
@@ -97,6 +98,7 @@ struct KeyboardState: Equatable {
         specialSymbolShapeOverride = [:]
         let layoutConstants = LayoutConstants.forMainScreen
         isKeyboardAppearing = false
+        isInCaretMovingMode = false
         keyboardIdiom = layoutConstants.idiom
         isPortrait = layoutConstants.isPortrait
         
@@ -349,6 +351,8 @@ class InputController: NSObject {
         switch action {
         case .moveCursorForward, .moveCursorBackward:
             moveCursor(offset: action == .moveCursorBackward ? -1 : 1)
+            updateComposition()
+            return
         case .character(let c):
             guard let char = c.first else { return }
             if !isComposing && shouldApplyChromeSearchBarHack {
@@ -542,6 +546,7 @@ class InputController: NSObject {
             }
         case .caretMovingMode(let isCaretMovingMode):
             state.enableState = isCaretMovingMode ? .disabled : .enabled
+            state.isInCaretMovingMode = isCaretMovingMode
             keyboardViewController?.keyboardView?.state = state
         case .dismissKeyboard:
             keyboardViewController?.dismissKeyboard()
