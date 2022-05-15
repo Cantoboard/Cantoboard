@@ -148,7 +148,7 @@ class TouchHandler {
         guard let currentTouchState = touches[touch] else { return }
         let cursorMoveStartPosition = currentTouchState.cursorMoveStartPosition
         // Speed up cursor moving if we aren't in composing mode.
-        let cursorMovingStepX = Self.cursorMovingStepX * (isComposing ? 1 : 0.75)
+        let cursorMovingStepX = Self.cursorMovingStepX * (isComposing ? 0.9 : 0.75)
         
         switch inputMode {
         case .backspacing:
