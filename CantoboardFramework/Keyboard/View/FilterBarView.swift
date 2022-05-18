@@ -48,6 +48,12 @@ class FilterBarView: UIView {
                 .filter({ $0 < filterCollectionView.numberOfItems(inSection: 0) })
                 .map({ IndexPath(row: $0, section: 0) })
             filterCollectionView.selectItem(at: selectedFilterIndexPath, animated: false, scrollPosition: .right)
+            if selectedFilterIndexPath == nil &&
+               prevState.tenKeysState.specializationCandidates != newState.tenKeysState.specializationCandidates {
+                // Reset filter bar to origin when candidate changes.
+                // e.g. 回力鏢 wui lik biu, after selecting lik, filter bar should be reset to .zero.
+                filterCollectionView.contentOffset = .zero
+            }
         }
     }
     

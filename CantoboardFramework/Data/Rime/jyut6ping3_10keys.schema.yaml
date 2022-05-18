@@ -64,7 +64,8 @@ menu:
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba654321ADGJMPTW
-  delimiter: " '"
+  # We use ' as the user typed delimiter, " as the filter bar injected delimiter.
+  delimiter: " '\""
   algebra:
     # 取消下兩行註釋，支援疑影交替： ng- 併入 Ø-
     #- derive/^ng(?=[aeiou])//

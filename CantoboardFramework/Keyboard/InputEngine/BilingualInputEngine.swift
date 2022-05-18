@@ -52,6 +52,12 @@ class BilingualInputEngine: InputEngine {
             let updateRimeEngineState = rimeInputEngine.moveCaret(offset: offset)
             _ = updateEnglishCaretPosFromRime()
             updateComposition()
+            
+            // var englishInput = englishInputEngine.composition?.text ?? ""
+            // var rimeInput = rimeInputEngine.rawInput?.text ?? ""
+            // englishInput.insert("|", at: englishInput.index(englishInput.startIndex, offsetBy: englishInputEngine.composition?.caretIndex ?? 0) )
+            // rimeInput.insert("|", at: rimeInput.index(rimeInput.startIndex, offsetBy: rimeInputEngine.rawInput?.caretIndex ?? 0))
+            // DDLogInfo("BilingualInputEngine moveCaret \(rimeInput) \(englishInput)")
             return updateRimeEngineState
         } else {
             inputController?.textDocumentProxy?.adjustTextPosition(byCharacterOffset: offset)
@@ -191,7 +197,10 @@ class BilingualInputEngine: InputEngine {
         guard let rimeRawInput = rimeInputEngine.rawInput else { DDLogInfo("Bug check. rimeRawInput shouldn't be nil"); return true }
         // guard let englishComposition = englishComposition else { DDLogInfo("Bug check. englishComposition shouldn't be nil"); return true }
         let rimeRawInputBeforeCaret = rimeRawInput.text.prefix(rimeRawInput.caretIndex)
-        let rimeRawInputCaretWithoutSpecialChars = rimeRawInputBeforeCaret.reduce(0, { r, c in r + (c.isRimeSpecialChar || c == " " ? 0 : 1)})
+        let rimeRawInputCaretWithoutSpecialChars = rimeRawInputBeforeCaret.reduce(0, { r, c in
+            let isRimeSpecialChar = c.isRimeSpecialChar || c == " "
+            return r + (isRimeSpecialChar ? 0 : 1)
+        })
         let updateEnglishEngineState = englishInputEngine.setCaret(position: rimeRawInputCaretWithoutSpecialChars)
         
         // DDLogInfo("Rime \(self.rimeInputEngine.rawInput?.text ?? "") \(self.rimeInputEngine.rawInput?.caretIndex ?? 0) ")
@@ -250,10 +259,8 @@ class BilingualInputEngine: InputEngine {
         return commitedText
     }
     
-    func setRimeInput(_ input: String) {
-        // Set caret to the end of the string after
-        // TODO To support editing input buffer in 10 keys mode, fix the following function to properly preserve caret pos.
-        rimeInputEngine.setInput(Composition(text: input, caretIndex: input.count))
-        _ = englishInputEngine.setCaret(position: englishInputEngine.composition?.text.count ?? 0)
+    func setRimeInput(_ composition: Composition) {
+        rimeInputEngine.setInput(composition)
     }
 }
+ 

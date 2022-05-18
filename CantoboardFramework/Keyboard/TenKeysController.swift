@@ -16,6 +16,8 @@ struct TenKeysState: Equatable {
 }
 
 class TenKeysController {
+    public static let filterBarDelimiter: Character = "\""
+    
     weak var inputController: InputController?
     
     init(inputController: InputController) {
@@ -25,13 +27,13 @@ class TenKeysController {
     func addSpecialization(candidateIndex: Int, state: inout TenKeysState) {
         guard let specialization = state.specializationCandidates[safe: candidateIndex]
             else { return }
-        let specializationCaretPosInLS = getSpecializationCaretPosInLS(state)
+        let specializationCaretPos = getSpecializationCaretPos(state)
         
-        state.specializations[specializationCaretPosInLS] = specialization
+        state.specializations[specializationCaretPos] = specialization
         state.selectedSpecializationCandidateIndex = candidateIndex
         update10KeysInput(state)
  
-        DDLogInfo("TenKeysController addSpecialization \(specializationCaretPosInLS) \(specialization)")
+        DDLogInfo("TenKeysController addSpecialization \(specializationCaretPos) \(specialization)")
     }
     
     func removeLastSpecialization(_ state: inout TenKeysState) {
@@ -46,14 +48,9 @@ class TenKeysController {
     }
     
     func removeSpecializations(after: Int, isAfterInclusive: Bool, _ state: inout TenKeysState) {
-        guard let inputEngine = inputController?.inputEngine,
-              let userInput = inputEngine.englishComposition?.text
-            else { return }
-        
-        let afterLS = Self.translateToLetterSpaceIndex(userInput, index: after)
         for specialization in state.specializations {
-            let specializationEndIndex = specialization.key + specialization.value.count
-            if specializationEndIndex > afterLS || isAfterInclusive && specializationEndIndex == afterLS {
+            let specializationEndIndex = specialization.key + specialization.value.count + 1
+            if specializationEndIndex > after || isAfterInclusive && specializationEndIndex == after {
                 DDLogInfo("TenKeysController Removing specialization at \(specialization.key) \(specialization.value)")
                 state.specializations.removeValue(forKey: specialization.key)
                 state.selectedSpecializationCandidateIndex = nil
@@ -64,36 +61,55 @@ class TenKeysController {
     
     private func update10KeysInput(_ state: TenKeysState) {
         guard let inputEngine = inputController?.inputEngine,
-              let userComposition = inputEngine.englishComposition
+              let userComposition = inputEngine.englishComposition,
+              let rimeRawInput = inputEngine.rimeRawInput
             else { return }
-        
         let userInput = userComposition.text
+        // Merge user input (stored in EnglishInputEngine) into Rime raw input.
         // Apply 10keys candidates specialization to the orignal raw user input.
         var specializedInput = ""
-        var i = 0
-        var letterSpaceIndex = 0
-        outerLoop: while i < userInput.count {
-            let rawC = userInput.char(at: i)!
+        var rimeIndex = 0
+        var userIndex = 0
+        var specializedCaretPos = -1
+        outerLoop: while rimeIndex < rimeRawInput.text.count {
+            if rimeIndex == rimeRawInput.caretIndex {
+                specializedCaretPos = specializedInput.count
+            }
+            let rimeC = rimeRawInput.text.char(at: rimeIndex)!
             // DDLogInfo("TenKeysController DEBUG rawC \(rawC) i: \(i) letterSpaceIndex: \(letterSpaceIndex)")
-            if rawC.isEnglishLetterOrDigit,
-               let tenKeysCandidate = state.specializations[letterSpaceIndex] {
+            if rimeC.isEnglishLetterOrDigit,
+               let tenKeysCandidate = state.specializations[rimeIndex] {
+                // If specialization is defined starting at this rimeIndex, apply.
                 specializedInput.append(tenKeysCandidate)
-                specializedInput.append("'")
-                i += tenKeysCandidate.count
-                letterSpaceIndex += tenKeysCandidate.count
+                specializedInput.append(Self.filterBarDelimiter)
+                rimeIndex += tenKeysCandidate.count
+                userIndex += tenKeysCandidate.count
+                if rimeRawInput.caretIndex <= rimeIndex {
+                    specializedCaretPos = specializedInput.count
+                }
             } else {
-                defer { i += 1 }
-                if rawC == "'" && specializedInput.last == rawC { continue }
-                specializedInput.append(rawC)
-                if rawC.isEnglishLetterOrDigit { letterSpaceIndex += 1 }
+                defer { rimeIndex += 1 }
+                if rimeC == Self.filterBarDelimiter {
+                    // Ignore all filter bar delimters as we regenerate them.
+                    continue
+                } else if rimeC == "'" {
+                    // Keep user typed delimiter
+                    specializedInput.append(rimeC)
+                } else if let userC = userInput.char(at: userIndex) {
+                    // To make sure we can undo specialization, copy original user input from EnglishInputEngine.
+                    specializedInput.append(userC)
+                    userIndex += 1
+                }
             }
         }
+        // specializedCaretPos could stay at -1 if no specialization has been specified and caret is at the end.
+        if specializedCaretPos == -1 {
+            specializedCaretPos = specializedInput.count
+        }
         
-        DDLogInfo("TenKeysController rawInput \(userInput) specializedRimeInput: \(specializedInput)")
-        // let userCaretPosLS = Self.translateToLetterSpaceIndex(userInput, index: userComposition.caretIndex)
-        // let specializedCaretPos = Self.translateFromLetterSpaceIndex(specializedInput, index: userCaretPosLS)
-        // let specializedComposition = Composition(text: specializedInput, caretIndex: specializedInput.count)
-        inputEngine.setRimeInput(specializedInput)
+        DDLogInfo("TenKeysController update10KeysInput rimeRawInput \(rimeRawInput.text) specializedRimeInput: \(specializedInput) caret: \(specializedCaretPos)")
+        let specializedComposition = Composition(text: specializedInput, caretIndex: specializedCaretPos)
+        inputEngine.setRimeInput(specializedComposition)
     }
     
     func clearInput(state: inout KeyboardState) {
@@ -102,18 +118,21 @@ class TenKeysController {
     
     func updateTenKeysCandidates(_ state: inout KeyboardState) {
         guard let inputEngine = inputController?.inputEngine,
+              let rawInput = inputEngine.rimeRawInput?.text,
               let userInput = inputEngine.englishComposition?.text,
-              !userInput.isEmpty
-            else {
+              !rawInput.isEmpty
+        else {
             state.tenKeysState = TenKeysState()
             return
         }
-        let specializationCaretPosInLS = getSpecializationCaretPosInLS(state.tenKeysState)
-        let specializationCaretPos = Self.translateFromLetterSpaceIndex(userInput, index: specializationCaretPosInLS)
-        let composingTextLen = userInput.count - specializationCaretPos
-        // DDLogInfo("UFO updateTenKeysCandidates composingTextLen \(composingTextLen) \(userInput)")
+        let specializationCaretPos = getSpecializationCaretPos(state.tenKeysState)
+        // Raw input is specialized. To list possible romanization, we need the orignal user input.
+        // Translate the caret pos from specialization string to user input string.
+        let userCaretPos = Self.translateToLetterSpaceIndex(rawInput, index: specializationCaretPos)
         
-        let newCandidate = Self.listNextCandidates(String(userInput.suffix(composingTextLen)))
+        let pendingInputLen = userInput.count - userCaretPos
+        let pendingInput = String(userInput.suffix(pendingInputLen))
+        let newCandidate = Self.listNextCandidates(pendingInput)
         if state.tenKeysState.currentSpecializationCaretPos != specializationCaretPos ||
            state.tenKeysState.specializationCandidates != newCandidate {
             state.tenKeysState.specializationCandidates = newCandidate
@@ -122,29 +141,37 @@ class TenKeysController {
         }
     }
     
+    private var candidateCommentCacheForCaretMovingMode: String?
+    func caretMovingModeChanged(isInCaretMovingMode: Bool) {
+        let rimeCandidateComment =  (inputController?.inputEngine.getRimeCandidateComment(0) ?? "").filter({ $0 != " " && !$0.isNumber })
+        candidateCommentCacheForCaretMovingMode = isInCaretMovingMode ? rimeCandidateComment : nil
+    }
+    
     // LS stands for letter space.
-    private func getSpecializationCaretPosInLS(_ state: TenKeysState) -> Int {
+    private func getSpecializationCaretPos(_ state: TenKeysState) -> Int {
         guard let inputEngine = inputController?.inputEngine,
               let userInput = inputEngine.englishComposition?.text,
               let rimeInput = inputEngine.rimeRawInput?.text,
               !userInput.isEmpty
             else { return 0 }
         
-        var maxSpecializedIndexLS = state.specializations.reduce(0, {
-            max($0, $1.key + $1.value.count)
+        var maxSpecializedIndex = state.specializations.reduce(0, {
+            max($0, $1.key + $1.value.count + 1 /* for the delimiter */)
         })
+        
+        while let c = rimeInput.char(at: maxSpecializedIndex), c == "'" || c == TenKeysController.filterBarDelimiter {
+            maxSpecializedIndex += 1
+        }
         // If we have specialized the whole strings, let the user to edit the last specialization.
         // Cap the caret pos to the beginning of the last specialization.
-        if maxSpecializedIndexLS >= userInput.filter({ $0.isEnglishLetterOrDigit }).count {
-            maxSpecializedIndexLS = state.specializations.keys.max()!
+        // TODO replace this by another caret variable.
+        if maxSpecializedIndex >= rimeInput.count {
+            maxSpecializedIndex = state.specializations.keys.max()!
         }
         
         let rimeUserSelectedTextLength = inputEngine.rimeUserSelectedTextLength
-        let rimeUserSelectedTextLengthLS = Self.translateToLetterSpaceIndex(rimeInput, index: rimeUserSelectedTextLength)
-        // DDLogInfo("UFO DIU \(rimeInput) \(rimeUserSelectedTextLength) \(rimeUserSelectedTextLengthLS)")
-        let specializationCaretPosInLS = max(rimeUserSelectedTextLengthLS, maxSpecializedIndexLS)
-        // DDLogInfo("UFO getSpecializationCaretPosInLS specializationCaretPosInLS \(specializationCaretPosInLS) rimeUserSelectedTextLengthLS \(rimeUserSelectedTextLengthLS) maxSpecializedIndexLS \(maxSpecializedIndexLS)")
-        return specializationCaretPosInLS
+        let specializationCaretPos = max(rimeUserSelectedTextLength, maxSpecializedIndex)
+        return specializationCaretPos
     }
     
     func shouldRemoveSpecializationOnBackspace(_ state: TenKeysState) -> Bool {
@@ -170,17 +197,51 @@ class TenKeysController {
               let rimeComposition = inputEngine.rimeComposition else {
             return nil
         }
-        let rimeCompositionText = inputEngine.rimeComposition?.text.filter({ $0 != " "}) ?? ""
-        // DDLogInfo("UFO rimeRawInput \(rimeRawInput)")
-        // DDLogInfo("UFO rimeCompositionText \(rimeCompositionText)")
-
+        
+        let rimeCompositionText = rimeComposition.text.filter({ $0 != " " })
+        let rimeCompCaretSpaceCorrectedPos: Int
+        if rimeComposition.caretIndex == 0 {
+            // Rime has a special case that treats caretPos = 0 as caretPos = length
+            rimeCompCaretSpaceCorrectedPos = rimeCompositionText.count
+        } else {
+            // Count number of spaces before the caret and deduce them from the caret pos.
+            rimeCompCaretSpaceCorrectedPos = rimeComposition.caretIndex - rimeComposition.text.prefix(rimeComposition.caretIndex).filter({ $0 == " " }).count
+        }
+        
         // Remaining input excluding selected text.
         let inputRemaining = rimeRawInput.commonSuffix(with: rimeCompositionText)
-        // DDLogInfo("UFO inputRemaining '\(inputRemaining)'")
-
-        let candidateCode = (inputEngine.getRimeCandidateComment(0) ?? "").filter { !$0.isNumber }
-        // DDLogInfo("UFO candidateCode '\(candidateCode)'")
-
+        
+        let rimeCandidateComment: String
+        if let candidateCommentCache = candidateCommentCacheForCaretMovingMode {
+            // Generate the new candidate comment by coping letters from candidateCommentCacheForCaretMovingMode
+            // commas and spaces from current composition text
+            var cacheIndex = candidateCommentCache.startIndex
+            rimeCandidateComment = rimeCompositionText.reduce("", { r, c in
+                guard c.isASCII else { return r }
+                var r = r
+                // DDLogInfo("TenKeysController generateBestComposition c '\(r)' '\(c)'")
+                if c.isEnglishLetter && cacheIndex != candidateCommentCache.endIndex {
+                    r.append(candidateCommentCache[cacheIndex])
+                    cacheIndex = candidateCommentCache.index(after: cacheIndex)
+                } else {
+                    if c == "'" || c == "\"" {
+                        if !r.isEmpty && r.last != " " {
+                            r.append(" ")
+                        }
+                    } else {
+                        // We ran out of char. That means the composition changed, some selected texts disappeared.
+                        // In this case, we cannot use the cached comment. Return an empty string to show combo codes.
+                        return ""
+                    }
+                }
+                return r
+            })
+            // DDLogInfo("TenKeysController generateBestComposition rimeCandidateComment [\(rimeCandidateComment)] [\(candidateCommentCache)]")
+        } else {
+            rimeCandidateComment = inputEngine.getRimeCandidateComment(0) ?? ""
+        }
+        let candidateCode = rimeCandidateComment.filter { !$0.isNumber }
+        
         var cIndex = candidateCode.startIndex
         var iIndex = inputRemaining.startIndex
         
@@ -191,22 +252,26 @@ class TenKeysController {
             
             // Ran out of candidate code. Just copy what's left in the input.
             if cIndex == candidateCode.endIndex {
-                morphedInput.append(ic.lowercasedChar)
+                if ic == Self.filterBarDelimiter {
+                    morphedInput.append("'")
+                } else {
+                    morphedInput.append(ic.lowercasedChar)
+                }
                 iIndex = inputRemaining.index(after: iIndex)
                 continue
             }
             
             let cc = candidateCode[cIndex]
             
-            // DDLogInfo("UFO iteration '\(ic)' '\(cc)'")
+            // DDLogInfo("TenKeysController generateBestComposition iteration '\(ic)' '\(cc)'")
             if cc == " " {
                 // If the candidate code is a space, append.
-                if ic == "'" {
+                if ic == "'" || ic == Self.filterBarDelimiter {
                     // Consume the "'" in input buffer
                     repeat {
                         morphedInput.append("'")
                         iIndex = inputRemaining.index(after: iIndex)
-                    } while (inputRemaining[iIndex] == "'")
+                    } while (iIndex != inputRemaining.endIndex && (inputRemaining[iIndex] == "'" || inputRemaining[iIndex] == Self.filterBarDelimiter))
                 } else {
                     morphedInput.append(" ")
                 }
@@ -217,6 +282,10 @@ class TenKeysController {
                 iIndex = inputRemaining.index(after: iIndex)
                 
                 while cIndex < candidateCode.endIndex && candidateCode[cIndex] != " " {
+                    cIndex = candidateCode.index(after: cIndex)
+                }
+                // Skip the space char too.
+                if cIndex < candidateCode.endIndex {
                     cIndex = candidateCode.index(after: cIndex)
                 }
             } else {
@@ -233,16 +302,21 @@ class TenKeysController {
                 cIndex = candidateCode.index(after: cIndex)
                 iIndex = inputRemaining.index(after: iIndex)
             }
-            // DDLogInfo("UFO morphedInput '\(morphedInput)'")
         }
         
         let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
-        // DDLogInfo("UFO selectedInput '\(selectedInput)'")
+        DDLogInfo("TenKeysController generateBestComposition selectedInput '\(selectedInput)' morphedInput '\(morphedInput)'")
         
         let composition = String(selectedInput + morphedInput)
-        // DDLogInfo("UFO composition '\(composition)'")
-        let inputCaretPosFromTheRight = rimeComposition.text.count - rimeComposition.caretIndex
-        let caretPos = composition.count - inputCaretPosFromTheRight
+        let inputCaretPosFromTheRight = rimeCompositionText.count - rimeCompCaretSpaceCorrectedPos
+        let caretPos: Int
+        if inputCaretPosFromTheRight == 0 && rimeComposition.caretIndex == 0 {
+            // Simulate special case in Rime that treats caretPos = length to caretPos = 0.
+            caretPos = 0
+        } else {
+            caretPos = composition.count - inputCaretPosFromTheRight
+        }
+        
         return Composition(text: composition, caretIndex: caretPos)
     }
     
@@ -282,7 +356,7 @@ class TenKeysController {
         return i
     }
     
-    static func listNextCandidates(_ input: String) -> [String] {
+    private static func listNextCandidates(_ input: String) -> [String] {
         var input = input
         while input.first == "'" {
             input.removeFirst()
@@ -290,7 +364,6 @@ class TenKeysController {
         
         let prefixes = TenKeysHelper.listPossiblePrefixes(input) as! [String]
         var validPrefixes = Set<String>()
-        // DDLogInfo("UFO input \(input)")
         
         for p in prefixes {
             var validPrefix = ""

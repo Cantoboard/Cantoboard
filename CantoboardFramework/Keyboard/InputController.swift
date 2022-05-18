@@ -203,6 +203,12 @@ class InputController: NSObject {
     }
     
     private func candidateSelected(choice: IndexPath, enableSmartSpace: Bool) {
+        // Move caret forward to consume all delimiters.
+        while let rimeComposition = inputEngine.rimeComposition,
+              let rc = rimeComposition.text.char(at: rimeComposition.caretIndex),
+              rc == "'" || rc == TenKeysController.filterBarDelimiter {
+            _ = inputEngine.moveCaret(offset: 1)
+        }
         if let commitedText = candidateOrganizer.selectCandidate(indexPath: choice) {
             if candidateOrganizer?.autoSuggestionType?.replaceTextOnInsert ?? false {
                 textDocumentProxy?.deleteBackward(times: replaceTextLen)
@@ -361,15 +367,13 @@ class InputController: NSObject {
                 textDocumentProxy.insertText("")
             }
             let shouldFeedCharToInputEngine = char.isEnglishLetter && c.count == 1
+            if isComposing && shouldFeedCharToInputEngine && state.activeSchema.is10Keys,
+               let rimeComposition = inputEngine.rimeComposition {
+                tenKeysController.removeSpecializations(after: rimeComposition.caretIndex, isAfterInclusive: false, &state.tenKeysState)
+            }
             if !(shouldFeedCharToInputEngine && inputEngine.processChar(char)) {
                 if !insertComposingText(appendBy: c) {
                     insertText(c)
-                }
-            } else {
-                // TODO editing input buffer is disabled at the moment.
-                if isComposing && state.activeSchema.is10Keys {
-                    DDLogInfo("UFO inputEngine.englishComposition \(inputEngine.englishComposition?.caretIndex ?? 0)")
-                    tenKeysController.removeSpecializations(after: inputEngine.englishComposition?.caretIndex ?? 0, isAfterInclusive: true, &state.tenKeysState)
                 }
             }
             if !isHoldingShift && state.keyboardType == .some(.alphabetic(.uppercased)) {
@@ -378,14 +382,7 @@ class InputController: NSObject {
             }
         case .rime(let rc):
             guard isComposing || rc == .sym else { return }
-            // We have a special case for 10 keys input mode.
-            // We have to store delimiters have to keep track of the original user input in EnglishInputEngine.
-            // We use the original user input for 10 keys candidate specialization.
-            if rc == .delimiter && state.activeSchema.is10Keys {
-                _ = inputEngine.processChar(rc.rawValue)
-            } else {
-                _ = inputEngine.processRimeChar(rc.rawValue)
-            }
+            _ = inputEngine.processRimeChar(rc.rawValue)
         case .space(let spaceKeyMode):
             handleSpace(spaceKeyMode: spaceKeyMode)
         case .quote(let isDoubleQuote):
@@ -425,7 +422,6 @@ class InputController: NSObject {
                             // Remove the last specialization
                             tenKeysController.removeLastSpecialization(&state.tenKeysState)
                         } else {
-                            // TODO editing input buffer is disabled at the moment.
                             // User is modifiying the content at the middle of the input buffer.
                             // Remove all specialization overlapping with the change.
                             // Then let the rest of the code remove
@@ -544,9 +540,12 @@ class InputController: NSObject {
                     keyboardViewController?.keyboardView?.state = state
                 }
             }
-        case .caretMovingMode(let isCaretMovingMode):
-            state.enableState = isCaretMovingMode ? .disabled : .enabled
-            state.isInCaretMovingMode = isCaretMovingMode
+        case .caretMovingMode(let isInCaretMovingMode):
+            state.enableState = isInCaretMovingMode ? .disabled : .enabled
+            state.isInCaretMovingMode = isInCaretMovingMode
+            if state.activeSchema.is10Keys {
+                tenKeysController.caretMovingModeChanged(isInCaretMovingMode: isInCaretMovingMode)
+            }
             keyboardViewController?.keyboardView?.state = state
         case .dismissKeyboard:
             keyboardViewController?.dismissKeyboard()
@@ -593,8 +592,8 @@ class InputController: NSObject {
         let activeSchema = state.activeSchema
         let is10Keys = activeSchema == .jyutping10keys && state.inputMode != .english
         keyboardViewController?.hasFilterBar = is10Keys && state.keyboardType != .emojis
-        keyboardViewController?.hasCompositionView = !is10Keys && (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed)
-        keyboardViewController?.hasCompositionResetButton = !is10Keys && isImmediateMode && state.isComposing
+        keyboardViewController?.hasCompositionView = (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed)
+        keyboardViewController?.hasCompositionResetButton = isImmediateMode && state.isComposing
     }
     
     func isTextFieldWebSearch() -> Bool {
