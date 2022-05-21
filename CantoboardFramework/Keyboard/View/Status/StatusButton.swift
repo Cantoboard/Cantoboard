@@ -170,7 +170,7 @@ class StatusButton: UIButton {
             miniExpandImageLayer.backgroundColor = ButtonColor.keyForegroundColor.resolvedColor(with: traitCollection).cgColor
             miniExpandImageLayer.mask = miniExpandImageMaskLayer
             miniExpandImageLayer.actions = CALayer.disableAnimationActions
-            
+            miniExpandImageMaskLayer.actions = CALayer.disableAnimationActions
             miniExpandImageMaskLayer.contents = ButtonImage.paneExpandButtonImage.cgImage
             
             layer.addSublayer(miniExpandImageLayer)
