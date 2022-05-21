@@ -315,7 +315,14 @@ class KeyboardView: UIView, BaseKeyboardView {
             if state.showCommonSwipeDownKeysInLongPress {
                 if let longPressKeyCap = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: state) {
                     leftHint = longPressKeyCap.buttonText
-                    childrenKeyCaps = [longPressKeyCap, keyCap.withoutHints]
+                    let orgChildrenKeyCaps = KeyCap(keyChar).childrenKeyCaps.map { $0.withoutHints }
+                    childrenKeyCaps = [longPressKeyCap] + orgChildrenKeyCaps
+                    // Special handling to make sure children keys don't go out of screen.
+                    // Move the parent key to the other side.
+                    if c == "e" || c == "i" || c == "o" || c == "u" {
+                        let selfKeyCap = childrenKeyCaps?.remove(at: 1)
+                        childrenKeyCaps?.insert(selfKeyCap!, at: 0)
+                    }
                 }
             }
             
