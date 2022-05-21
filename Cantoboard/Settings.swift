@@ -151,7 +151,6 @@ extension Settings {
                 [
                     Switch(LocalizedStrings.mixedMode, \.isMixedModeEnabled,
                            LocalizedStrings.mixedMode_description, "Guide1-2"),
-                    // Switch(LocalizedStrings.numKeyRow, \.enableNumKeyRow),
                     Switch(LocalizedStrings.longPressSymbolKeys, \.isLongPressSymbolKeysEnabled, LocalizedStrings.longPressSymbolKeys_description),
                     Switch(LocalizedStrings.smartFullStop, \.isSmartFullStopEnabled,
                            LocalizedStrings.smartFullStop_description, "Guide8-1"),
