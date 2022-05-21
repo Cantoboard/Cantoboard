@@ -237,6 +237,7 @@ class CandidatePaneView: UIControl {
         let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
         expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
         expandButton.shouldShowMenuIndicator = mode == .row
+        expandButton.isEnabled = keyboardState.enableState == .enabled
         
         var title: String?
         var shouldShowMiniIndicator = false
@@ -256,9 +257,11 @@ class CandidatePaneView: UIControl {
         }
         inputModeButton.setTitle(title, for: .normal)
         inputModeButton.shouldShowMenuIndicator = shouldShowMiniIndicator && mode == .row
+        inputModeButton.isEnabled = keyboardState.enableState == .enabled
 
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspace), for: .normal)
         backspaceButton.setImage(adjustImageFontSize(ButtonImage.backspaceFilled), for: .highlighted)
+        backspaceButton.isEnabled = keyboardState.enableState == .enabled
         
         var charFormText: String
         if SessionState.main.lastCharForm == .simplified {
@@ -267,6 +270,7 @@ class CandidatePaneView: UIControl {
             charFormText = "繁"
         }
         charFormButton.setTitle(charFormText, for: .normal)
+        charFormButton.isEnabled = keyboardState.enableState == .enabled
         
         if mode == .table {
             expandButton.isHidden = false

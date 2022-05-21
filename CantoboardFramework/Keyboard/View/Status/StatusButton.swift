@@ -125,8 +125,11 @@ class StatusButton: UIButton {
         longPressTimer?.invalidate()
         longPressTimer = nil
         
+        guard isEnabled else { return }
+        
         longPressTimer = Timer.scheduledTimer(withTimeInterval: Self.longPressDelay, repeats: false) { [weak self] timer in
             guard let self = self, self.shouldShowMenuIndicator && !self.isMenuActive && self.longPressTimer == timer else { return }
+            guard self.isEnabled else { return }
             self.isMenuActive = self.handleStatusMenu?(self, event) ?? false
         }
     }
@@ -145,6 +148,10 @@ class StatusButton: UIButton {
         longPressTimer = nil
         
         guard let touch = touches.first else { return }
+        guard self.isEnabled else {
+            super.touchesEnded(touches, with: event)
+            return
+        }
         let location = touch.location(in: self)
         if bounds.contains(location) && !isMenuActive {
             super.touchesEnded(touches, with: event)
