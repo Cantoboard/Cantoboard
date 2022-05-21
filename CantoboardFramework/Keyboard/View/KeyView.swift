@@ -564,7 +564,7 @@ extension KeyView {
         let popupDirection = computePopupDirection()
         
         let defaultChildKeyCapTitle: String?
-        if keyboardState.showCommonSwipeDownKeysInLongPress && keyCap.buttonRightHint != "符" {
+        if keyboardState.showCommonSwipeDownKeysInLongPress && keyCap.buttonRightHint != "符" && keyCap != .currency {
             defaultChildKeyCapTitle = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: keyboardState)?.buttonText ?? keyCap.defaultChildKeyCapTitle
         } else {
             defaultChildKeyCapTitle = keyCap.defaultChildKeyCapTitle
