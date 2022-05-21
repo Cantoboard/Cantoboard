@@ -545,6 +545,16 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    var isRimeTone: Bool {
+        switch self {
+        case .rime(let rc, _, _):
+            return rc == .tone1 || rc == .tone2 || rc == .tone3 ||
+                   rc == .tone4 || rc == .tone5 || rc == .tone6
+        default: ()
+        }
+        return false
+    }
+    
     var unescaped: KeyCap {
         switch self {
         case .placeholder(let keyCap): return keyCap.unescaped

@@ -564,14 +564,17 @@ extension KeyView {
         let popupDirection = computePopupDirection()
         
         let defaultChildKeyCapTitle: String?
-        if keyboardState.showCommonSwipeDownKeysInLongPress && keyCap.buttonRightHint != "符" && keyCap != .currency {
+        let isSwipeDownKeyEnabled = keyCap.buttonLeftHint != nil
+        let hasRightHints = keyCap.buttonRightHint != nil // Disable swipe down priority change for tonal keys and symbol keys.
+        if isSwipeDownKeyEnabled && !hasRightHints && keyCap != .currency &&
+            keyboardState.showCommonSwipeDownKeysInLongPress {
             defaultChildKeyCapTitle = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: keyboardState)?.buttonText ?? keyCap.defaultChildKeyCapTitle
         } else {
             defaultChildKeyCapTitle = keyCap.defaultChildKeyCapTitle
         }
         
         let defaultKeyCapIndex: Int
-        defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == defaultChildKeyCapTitle }) ?? 0
+        defaultKeyCapIndex = keyCaps.firstIndex(where: { $0.buttonText == defaultChildKeyCapTitle || $0.isRimeTone }) ?? 0
         popupView.setup(keyCaps: keyCaps, defaultKeyCapIndex: defaultKeyCapIndex, direction: popupDirection)
         selectedAction = popupView.selectedAction
         
@@ -590,6 +593,16 @@ extension KeyView {
     
     private func computePopupDirection() -> KeyPopupView.PopupDirection {
         guard let superview = superview else { return .middle }
+        
+        // For tonal input keys, always show popup on the right.
+        if keyboardState?.activeSchema.supportCantoneseTonalInput ?? false &&
+           Settings.cached.toneInputMode == .longPress,
+            case .character(let c, _, _) = keyCap {
+            switch c.lowercased() {
+            case "f", "g", "h", "c", "v", "b": return .middle
+            default: ()
+            }
+        }
         
         let screenEdgeThreshold = bounds.width / 2
 

@@ -307,7 +307,7 @@ class KeyboardView: UIView, BaseKeyboardView {
             let isLetterKey = c.first?.isEnglishLetter ?? false
             let keyChar = shiftState != .lowercased && c.count == 1 ? c.uppercased() : c
             
-            if shiftState != .lowercased && !state.lastKeyboardTypeChangeFromAutoCap && keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap) ,
+            if shiftState != .lowercased && !state.lastKeyboardTypeChangeFromAutoCap && keyboardViewLayout.isSwipeDownKeyShiftMorphing(keyCap: keyCap),
                let swipeDownKeyCap = keyboardViewLayout.getSwipeDownKeyCap(keyCap: keyCap, keyboardState: state) {
                 return swipeDownKeyCap
             }
@@ -317,12 +317,14 @@ class KeyboardView: UIView, BaseKeyboardView {
                     leftHint = longPressKeyCap.buttonText
                     let orgChildrenKeyCaps = KeyCap(keyChar).childrenKeyCaps.map { $0.withoutHints }
                     childrenKeyCaps = [longPressKeyCap] + orgChildrenKeyCaps
-                    // Special handling to make sure children keys don't go out of screen.
-                    // Move the parent key to the other side.
-                    if c == "e" || c == "i" || c == "o" || c == "u" {
-                        let selfKeyCap = childrenKeyCaps?.remove(at: 1)
-                        childrenKeyCaps?.insert(selfKeyCap!, at: 0)
-                    }
+                }
+            }
+            // Special handling to make sure children keys don't go out of screen.
+            // Move the parent key to the other side.
+            if c == "e" || c == "i" || c == "o" || c == "u" {
+                childrenKeyCaps = childrenKeyCaps ?? keyCap.childrenKeyCaps
+                if let selfKeyCap = childrenKeyCaps?.remove(at: 1) {
+                    childrenKeyCaps?.insert(selfKeyCap, at: 0)
                 }
             }
             
@@ -355,7 +357,6 @@ class KeyboardView: UIView, BaseKeyboardView {
                 } else if state.isComposing {
                     if isInLongPressMode {
                         var toneKeyCap: KeyCap? = nil
-                        var reverse = false
                         switch c {
                         case "f":
                             rightHint = "4"
@@ -366,7 +367,6 @@ class KeyboardView: UIView, BaseKeyboardView {
                         case "h":
                             rightHint = "6"
                             toneKeyCap = KeyCap(rime: RimeChar.tone6)
-                            reverse = true
                         case "c":
                             rightHint = "1"
                             toneKeyCap = KeyCap(rime: RimeChar.tone1)
@@ -376,14 +376,11 @@ class KeyboardView: UIView, BaseKeyboardView {
                         case "b":
                             rightHint = "3"
                             toneKeyCap = KeyCap(rime: RimeChar.tone3)
-                            reverse = true
                         default: ()
                         }
                         if let toneKeyCap = toneKeyCap {
-                            childrenKeyCaps = orgChildren.reversed() + [toneKeyCap]
-                            if reverse {
-                                childrenKeyCaps?.reverse()
-                            }
+                            childrenKeyCaps = orgChildren
+                            childrenKeyCaps?.insert(toneKeyCap, at: 1)
                         }
                     } else {
                         switch c {

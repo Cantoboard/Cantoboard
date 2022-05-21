@@ -11,6 +11,7 @@ import UIKit
 class KeyPopupView: UIView {
     private static let keyHintInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0.75)
     private static let bodyInsets = UIEdgeInsets(top: 5, left: 4, bottom: 5, right: 4)
+    private static let bodyInsetsThin = UIEdgeInsets(top: 5, left: 3, bottom: 5, right: 3)
     static let phoneLinkHeight: CGFloat = 15, padGapHeight: CGFloat = 5
     
     enum PopupDirection {
@@ -139,8 +140,9 @@ class KeyPopupView: UIView {
         
         var buttonSize: CGSize
         if actions.count < 10 {
+            let bodyInsets = actions.count >= 8 ? KeyPopupView.bodyInsetsThin : KeyPopupView.bodyInsets
             buttonSize = CGSize(
-                width: layoutConstants.idiom.isPad ? keyWidth : KeyPopupView.bodyInsets.wrap(width: keyWidth),
+                width: layoutConstants.idiom.isPad ? keyWidth : bodyInsets.wrap(width: keyWidth),
                 height: keyHeight)
         } else {
             // For letter key A, adjust the width a bit so children keys don't go out of screen.
