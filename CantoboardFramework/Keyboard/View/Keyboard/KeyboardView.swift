@@ -294,7 +294,8 @@ class KeyboardView: UIView, BaseKeyboardView {
                 
         switch keyCap {
         case .toggleInputMode:
-            if rowId == 3 && !Settings.cached.showBottomLeftSwitchLangButton {
+            let showBottomLeftSwitchLangButton = Settings.cached.showBottomLeftSwitchLangButton || state.activeSchema.is10Keys
+            if rowId == 3 && !showBottomLeftSwitchLangButton {
                 return nil
             } else {
                 return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
