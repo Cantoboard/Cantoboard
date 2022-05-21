@@ -91,6 +91,7 @@ enum KeyboardAction: Equatable, ExpressibleByStringLiteral {
     resetComposition,
     setAutoSuggestion(AutoSuggestionType, /* replaceTextLen */ Int),
     selectTenKeysSpecialization(Int),
+    toggleTenKeysSpecialization,
     exit
     
     init(stringLiteral value: String) {

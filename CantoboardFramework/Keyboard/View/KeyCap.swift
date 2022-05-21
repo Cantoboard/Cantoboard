@@ -97,6 +97,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
     stroke(String),
     jyutPing10Keys(String),
+    selectRomanization,
     emoji(String),
     keyboardType(KeyboardType),
     returnKey(ReturnKeyType),
@@ -154,6 +155,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .dismissKeyboard: return .dismissKeyboard
         case .combo: return .none // Dynamically evaluated in KeyView.
         case .keypadRimeDelimiter: return .rime(.delimiter)
+        case .selectRomanization: return .toggleTenKeysSpecialization
         default: return .none
         }
     }
@@ -314,6 +316,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             case "W": return "W X Y Z"
             default: return nil
             }
+        case .selectRomanization: return "選拼音"
         case .exportFile(let namePrefix, _): return namePrefix.capitalized
         case .currency: return SessionState.main.currencySymbol
         case .exit: return "Exit"

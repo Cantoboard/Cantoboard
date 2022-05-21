@@ -915,7 +915,8 @@ extension LayoutConstants {
              .space,
              .toggleInputMode,
              "^_^",
-             .keypadRimeDelimiter: return 16
+             .keypadRimeDelimiter,
+             .selectRomanization: return 16
         case .returnKey, "\t", .shift, .nextKeyboard, .dismissKeyboard: return 18
         case .cangjie(_, let hints, _) where hints != nil: return 20
         case .backspace: return 20

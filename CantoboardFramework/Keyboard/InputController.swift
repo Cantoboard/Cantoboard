@@ -558,7 +558,16 @@ class InputController: NSObject {
             updateInputState()
             return
         case .selectTenKeysSpecialization(let candidateIndex):
-            tenKeysController.addSpecialization(candidateIndex: candidateIndex, state: &state.tenKeysState)
+            tenKeysController.addSpecialization(candidateIndex: candidateIndex, holdCaret: false, state: &state.tenKeysState)
+            candidateOrganizer.updateCandidates(reload: true)
+            updateComposition()
+            return
+        case .toggleTenKeysSpecialization:
+            var nextCandidateIndex = 0
+            if let selectedSpecializationCandidateIndex = state.tenKeysState.selectedSpecializationCandidateIndex {
+                nextCandidateIndex = (selectedSpecializationCandidateIndex + 1) % state.tenKeysState.specializationCandidates.count
+            }
+            tenKeysController.addSpecialization(candidateIndex: nextCandidateIndex, holdCaret: true, state: &state.tenKeysState)
             candidateOrganizer.updateCandidates(reload: true)
             updateComposition()
             return

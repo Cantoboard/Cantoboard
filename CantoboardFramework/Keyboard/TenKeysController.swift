@@ -12,7 +12,8 @@ struct TenKeysState: Equatable {
     var specializationCandidates: [String] = []
     var selectedSpecializationCandidateIndex: Int?
     var specializations: [Int: String] = [:]
-    var currentSpecializationCaretPos = 0
+    var specializationCaretPos = 0
+    var specializationCaretPosOverride = -1 // This variable is set by "選拼音" button.
 }
 
 class TenKeysController {
@@ -24,13 +25,14 @@ class TenKeysController {
         self.inputController = inputController
     }
     
-    func addSpecialization(candidateIndex: Int, state: inout TenKeysState) {
+    func addSpecialization(candidateIndex: Int, holdCaret: Bool, state: inout TenKeysState) {
         guard let specialization = state.specializationCandidates[safe: candidateIndex]
             else { return }
         let specializationCaretPos = getSpecializationCaretPos(state)
         
         state.specializations[specializationCaretPos] = specialization
         state.selectedSpecializationCandidateIndex = candidateIndex
+        state.specializationCaretPosOverride = holdCaret ? specializationCaretPos : -1
         update10KeysInput(state)
  
         DDLogInfo("TenKeysController addSpecialization \(specializationCaretPos) \(specialization)")
@@ -41,8 +43,7 @@ class TenKeysController {
             let maxIndex = state.specializations.keys.max()!
             let removed = state.specializations.removeValue(forKey: maxIndex)
             DDLogInfo("TenKeysController Removing last specialization at \(maxIndex) \(removed ?? "")")
-            state.selectedSpecializationCandidateIndex = nil
-            state.currentSpecializationCaretPos = state.specializations.keys.max() ?? 0
+            resetTenKeysStateAfterRemovingSpecialization(&state)
             update10KeysInput(state)
         }
     }
@@ -53,10 +54,16 @@ class TenKeysController {
             if specializationEndIndex > after || isAfterInclusive && specializationEndIndex == after {
                 DDLogInfo("TenKeysController Removing specialization at \(specialization.key) \(specialization.value)")
                 state.specializations.removeValue(forKey: specialization.key)
-                state.selectedSpecializationCandidateIndex = nil
+                resetTenKeysStateAfterRemovingSpecialization(&state)
             }
         }
         update10KeysInput(state)
+    }
+    
+    private func resetTenKeysStateAfterRemovingSpecialization(_ state: inout TenKeysState) {
+        state.selectedSpecializationCandidateIndex = nil
+        state.specializationCaretPos = state.specializations.keys.max() ?? 0
+        state.specializationCaretPosOverride = -1
     }
     
     private func update10KeysInput(_ state: TenKeysState) {
@@ -133,11 +140,11 @@ class TenKeysController {
         let pendingInputLen = userInput.count - userCaretPos
         let pendingInput = String(userInput.suffix(pendingInputLen))
         let newCandidate = Self.listNextCandidates(pendingInput)
-        if state.tenKeysState.currentSpecializationCaretPos != specializationCaretPos ||
+        if state.tenKeysState.specializationCaretPos != specializationCaretPos ||
            state.tenKeysState.specializationCandidates != newCandidate {
             state.tenKeysState.specializationCandidates = newCandidate
             state.tenKeysState.selectedSpecializationCandidateIndex = nil
-            state.tenKeysState.currentSpecializationCaretPos = specializationCaretPos
+            state.tenKeysState.specializationCaretPos = specializationCaretPos
         }
     }
     
@@ -155,9 +162,15 @@ class TenKeysController {
               !userInput.isEmpty
             else { return 0 }
         
-        var maxSpecializedIndex = state.specializations.reduce(0, {
-            max($0, $1.key + $1.value.count + 1 /* for the delimiter */)
-        })
+        var maxSpecializedIndex: Int
+        if state.specializationCaretPosOverride != -1 &&
+           state.specializations[state.specializationCaretPosOverride] != nil {
+            maxSpecializedIndex = state.specializationCaretPosOverride
+        } else {
+            maxSpecializedIndex = state.specializations.reduce(0, {
+                max($0, $1.key + $1.value.count + 1 /* for the delimiter */)
+            })
+        }
         
         while let c = rimeInput.char(at: maxSpecializedIndex), c == "'" || c == TenKeysController.filterBarDelimiter {
             maxSpecializedIndex += 1

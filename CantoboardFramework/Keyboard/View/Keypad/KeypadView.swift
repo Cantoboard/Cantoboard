@@ -56,9 +56,16 @@ class KeypadView: UIView, BaseKeyboardView {
           KeypadButtonProps(keyCap: .keypadRimeDelimiter)],
         [ KeypadButtonProps(keyCap: .jyutPing10Keys("P")),
           KeypadButtonProps(keyCap: .jyutPing10Keys("T")),
-          KeypadButtonProps(keyCap: .jyutPing10Keys("W")), KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
-        [ KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ],
+          KeypadButtonProps(keyCap: .jyutPing10Keys("W")),
+          KeypadButtonProps(keyCap: .returnKey(.default), colRowSize: CGSize(width: 1, height: 2)) ],
     ]
+
+    private let rightButtonJyutPingPropsLastRowNotComposing: [KeypadButtonProps] = [
+        KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 3, height: 1)) ]
+        
+    private let rightButtonJyutPingPropsLastRowComposing: [KeypadButtonProps] = [
+        KeypadButtonProps(keyCap: .selectRomanization),
+        KeypadButtonProps(keyCap: .space(.space), colRowSize: CGSize(width: 2, height: 1)) ]
     
     private weak var candidatePaneView: CandidatePaneView?
     public var layoutConstants: Reference<LayoutConstants> = Reference(LayoutConstants.forMainScreen)
@@ -169,7 +176,8 @@ class KeypadView: UIView, BaseKeyboardView {
         
         leftButtons = initButtons(buttonLayouts: leftButtonProps, existingButtons: leftButtons)
         
-        let rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : rightButtonJyutPingProps
+        var rightButtonProps = state.activeSchema == .stroke ? rightButtonStrokeProps : rightButtonJyutPingProps
+        rightButtonProps.append(state.isComposing ? rightButtonJyutPingPropsLastRowComposing : rightButtonJyutPingPropsLastRowNotComposing)
         rightButtons = initButtons(buttonLayouts: rightButtonProps, existingButtons: rightButtons)
     }
     
@@ -209,7 +217,8 @@ class KeypadView: UIView, BaseKeyboardView {
         let isViewDirty = prevState.keyboardContextualType != newState.keyboardContextualType ||
             prevState.isKeyboardAppearing != newState.isKeyboardAppearing ||
             prevState.keyboardType != newState.keyboardType ||
-            prevState.activeSchema != newState.activeSchema
+            prevState.activeSchema != newState.activeSchema ||
+            prevState.enableState != newState.enableState
         
         _state = newState
         if isViewDirty { setupButtons() }
