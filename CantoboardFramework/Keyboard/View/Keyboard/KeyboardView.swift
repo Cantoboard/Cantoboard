@@ -365,7 +365,6 @@ class KeyboardView: UIView, BaseKeyboardView {
                             toneKeyCap = KeyCap(rime: RimeChar.tone1)
                         case "v":
                             rightHint = "2"
-                            bottomHint = "oe/eo"
                             toneKeyCap = KeyCap(rime: RimeChar.tone2)
                         case "b":
                             rightHint = "3"
