@@ -37,7 +37,8 @@ class FilterBarView: UIView {
     private func changeState(prevState: KeyboardState, newState: KeyboardState) {
         _keyboardState = newState
         
-        let isViewDirty = prevState.tenKeysState != newState.tenKeysState
+        let isViewDirty = prevState.tenKeysState != newState.tenKeysState ||
+                          prevState.enableState != newState.enableState
         
         if isViewDirty {
             updateView()
@@ -75,6 +76,7 @@ class FilterBarView: UIView {
         
         let filterCollectionView = filterCollectionView!
         filterCollectionView.reloadData()
+        filterCollectionView.isHidden = keyboardState.enableState != .enabled
 
     }
     

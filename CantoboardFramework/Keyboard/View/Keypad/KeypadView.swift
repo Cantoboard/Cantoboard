@@ -161,6 +161,7 @@ class KeypadView: UIView, BaseKeyboardView {
                 button.setKeyCap(keyCap, keyboardState: state)
                 button.highlightedColor = keyCap.buttonBgHighlightedColor
                 button.autoSuggestionOverride = props.autoSuggestionOverride
+                button.isKeyEnabled = state.enableState == .enabled
                 buttonRow.append(button)
                 x += 1
             }
@@ -299,6 +300,7 @@ extension KeypadView {
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
         
+        guard statusMenu == nil else { return }
         // Reset other combo buttons.
         let allButtons = (leftButtons + rightButtons).flatMap { $0 }
         allButtons.forEach { button in
@@ -315,6 +317,7 @@ extension KeypadView {
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
         
+        guard statusMenu == nil else { return }
         touchHandler?.touchMoved(touch, key: keypadButton, with: event)
     }
     
@@ -323,6 +326,7 @@ extension KeypadView {
         guard let touch = touches.first,
               let keypadButton = touch.view as? KeyView else { return }
         
+        guard statusMenu == nil else { return }
         touchHandler?.touchEnded(touch, key: keypadButton, with: event)
     }
     
@@ -330,6 +334,7 @@ extension KeypadView {
         super.touchesCancelled(touches, with: event)
         guard let touch = touches.first else { return }
         
+        guard statusMenu == nil else { return }
         touchHandler?.touchCancelled(touch, with: event)
     }
 }

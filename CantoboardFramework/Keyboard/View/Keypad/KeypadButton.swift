@@ -38,7 +38,7 @@ class KeypadButton: KeyView {
     override internal func setupView() {
         super.setupView()
         if case .toggleInputMode = keyCap {
-            setTitle("ABC", for: .normal)
+            setTitle(isKeyEnabled ? "ABC" : "", for: .normal)
         }
         
         switch keyCap {
