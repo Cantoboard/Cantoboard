@@ -219,7 +219,8 @@ class KeypadView: UIView, BaseKeyboardView {
             prevState.isKeyboardAppearing != newState.isKeyboardAppearing ||
             prevState.keyboardType != newState.keyboardType ||
             prevState.activeSchema != newState.activeSchema ||
-            prevState.enableState != newState.enableState
+            prevState.enableState != newState.enableState ||
+            prevState.isComposing != newState.isComposing
         
         _state = newState
         if isViewDirty { setupButtons() }
