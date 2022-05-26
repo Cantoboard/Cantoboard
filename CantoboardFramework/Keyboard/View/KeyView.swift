@@ -565,7 +565,8 @@ extension KeyView {
         
         let defaultChildKeyCapTitle: String?
         let isSwipeDownKeyEnabled = keyCap.buttonLeftHint != nil
-        let hasRightHints = keyCap.buttonRightHint != nil // Disable swipe down priority change for tonal keys and symbol keys.
+        // Disable swipe down priority change for tonal keys and symbol keys but not rev lookup key.
+        let hasRightHints = keyCap.buttonRightHint != nil && keyCap.character?.lowercasedChar != "r"
         if isSwipeDownKeyEnabled && !hasRightHints && keyCap != .currency &&
             keyboardState.showCommonSwipeDownKeysInLongPress {
             defaultChildKeyCapTitle = CommonSwipeDownKeys.getSwipeDownKeyCapForPadShortOrFull4Rows(keyCap: keyCap, keyboardState: keyboardState)?.buttonText ?? keyCap.defaultChildKeyCapTitle
