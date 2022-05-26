@@ -13,6 +13,7 @@
 // Extend RKRimeSession to expose methods added by Cantoboard Rime plugin module.
 @interface RKRimeSession (RimePluginExtension)
 -(void)setInput:(NSString*) input;
+-(bool)unlearnCandidate:(size_t) candidateIndex;
 @property (readonly) size_t userSelectedTextLength;
 @end
 

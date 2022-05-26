@@ -259,6 +259,10 @@ class BilingualInputEngine: InputEngine {
         return commitedText
     }
     
+    func unlearnRimeCandidate(_ index: Int) -> Bool {
+        return rimeInputEngine.unlearnCandidate(index)
+    }
+    
     func setRimeInput(_ composition: Composition) {
         rimeInputEngine.setInput(composition)
     }

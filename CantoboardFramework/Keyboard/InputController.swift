@@ -233,14 +233,10 @@ class InputController: NSObject {
     }
     
     private func candidateLongPressed(choice: IndexPath) {
-        if let text = candidateOrganizer.getCandidate(indexPath: choice), text.allSatisfy({ $0.isEnglishLetter }) {
-            if EnglishInputEngine.userDictionary.unlearnWord(word: text) {
-                FeedbackProvider.lightImpact.impactOccurred()
-                let candidateCount = candidateOrganizer.getCandidateCount(section: choice.section)
-                inputEngine.updateEnglishCandidates()
-                candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: candidateCount)
-            }
-        }
+        FeedbackProvider.lightImpact.impactOccurred()
+        let candidateCount = candidateOrganizer.getCandidateCount(section: choice.section)
+        candidateOrganizer.unlearnCandidate(indexPath: choice)
+        candidateOrganizer.updateCandidates(reload: true, targetCandidatesCount: candidateCount)
     }
     
     private func handleSpace(spaceKeyMode: SpaceKeyMode) {

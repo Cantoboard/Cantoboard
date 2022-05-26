@@ -26,6 +26,7 @@ protocol CandidateSource: AnyObject {
     func getNumberOfSections() -> Int
     func getCandidate(indexPath: IndexPath) -> String?
     func selectCandidate(indexPath: IndexPath) -> String?
+    func unlearnCandidate(indexPath: IndexPath)
     func getCandidateComment(indexPath: IndexPath) -> String?
     func getCandidateCount(section: Int) -> Int
     func getSectionHeader(section: Int) -> String?
@@ -347,6 +348,19 @@ class InputEngineCandidateSource: CandidateSource {
         return selectedCandidate
     }
     
+    func unlearnCandidate(indexPath: IndexPath) {
+        guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return }
+        
+        switch candidatePath.source {
+        case .rime: _ = inputController?.inputEngine.unlearnRimeCandidate(candidatePath.index)
+        case .english:
+            if let word = getCandidate(indexPath: indexPath) {
+                _ = EnglishInputEngine.userDictionary.unlearn(word: word)
+            }
+        }
+        resetCandidates()
+    }
+    
     func getCandidateComment(indexPath: IndexPath) -> String? {
         guard let candidatePath = getCandidatePath(indexPath: indexPath) else { return nil }
         
@@ -411,6 +425,9 @@ class AutoSuggestionCandidateSource: CandidateSource {
     
     func selectCandidate(indexPath: IndexPath) -> String? {
         return getCandidate(indexPath: indexPath)
+    }
+    
+    func unlearnCandidate(indexPath: IndexPath) {
     }
     
     func getCandidateComment(indexPath: IndexPath) -> String? {
@@ -567,6 +584,10 @@ class CandidateOrganizer {
         let candidate = candidateSource?.selectCandidate(indexPath: indexPath)
         updateCandidates(reload: true)
         return candidate
+    }
+    
+    func unlearnCandidate(indexPath: IndexPath) {
+        candidateSource?.unlearnCandidate(indexPath: indexPath)
     }
     
     func getCandidateComment(indexPath: IndexPath) -> String? {

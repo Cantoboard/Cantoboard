@@ -44,7 +44,7 @@ class UserDictionary {
         }
     }
     
-    func unlearnWord(word: String) -> Bool {
+    func unlearn(word: String) -> Bool {
         let key = word.lowercased()
         let row = dict.get(key)?.split(separator: ",")
         if let row = row {

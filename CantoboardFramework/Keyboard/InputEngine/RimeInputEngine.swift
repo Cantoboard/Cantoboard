@@ -233,6 +233,16 @@ class RimeInputEngine: NSObject, InputEngine {
         return rimeSession.getCommitedText()
     }
     
+    func unlearnCandidate(_ index: Int) -> Bool {
+        guard let rimeSession = rimeSession else {
+            DDLogInfo("unlearnCandidate RimeSession is nil.")
+            return false
+        }
+        let deleted = rimeSession.unlearnCandidate(index)
+        refreshCandidates()
+        return deleted
+    }
+    
     var composition: Composition? {
         get {
             guard let rimeSession = rimeSession else { return nil }

@@ -14,9 +14,10 @@
 // Adhoc import:
 namespace cantoboard {
 
-extern void SetInput(RimeSessionId session_id, const std::string& value);
-extern void List10KeysPrefixes(const char* prefix, std::set<std::string> &results);
 extern size_t GetSelectedTextEndIndex(RimeSessionId session_id);
+extern void List10KeysPrefixes(const char* prefix, std::set<std::string> &results);
+extern void SetInput(RimeSessionId session_id, const std::string& value);
+extern bool UnlearnCandidate(RimeSessionId session_id, size_t candidate_index);
 
 } // namespace cantoboard
 
@@ -29,6 +30,10 @@ extern size_t GetSelectedTextEndIndex(RimeSessionId session_id);
 
 -(size_t)userSelectedTextLength {
     return cantoboard::GetSelectedTextEndIndex(self.sessionId);
+}
+
+-(bool)unlearnCandidate:(size_t) candidateIndex {
+    return cantoboard::UnlearnCandidate(self.sessionId, candidateIndex);
 }
 
 @end
