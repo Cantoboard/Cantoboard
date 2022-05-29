@@ -88,6 +88,7 @@ private class Switch: Option {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = control.isOn
         controller.settings[keyPath: key] = value
+        controller.view.endEditing(true)
         Settings.save(controller.settings)
     }
 }
@@ -124,6 +125,7 @@ private class Segment<T: Equatable>: Option {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         value = options[control.selectedSegmentIndex].value
         controller.settings[keyPath: key] = value
+        controller.view.endEditing(true)
         Settings.save(controller.settings)
     }
 }
@@ -175,6 +177,7 @@ extension Settings {
                     ),
                     Switch(LocalizedStrings.showBottomLeftSwitchLangButton, \.showBottomLeftSwitchLangButton,
                            LocalizedStrings.showBottomLeftSwitchLangButton_description),
+                    Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
                 ]
             ),
             UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,
