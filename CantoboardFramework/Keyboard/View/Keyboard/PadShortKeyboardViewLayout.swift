@@ -11,40 +11,70 @@ import UIKit
 class PadShortKeyboardViewLayout : KeyboardViewLayout {
     static let numOfRows = 4
     
-    static let letters: [[[KeyCap]]] = [
-        [[], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
-        [[], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
-        [[.shift(.lowercased)], [ "z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
-        [[.keyboardType(.numSymbolic), .nextKeyboard, .toggleInputMode(.english, nil)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
-    ]
+    static var letterLeftSystemKeys: [KeyCap] {
+        get {
+            if Settings.cached.padAlwaysNextKeyboardAsLeftSysKey {
+                return [.nextKeyboard, .keyboardType(.numSymbolic), .toggleInputMode(.english, nil)]
+            } else {
+                return [.keyboardType(.numSymbolic), .nextKeyboard, .toggleInputMode(.english, nil)]
+            }
+        }
+    }
     
-    static let numbersHalf: [[[KeyCap]]] = [
-        [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["@", "#", .currency, "/", "(", ")", "「", "」", .singleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.symbolic)], ["%", "-", "~", "…", "､", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
-    ]
+    static var symbolNumberLeftSystemKeys: [KeyCap] {
+        get {
+            if Settings.cached.padAlwaysNextKeyboardAsLeftSysKey {
+                return [.nextKeyboard, .keyboardType(.alphabetic(.lowercased))]
+            } else {
+                return [.keyboardType(.alphabetic(.lowercased)), .nextKeyboard]
+            }
+        }
+    }
     
-    static let numbersFull: [[[KeyCap]]] = [
-        [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["@", "#", .currency, "／", "（", "）", "「", "」", .singleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.symbolic)], ["%", "—", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
-    ]
+    static var letters: [[[KeyCap]]] {
+        [
+            [[], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
+            [[], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
+            [[.shift(.lowercased)], [ "z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
+            [letterLeftSystemKeys, [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
+        ]
+    }
     
-    static let symbolsHalf: [[[KeyCap]]] = [
-        [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["^", "_", "|", "\\", "[", "]", "{", "}", .doubleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["*", "&", "+", "=", "•", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
-    ]
+    static var numbersHalf: [[[KeyCap]]] {
+        [
+            [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
+            [[], ["@", "#", .currency, "/", "(", ")", "「", "」", .singleQuote], [.returnKey(.default)]],
+            [[.keyboardType(.symbolic)], ["%", "-", "~", "…", "､", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
+            [symbolNumberLeftSystemKeys, [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        ]
+    }
     
-    static let symbolsFull: [[[KeyCap]]] = [
-        [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[], ["^", "_", "｜", "＼", "［", "］", "｛", "｝", .doubleQuote], [.returnKey(.default)]],
-        [[.keyboardType(.numeric)], ["*", "&", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
-        [[.keyboardType(.alphabetic(.lowercased)), .nextKeyboard], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
-    ]
+    static var numbersFull: [[[KeyCap]]] {
+        [
+            [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
+            [[], ["@", "#", .currency, "／", "（", "）", "「", "」", .singleQuote], [.returnKey(.default)]],
+            [[.keyboardType(.symbolic)], ["%", "—", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
+            [symbolNumberLeftSystemKeys, [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        ]
+    }
+    
+    static var symbolsHalf: [[[KeyCap]]] {
+        [
+            [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
+            [[], ["^", "_", "|", "\\", "[", "]", "{", "}", .doubleQuote], [.returnKey(.default)]],
+            [[.keyboardType(.numeric)], ["*", "&", "+", "=", "•", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
+            [symbolNumberLeftSystemKeys, [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        ]
+    }
+    
+    static var symbolsFull: [[[KeyCap]]] {
+        [
+            [[], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
+            [[], ["^", "_", "｜", "＼", "［", "］", "｛", "｝", .doubleQuote], [.returnKey(.default)]],
+            [[.keyboardType(.numeric)], ["*", "&", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
+            [symbolNumberLeftSystemKeys, [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        ]
+    }
     
     static func layoutKeyViews(keyRowView: KeyRowView, leftKeys: [KeyView], middleKeys: [KeyView], rightKeys: [KeyView], layoutConstants: LayoutConstants) -> [CGRect] {
         let directionalLayoutMargins = keyRowView.directionalLayoutMargins

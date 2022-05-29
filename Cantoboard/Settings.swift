@@ -142,6 +142,12 @@ extension Settings {
                         LocalizedStrings.candidateBarStyle_full: true,
                         LocalizedStrings.candidateBarStyle_ios: false,
                 ]),
+                Segment(LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey, \.padAlwaysNextKeyboardAsLeftSysKey, [
+                        LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey_default: false,
+                        LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey_nextKeyboard: true,
+                    ],
+                    LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey_description
+                ),
             ]
         )
         

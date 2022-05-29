@@ -45,6 +45,10 @@ class LocalizedStrings {
     static let candidateBarStyle = localizedString("padSettings.candidateBarStyle")
     static let candidateBarStyle_full = localizedString("padSettings.candidateBarStyle.full")
     static let candidateBarStyle_ios = localizedString("padSettings.candidateBarStyle.ios")
+    static let padAlwaysNextKeyboardAsLeftSysKey = localizedString("padSettings.padAlwaysNextKeyboardAsLeftSysKey")
+    static let padAlwaysNextKeyboardAsLeftSysKey_description = localizedString("padSettings.padAlwaysNextKeyboardAsLeftSysKey.description")
+    static let padAlwaysNextKeyboardAsLeftSysKey_default = localizedString("padSettings.padAlwaysNextKeyboardAsLeftSysKey.default")
+    static let padAlwaysNextKeyboardAsLeftSysKey_nextKeyboard = localizedString("padSettings.padAlwaysNextKeyboardAsLeftSysKey.nextKeyboard")
     
     static let mixedInputSettings = localizedString("mixedInputSettings")
     static let smartSpace = localizedString("mixedInputSettings.smartSpace")
