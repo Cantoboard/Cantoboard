@@ -38,7 +38,7 @@ protocol Copyable {
 }
 
 class PhoneLayoutConstants: LayoutConstants {
-    private static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+    private static let contentEdgeInsetsPhonePortrait = UIEdgeInsets(top: 2, left: 1.5, bottom: 2, right: 1.5)
     private static let contentEdgeInsetsPhoneLandscape = UIEdgeInsets(top: 2, left: 2, bottom: 5, right: 2)
     
     let systemKeyWidthRatio: CGFloat
