@@ -234,13 +234,15 @@ class KeyboardView: UIView, BaseKeyboardView {
         case .numeric, .numSymbolic:
             let rows = state.symbolShape == .full ? keyboardViewLayout.numbersFull : keyboardViewLayout.numbersHalf
             for (index, keyCaps) in rows.enumerated() {
-                let keyCaps = configureNumberAndSymbolKeyCaps(keyCaps: keyCaps)
+                var keyCaps = configureNumberAndSymbolKeyCaps(keyCaps: keyCaps)
+                configureLowerLeftSystemKeyCap(&keyCaps, rowId: index)
                 keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
             }
         case .symbolic:
             let rows = state.symbolShape == .full ? keyboardViewLayout.symbolsFull : keyboardViewLayout.symbolsHalf
             for (index, keyCaps) in rows.enumerated() {
-                let keyCaps = configureNumberAndSymbolKeyCaps(keyCaps: keyCaps)
+                var keyCaps = configureNumberAndSymbolKeyCaps(keyCaps: keyCaps)
+                configureLowerLeftSystemKeyCap(&keyCaps, rowId: index)
                 keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
             }
         default: ()
@@ -273,10 +275,11 @@ class KeyboardView: UIView, BaseKeyboardView {
                     return configureAlphabeticKeyCap($0, rowId: index, groupId: groupId, shiftState: shiftState)
                 }
             }
+            configureLowerLeftSystemKeyCap(&keyCaps, rowId: index)
             keyRows[index].setupRow(keyboardState: state, keyCaps, rowId: index)
         }
     }
-    
+        
     private func configureAlphabeticKeyCap(_ hardcodedKeyCap: KeyCap, rowId: Int, groupId: Int, shiftState: (KeyboardShiftState)) -> KeyCap? {
         let isInEnglishMode = state.inputMode == .english
         let isInCangjieMode = state.activeSchema.isCangjieFamily
@@ -411,6 +414,15 @@ class KeyboardView: UIView, BaseKeyboardView {
         return keyCaps.enumerated().map { groupId, keyCapGroup in
             keyCapGroup.compactMap { keyCap in
                 return keyCap.symbolTransform(state: state)
+            }
+        }
+    }
+    
+    private func configureLowerLeftSystemKeyCap(_ keyCaps: inout [[KeyCap]], rowId: Int) {
+        if layoutConstants.ref.idiom.isPad && Settings.cached.padLeftSysKeyAsKeyboardType && keyCaps.count == 3 {
+            if let keyboardTypeKeyCapIndex = keyCaps[0].firstIndex(where: { $0.isKeyboardType }) {
+                // Move keyboard type key cap to the left corner.
+                keyCaps[0].swapAt(keyboardTypeKeyCapIndex, 0)
             }
         }
     }

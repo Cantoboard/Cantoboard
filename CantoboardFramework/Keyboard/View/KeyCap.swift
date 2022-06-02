@@ -538,6 +538,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         }
     }
     
+    var isKeyboardType: Bool {
+        switch self {
+        case .keyboardType: return true
+        default: return false
+        }
+    }
+    
     var isPlaceholder: Bool {
         switch self {
         case .placeholder: return true

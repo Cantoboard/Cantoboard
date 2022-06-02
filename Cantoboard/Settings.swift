@@ -144,11 +144,11 @@ extension Settings {
                         LocalizedStrings.candidateBarStyle_full: true,
                         LocalizedStrings.candidateBarStyle_ios: false,
                 ]),
-                Segment(LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey, \.padAlwaysNextKeyboardAsLeftSysKey, [
-                        LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey_default: false,
-                        LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey_nextKeyboard: true,
+                Segment(LocalizedStrings.padLeftSysKey, \.padLeftSysKeyAsKeyboardType, [
+                        LocalizedStrings.padLeftSysKey_default: false,
+                        LocalizedStrings.padLeftSysKey_keyboardType: true,
                     ],
-                    LocalizedStrings.padAlwaysNextKeyboardAsLeftSysKey_description
+                    LocalizedStrings.padLeftSysKey_description
                 ),
             ]
         )

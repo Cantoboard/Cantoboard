@@ -57,10 +57,10 @@
 "padSettings.candidateBarStyle" = "候選詞列表風格";
 "padSettings.candidateBarStyle.full" = "最闊";
 "padSettings.candidateBarStyle.ios" = "iOS 預設鍵盤";
-"padSettings.padAlwaysNextKeyboardAsLeftSysKey" = "左下角系統鍵";
-"padSettings.padAlwaysNextKeyboardAsLeftSysKey.description" = "喺某啲iPad型號，iOS系統鍵盤最左下角個掣並唔係鍵盤切換掣，同其他iPad型號唔一致。修改呢個設定可以令Cantoboard放鍵盤切換掣喺左下角。";
-"padSettings.padAlwaysNextKeyboardAsLeftSysKey.default" = "預設";
-"padSettings.padAlwaysNextKeyboardAsLeftSysKey.nextKeyboard" = "鍵盤切換掣";
+"padSettings.leftSysKey" = "左下角系統鍵";
+"padSettings.leftSysKey.description" = "喺某啲 iPad 型號，iOS 系統鍵盤最左下角個掣並唔係符號鍵盤掣，同其他 iPad 型號唔一致。啟用呢個設定可以放符號鍵盤掣喺左下角。";
+"padSettings.leftSysKey.default" = "預設";
+"padSettings.leftSysKey.keyboardType" = "符號鍵盤掣";
 
 "chineseInputSettings" = "中文輸入設定";
 "chineseInputSettings.enablePredictiveText" = "關聯字";

@@ -114,7 +114,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultEnablePredictiveText: Bool = true
     private static let defaultPredictiveTextOffensiveWord: Bool = false
     private static let defaultFullPadCandidateBar: Bool = true
-    private static let defaultPadAlwaysNextKeyboardAsLeftSysKey: Bool = false
+    private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = true
 
     public var isMixedModeEnabled: Bool
@@ -140,7 +140,7 @@ public struct Settings: Codable, Equatable {
     public var enablePredictiveText: Bool
     public var predictiveTextOffensiveWord: Bool
     public var fullPadCandidateBar: Bool
-    public var padAlwaysNextKeyboardAsLeftSysKey: Bool
+    public var padLeftSysKeyAsKeyboardType: Bool
     public var showBottomLeftSwitchLangButton: Bool
     
     public init() {
@@ -167,7 +167,7 @@ public struct Settings: Codable, Equatable {
         enablePredictiveText = Self.defaultEnablePredictiveText
         predictiveTextOffensiveWord = Self.defaultPredictiveTextOffensiveWord
         fullPadCandidateBar = Self.defaultFullPadCandidateBar
-        padAlwaysNextKeyboardAsLeftSysKey = Self.defaultPadAlwaysNextKeyboardAsLeftSysKey
+        padLeftSysKeyAsKeyboardType = Self.defaultPadLeftSysKeyAsKeyboardType
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
     }
     
@@ -196,7 +196,7 @@ public struct Settings: Codable, Equatable {
         self.enablePredictiveText = try container.decodeIfPresent(Bool.self, forKey: .enablePredictiveText) ?? Settings.defaultEnablePredictiveText
         self.predictiveTextOffensiveWord = try container.decodeIfPresent(Bool.self, forKey: .predictiveTextOffensiveWord) ?? Settings.defaultPredictiveTextOffensiveWord
         self.fullPadCandidateBar = try container.decodeIfPresent(Bool.self, forKey: .fullPadCandidateBar) ?? Settings.defaultFullPadCandidateBar
-        self.padAlwaysNextKeyboardAsLeftSysKey = try container.decodeIfPresent(Bool.self, forKey: .padAlwaysNextKeyboardAsLeftSysKey) ?? Settings.defaultPadAlwaysNextKeyboardAsLeftSysKey
+        self.padLeftSysKeyAsKeyboardType = try container.decodeIfPresent(Bool.self, forKey: .padLeftSysKeyAsKeyboardType) ?? Settings.defaultPadLeftSysKeyAsKeyboardType
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
     }
     
