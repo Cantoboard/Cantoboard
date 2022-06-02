@@ -148,7 +148,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             case "1": return isInChineseContextualMode ? "！" : "!"
             case "2": return "@"
             case "3": return "#"
-            case "4": return "$"
+            case "4": return KeyCap(SessionState.main.currencySymbol)
             case "5": return "%"
             case "6": return isInChineseContextualMode ? "⋯⋯" : "^"
             case "7": return "&"
