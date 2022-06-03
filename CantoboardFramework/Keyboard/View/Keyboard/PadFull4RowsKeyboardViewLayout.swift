@@ -17,7 +17,7 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numSymbolic), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -103,9 +103,13 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
             case .returnKey: width = padFull4RowsLayoutConstants.returnKeyWidth
             default:
                 if keyRowView.rowId == 3 && groupLayoutDirection == .left {
-                    width = ((padFull4RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX) - layoutConstants.buttonGapX) / 2
+                    let groupWidth = padFull4RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX
+                    let buttonCount = CGFloat(keys.count)
+                    width = (groupWidth - (buttonCount - 1) * layoutConstants.buttonGapX) / buttonCount
                 } else if keyRowView.rowId == 3 && groupLayoutDirection == .right {
-                    width = padFull4RowsLayoutConstants.largeSystemKeyWidth
+                    let groupWidth = padFull4RowsLayoutConstants.largeSystemKeyWidth * 2 + layoutConstants.buttonGapX
+                    let buttonCount = CGFloat(keys.count)
+                    width = (groupWidth - (buttonCount - 1) * layoutConstants.buttonGapX) / buttonCount
                 } else {
                     width = 0
                     numFlexibleWidthKeys += 1

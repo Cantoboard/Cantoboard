@@ -18,7 +18,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
         [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
-        [[.nextKeyboard, .keyboardType(.numSymbolic)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.numSymbolic), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
@@ -85,6 +85,19 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
             let index = indexAndKey.offset
             let key = indexAndKey.element
             
+            let isMiddleSystemKeyGroup = index == keyRowView.leftKeys.count
+            if keyRowView.rowId == 4 && !isMiddleSystemKeyGroup {
+                let isLeftSystemKeyGroup = index < keyRowView.leftKeys.count
+                let leftSystemKeyGroupWidth = padFull5RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX
+                let rightSystemKeyGroupWidth = padFull5RowsLayoutConstants.largeSystemKeyWidth * 2 + layoutConstants.buttonGapX
+                let systemKeyGroupWidth = isLeftSystemKeyGroup ? leftSystemKeyGroupWidth : rightSystemKeyGroupWidth
+                let numberOfKeysInGroup = CGFloat(isLeftSystemKeyGroup ? keyRowView.leftKeys.count : keyRowView.rightKeys.count)
+                let keyWidth = (systemKeyGroupWidth - (numberOfKeysInGroup - 1) * layoutConstants.buttonGapX) / numberOfKeysInGroup
+                
+                keyWidths[key] = keyWidth
+                return sum + keyWidth
+            }
+            
             var width: CGFloat
             switch key.keyCap.unescaped {
             case "\t": width = padFull5RowsLayoutConstants.tabKeyWidth
@@ -97,11 +110,6 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
                 }
             case .backspace: width = padFull5RowsLayoutConstants.deleteKeyWidth
             case .returnKey: width = padFull5RowsLayoutConstants.returnKeyWidth
-            case .nextKeyboard,
-                 .keyboardType where index <= 2:
-                width = (padFull5RowsLayoutConstants.smallSystemKeyWidth * 3 + 2 * layoutConstants.buttonGapX - layoutConstants.buttonGapX) / 2
-            case .keyboardType, .dismissKeyboard, .character(".com", _, _):
-                width = padFull5RowsLayoutConstants.largeSystemKeyWidth
             case .character, .cangjie, .currency, .singleQuote, .doubleQuote: width = inputKeyWidth
             default:
                 width = 0

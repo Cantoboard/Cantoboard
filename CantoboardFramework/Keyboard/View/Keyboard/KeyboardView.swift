@@ -299,7 +299,7 @@ class KeyboardView: UIView, BaseKeyboardView {
         case .toggleInputMode:
             let showBottomLeftSwitchLangButton = Settings.cached.showBottomLeftSwitchLangButton || state.activeSchema.is10Keys
             if rowId == 3 && !showBottomLeftSwitchLangButton {
-                return nil
+                return layoutConstants.ref.idiom.isPad ? KeyCap.keyboardType(.emojis) : nil
             } else {
                 return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
             }
