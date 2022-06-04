@@ -157,7 +157,7 @@ static NSString* offensiveWords[] = {
         NSString *prefixToSearch = [context substringWithRange:NSMakeRange(currentIndex, context.length - currentIndex)];
         NSRange curCharRange = [context rangeOfComposedCharacterSequenceAtIndex:currentIndex];
         currentIndex += curCharRange.length;
-        DDLogInfo(@"PredictiveTextEngine searching prefix: %@", prefixToSearch);
+        // DDLogInfo(@"PredictiveTextEngine searching prefix: %@", prefixToSearch);
         [self search:prefixToSearch output:results dedupSet:dedupSet shouldFilterOffensiveWords:shouldFilterOffensiveWords];
     }
     
