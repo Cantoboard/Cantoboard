@@ -63,6 +63,10 @@ internal class EmojiPopView: UIView {
     // MARK: - Internal functions
     
     internal func move(location: CGPoint, animation: Bool = true) {
+        let deltaX = frame.origin.x - location.x
+        let deltaY = frame.origin.y - location.y
+        guard abs(deltaX) > 1e-5 || abs(deltaY) > 1e-5 else { return }
+        
         locationX = location.x
         setupUI()
         
