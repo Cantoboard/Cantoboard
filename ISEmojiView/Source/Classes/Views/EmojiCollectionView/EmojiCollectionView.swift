@@ -93,7 +93,6 @@ internal class EmojiCollectionView: UIView {
         
         view.emojis = emojis
         view.setupView()
-        
         return view
     }
     
@@ -262,6 +261,9 @@ extension EmojiCollectionView {
         addGestureRecognizer(emojiLongPressGestureRecognizer)
         
         addSubview(emojiPopView)
+        
+        let flow = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        flow.itemSize = EmojiSize
     }
     
     @objc private func emojiLongPressHandle(sender: UILongPressGestureRecognizer) {
