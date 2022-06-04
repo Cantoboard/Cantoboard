@@ -128,7 +128,12 @@ internal class EmojiCollectionView: UIView {
         let itemsCountInSection = collectionView(collectionView, numberOfItemsInSection: section)
         let targetItemIndex = Int(round(percentage * Double((itemsCountInSection - 1))))
         
-        let indexPath = IndexPath(item: targetItemIndex, section: section)
+        let numOfColumnsPerPage = Int(collectionView.bounds.width / constants.emojiSize.width)
+        let numOfRowsPerPage = Int(collectionView.bounds.height / constants.emojiSize.height)
+        let numOfCellsPerPage = numOfColumnsPerPage * numOfRowsPerPage
+        let targetItemIndexPageAligned = Int(targetItemIndex / numOfCellsPerPage) * numOfCellsPerPage
+        
+        let indexPath = IndexPath(item: targetItemIndexPageAligned, section: section)
         collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
     }
     
