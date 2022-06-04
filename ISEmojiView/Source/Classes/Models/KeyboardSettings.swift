@@ -31,6 +31,8 @@ final public class KeyboardSettings {
     /// Default is false.
     public var needToShowAbcButton: Bool = false
     
+    public var isPhone: Bool = true
+    
     // MARK: - Init functions
     
     public init(bottomType: BottomType) {

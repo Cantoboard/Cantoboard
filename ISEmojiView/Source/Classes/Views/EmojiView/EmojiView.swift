@@ -232,7 +232,8 @@ extension EmojiView {
     }
     
     private func setupEmojiCollectionView() {
-        let emojiCollectionView = EmojiCollectionView.loadFromNib(emojis: emojis)
+        let constants: Constants = (keyboardSettings?.isPhone ?? true) ? PhoneConstants() : PadConstants()
+        let emojiCollectionView = EmojiCollectionView.loadFromNib(emojis: emojis, constants: constants)
         emojiCollectionView.isShowPopPreview = keyboardSettings?.isShowPopPreview ?? isShowPopPreview
         emojiCollectionView.delegate = self
         emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false

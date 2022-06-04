@@ -13,7 +13,6 @@ internal class EmojiCollectionCell: UICollectionViewCell {
     
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
-        label.font = EmojiFont
         label.textAlignment = .center
         label.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         return label
@@ -33,7 +32,8 @@ internal class EmojiCollectionCell: UICollectionViewCell {
     
     // MARK: - Internal functions
     
-    internal func setEmoji(_ emoji: String) {
+    internal func setEmoji(_ emoji: String, emojiFont: UIFont) {
+        emojiLabel.font = emojiFont
         emojiLabel.text = emoji
     }
     
@@ -43,5 +43,4 @@ internal class EmojiCollectionCell: UICollectionViewCell {
         emojiLabel.frame = bounds
         addSubview(emojiLabel)
     }
-    
 }
