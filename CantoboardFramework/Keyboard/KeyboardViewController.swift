@@ -142,7 +142,9 @@ open class KeyboardViewController: UIInputViewController {
         }
         
         let hasLayoutChanged = layoutConstants.ref.idiom != newLayoutConstants.idiom ||
-                               layoutConstants.ref.isPortrait != newLayoutConstants.isPortrait
+                               layoutConstants.ref.isPortrait != newLayoutConstants.isPortrait ||
+                               keyboardView?.layoutConstants.ref.idiom != newLayoutConstants.idiom ||
+                               keyboardView?.layoutConstants.ref.isPortrait != newLayoutConstants.isPortrait
         layoutConstants.ref = newLayoutConstants
         keyboardView?.layoutConstants.ref = newLayoutConstants
         if hasLayoutChanged {
