@@ -24,6 +24,8 @@ internal class EmojiPopView: UIView {
     internal var currentEmoji: String = ""
     internal var emojiArray: [String] = []
     
+    internal var constants: Constants = PhoneConstants()
+    
     // MARK: - Private variables
     
     private var locationX: CGFloat = 0.0
@@ -34,7 +36,7 @@ internal class EmojiPopView: UIView {
     private var emojisX: CGFloat = 0.0
     private var emojisWidth: CGFloat = 0.0
     
-    internal var constants: Constants = PhoneConstants()
+    private var showBottomPart: Bool = true
     
     // MARK: - Init functions
     
@@ -62,7 +64,8 @@ internal class EmojiPopView: UIView {
     
     // MARK: - Internal functions
     
-    internal func move(location: CGPoint, animation: Bool = true) {
+    internal func move(location: CGPoint, showBottomPart: Bool, animation: Bool = true) {
+        self.showBottomPart = showBottomPart
         let deltaX = frame.origin.x - location.x
         let deltaY = frame.origin.y - location.y
         guard abs(deltaX) > 1e-5 || abs(deltaY) > 1e-5 else { return }
@@ -189,16 +192,18 @@ extension EmojiPopView {
                  cornerHeight: 10
              )
 
-        path.addRoundedRect(
-            in: CGRect(
-                x: topPartSize.width / 2.0 - bottomPartSize.width / 2.0,
-                y: topPartSize.height - 10,
-                width: bottomPartSize.width,
-                height: bottomPartSize.height + 10
-            ),
-            cornerWidth: 5,
-            cornerHeight: 5
-        )
+        if showBottomPart {
+            path.addRoundedRect(
+                in: CGRect(
+                    x: topPartSize.width / 2.0 - bottomPartSize.width / 2.0,
+                    y: topPartSize.height - 10,
+                    width: bottomPartSize.width,
+                    height: bottomPartSize.height + 10
+                ),
+                cornerWidth: 5,
+                cornerHeight: 5
+            )
+        }
         
         return path
     }
