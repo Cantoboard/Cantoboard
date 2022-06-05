@@ -115,7 +115,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultPredictiveTextOffensiveWord: Bool = false
     private static let defaultFullPadCandidateBar: Bool = true
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
-    private static let defaultShowBottomLeftSwitchLangButton: Bool = true
+    private static let defaultShowBottomLeftSwitchLangButton: Bool = false
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
