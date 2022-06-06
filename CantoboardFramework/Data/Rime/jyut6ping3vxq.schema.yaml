@@ -4,7 +4,7 @@
 schema:
   schema_id: jyut6ping3vxq
   name: 粵語拼音vxq
-  version: "2020.11.26"
+  version: "2022.06.07"
   author:
     - sgalal <sgalal.me@outlook.com>
     - LeiMaau <leimaau@qq.com>
@@ -83,7 +83,7 @@ speller:
     - derive/^jyu/ju/             # 容錯 jyu -> ju
     - derive/yu/y/                # 容錯 jyu -> jy
     - erase/y(ng|k)/              # y + ng/k 視作簡拼而非 jung/juk
-    - derive/eoi(?=\d)/oey/       # 容錯
+    - derive/(g|k)u(?!ng|k)/$1wu/ # 輔音圓唇
     - derive/eoi(?=\d)/eoy/       # 容錯
     - derive/eo/oe/               # 容錯 eo/oe 不分
     - derive/oe/eo/               # 容錯 eo/oe 不分
@@ -109,12 +109,12 @@ translator:
   always_show_comments: true
   prism: jyut6ping3vxq
   preedit_format:
-    - xform/([aeioumngxptk])vv/${1}4/
-    - xform/([aeioumngxptk])xx/${1}5/
-    - xform/([aeioumngxptk])qq/${1}6/
-    - xform/([aeioumngxptk])v/${1}1/
-    - xform/([aeioumngxptk])x/${1}2/
-    - xform/([aeioumngxptk])q/${1}3/
+    - xform/([aeiouymngptk])vv/${1}4/
+    - xform/([aeiouymngptk])xx/${1}5/
+    - xform/([aeiouymngptk])qq/${1}6/
+    - xform/([aeiouymngptk])v/${1}1/
+    - xform/([aeiouymngptk])x/${1}2/
+    - xform/([aeiouymngptk])q/${1}3/
 
 variants_hk:
   option_name: variants_hk

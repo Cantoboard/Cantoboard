@@ -4,7 +4,7 @@
 schema:
   schema_id: yalevxq
   name: 耶魯–劉錫祥混合拼音vxq
-  version: "2021.08.22"
+  version: "2022.06.07"
   author:
     - sgalal <sgalal.me@outlook.com>
     - LeiMaau <leimaau@qq.com>
@@ -78,6 +78,7 @@ speller:
     - xform/jy?/y/
     - derive/yu(?!ng|k)/y/
     - erase/^y\d$/
+    - derive/(g|k)u(?!ng|k)/$1wu/
     - derive/oe|eo/eu/
     - derive/aa(?=\d)/a/
     - derive/z/j/
@@ -96,7 +97,7 @@ speller:
     - derive/(?<!a)a(?=m|p)/o/ # e.g. 紅磡 Hom
 
     - derive/ou/o/ # e.g. 好 ho
-    - derive/^([bpmdtxlh]|ng?)?ou/$1u/ # e.g. 盧 Lu/Loo
+    - derive/^([bpmdtlh]|ng?)?ou/$1u/ # e.g. 盧 Lu/Loo
     - derive/ei/i/ # e.g. 李 Li/Lee
 
     - derive/^yu/yue/ # e.g. 元朗 Yuen
@@ -113,8 +114,8 @@ speller:
     - derive/oe/eo/
     - derive/eo/oe/
 
-    - derive/(?!^)([mxptk]|ng?)?\d/h$&/ # 個 goh 野 yeh
-    - erase/^(hh(m|ng|x)|(m|ng|x)h)\d$/
+    - derive/(?!^)([mptk]|ng?)?\d/h$&/ # 個 goh 野 yeh
+    - erase/^(hh(m|ng)|(m|ng)h)\d$/
 
     # 教院聲母
     - derive/zh/dz/ # e.g. 知 dzi
@@ -136,12 +137,12 @@ translator:
   always_show_comments: true
   prism: yalevxq
   preedit_format:
-    - xform/([aeioumngxptk])vv/${1}4/
-    - xform/([aeioumngxptk])xx/${1}5/
-    - xform/([aeioumngxptk])qq/${1}6/
-    - xform/([aeioumngxptk])v/${1}1/
-    - xform/([aeioumngxptk])x/${1}2/
-    - xform/([aeioumngxptk])q/${1}3/
+    - xform/([aeiouymngptk])vv/${1}4/
+    - xform/([aeiouymngptk])xx/${1}5/
+    - xform/([aeiouymngptk])qq/${1}6/
+    - xform/([aeiouymngptk])v/${1}1/
+    - xform/([aeiouymngptk])x/${1}2/
+    - xform/([aeiouymngptk])q/${1}3/
 
 variants_hk:
   option_name: variants_hk

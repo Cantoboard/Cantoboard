@@ -4,7 +4,7 @@
 schema:
   schema_id: jyut6ping3
   name: 粵語拼音
-  version: "2020.11.26"
+  version: "2022.06.07"
   author:
     - sgalal <sgalal.me@outlook.com>
     - LeiMaau <leimaau@qq.com>
@@ -83,7 +83,7 @@ speller:
     - derive/^jyu/ju/             # 容錯 jyu -> ju
     - derive/yu/y/                # 容錯 jyu -> jy
     - erase/y(ng|k)/              # y + ng/k 視作簡拼而非 jung/juk
-    - derive/eoi(?=\d)/oey/       # 容錯
+    - derive/(g|k)u(?!ng|k)/$1wu/ # 輔音圓唇
     - derive/eoi(?=\d)/eoy/       # 容錯
     - derive/aa/r/                # 韻母簡拼
     - derive/oe|eo/v/             # 韻母簡拼

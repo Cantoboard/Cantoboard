@@ -4,7 +4,7 @@
 schema:
   schema_id: yale
   name: 耶魯–劉錫祥混合拼音
-  version: "2021.08.22"
+  version: "2022.06.07"
   author:
     - sgalal <sgalal.me@outlook.com>
     - LeiMaau <leimaau@qq.com>
@@ -78,6 +78,7 @@ speller:
     - xform/jy?/y/
     - derive/yu(?!ng|k)/y/
     - erase/^y\d$/
+    - derive/(g|k)u(?!ng|k)/$1wu/
     - derive/oe|eo/eu/
     - derive/aa/r/
     - derive/eu/v/
