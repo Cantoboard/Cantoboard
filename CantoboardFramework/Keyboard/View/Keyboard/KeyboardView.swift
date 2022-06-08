@@ -296,14 +296,6 @@ class KeyboardView: UIView, BaseKeyboardView {
         }
                 
         switch keyCap {
-        case .toggleInputMode:
-            let showBottomLeftSwitchLangButton = Settings.cached.showBottomLeftSwitchLangButton || state.activeSchema.is10Keys
-            if rowId == 3 && !showBottomLeftSwitchLangButton {
-                let shouldShowEmojiKey = layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey
-                return shouldShowEmojiKey ? KeyCap.keyboardType(.emojis) : nil
-            } else {
-                return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
-            }
         case .character(let c, let hints, var childrenKeyCaps):
             var leftHint = hints?.leftHint
             var rightHint = hints?.rightHint
@@ -424,6 +416,20 @@ class KeyboardView: UIView, BaseKeyboardView {
             if let keyboardTypeKeyCapIndex = keyCaps[0].firstIndex(where: { $0.isKeyboardType }) {
                 // Move keyboard type key cap to the left corner.
                 keyCaps[0].swapAt(keyboardTypeKeyCapIndex, 0)
+            }
+        }
+        
+        keyCaps[0] = keyCaps[0].compactMap { keyCap in
+            switch keyCap {
+            case .toggleInputMode:
+                let showBottomLeftSwitchLangButton = Settings.cached.showBottomLeftSwitchLangButton || state.activeSchema.is10Keys
+                if rowId == 3 && !showBottomLeftSwitchLangButton {
+                    let shouldShowEmojiKey = layoutConstants.ref.idiom.isPad || state.needsInputModeSwitchKey
+                    return shouldShowEmojiKey ? KeyCap.keyboardType(.emojis) : nil
+                } else {
+                    return .toggleInputMode(state.inputMode.afterToggle, state.activeSchema)
+                }
+            default: return keyCap
             }
         }
     }

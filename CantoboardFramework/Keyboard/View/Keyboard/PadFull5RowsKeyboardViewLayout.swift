@@ -26,7 +26,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"], []],
         [[.placeholder(.toggleInputMode(.english, nil))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "､", "?", "!", "~", "「", "」"], [.placeholder(.shift(.lowercased))]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
@@ -34,7 +34,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
         [["\t"], ["［", "］", "｛", "｝", "#", "%", "^", "*", "+", "=", "＼", "｜", "_"], []],
         [[.placeholder(.toggleInputMode(.english, nil))], ["—", "／", "：", "；", "（", "）", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "「", "」"], [.placeholder(.shift(.lowercased))]],
-        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased))], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
+        [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = numbersHalf
