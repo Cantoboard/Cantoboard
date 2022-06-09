@@ -4,7 +4,7 @@ __build_info:
     common.custom: 0
     default: 1639099840
     default.custom: 1644658314
-    jyut6ping3vxq.schema: 1644293155
+    jyut6ping3vxq.schema: 1654750086
     symbols: 1610967803
     symbols.custom: 0
     symbols_cantonese: 1629626926
@@ -334,7 +334,7 @@ schema:
     Telegram 用户交流組 https://t.me/rime_cantonese
   name: "粵語拼音vxq"
   schema_id: jyut6ping3vxq
-  version: 2020.11.26
+  version: 2022.06.07
 simp_hk2s:
   opencc_config: hk2s.json
   option_name: simp_hk2s
@@ -345,7 +345,7 @@ speller:
     - "derive/^jyu/ju/"
     - "derive/yu/y/"
     - "erase/y(ng|k)/"
-    - "derive/eoi(?=\\d)/oey/"
+    - "derive/(g|k)u(?!ng|k)/$1wu/"
     - "derive/eoi(?=\\d)/eoy/"
     - "derive/eo/oe/"
     - "derive/oe/eo/"
@@ -376,12 +376,12 @@ translator:
   dictionary: jyut6ping3
   max_homophones: 10
   preedit_format:
-    - "xform/([aeioumngxptk])vv/${1}4/"
-    - "xform/([aeioumngxptk])xx/${1}5/"
-    - "xform/([aeioumngxptk])qq/${1}6/"
-    - "xform/([aeioumngxptk])v/${1}1/"
-    - "xform/([aeioumngxptk])x/${1}2/"
-    - "xform/([aeioumngxptk])q/${1}3/"
+    - "xform/([aeiouymngptk])vv/${1}4/"
+    - "xform/([aeiouymngptk])xx/${1}5/"
+    - "xform/([aeiouymngptk])qq/${1}6/"
+    - "xform/([aeiouymngptk])v/${1}1/"
+    - "xform/([aeiouymngptk])x/${1}2/"
+    - "xform/([aeiouymngptk])q/${1}3/"
   prism: jyut6ping3vxq
   spelling_hints: 256
 variants_hk:

@@ -7,7 +7,7 @@ __build_info:
     symbols: 1610967803
     symbols.custom: 0
     symbols_cantonese: 1629626926
-    yalevxq.schema: 1644293186
+    yalevxq.schema: 1654750086
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -330,7 +330,7 @@ schema:
   description: "耶魯–劉錫祥混合拼音vxq"
   name: "耶魯–劉錫祥混合拼音vxq"
   schema_id: yalevxq
-  version: 2021.08.22
+  version: 2022.06.07
 simp_hk2s:
   opencc_config: hk2s.json
   option_name: simp_hk2s
@@ -344,6 +344,7 @@ speller:
     - "xform/jy?/y/"
     - "derive/yu(?!ng|k)/y/"
     - "erase/^y\\d$/"
+    - "derive/(g|k)u(?!ng|k)/$1wu/"
     - "derive/oe|eo/eu/"
     - "derive/aa(?=\\d)/a/"
     - "derive/z/j/"
@@ -354,7 +355,7 @@ speller:
     - "derive/(?<!a)a(?=m|p)/u/"
     - "derive/(?<!a)a(?=m|p)/o/"
     - "derive/ou/o/"
-    - "derive/^([bpmdtxlh]|ng?)?ou/$1u/"
+    - "derive/^([bpmdtlh]|ng?)?ou/$1u/"
     - "derive/ei/i/"
     - "derive/^yu/yue/"
     - "derive/(?!^)yu/ue/"
@@ -366,8 +367,8 @@ speller:
     - "derive/eo/u/"
     - "derive/oe/eo/"
     - "derive/eo/oe/"
-    - "derive/(?!^)([mxptk]|ng?)?\\d/h$&/"
-    - "erase/^(hh(m|ng|x)|(m|ng|x)h)\\d$/"
+    - "derive/(?!^)([mptk]|ng?)?\\d/h$&/"
+    - "erase/^(hh(m|ng)|(m|ng)h)\\d$/"
     - "derive/zh/dz/"
     - "derive/ch/ts/"
     - "derive/\\d//"
@@ -395,12 +396,12 @@ translator:
   dictionary: jyut6ping3
   max_homophones: 10
   preedit_format:
-    - "xform/([aeioumngxptk])vv/${1}4/"
-    - "xform/([aeioumngxptk])xx/${1}5/"
-    - "xform/([aeioumngxptk])qq/${1}6/"
-    - "xform/([aeioumngxptk])v/${1}1/"
-    - "xform/([aeioumngxptk])x/${1}2/"
-    - "xform/([aeioumngxptk])q/${1}3/"
+    - "xform/([aeiouymngptk])vv/${1}4/"
+    - "xform/([aeiouymngptk])xx/${1}5/"
+    - "xform/([aeiouymngptk])qq/${1}6/"
+    - "xform/([aeiouymngptk])v/${1}1/"
+    - "xform/([aeiouymngptk])x/${1}2/"
+    - "xform/([aeiouymngptk])q/${1}3/"
   prism: yalevxq
   spelling_hints: 256
 variants_hk:
