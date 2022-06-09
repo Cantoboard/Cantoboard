@@ -527,7 +527,12 @@ class InputController: NSObject {
                 do {
                     try FileManager.default.zipItem(at: URL(fileURLWithPath: path, isDirectory: true), to: zipFilePath)
                     let share = UIActivityViewController(activityItems: [zipFilePath], applicationActivities: nil)
-                    DispatchQueue.main.async { self.keyboardViewController?.present(share, animated: true, completion: nil) }
+                    DispatchQueue.main.async {
+                        share.popoverPresentationController?.sourceView = self.keyboardViewController?.keyboardView
+                        share.preferredContentSize = self.keyboardViewController?.keyboardView?.bounds.size ?? .zero
+                        share.popoverPresentationController?.sourceRect = .zero
+                        self.keyboardViewController?.present(share, animated: true, completion: nil)
+                    }
                 } catch {
                     DDLogError("Failed to export \(namePrefix) at \(path).")
                 }
