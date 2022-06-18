@@ -63,8 +63,9 @@ class InputTextBuffer {
     
     func backspace() -> Bool {
         guard caretIndex != _text.startIndex else { return false }
-        _text.remove(at: _text.index(before: caretIndex))
+        let orgCaretIndex = caretIndex
         _ = moveCaret(offset: -1)
+        _text.remove(at: _text.index(before: orgCaretIndex))
         textOverride = nil
         return true
     }
