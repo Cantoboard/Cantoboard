@@ -117,9 +117,6 @@ speller:
     - derive/oe/eo/
     - derive/eo/oe/
 
-    - derive/(?!^)([mxptk]|ng?)?\d/h$&/ # 個 goh 野 yeh
-    - erase/^(hh(m|ng|x)|(m|ng|x)h)\d$/
-
     # 教院聲母
     - derive/zh/dz/ # e.g. 知 dzi
     - derive/ch/ts/ # e.g. 荃灣 Tsuen
