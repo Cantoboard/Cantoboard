@@ -238,6 +238,7 @@ class InputController: NSObject {
     }
     
     private func candidateLongPressed(choice: IndexPath) {
+        FeedbackProvider.play(keyboardAction: .backspace)
         FeedbackProvider.lightImpact.impactOccurred()
         let candidateCount = candidateOrganizer.getCandidateCount(section: choice.section)
         candidateOrganizer.unlearnCandidate(indexPath: choice)
