@@ -109,6 +109,11 @@ struct KeyboardState: Equatable {
         spaceKeyMode = .space
         
         mainSchema = SessionState.main.lastPrimarySchema
+        // Make sure we are using the user selected CJ version.
+        if mainSchema == .cangjie3 || mainSchema == .cangjie5 {
+            mainSchema = Settings.cached.cangjieVersion.toRimeSchema
+        }
+        
         inputMode = SessionState.main.lastInputMode
         
         tenKeysState = TenKeysState()

@@ -1,0 +1,82 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: cangjie3
+  name: 倉頡三代
+  version: "20220904"
+  author:
+    - 發明人 朱邦復先生 沈紅蓮女士
+  description: |
+    倉頡三代補完計畫
+  dependencies:
+    - jyut6ping3
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator
+  filters:
+    - uniquifier
+    - reverse_lookup_filter@jyut6ping3_reverse_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " ;"
+  #max_code_length: 5  # 五碼頂字上屏
+
+translator:
+  dictionary: cangjie3
+  enable_charset_filter: false
+  enable_sentence: true
+  enable_encoder: true
+  enable_user_dict: false
+  encode_commit_history: true
+  enable_completion: true
+  max_phrase_length: 5
+  comment_format:
+    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+    - "^yyy.*$"
+
+punctuator:
+  import_preset: symbols_cantonese
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: '^/([0-9]0?|[A-Za-z]+)$'
+
+jyut6ping3_reverse_lookup:
+  overwrite_comment: true
+  dictionary: jyut6ping3
+  comment_format:
+    - "xlit| |/|"

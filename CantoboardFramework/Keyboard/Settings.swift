@@ -64,6 +64,18 @@ public enum CandidateFontSize: String, Codable {
     }
 }
 
+public enum CangjieVersion: String, Codable {
+    case cangjie3 = "cangjie3"
+    case cangjie5 = "cangjie5"
+    
+    var toRimeSchema: RimeSchema {
+        switch self {
+        case .cangjie3: return .cangjie3
+        case .cangjie5: return .cangjie5
+        }
+    }
+}
+
 public enum ShowRomanizationMode: String, Codable {
     case always = "always"
     case onlyInNonCantoneseMode = "onlyInNonCantoneseMode"
@@ -116,6 +128,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultFullPadCandidateBar: Bool = true
     private static let defaultPadLeftSysKeyAsKeyboardType: Bool = false
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
+    private static let defaultCangjieVersion: CangjieVersion = .cangjie5
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -142,6 +155,7 @@ public struct Settings: Codable, Equatable {
     public var fullPadCandidateBar: Bool
     public var padLeftSysKeyAsKeyboardType: Bool
     public var showBottomLeftSwitchLangButton: Bool
+    public var cangjieVersion: CangjieVersion
     
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -169,6 +183,7 @@ public struct Settings: Codable, Equatable {
         fullPadCandidateBar = Self.defaultFullPadCandidateBar
         padLeftSysKeyAsKeyboardType = Self.defaultPadLeftSysKeyAsKeyboardType
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
+        cangjieVersion = Self.defaultCangjieVersion
     }
     
     public init(from decoder: Decoder) throws {
@@ -198,6 +213,7 @@ public struct Settings: Codable, Equatable {
         self.fullPadCandidateBar = try container.decodeIfPresent(Bool.self, forKey: .fullPadCandidateBar) ?? Settings.defaultFullPadCandidateBar
         self.padLeftSysKeyAsKeyboardType = try container.decodeIfPresent(Bool.self, forKey: .padLeftSysKeyAsKeyboardType) ?? Settings.defaultPadLeftSysKeyAsKeyboardType
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
+        self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
     }
     
     private static var _cached: Settings?

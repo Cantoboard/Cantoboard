@@ -44,3 +44,9 @@ TestFlight QR code:
 ## Credits
 - [librime RIME: Rime Input Method Engine](https://github.com/rime/librime) BSD-3-Clause License
 - [rime-cantonese Rime 粵語拼音方案](https://github.com/rime/rime-cantonese) Open Data Commons Open Database License
+- [Rime 倉頡三代](https://github.com/Arthurmcarthur/Cangjie3-Plus) MIT license
+- [Rime 倉頡五代](https://github.com/Jackchows/Cangjie5) MIT license
+- [Rime 速成](https://github.com/rime/rime-quick) LGPL-3.0 license
+- [Rime 筆劃](https://github.com/rime/rime-stroke) LGPL-3.0 license
+- [Open Chinese Convert (OpenCC)](https://github.com/BYVoid/OpenCC) Apache-2.0 license
+- [ISEmojiView](https://github.com/isaced/ISEmojiView) MIT license

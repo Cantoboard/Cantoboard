@@ -97,6 +97,9 @@ vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
 　　 撳兩下 v/x/q 輸入 4/5/6 聲。
 長撳：長撳鍵盤中間嗰六粒掣選擇聲調。";
 "chineseInputSettings.enableHKCorrection" = "香港用字轉換";
+"chineseInputSettings.cangjieVersion" = "倉頡版本";
+"chineseInputSettings.cangjie3" = "三代";
+"chineseInputSettings.cangjie5" = "五代";
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";

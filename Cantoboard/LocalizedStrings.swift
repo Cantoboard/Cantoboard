@@ -87,6 +87,9 @@ class LocalizedStrings {
     static let toneInputMode_longPress = localizedString("chineseInputSettings.toneInputMode.longPress")
     static let toneInputMode_description = localizedString("chineseInputSettings.toneInputMode.description")
     static let enableHKCorrection = localizedString("chineseInputSettings.enableHKCorrection")
+    static let cangjieVersion = localizedString("chineseInputSettings.cangjieVersion")
+    static let cangjie3 = localizedString("chineseInputSettings.cangjie3")
+    static let cangjie5 = localizedString("chineseInputSettings.cangjie5")
     
     static let englishInputSettings = localizedString("englishInputSettings")
     static let autoCap = localizedString("englishInputSettings.autoCap")

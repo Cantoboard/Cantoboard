@@ -4,6 +4,7 @@ patch:
     - {schema: jyut6ping3vxq}
     - {schema: yale}
     - {schema: yalevxq}
+    - {schema: cangjie3}
     - {schema: cangjie5}
     - {schema: quick5}
     - {schema: luna_pinyin}

@@ -70,11 +70,11 @@ extension StatusMenuHandler where Self: BaseKeyboardView {
         let menuRows: [[KeyCap]] = state.keyboardIdiom == .phone && layoutConstants.ref.isPortrait ? [
             [ .changeSchema(.jyutping), .toggleInputMode(.english, nil) ],
             [ .changeSchema(.yale), .changeSchema(.jyutping10keys) ],
-            [ .changeSchema(.cangjie), .changeSchema(.quick) ],
+            [ .changeSchema(Settings.cached.cangjieVersion.toRimeSchema), .changeSchema(.quick) ],
             [ .changeSchema(.stroke), .changeSchema(.mandarin) ],
         ] : [
             [ .changeSchema(.yale), .changeSchema(.jyutping), .changeSchema(.jyutping10keys), .toggleInputMode(.english, nil) ],
-            [ .changeSchema(.cangjie), .changeSchema(.quick), .changeSchema(.stroke), .changeSchema(.mandarin) ],
+            [ .changeSchema(Settings.cached.cangjieVersion.toRimeSchema), .changeSchema(.quick), .changeSchema(.stroke), .changeSchema(.mandarin) ],
         ]
         
         let statusMenu = StatusMenu(menuRows: menuRows)
