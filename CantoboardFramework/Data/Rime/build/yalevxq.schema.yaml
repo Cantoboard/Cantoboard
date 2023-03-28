@@ -3,11 +3,11 @@ __build_info:
   timestamps:
     common.custom: 0
     default: 1639099840
-    default.custom: 1644658314
+    default.custom: 1672707832
     symbols: 1610967803
     symbols.custom: 0
     symbols_cantonese: 1629626926
-    yalevxq.schema: 1654750086
+    yalevxq.schema: 1672387309
 engine:
   filters:
     - "simplifier@variants_hk"
@@ -367,8 +367,6 @@ speller:
     - "derive/eo/u/"
     - "derive/oe/eo/"
     - "derive/eo/oe/"
-    - "derive/(?!^)([mptk]|ng?)?\\d/h$&/"
-    - "erase/^(hh(m|ng)|(m|ng)h)\\d$/"
     - "derive/zh/dz/"
     - "derive/ch/ts/"
     - "derive/\\d//"
