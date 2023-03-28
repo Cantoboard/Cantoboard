@@ -1,7 +1,7 @@
 # Rime dictionary
 # encoding: utf-8
 #
-# Jyut6ping3 - 粵拼詞庫
+# jyut6ping3 - 粵拼詞庫
 #
 # 詞條數據參考
 # LSHK Jyutping Word List https://corpus.eduhk.hk/JPwordlist/
@@ -11,7 +11,7 @@
 # Kingsley Bolton, Christopher Hutton. A Dictionary of Cantonese Slang.
 #
 # 碼表製作與校對人員
-# sgalal <sgalal.me@outlook.com>
+# Ayaka Mikazuki <ayaka@mail.shn.hk>
 # chaaklau <chaakming@gmail.com>
 # LeiMaau <leimaau@qq.com>
 # laubonghaudoi <laubonghaudoi@icloud.com>
@@ -19,20 +19,17 @@
 # William915 <William915@gmail.com>
 # szc126 (@szc126)
 # Bing Jeung <bing@ososo.io>
-# Ayaka Mikazuki <ayaka@mail.shn.hk>
-
 ---
 name: jyut6ping3.lettered
-version: "2020.09.27"
+version: "2021.09.05"
 sort: by_weight
 use_preset_vocabulary: true
 ...
-
 # 含數字或英文嘅詞彙
-
 %	pat6 sen1
 %	pe6 sen1
 %	poe6 sen1
+0尊	ling4 zyun1
 133	jat1 saam1 saam1
 21點	jaa6 jat1 dim2
 21三體綜合症	ji6 jat1 saam1 tai2 zung3 hap6 zing3
@@ -74,7 +71,6 @@ AA膠	ei1 ei1 gaau1
 AA制	ei1 ei1 zai3
 A4紙	ei1 fo1 zi2
 A貨	ei1 fo3
-A咖	ei1 gaa3
 A圈兒	ei1 hyun1 ji4
 A咖	ei1 kaa1
 AK	ei1 kei1
@@ -172,6 +168,7 @@ bid	bit1
 bit	bit1
 BB	bit1 bit1
 ball	bo1
+BNO	bi1 en1 ou1
 body-check	bo1 di1 cek1
 body-massage	bo1 di1 mat6 saa1 ci4
 boy	boi1
@@ -241,6 +238,7 @@ camp	kem1
 chem	kem1
 claim	kem1
 claim保險	kem1 bou2 him2
+CRE	si1 aau1 ji1
 cam帶	kem1 daai2
 camp-camp-哋	kem1 kem1 dei2
 cam鍊	kem1 lin2
@@ -368,6 +366,7 @@ E仔	ji1 zai2
 econ	ji6 kon1
 emoji	ji6 mo1 zi4
 emoji	ji6 mou1 zi4
+exact7ly	ik6 sek1 cat4 li4
 er都冇得er	nge1 dou1 mou5 dak1 nge1
 FF	e1 fu4 e1 fu4
 file	faai1 lou2
@@ -400,6 +399,8 @@ free晒士	fi1 saai1 si2
 Fi-li-fe-le	fi4 li1 fe4 le4
 fi-li-fe-le	fi4 li1 fe4 le4
 fi-li-fe-le	fi4 li1 fek4 lek4
+fat	fet1
+fatfat	fet1 fet1
 fake	fik1
 figure	fik1 gaa4
 Fik	fik6
@@ -411,6 +412,7 @@ Fing頭丸	fing6 tau4 jyun2
 fit	fit1
 fit到漏油	fit1 dou3 lau4 jau4
 fit到漏油	fit1 dou3 lau6 jau2
+firm	foem1
 Feel	fiu1
 feel	fiu1
 fuse	fiu1 si2
@@ -520,6 +522,7 @@ jar	zaa1
 J	zei1
 J圖	zei1 tou4
 JJ	zei1 zei1
+jm9	zei1 em1 gau2
 jacket	zek1 ket6
 jacket	zek1 kit6
 jetso	zek1 sou4
@@ -820,6 +823,7 @@ quali	ko1 li2
 quota	kou1 taa2
 quiz	kwi1 zi4
 quit	kwit1
+quit囉	kwit1 lo1
 quali	kwo1 li2
 R	aau1
 R講	aau1 gong2
@@ -830,6 +834,7 @@ RAM	wem1
 refer	wi6 foe1
 Roll機	wou1 gei1
 sis	e1 si4 aai1 e1 si4
+so9sad	sou1 gau1 set1
 spa	sa4 baa1
 style	sa4 daai1 jou4
 stat	sa4 dei1
@@ -870,6 +875,7 @@ sink盤	sing1 pun2
 seed	sit1
 sit	sit1
 sit-up	sit1 ap1
+siu4	siu3 sei2
 sor	so1
 sorli	so1 li4
 sorry	so1 li4
@@ -1125,8 +1131,13 @@ zip	zip4
 攰lai-lai	gui6 laai4 laai4
 谷M	guk1 em1
 果jam	gwo2 zem1
+黑體-繁	hak1 tai2 faan4
+黑體-簡	hak1 tai2 gaan2
 行Q開	haang4 kiu1 hoi1
 考IQ	haau2 ai1 kiu1
+考AO	haau2 ei1 ou1
+考EO	haau2 ji1 ou1
+考CRE	haau2 si1 aau1 ji1
 喺邊度Wet	hai2 bin1 dou6 wet1
 起pok	hei2 pok1
 輕keng	heng1 keng4
@@ -1218,6 +1229,7 @@ zip	zip4
 啱feel	ngaam1 feel
 啱feel	ngaam1 fiu1
 啱key	ngaam1 ki1
+啱channel	ngaam1 cen1 nou4
 奀chichi	ngan1 ci1 ci1
 我唔do	ngo5 m4 du1
 昂坪360	ngong4 ping4 saam1 luk6 ling4
@@ -1228,6 +1240,9 @@ zip	zip4
 柯P	o1 pi1
 派grade	paai3 gwei1
 劈K	pek3 kei1
+蘋方-簡	ping4 fong1 gaan2
+蘋方-繁	ping4 fong1 faan4
+蘋方-港	ping4 fong1 gong2
 蒲bar	pou4 baa1
 蒲D一族	pou4 di1 jat1 zuk6
 沙pok	saa1 pok1
@@ -1261,6 +1276,8 @@ zip	zip4
 騷quali	sou1 kwo1 li2
 掃chord	sou3 kot1
 鬆pat-pat	sung1 pat6 pat6
+宋體-繁	sung3 tai2 faan4
+宋體-簡	sung3 tai2 gaan2
 船P	syun4 pi1
 撻Q	taat3 kiu1
 吞pop	tan1 pok1

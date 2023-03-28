@@ -1,7 +1,7 @@
 # Rime dictionary
 # encoding: utf-8
 #
-# Jyut6ping3 - 粵拼詞庫
+# jyut6ping3 - 粵拼詞庫
 #
 # 碼表製作與校對人員
 # Ayaka Mikazuki <ayaka@mail.shn.hk>
@@ -13,8 +13,9 @@
 # szc126 (@szc126)
 # Bing Jeung <bing@ososo.io>
 #
+# Data © OpenStreetMap and its contributors.
 # Data licensed under the Open Data Commons Open Database License (ODbL).
-#
+# 
 # Extracted: 2020.07.19
 ---
 name: jyut6ping3.maps
