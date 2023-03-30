@@ -46,7 +46,7 @@ engine:
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
-  delimiter: " ;"
+  delimiter: " '"
   #max_code_length: 5  # 五碼頂字上屏
 
 translator:
