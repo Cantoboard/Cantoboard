@@ -2,7 +2,7 @@ __build_info:
   rime_version: 1.7.3
   timestamps:
     cangjie5.custom: 0
-    cangjie5.schema: 1654398088
+    cangjie5.schema: 1680154679
     default: 1639099840
     default.custom: 1672707832
     symbols: 1610967803
@@ -362,7 +362,7 @@ schema:
   version: 2020.03.01
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
-  delimiter: " ;"
+  delimiter: " '"
 switches:
   - name: ascii_mode
     reset: 0
