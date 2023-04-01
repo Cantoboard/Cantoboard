@@ -833,6 +833,14 @@ class InputController: NSObject {
                 let selectedInput = rimeCompositionText.prefix(rimeCompositionText.count - inputRemaining.count)
                 let bestCandidate = inputEngine.getRimeCandidate(0) ?? ""
                 composingText = selectedInput + bestCandidate
+            } else if inputEngine.rimeSchema == .stroke && state.inputMode != .english {
+                let hasCandidate = inputEngine.isComposing && candidateOrganizer.getCandidateCount(section: 0) > 0
+                
+                // No candidate, ignore the hit.
+                guard hasCandidate else { return true }
+                
+                candidateSelected(choice: [0, 0], enableSmartSpace: true)
+                return true
             } else if state.inputMode == .english || state.inputMode == .mixed && composingText.first?.isEnglishLetter ?? false {
                 composingText = englishText
             } else if inputEngine.rimeSchema.supportCantoneseTonalInput && Settings.cached.toneInputMode == .vxq {
