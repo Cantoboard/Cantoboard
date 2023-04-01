@@ -38,6 +38,7 @@
 		79226FAB26084CAD005DB8C2 /* CandidateOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799B9C2E2605563700B57C9D /* CandidateOrganizer.swift */; };
 		7922EF2F26D61029007E1699 /* KeyboardViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7922EF2E26D61029007E1699 /* KeyboardViewLayout.swift */; };
 		7922EF3526D61A99007E1699 /* CGRect+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7922EF3426D61A99007E1699 /* CGRect+Extension.swift */; };
+		79237E8429DEA07100B63DAA /* ISEmojiList_iOS16.4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 79237E8329DEA07100B63DAA /* ISEmojiList_iOS16.4.plist */; };
 		79248CD328274BEC00AB1327 /* RimePluginExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 79248CD228274BEC00AB1327 /* RimePluginExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79248CD528274CB200AB1327 /* RimePluginExtension.mm in Sources */ = {isa = PBXBuildFile; fileRef = 79248CD428274CB200AB1327 /* RimePluginExtension.mm */; };
 		79248CD72827A11B00AB1327 /* Optional+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79248CD62827A11B00AB1327 /* Optional+Extension.swift */; };
@@ -358,6 +359,7 @@
 		791DE95A263250F500AFA033 /* SwiftLCS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftLCS.swift; sourceTree = "<group>"; };
 		7922EF2E26D61029007E1699 /* KeyboardViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewLayout.swift; sourceTree = "<group>"; };
 		7922EF3426D61A99007E1699 /* CGRect+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extension.swift"; sourceTree = "<group>"; };
+		79237E8329DEA07100B63DAA /* ISEmojiList_iOS16.4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ISEmojiList_iOS16.4.plist; sourceTree = "<group>"; };
 		79248CD228274BEC00AB1327 /* RimePluginExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RimePluginExtension.h; sourceTree = "<group>"; };
 		79248CD428274CB200AB1327 /* RimePluginExtension.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RimePluginExtension.mm; sourceTree = "<group>"; };
 		79248CD62827A11B00AB1327 /* Optional+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+Extension.swift"; sourceTree = "<group>"; };
@@ -927,6 +929,7 @@
 				79ECF80627D962560008873D /* ISEmojiList_iOS14.2.plist */,
 				79ECF80927D962560008873D /* ISEmojiList_iOS14.5.plist */,
 				7978A0E227E1DA1E00451A00 /* ISEmojiList_iOS15.4.plist */,
+				79237E8329DEA07100B63DAA /* ISEmojiList_iOS16.4.plist */,
 				79B9B6A325F34B2D00238E80 /* Views */,
 			);
 			path = Assets;
@@ -1355,6 +1358,7 @@
 				79B9B6C525F34B2D00238E80 /* ic_food_drink@3x.png in Resources */,
 				79B9B6C325F34B2D00238E80 /* ic_emojiDelete.png in Resources */,
 				79B9B6C825F34B2D00238E80 /* ic_symbols.png in Resources */,
+				79237E8429DEA07100B63DAA /* ISEmojiList_iOS16.4.plist in Resources */,
 				79B9B6C625F34B2D00238E80 /* ic_smileys_people@3x.png in Resources */,
 				79ECF80D27D962560008873D /* ISEmojiList_iOS14.2.plist in Resources */,
 				79B9B6C925F34B2D00238E80 /* ic_flags@2x.png in Resources */,
