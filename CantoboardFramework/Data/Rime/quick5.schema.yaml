@@ -81,5 +81,5 @@ jyut6ping3_reverse_lookup:
   comment_format:
     - "xlit| |/|"
 
-#__patch:
-#  - common.custom:/patch?
+__patch:
+  - common.custom:/patch?
