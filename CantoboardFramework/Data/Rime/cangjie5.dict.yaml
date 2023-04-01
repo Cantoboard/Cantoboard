@@ -19,8 +19,6 @@ sort: original
 use_preset_vocabulary: true
 max_phrase_length: 1
 import_tables:
-  - quick5.words
-  - quick5.maps
   - cangjie5.cj3sym
 columns:
   - text

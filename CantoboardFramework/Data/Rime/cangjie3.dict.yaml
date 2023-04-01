@@ -19,9 +19,6 @@ columns:
   - text
   - code
   - stem
-import_tables:
-  - quick5.words
-  - quick5.maps
 encoder:
   exclude_patterns:
     - '^x.*$'
