@@ -112,6 +112,12 @@ class InputEngineCandidateSource: CandidateSource {
                 break
             }
             
+            // In Quick mode, filter out char with mismatching IICore
+            if shouldCurrentRimeCandidateBeFiltered(inputEngine) {
+                curRimeCandidateIndex += 1
+                continue
+            }
+            
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
             // TODO, change N to change with candidate cell width. Show 1 English candidate at the end of the row.
@@ -138,6 +144,12 @@ class InputEngineCandidateSource: CandidateSource {
         
         // Populate remaining Rime candidates.
         while inputMode != .english && curRimeCandidateIndex < inputEngine.rimeLoadedCandidatesCount {
+            // In Quick mode, filter out char with mismatching IICore
+            if shouldCurrentRimeCandidateBeFiltered(inputEngine) {
+                curRimeCandidateIndex += 1
+                continue
+            }
+            
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
         }
@@ -149,6 +161,29 @@ class InputEngineCandidateSource: CandidateSource {
             }
             hasPopulatedWorstEnglishCandidates = true
         }
+    }
+    
+    private func shouldCurrentRimeCandidateBeFiltered(_ inputEngine: BilingualInputEngine) -> Bool {
+        // In Quick mode, filter out char with mismatching IICore
+        if inputEngine.rimeSchema == .quick {
+            guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else {
+                return true
+            }
+            
+            let iicoreCombined = candidate.unicodeScalars
+                .map({ $0.value })
+                .compactMap({
+                    DDLogInfo("IICore: \(candidate) \(Self.unihanDict.getUnihanEntry($0))")
+                    return Self.unihanDict.getUnihanEntry($0).iiCore
+                })
+                .reduce([] as IICore, { $0.union($1) })
+            
+            let iicoreMask = inputEngine.charForm == .traditional ? [IICore.H, IICore.T] : IICore.G
+            if iicoreCombined.isDisjoint(with: iicoreMask) {
+                return true
+            }
+        }
+        return false
     }
     
     private func appendEnglishCandidate(_ i: Int) -> Bool {

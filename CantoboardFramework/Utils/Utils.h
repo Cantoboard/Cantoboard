@@ -10,11 +10,17 @@
 
 #import "RimePluginExtension.h"
 
+typedef NS_OPTIONS(uint8_t, IICore) {
+    IICoreH = 1 << 0,
+    IICoreT = 1 << 1,
+    IICoreG = 1 << 2,
+};
+
 typedef struct __attribute__((packed)) {
     // There are just 214 radicals.
     // The most complicated Chinese char has 58 stroke.
     uint8_t radical, radicalStroke, totalStroke;
-    bool isSimplified;
+    IICore iiCore;
 } UnihanEntry;
 
 @interface LevelDbTable: NSObject
