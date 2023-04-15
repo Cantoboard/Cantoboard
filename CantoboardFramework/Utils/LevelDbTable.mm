@@ -189,6 +189,9 @@ using namespace std;
         NSString *rsUnicodeTuple = [parsed objectAtIndex:2];
         int totalStroke = [[parsed objectAtIndex:3] intValue];
         NSString *iiCore = [parsed objectAtIndex:4];
+        NSString *unihanCore = [parsed objectAtIndex:5];
+        // If the char is in the simplified H Core set (簡體版香港常用字)
+        NSString *iicoreHSim = [parsed objectAtIndex:6];
         
         const char* charUtf32InString = [charUtf8InString cStringUsingEncoding: NSUTF32StringEncoding];
         uint32_t cInUtf32 = ((uint32_t*)charUtf32InString)[0];
@@ -206,13 +209,10 @@ using namespace std;
         unihanEntry.radicalStroke = radicalStroke;
         unihanEntry.totalStroke = totalStroke;
         unihanEntry.iiCore = 0;
-        if ([iiCore containsString:@"H"]) {
-             unihanEntry.iiCore |= IICoreH;
-        }
-        if ([iiCore containsString:@"T"]) {
+        if ([iiCore containsString:@"H"] || [iiCore containsString:@"T"]) {
              unihanEntry.iiCore |= IICoreT;
         }
-        if ([iiCore containsString:@"G"]) {
+        if ([unihanCore containsString:@"G"] || [iicoreHSim containsString:@"h"]) {
              unihanEntry.iiCore |= IICoreG;
         }
         

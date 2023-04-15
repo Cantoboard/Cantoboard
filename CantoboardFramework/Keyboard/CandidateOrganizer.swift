@@ -176,10 +176,10 @@ class InputEngineCandidateSource: CandidateSource {
                     DDLogInfo("IICore: \(candidate) \(Self.unihanDict.getUnihanEntry($0))")
                     return Self.unihanDict.getUnihanEntry($0).iiCore
                 })
-                .reduce([] as IICore, { $0.union($1) })
+                .reduce([.T, .G] as IICore, { $0.intersection($1) })
             
-            let iicoreMask = inputEngine.charForm == .traditional ? [IICore.H, IICore.T] : IICore.G
-            if iicoreCombined.isDisjoint(with: iicoreMask) {
+            let iicoreMask = inputEngine.charForm == .traditional ? IICore.T : IICore.G
+            if !iicoreCombined.contains(iicoreMask) {
                 return true
             }
         }

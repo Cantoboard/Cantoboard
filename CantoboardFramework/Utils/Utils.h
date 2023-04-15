@@ -11,9 +11,8 @@
 #import "RimePluginExtension.h"
 
 typedef NS_OPTIONS(uint8_t, IICore) {
-    IICoreH = 1 << 0,
-    IICoreT = 1 << 1,
-    IICoreG = 1 << 2,
+    IICoreT = 1 << 0,
+    IICoreG = 1 << 1,
 };
 
 typedef struct __attribute__((packed)) {
