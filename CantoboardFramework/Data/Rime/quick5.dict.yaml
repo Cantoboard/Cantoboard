@@ -16,6 +16,7 @@
 name: "cangjie5"
 version: "2020.10.25"
 sort: by_weight
+vocabulary: essay-s1c
 use_preset_vocabulary: true
 columns:
   - text
