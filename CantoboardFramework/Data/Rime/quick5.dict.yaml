@@ -22,7 +22,8 @@ columns:
   - code
   - stem
 import_tables:
-  - quick5.words
+  - quick5.words_t
+  - quick5.words_s
   - quick5.maps
 encoder:
   exclude_patterns:
