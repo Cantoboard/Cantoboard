@@ -15,35 +15,35 @@ class PadFull4RowsKeyboardViewLayout : KeyboardViewLayout {
     
     static let letters: [[[KeyCap]]] = [
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"], [.backspace]],
-        [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
+        [[.toggleInputMode(.english, nil, true)], ["a", "s", "d", "f", "g", "h", "j", "k", "l"], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual(".")], [.shift(.lowercased)]],
         [[.nextKeyboard, .keyboardType(.numSymbolic), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", .currency, "/", "(", ")", "「", "」", .singleQuote], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil, true))], ["@", "#", .currency, "/", "(", ")", "「", "」", .singleQuote], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "-", "~", "…", "､", ";", ":", ",", "."], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let numbersFull: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["@", "#", .currency, "／", "（", "）", "「", "」", .singleQuote], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil, true))], ["@", "#", .currency, "／", "（", "）", "「", "」", .singleQuote], [.returnKey(.default)]],
         [[.keyboardType(.symbolic)], ["%", "—", "～", "⋯", "、", "；", "：", "，", "。"], [.keyboardType(.symbolic)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsHalf: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["^", "_", "|", "\\", "[", "]", "{", "}", .doubleQuote], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil, true))], ["^", "_", "|", "\\", "[", "]", "{", "}", .doubleQuote], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["*", "&", "+", "=", "•", "<", ">", "!", "?"], [.keyboardType(.numeric)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
     
     static let symbolsFull: [[[KeyCap]]] = [
         [["\t"], ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"], [.backspace]],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["^", "_", "｜", "＼", "［", "］", "｛", "｝", .doubleQuote], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil, true))], ["^", "_", "｜", "＼", "［", "］", "｛", "｝", .doubleQuote], [.returnKey(.default)]],
         [[.keyboardType(.numeric)], ["*", "&", "+", "=", "·", "《", "》", "！", "？"], [.keyboardType(.numeric)]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]

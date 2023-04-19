@@ -12,6 +12,16 @@ import CocoaLumberjackSwift
 public enum CharForm: String, Codable {
     case traditional = "zh-HK"
     case simplified = "zh-CN"
+
+}
+
+extension CharForm {
+    var caption: String {
+        switch self {
+        case .traditional: return "繁"
+        case .simplified: return "简"
+        }
+    }
 }
 
 public struct SessionState: Codable, Equatable {

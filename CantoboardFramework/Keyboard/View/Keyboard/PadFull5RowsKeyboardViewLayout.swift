@@ -16,7 +16,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let letters: [[[KeyCap]]] = [
         [[], [.contextual("•"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="], [.backspace]],
         [["\t"], ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", .contextual("["), .contextual("]"), .contextual("\\")], []],
-        [[.toggleInputMode(.english, nil)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
+        [[.toggleInputMode(.english, nil, true)], ["a", "s", "d", "f", "g", "h", "j", "k", "l", .contextual(";"), .singleQuote], [.returnKey(.default)]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m", .contextual(","), .contextual("."), .contextual("/")], [.shift(.lowercased)]],
         [[.nextKeyboard, .keyboardType(.numSymbolic), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.numSymbolic), .dismissKeyboard]]
     ]
@@ -24,7 +24,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numbersHalf: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
         [["\t"], ["[", "]", "{", "}", "#", "%", "^", "*", "+", "=", "\\", "|", "_"], []],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil, true))], ["-", "/", ":", ";", "(", ")", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "…", ".", ",", "､", "?", "!", "~", "「", "」"], [.placeholder(.shift(.lowercased))]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]
@@ -32,7 +32,7 @@ class PadFull5RowsKeyboardViewLayout : KeyboardViewLayout {
     static let numbersFull: [[[KeyCap]]] = [
         [[], ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<", ">"], [.backspace]],
         [["\t"], ["［", "］", "｛", "｝", "#", "%", "^", "*", "+", "=", "＼", "｜", "_"], []],
-        [[.placeholder(.toggleInputMode(.english, nil))], ["—", "／", "：", "；", "（", "）", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
+        [[.placeholder(.toggleInputMode(.english, nil, true))], ["—", "／", "：", "；", "（", "）", .currency, "&", "@", .singleQuote, .doubleQuote], [.returnKey(.default)]],
         [[.placeholder(.shift(.lowercased))], ["^_^", "⋯", "。", "，", "、", "？", "！", "～", "「", "」"], [.placeholder(.shift(.lowercased))]],
         [[.nextKeyboard, .keyboardType(.alphabetic(.lowercased)), .keyboardType(.emojis)], [.space(.space)], [.keyboardType(.alphabetic(.lowercased)), .dismissKeyboard]]
     ]

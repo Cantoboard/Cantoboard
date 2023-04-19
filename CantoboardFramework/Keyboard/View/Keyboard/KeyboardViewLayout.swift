@@ -32,13 +32,14 @@ class CommonContextualKeys {
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
         switch key {
         case .symbol:
-            let keyHint = KeyCapHints(rightHint: "符")
+            let toogleCharFormKeyCap = KeyCap.getToggleCharForm()
+            let keyHint = KeyCapHints(leftHint: toogleCharFormKeyCap.buttonText, rightHint: "符")
             switch keyboardState.keyboardContextualType {
-            case .chinese: return .character("，", keyHint, ["，", "。", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
-            case .english: return .character(",", keyHint, [",", ".", "?", "!", "。", "，", KeyCap(rime: .sym)])
-            case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
+            case .chinese: return .character("，", keyHint, ["，", "。", "？", "！", "、", ".", ",", KeyCap(rime: .sym), toogleCharFormKeyCap])
+            case .english: return .character(",", keyHint, [",", ".", "?", "!", "。", "，", KeyCap(rime: .sym), toogleCharFormKeyCap])
+            case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!", toogleCharFormKeyCap])
             case .url:
-                var children: [KeyCap] = ["/", ".", ".com", ".net", ".org", ".edu"]
+                var children: [KeyCap] = ["/", ".", ".com", ".net", ".org", ".edu", KeyCap.getToggleCharForm()]
                 if (keyboardState.isComposing) {
                     children.append(KeyCap(rime: .delimiter))
                 }

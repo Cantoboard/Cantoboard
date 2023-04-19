@@ -15,7 +15,7 @@ class PhoneKeyboardViewLayout : KeyboardViewLayout {
         [["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]],
         [["a", "s", "d", "f", "g", "h", "j", "k", "l"]],
         [[.shift(.lowercased)], ["z", "x", "c", "v", "b", "n", "m"], [.backspace]],
-        [[.keyboardType(.numeric), .nextKeyboard, .toggleInputMode(.english, nil)], [.space(.space)], [.contextual(.symbol), .returnKey(.default)]]
+        [[.keyboardType(.numeric), .nextKeyboard, .toggleInputMode(.english, nil, true)], [.space(.space)], [.contextual(.symbol), .returnKey(.default)]]
     ]
     
     static let numbersHalf: [[[KeyCap]]] = [

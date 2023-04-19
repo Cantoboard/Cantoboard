@@ -92,7 +92,8 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     case
     none,
     backspace,
-    toggleInputMode(/* toMode */ InputMode, RimeSchema?),
+    toggleInputMode(/* toMode */ InputMode, RimeSchema?, /* hasHint */ Bool),
+    toggleCharForm(CharForm),
     character(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
     cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
     stroke(String),
@@ -134,7 +135,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         case .none: return .none
         case .backspace: return .backspace
-        case .toggleInputMode(let toInputMode, _): return .toggleInputMode(toInputMode)
+        case .toggleInputMode(let toInputMode, _, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _): return .character(c)
         case .cangjie(let c, _, _): return .character(c)
         case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
@@ -156,6 +157,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .combo: return .none // Dynamically evaluated in KeyView.
         case .keypadRimeDelimiter: return .rime(.delimiter)
         case .selectRomanization: return .toggleTenKeysSpecialization
+        case .toggleCharForm(let cf): return .setCharForm(cf)
         default: return .none
         }
     }
@@ -271,8 +273,9 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .changeSchema(.yale): return "耶魯／劉錫祥"
         case .changeSchema(.jyutping10keys): return "九宮格粵拼"
         case .changeSchema(let schema): return schema.shortName
-        case .toggleInputMode(.english, _): return "英文"
-        case .toggleInputMode(_, let rimeSchema): return rimeSchema?.shortName
+        case .toggleInputMode(.english, _, _): return "英文"
+        case .toggleInputMode(_, let rimeSchema, _): return rimeSchema?.shortName
+        case .toggleCharForm(let charForm): return charForm.caption
         case .singleQuote: return "′"
         case .doubleQuote: return "″"
         case "（": return "（⠀"
@@ -344,6 +347,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonRightHint: String? {
         switch self {
         case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.rightHint ?? barHint
+        case .toggleInputMode(_, _, let hasHint): return hasHint ? KeyCap.getToggleCharForm().buttonText : nil
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -372,6 +376,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return true
+        case .toggleInputMode(_, _, _): return true
         default: return keyCapType == .input
         }
     }
@@ -383,6 +388,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var withoutHints: KeyCap {
         switch self {
         case .character(let c, _, _): return KeyCap(c)
+        case .toggleInputMode(let im, let rs, _): return .toggleInputMode(im, rs, false)
         // case .cangjie(let c, _): return .cangjie(c, false)
         default: return self
         }
@@ -392,6 +398,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         switch self {
         // For debugging
         case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
+        case .toggleInputMode(_, _, _): return [KeyCap.getToggleCharForm(), self.withoutHints]
         case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .cangjie(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
@@ -520,6 +527,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .character(",", KeyCapHints(rightHint: "符"), _): return "." // Contextual sym key in English mode
         case .character("，", KeyCapHints(rightHint: "符"), _): return "。" // Contextual sym key in Chinese mode
         case .character(".", KeyCapHints(rightHint: "/"), _): return nil // Contextual sym key in url mode
+        case .toggleInputMode(_, _, _): return KeyCap.getToggleCharForm().buttonText
         default: return self.buttonText
         }
     }
@@ -584,6 +592,13 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
             return specialSymbol.transform(keyCap: self, state: state)
         }
         return self
+    }
+    
+    static func getToggleCharForm() -> KeyCap {
+        switch SessionState.main.lastCharForm {
+        case .traditional: return .toggleCharForm(.simplified)
+        case .simplified: return .toggleCharForm(.traditional)
+        }
     }
 }
 
