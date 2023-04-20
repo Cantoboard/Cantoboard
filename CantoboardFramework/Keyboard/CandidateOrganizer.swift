@@ -173,7 +173,7 @@ class InputEngineCandidateSource: CandidateSource {
             let iicoreCombined = candidate.unicodeScalars
                 .map({ $0.value })
                 .compactMap({
-                    DDLogInfo("IICore: \(candidate) \(Self.unihanDict.getUnihanEntry($0))")
+                    // DDLogInfo("IICore: \(candidate) \(Self.unihanDict.getUnihanEntry($0))")
                     return Self.unihanDict.getUnihanEntry($0).iiCore
                 })
                 .reduce([.T, .G] as IICore, { $0.intersection($1) })
@@ -590,7 +590,7 @@ class CandidateOrganizer {
                 let shouldFilterOffensiveWords = !Settings.cached.predictiveTextOffensiveWord
                 let predictiveCandidates = predictiveTextEngine.predict(suggestionContextualText, filterOffensiveWords: shouldFilterOffensiveWords) as NSArray as? [String]
                 if let predictiveCandidates = predictiveCandidates, !predictiveCandidates.isEmpty {
-                    DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")
+                    // DDLogInfo("Predictive text: \(suggestionContextualText) \(predictiveCandidates)")
                     candidateSource = AutoSuggestionCandidateSource(predictiveCandidates)
                 }
             }
