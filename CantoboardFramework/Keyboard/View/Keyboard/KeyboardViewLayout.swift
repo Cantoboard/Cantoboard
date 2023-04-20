@@ -43,7 +43,7 @@ class CommonContextualKeys {
                 if (keyboardState.isComposing) {
                     children.append(KeyCap(rime: .delimiter))
                 }
-                return .character(".", KeyCapHints(rightHint: "/"), children)
+                return .character(".", KeyCapHints(leftHint: toogleCharFormKeyCap.buttonText, rightHint: "/"), children)
             }
         case ",": return keyboardState.keyboardContextualType.halfWidthSymbol ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"
