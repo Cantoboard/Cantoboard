@@ -29,7 +29,7 @@
 "inputMethodSettings.smartFullStop" = "句號快捷鍵";
 "inputMethodSettings.smartFullStop.description" = "打字之後撳兩下空白鍵，快速輸入句號。";
 "inputMethodSettings.audioFeedback" = "按鍵聲音";
-"inputMethodSettings.tapHapticFeedback" = "按鍵震動";
+"inputMethodSettings.tapHapticFeedback" = "按鍵震動（需要完整存取權）";
 "inputMethodSettings.candidateFontSize" = "候選詞大小";
 "inputMethodSettings.candidateFontSize.normal" = "正常";
 "inputMethodSettings.candidateFontSize.large" = "大";
