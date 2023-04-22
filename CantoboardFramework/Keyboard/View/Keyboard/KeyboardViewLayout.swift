@@ -30,20 +30,23 @@ protocol KeyboardViewLayout {
 
 class CommonContextualKeys {
     static func getContextualKeys(key: ContextualKey, keyboardState: KeyboardState) -> KeyCap? {
+        let shouldShowToggleChar = keyboardState.keyboardIdiom == .phone && !Settings.cached.showBottomLeftSwitchLangButton
         switch key {
         case .symbol:
-            let toogleCharFormKeyCap = KeyCap.getToggleCharForm()
-            let keyHint = KeyCapHints(leftHint: toogleCharFormKeyCap.buttonText, rightHint: "符")
+            let toogleCharFormKeyCap = shouldShowToggleChar ? KeyCap.getToggleCharForm() : nil
+            let toogleCharFormKeyCapList = toogleCharFormKeyCap != nil ? [toogleCharFormKeyCap!] : []
+            let leftHint = shouldShowToggleChar ? SessionState.main.lastCharForm.caption : nil
+            let keyHint = KeyCapHints(leftHint: leftHint, rightHint: "符")
             switch keyboardState.keyboardContextualType {
-            case .chinese: return .character("，", keyHint, ["，", "。", "？", "！", "、", ".", ",", KeyCap(rime: .sym), toogleCharFormKeyCap])
-            case .english: return .character(",", keyHint, [",", ".", "?", "!", "。", "，", KeyCap(rime: .sym), toogleCharFormKeyCap])
-            case .rime: return .rime(.delimiter, keyHint, [KeyCap(rime: .delimiter), ".", ",", "?", "!", toogleCharFormKeyCap])
+            case .chinese: return .character("，", keyHint, toogleCharFormKeyCapList + ["，", "。", "？", "！", "、", ".", ",", KeyCap(rime: .sym)])
+            case .english: return .character(",", keyHint, toogleCharFormKeyCapList + [",", ".", "?", "!", "。", "，", KeyCap(rime: .sym)])
+            case .rime: return .rime(.delimiter, keyHint, toogleCharFormKeyCapList + [KeyCap(rime: .delimiter), ".", ",", "?", "!"])
             case .url:
-                var children: [KeyCap] = ["/", ".", ".com", ".net", ".org", ".edu", KeyCap.getToggleCharForm()]
+                var children: [KeyCap] = toogleCharFormKeyCapList + ["/", ".", ".com", ".net", ".org", ".edu"]
                 if (keyboardState.isComposing) {
                     children.append(KeyCap(rime: .delimiter))
                 }
-                return .character(".", KeyCapHints(leftHint: toogleCharFormKeyCap.buttonText, rightHint: "/"), children)
+                return .character(".", KeyCapHints(leftHint: leftHint, rightHint: "/"), children)
             }
         case ",": return keyboardState.keyboardContextualType.halfWidthSymbol ? "," : "，"
         case ".": return keyboardState.keyboardContextualType.halfWidthSymbol ? "." : "。"

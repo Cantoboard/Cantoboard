@@ -340,6 +340,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonLeftHint: String? {
         switch self {
         case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.leftHint
+        case .toggleInputMode(_, _, let hasHint): return hasHint ? SessionState.main.lastCharForm.caption : nil
         default: return nil
         }
     }
@@ -347,7 +348,6 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     var buttonRightHint: String? {
         switch self {
         case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.rightHint ?? barHint
-        case .toggleInputMode(_, _, let hasHint): return hasHint ? KeyCap.getToggleCharForm().buttonText : nil
         case .space: return "Cantoboard"
         default: return barHint
         }
