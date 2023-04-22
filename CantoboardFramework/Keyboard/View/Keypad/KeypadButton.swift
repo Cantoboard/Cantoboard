@@ -19,7 +19,7 @@ class KeypadButton: KeyView {
     
     init() {
         super.init(layoutConstants: layoutConstants)
-        shouldDisablePopup = true
+        shouldDisablePreview = true
     }
     
     required init?(coder: NSCoder) {

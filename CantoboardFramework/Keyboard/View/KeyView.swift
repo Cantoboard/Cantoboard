@@ -66,7 +66,7 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
     private var firstFrame = false
     
     // TODO Remove
-    var shouldDisablePopup: Bool = false
+    var shouldDisablePreview: Bool = false
     
     var heightClearance: CGFloat?
     
@@ -266,6 +266,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
         
         layer.maskedCorners = maskedCorners
         layer.shadowOpacity = shadowOpacity
+        
+        if let superview = superview { superview.bringSubviewToFront(self) }
         
         // isUserInteractionEnabled = action == .nextKeyboard
         // layoutPopupView()
@@ -542,7 +544,8 @@ extension KeyView {
         guard let keyboardState = keyboardState else { return }
         let keyboardIdiom = keyboardState.keyboardIdiom
         
-        guard keyCap.hasPopup && !shouldDisablePopup else { return }
+        guard keyCap.hasPopup else { return }
+        
         // iPad does not have popup preview.
         if keyboardIdiom.isPad && !isLongPress { return }
         
@@ -555,7 +558,9 @@ extension KeyView {
         // On iPad, shows popup only in long press mode and if there are multiple choices.
         let isPadKeyWithoutChildren = keyboardIdiom.isPad && keyCaps.count == 1
         let isPhoneWithPreviewDisabled = !Settings.cached.enableCharPreview && !isLongPress
-        if isPadKeyWithoutChildren || isPhoneWithPreviewDisabled {
+        // Disable preview in keypad view.
+        let isInKeypadView = !isLongPress && shouldDisablePreview
+        if isPadKeyWithoutChildren || isPhoneWithPreviewDisabled || isInKeypadView {
             return
         }
         
