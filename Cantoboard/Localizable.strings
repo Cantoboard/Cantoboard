@@ -42,7 +42,7 @@
 閂咗混合模式嘅話，喺英文輸入法輸入半形符號，中文輸入法輸入全形符號。
 開咗混合模式嘅話會根據前文判斷係咩句子，喺英文句子輸入半形符號，中文句子輸入全形符號。";
 "inputMethodSettings.showBottomLeftSwitchLangButton" = "左下角中英切換掣";
-"inputMethodSettings.showBottomLeftSwitchLangButton.description" = "喺iPhone同某啲iPad型號，喺鍵盤左下角顯示中英切換掣。";
+"inputMethodSettings.showBottomLeftSwitchLangButton.description" = "喺 iPhone 同某啲 iPad 型號，喺鍵盤左下角顯示中英切換掣。";
 "inputMethodSettings.enableCharPreview" = "文字預覽";
 
 "mixedInputSettings" = "粵英混合輸入設定";

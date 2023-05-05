@@ -399,7 +399,7 @@ class CandidatePaneView: UIControl {
         guard let superview = superview else { return }
         
         let height = mode == .row ? rowHeight : superview.bounds.height
-        let candidateViewWidth = superview.bounds.width - expandButtonWidth - Self.separatorWidth
+        let candidateViewWidth = superview.bounds.width - expandButtonWidth
         let leftRightInset = isFullPadCandidateBar ? 0 : layoutConstants.ref.candidatePaneViewLeftRightInset
         
         let collectionViewFrame = CGRect(x: leftRightInset, y: 0, width: candidateViewWidth - leftRightInset * 2, height: height)
@@ -724,6 +724,22 @@ extension CandidatePaneView: UICollectionViewDelegateFlowLayout {
 }
 
 extension CandidatePaneView: CandidateCollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+        return indexPath.section > 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? CandidateCell {
+            cell.isSelected = true
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? CandidateCell {
+            cell.isSelected = false
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section > 0 else { return }
         
@@ -732,6 +748,8 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didLongPressItemAt indexPath: IndexPath) {
+        self.collectionView(collectionView, didUnhighlightItemAt: indexPath)
+        
         delegate?.handleKey(.longPressCandidate(translateCollectionViewIndexPathToCandidateIndexPath(indexPath)))
     }
     
