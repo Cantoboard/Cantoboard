@@ -48,8 +48,9 @@ class BilingualInputEngine: InputEngine {
     }
     
     func moveCaret(offset: Int) -> Bool {
+        var state = false
         if isComposing {
-            let updateRimeEngineState = rimeInputEngine.moveCaret(offset: offset)
+            state = rimeInputEngine.moveCaret(offset: offset)
             _ = updateEnglishCaretPosFromRime()
             updateComposition()
             
@@ -58,11 +59,16 @@ class BilingualInputEngine: InputEngine {
             // englishInput.insert("|", at: englishInput.index(englishInput.startIndex, offsetBy: englishInputEngine.composition?.caretIndex ?? 0) )
             // rimeInput.insert("|", at: rimeInput.index(rimeInput.startIndex, offsetBy: rimeInputEngine.rawInput?.caretIndex ?? 0))
             // DDLogInfo("BilingualInputEngine moveCaret \(rimeInput) \(englishInput)")
-            return updateRimeEngineState
-        } else {
-            inputController?.textDocumentProxy?.adjustTextPosition(byCharacterOffset: offset)
-            return false
         }
+        let freeMove = (inputController?.isImmediateMode ?? false) && !Settings.cached.showCompositionView
+        if !state && freeMove {
+            inputController?.compositionRenderer.commit()
+            clearInput()
+        }
+        if !isComposing || freeMove {
+            inputController?.textDocumentProxy?.adjustTextPosition(byCharacterOffset: offset)
+        }
+        return state
     }
     
     func processChar(_ char: Character) -> Bool {

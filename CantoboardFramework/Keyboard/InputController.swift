@@ -127,7 +127,7 @@ class InputController: NSObject {
     
     private weak var keyboardViewController: KeyboardViewController?
     private(set) var inputEngine: BilingualInputEngine!
-    private var compositionRenderer: CompositionRenderer!
+    var compositionRenderer: CompositionRenderer!
     private(set) var isImmediateMode: Bool!
     
     private(set) var state: KeyboardState = KeyboardState()
@@ -610,9 +610,10 @@ class InputController: NSObject {
         
         let activeSchema = state.activeSchema
         let is10Keys = activeSchema == .jyutping10keys && state.inputMode != .english
+        let showCompositionView = Settings.cached.showCompositionView
         keyboardViewController?.hasFilterBar = is10Keys && state.keyboardType != .emojis
-        keyboardViewController?.hasCompositionView = (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed)
-        keyboardViewController?.hasCompositionResetButton = isImmediateMode && state.isComposing
+        keyboardViewController?.hasCompositionView = (isImmediateMode || activeSchema.isCangjieFamily && state.inputMode == .mixed) && showCompositionView
+        keyboardViewController?.hasCompositionResetButton = isImmediateMode && showCompositionView && state.isComposing
     }
     
     func isTextFieldWebSearch() -> Bool {
