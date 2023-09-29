@@ -213,7 +213,8 @@ class KeyView: HighlightableButton, CAAnimationDelegate {
             // titleLabel?.lineBreakMode = .byClipping
             setHighlightedBackground = true
         } else if let buttonImage = keyCap.unescaped.buttonImage {
-            if keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
+            // For iOS 15+, Apple handles this internally.
+            if #unavailable(iOS 15), keyCap == .keyboardType(.emojis) && traitCollection.userInterfaceStyle == .dark {
                 // Special handling for emoji icon. We use different symbols in light/dark mode.
                 normalImage = ButtonImage.emojiKeyboardDark
             } else {
