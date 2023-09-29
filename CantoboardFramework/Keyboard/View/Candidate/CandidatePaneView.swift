@@ -724,6 +724,9 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         guard indexPath.section > 0 else { return }
         
         FeedbackProvider.play(keyboardAction: .none)
+        if Settings.cached.isTapHapticFeedbackEnabled {
+            FeedbackProvider.lightImpact.impactOccurred()
+        }
         delegate?.candidatePaneViewCandidateSelected(translateCollectionViewIndexPathToCandidateIndexPath(indexPath))
     }
     
