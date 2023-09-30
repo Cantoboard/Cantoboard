@@ -48,7 +48,10 @@ internal extension UIView {
         var height = superlayerBounds.height * KeyHintLayer.recommendedHeightRatio // * wightAdjustmentRatio
         height = max(height, minHeight)
         
-        textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height
+        let hasFullWidthChar = text.contains(where: {$0.isChineseChar})
+        let fullWidthMultipler = hasFullWidthChar ? 0.8 : 1
+        
+        textLayer.fontSize = KeyHintLayer.fontSizePerHeight * height * fullWidthMultipler
         return text.size(withFont: UIFont.systemFont(ofSize: textLayer.fontSize)).with(newWidth: superlayerBounds.width)
     }
     

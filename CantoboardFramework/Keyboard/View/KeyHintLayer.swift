@@ -10,7 +10,7 @@ import UIKit
 
 class KeyHintLayer: CATextLayer {
     static let fontSizePerHeight: CGFloat = 10 / "＠".size(withFont: UIFont.systemFont(ofSize: 10)).height
-    static let recommendedHeightRatio: CGFloat = 0.24
+    static let recommendedHeightRatio: CGFloat = 0.3
     
     static let buttonFloatingInsets = UIEdgeInsets(top: 0.5, left: 1, bottom: 1, right: 0.5)
     static let hintInsets = UIEdgeInsets(top: 1, left: 2.5, bottom: 1, right: 2.5)
