@@ -178,6 +178,7 @@ extension Settings {
                     Switch(LocalizedStrings.showBottomLeftSwitchLangButton, \.showBottomLeftSwitchLangButton,
                            LocalizedStrings.showBottomLeftSwitchLangButton_description),
                     Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+                    Switch(LocalizedStrings.showCompositionView, \.showCompositionView),
                 ]
             ),
             UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,
