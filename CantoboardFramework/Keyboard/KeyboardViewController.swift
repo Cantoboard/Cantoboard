@@ -434,7 +434,7 @@ open class KeyboardViewController: UIInputViewController {
     
     public override func textDidChange(_ textInput: UITextInput?) {
         super.textDidChange(textInput)
-        setColorSchemeFromKeyboardAppearance()
+        // setColorSchemeFromKeyboardAppearance()
         inputController?.textDidChange(textInput)
     }
     
