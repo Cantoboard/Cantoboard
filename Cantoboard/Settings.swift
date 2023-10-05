@@ -236,6 +236,11 @@ extension Settings {
                             LocalizedStrings.cangjie5: .cangjie5,
                         ]
                     ),
+                    Segment(LocalizedStrings.cangjieKeyCapMode, \.cangjieKeyCapMode, [
+                            LocalizedStrings.cangjieKeyCapModeLetter: .letter,
+                            LocalizedStrings.cangjieKeyCapModeRoot: .cangjieRoot,
+                        ]
+                    ),
                 ]
             ),
             Section(

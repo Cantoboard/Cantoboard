@@ -95,7 +95,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     toggleInputMode(/* toMode */ InputMode, RimeSchema?, /* hasHint */ Bool),
     toggleCharForm(CharForm),
     character(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
-    cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?),
+    cangjie(String, KeyCapHints?, /* children key caps */ [KeyCap]?, CangjieKeyCapMode),
     stroke(String),
     jyutPing10Keys(String),
     selectRomanization,
@@ -137,7 +137,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .backspace: return .backspace
         case .toggleInputMode(let toInputMode, _, _): return .toggleInputMode(toInputMode)
         case .character(let c, _, _): return .character(c)
-        case .cangjie(let c, _, _): return .character(c)
+        case .cangjie(let c, _, _, _): return .character(c)
         case .stroke(let c), .jyutPing10Keys(let c): return .character(c)
         case .emoji(let e): return .emoji(e)
         case .keyboardType(let type): return .keyboardType(type)
@@ -297,7 +297,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case "\t": return nil
         case "——": return "⸻"
         case .character(let text, _, _): return text
-        case .cangjie(let c, _, _): return CangjieConstants.cangjieKeyCaps(c)
+        case .cangjie(let letter, _, _, let cangjieKeyCapMode): return cangjieKeyCapMode == .cangjieRoot ? CangjieConstants.cangjieKeyCaps(letter) : letter
         case .stroke(let c):
             switch c.lowercased() {
             case "h": return "一"
@@ -331,7 +331,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonTitleInset: UIEdgeInsets {
         switch self {
-        case .cangjie(_, let hints, _) where hints != nil: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        case .cangjie(_, let hints, _, _) where hints != nil: return UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         case _ where keyCapType == .input: return UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0)
         default: return .zero
         }
@@ -339,7 +339,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonLeftHint: String? {
         switch self {
-        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.leftHint
+        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _, _): return hints?.leftHint
         case .toggleInputMode(_, _, let hasHint): return hasHint ? SessionState.main.lastCharForm.caption : nil
         default: return nil
         }
@@ -347,7 +347,10 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonRightHint: String? {
         switch self {
-        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.rightHint ?? barHint
+        case .character(_, let hint, _), .rime(_, let hint, _): return hint?.rightHint ?? barHint
+        case .cangjie(_, let hint, _, let cangjieKeyCapMode):
+            let rightHint = hint?.rightHint ?? barHint
+            return cangjieKeyCapMode == .cangjieRoot ? rightHint : CangjieConstants.cangjieKeyCaps(hint?.rightHint ?? "")
         case .space: return "Cantoboard"
         default: return barHint
         }
@@ -355,7 +358,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
     
     var buttonBottomHint: String? {
         switch self {
-        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _): return hints?.bottomHint
+        case .character(_, let hints, _), .rime(_, let hints, _), .cangjie(_, let hints, _, _): return hints?.bottomHint
         default: return nil
         }
     }
@@ -400,7 +403,7 @@ indirect enum KeyCap: Equatable, ExpressibleByStringLiteral {
         case .keyboardType(.emojis): return [self, .exportFile("logs", Self.logsPath), .exportFile("user", Self.userDataPath), .exportFile("rime", Self.tmpPath), .exit]
         case .toggleInputMode(_, _, _): return [KeyCap.getToggleCharForm(), self.withoutHints]
         case .character(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
-        case .cangjie(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
+        case .cangjie(_, _, let keyCaps, _) where keyCaps != nil: return keyCaps!
         case .rime(_, _, let keyCaps) where keyCaps != nil: return keyCaps!
         // 123 1st row
         case "1": return ["1", "一", "壹", "１", "①", "⑴", "⒈", "❶", "㊀", "㈠"]

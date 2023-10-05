@@ -100,6 +100,9 @@ vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
 "chineseInputSettings.cangjieVersion" = "倉頡速成版本";
 "chineseInputSettings.cangjie3" = "三代";
 "chineseInputSettings.cangjie5" = "五代";
+"chineseInputSettings.cangjieKeyCapMode" = "倉頡速成鍵帽";
+"chineseInputSettings.cangjieKeyCapModeLetter" = "英文字母";
+"chineseInputSettings.cangjieKeyCapModeRoot" = "倉頡字根";
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";

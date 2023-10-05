@@ -918,7 +918,7 @@ extension LayoutConstants {
              .keypadRimeDelimiter,
              .selectRomanization: return 16
         case .returnKey, "\t", .shift, .nextKeyboard, .dismissKeyboard: return 18
-        case .cangjie(_, let hints, _) where hints != nil: return 20
+        case .cangjie(_, let hints, _, _) where hints != nil: return 20
         case .backspace: return 20
         case .currency where idiom.isPad: return 20
         case .character(let c, _, _), .contextual(.character(let c)):

@@ -90,6 +90,9 @@ class LocalizedStrings {
     static let cangjieVersion = localizedString("chineseInputSettings.cangjieVersion")
     static let cangjie3 = localizedString("chineseInputSettings.cangjie3")
     static let cangjie5 = localizedString("chineseInputSettings.cangjie5")
+    static let cangjieKeyCapMode = localizedString("chineseInputSettings.cangjieKeyCapMode")
+    static let cangjieKeyCapModeLetter = localizedString("chineseInputSettings.cangjieKeyCapModeLetter")
+    static let cangjieKeyCapModeRoot = localizedString("chineseInputSettings.cangjieKeyCapModeRoot")
     
     static let englishInputSettings = localizedString("englishInputSettings")
     static let autoCap = localizedString("englishInputSettings.autoCap")
