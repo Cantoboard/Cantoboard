@@ -6,6 +6,7 @@ patch:
     - {schema: yalevxq}
     - {schema: cangjie3}
     - {schema: cangjie5}
+    - {schema: quick3}
     - {schema: quick5}
     - {schema: luna_pinyin}
     - {schema: stroke}

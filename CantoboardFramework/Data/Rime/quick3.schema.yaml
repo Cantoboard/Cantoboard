@@ -1,0 +1,85 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: quick3
+  name: 速成
+  version: "0.20"
+  author:
+    - 佛振 <chen.sst@gmail.com>
+  description: |
+    速成、倉頡詞句連打
+    碼表源自倉頡之友發佈的《五倉世紀版》
+    www.chinesecj.com
+  dependencies:
+    - jyut6ping3
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+  filters:
+    - uniquifier
+    - reverse_lookup_filter@jyut6ping3_reverse_lookup
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " ;'"
+  algebra:
+    - 'derive/^([^z])\w+(\w)$/$1$2/'  # 取倉頡首尾二碼爲速成碼
+
+translator:
+  dictionary: quick3
+  enable_charset_filter: false
+  enable_completion: false
+  max_homophones: 10
+  prism: quick3
+  comment_format:
+    - "xlit|abcdefghijklmnopqrstuvwxyz~|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符～|"
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+    - "^yyy.*$"
+
+punctuator:
+  import_preset: symbols_cantonese
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: '^/([0-9]0?|[A-Za-z]+)$'
+
+jyut6ping3_reverse_lookup:
+  overwrite_comment: true
+  dictionary: jyut6ping3
+  comment_format:
+    - "xlit| |/|"
+
+__patch:
+  - common.custom:/patch?
