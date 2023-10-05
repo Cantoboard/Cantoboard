@@ -350,7 +350,9 @@ class KeyboardView: UIView, BaseKeyboardView {
                 let orgChildren = childrenKeyCaps ?? keyCap.childrenKeyCaps
                 if c == "r" {
                     rightHint = "反"
-                    childrenKeyCaps = [.reverseLookup(Settings.cached.cangjieVersion.toRimeSchema), .reverseLookup(.quick)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
+                    let cjSchema = Settings.cached.cangjieVersion.toRimeCJSchema
+                    let quickSchema = Settings.cached.cangjieVersion.toRimeQuickSchema
+                    childrenKeyCaps = [.reverseLookup(cjSchema), .reverseLookup(quickSchema)] + orgChildren + [.reverseLookup(.mandarin), .reverseLookup(.loengfan), .reverseLookup(.stroke)]
                 } else if state.isComposing {
                     if isInLongPressMode {
                         var toneKeyCap: KeyCap? = nil

@@ -68,10 +68,17 @@ public enum CangjieVersion: String, Codable {
     case cangjie3 = "cangjie3"
     case cangjie5 = "cangjie5"
     
-    var toRimeSchema: RimeSchema {
+    var toRimeCJSchema: RimeSchema {
         switch self {
         case .cangjie3: return .cangjie3
         case .cangjie5: return .cangjie5
+        }
+    }
+    
+    var toRimeQuickSchema: RimeSchema {
+        switch self {
+        case .cangjie3: return .quick3
+        case .cangjie5: return .quick5
         }
     }
 }

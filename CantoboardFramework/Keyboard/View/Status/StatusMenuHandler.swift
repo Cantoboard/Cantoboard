@@ -67,14 +67,16 @@ extension StatusMenuHandler where Self: BaseKeyboardView {
         guard statusMenu == nil else { return }
         FeedbackProvider.softImpact.impactOccurred()
         
+        let cjSchema = Settings.cached.cangjieVersion.toRimeCJSchema
+        let quickSchema = Settings.cached.cangjieVersion.toRimeQuickSchema
         let menuRows: [[KeyCap]] = state.keyboardIdiom == .phone && layoutConstants.ref.isPortrait ? [
             [ .changeSchema(.jyutping), .toggleInputMode(.english, nil, false) ],
             [ .changeSchema(.yale), .changeSchema(.jyutping10keys) ],
-            [ .changeSchema(Settings.cached.cangjieVersion.toRimeSchema), .changeSchema(.quick) ],
+            [ .changeSchema(cjSchema), .changeSchema(quickSchema) ],
             [ .changeSchema(.stroke), .changeSchema(.mandarin) ],
         ] : [
             [ .changeSchema(.yale), .changeSchema(.jyutping), .changeSchema(.jyutping10keys), .toggleInputMode(.english, nil, false) ],
-            [ .changeSchema(Settings.cached.cangjieVersion.toRimeSchema), .changeSchema(.quick), .changeSchema(.stroke), .changeSchema(.mandarin) ],
+            [ .changeSchema(cjSchema), .changeSchema(quickSchema), .changeSchema(.stroke), .changeSchema(.mandarin) ],
         ]
         
         let statusMenu = StatusMenu(menuRows: menuRows)

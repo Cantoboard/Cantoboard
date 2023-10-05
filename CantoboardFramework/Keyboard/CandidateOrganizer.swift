@@ -165,7 +165,7 @@ class InputEngineCandidateSource: CandidateSource {
     
     private func shouldCurrentRimeCandidateBeFiltered(_ inputEngine: BilingualInputEngine) -> Bool {
         // In Quick mode, filter out char with mismatching IICore
-        if inputEngine.rimeSchema == .quick {
+        if inputEngine.rimeSchema == .quick3 || inputEngine.rimeSchema == .quick5 {
             guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else {
                 return true
             }

@@ -15,7 +15,8 @@ public enum RimeSchema: String, Codable {
     case yale = "yale"
     case cangjie3 = "cangjie3"
     case cangjie5 = "cangjie5"
-    case quick = "quick5"
+    case quick3 = "quick3"
+    case quick5 = "quick5"
     case mandarin = "luna_pinyin"
     case stroke = "stroke"
     case loengfan = "loengfan"
@@ -25,7 +26,7 @@ public enum RimeSchema: String, Codable {
         switch self {
         case .cangjie3, .cangjie5: return "倉"
         case .yale: return "耶"
-        case .quick: return "速"
+        case .quick3, .quick5: return "速"
         case .jyutping: return "粵"
         case .loengfan: return "兩"
         case .mandarin: return "普"
@@ -38,7 +39,7 @@ public enum RimeSchema: String, Codable {
         switch self {
         case .cangjie3, .cangjie5: return "倉頡"
         case .yale: return "耶魯"
-        case .quick: return "速成"
+        case .quick3, .quick5: return "速成"
         case .jyutping: return "粵拼"
         case .loengfan: return "兩分"
         case .mandarin: return "普拼"
@@ -62,11 +63,11 @@ public enum RimeSchema: String, Codable {
     }
     
     var isCangjieFamily: Bool {
-        self == .cangjie3 || self == .cangjie5 || self == .quick
+        self == .cangjie3 || self == .cangjie5 || self == .quick3 || self == .quick5
     }
     
     var isShapeBased: Bool {
-        self == .cangjie3 || self == .cangjie5 || self == .quick || self == .stroke
+        self == .cangjie3 || self == .cangjie5 || self == .quick3 || self == .quick5 || self == .stroke
     }
     
     var isCantonese: Bool {
