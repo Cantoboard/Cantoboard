@@ -701,6 +701,8 @@ class ButtonImage {
     static let emojiKeyboardDark = imageAssets("face.smiling.fill")
     static let paneCollapseButtonImage = imageAssets("chevron.up")
     static let paneExpandButtonImage = imageAssets("chevron.down")
+    static let paneScrollRightButtonImage = imageAssets("arrow.right")
+    static let paneScrollToBeginningButtonImage = imageAssets("return.left")
     static let dismissKeyboard = imageAssets("keyboard.chevron.compact.down")
     static let clear = imageAssets("clear")
     static let clearFilled = imageAssets("clear.fill")

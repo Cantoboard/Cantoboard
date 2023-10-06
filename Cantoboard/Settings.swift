@@ -168,6 +168,10 @@ extension Settings {
                             LocalizedStrings.candidateFontSize_normal: .normal,
                             LocalizedStrings.candidateFontSize_large: .large,
                     ]),
+                    Segment(LocalizedStrings.candidateSelectMode, \.candidateSelectMode, [
+                            LocalizedStrings.candidateSelectMode_expandDownward: .expandDownward,
+                            LocalizedStrings.candidateSelectMode_scrollRight: .scrollRight,
+                    ]),
                     Segment(LocalizedStrings.symbolShape, \.symbolShape, [
                             LocalizedStrings.symbolShape_half: .half,
                             LocalizedStrings.symbolShape_full: .full,

@@ -234,7 +234,17 @@ class CandidatePaneView: UIControl {
     }
     
     func setupButtons() {
-        let expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+        var expandButtonImage: UIImage
+        switch Settings.cached.candidateSelectMode {
+        case .expandDownward:
+            expandButtonImage = mode == .row ? ButtonImage.paneExpandButtonImage : ButtonImage.paneCollapseButtonImage
+        case .scrollRight:
+            if !collectionView.isAtRightmostPosition {
+                expandButtonImage = ButtonImage.paneScrollRightButtonImage
+            } else {
+                expandButtonImage = ButtonImage.paneScrollToBeginningButtonImage
+            }
+        }
         expandButton.setImage(adjustImageFontSize(expandButtonImage), for: .normal)
         expandButton.shouldShowMenuIndicator = mode == .row
         expandButton.isEnabled = keyboardState.enableState == .enabled
@@ -353,7 +363,12 @@ class CandidatePaneView: UIControl {
     @objc private func expandButtonClick() {
         FeedbackProvider.rigidImpact.impactOccurred()
         
-        changeMode(mode == .row ? .table : .row)
+        switch Settings.cached.candidateSelectMode {
+        case .expandDownward:
+            changeMode(mode == .row ? .table : .row)
+        case .scrollRight:
+            scrollToNextPageInRowMode()
+        }
     }
     
     @objc private func filterButtonClick() {
@@ -550,9 +565,20 @@ extension CandidatePaneView {
     }
     
     func scrollToNextPageInRowMode() {
+        let candidateCellMarginWidth = CandidateCell.margin.left + CandidateCell.margin.right
         guard mode == .row,
               let collectionView = self.collectionView else { return }
-        var targetOffset = CGPoint(x: collectionView.contentOffset.x + collectionView.frame.width, y: collectionView.contentOffset.y)
+        
+        guard !collectionView.isAtRightmostPosition else {
+            let origin = CGPoint(x: 0, y: collectionView.contentOffset.y)
+            collectionView.scrollRectToVisible(CGRect(origin: origin, size: CGSize(width: 1, height: 1)), animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                FeedbackProvider.rigidImpact.impactOccurred()
+            })
+            return
+        }
+        
+        var targetOffset = CGPoint(x: collectionView.contentOffset.x + collectionView.frame.width + candidateCellMarginWidth, y: collectionView.contentOffset.y)
         if let indexPathAtTargetOffset = collectionView.indexPathForItem(at: targetOffset),
            let cellAtTargetOffset = collectionView.cellForItem(at: indexPathAtTargetOffset) {
             targetOffset.x = cellAtTargetOffset.frame.minX
@@ -758,6 +784,10 @@ extension CandidatePaneView: CandidateCollectionViewDelegate {
         if let view = view as? CandidateSectionHeader {
             view.free()
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        setupButtons()
     }
 }
 

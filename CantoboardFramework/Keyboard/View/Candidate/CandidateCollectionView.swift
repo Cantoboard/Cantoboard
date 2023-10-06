@@ -87,4 +87,8 @@ class CandidateCollectionView: UICollectionView {
         // Manually refreshing them to workaround the bug.
         reloadItems(at: (0..<visibleCellCounts).map({ [1, $0] }))
     }
+    
+    var isAtRightmostPosition: Bool {
+        return contentOffset.x + bounds.width - contentSize.width > -5
+    }
 }

@@ -33,6 +33,9 @@
 "inputMethodSettings.candidateFontSize" = "候選詞大小";
 "inputMethodSettings.candidateFontSize.normal" = "正常";
 "inputMethodSettings.candidateFontSize.large" = "大";
+"inputMethodSettings.candidateSelectMode" = "候選字表";
+"inputMethodSettings.candidateSelectMode.expandDownward" = "向下展開";
+"inputMethodSettings.candidateSelectMode.scrollRight" = "向右換頁";
 "inputMethodSettings.symbolShape" = "標點符號";
 "inputMethodSettings.symbolShape.half" = "半形";
 "inputMethodSettings.symbolShape.full" = "全形";

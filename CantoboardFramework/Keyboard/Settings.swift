@@ -64,6 +64,11 @@ public enum CandidateFontSize: String, Codable {
     }
 }
 
+public enum CandidateSelectMode: String, Codable {
+    case expandDownward = "expandDownward"
+    case scrollRight = "scrollRight"
+}
+
 public enum CangjieVersion: String, Codable {
     case cangjie3 = "cangjie3"
     case cangjie5 = "cangjie5"
@@ -120,6 +125,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultSmartEnglishSpaceEnabled: Bool = true
     private static let defaultSmartFullStopEnabled: Bool = true
     private static let defaultCandidateFontSize: CandidateFontSize = .normal
+    private static let defaultCandidateSelectMode: CandidateSelectMode = .expandDownward
     private static let defaultSymbolShape: SymbolShape = .smart
     private static let defaultSmartSymbolShapeDefault: SymbolShape = .full
     private static let defaultSpaceAction: SpaceAction = .insertText
@@ -148,6 +154,7 @@ public struct Settings: Codable, Equatable {
     public var isSmartEnglishSpaceEnabled: Bool = true
     public var isSmartFullStopEnabled: Bool
     public var candidateFontSize: CandidateFontSize
+    public var candidateSelectMode: CandidateSelectMode
     public var symbolShape: SymbolShape
     public var smartSymbolShapeDefault: SymbolShape
     public var spaceAction: SpaceAction
@@ -177,6 +184,7 @@ public struct Settings: Codable, Equatable {
         isSmartEnglishSpaceEnabled = Self.defaultSmartEnglishSpaceEnabled
         isSmartFullStopEnabled = Self.defaultSmartFullStopEnabled
         candidateFontSize = Self.defaultCandidateFontSize
+        candidateSelectMode = Self.defaultCandidateSelectMode
         symbolShape = Self.defaultSymbolShape
         smartSymbolShapeDefault = Self.defaultSmartSymbolShapeDefault
         spaceAction = Self.defaultSpaceAction
@@ -208,6 +216,7 @@ public struct Settings: Codable, Equatable {
         self.isSmartFullStopEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartFullStopEnabled) ?? Settings.defaultSmartFullStopEnabled
         self.isSmartEnglishSpaceEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSmartEnglishSpaceEnabled) ?? Settings.defaultSmartEnglishSpaceEnabled
         self.candidateFontSize = try container.decodeIfPresent(CandidateFontSize.self, forKey: .candidateFontSize) ?? Settings.defaultCandidateFontSize
+        self.candidateSelectMode = try container.decodeIfPresent(CandidateSelectMode.self, forKey: .candidateSelectMode) ?? Settings.defaultCandidateSelectMode
         self.symbolShape = try container.decodeIfPresent(SymbolShape.self, forKey: .symbolShape) ?? Settings.defaultSymbolShape
         self.smartSymbolShapeDefault = try container.decodeIfPresent(SymbolShape.self, forKey: .smartSymbolShapeDefault) ?? Settings.defaultSmartSymbolShapeDefault
         self.spaceAction = try container.decodeIfPresent(SpaceAction.self, forKey: .spaceAction) ?? Settings.defaultSpaceAction
