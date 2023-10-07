@@ -1818,7 +1818,7 @@
 				CODE_SIGN_ENTITLEMENTS = Cantoboard/Cantoboard.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1842,7 +1842,7 @@
 				CODE_SIGN_ENTITLEMENTS = Cantoboard/Cantoboard.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = Cantoboard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1908,7 +1908,7 @@
 				CODE_SIGN_ENTITLEMENTS = CantoboardExtension/CantoboardExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1917,7 +1917,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.13;
+				MARKETING_VERSION = 1.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.Cantoboard.CantoboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1933,7 +1933,7 @@
 				CODE_SIGN_ENTITLEMENTS = CantoboardExtension/CantoboardExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = M6QD9W76V2;
 				INFOPLIST_FILE = CantoboardExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1942,7 +1942,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.13;
+				MARKETING_VERSION = 1.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = org.cantoboard.Cantoboard.CantoboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
