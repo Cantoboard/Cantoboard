@@ -104,6 +104,11 @@ public enum FullWidthSpaceMode: String, Codable {
     case shift = "shift"
 }
 
+public enum Quick3CandidateMode: String, Codable {
+    case sortByFreq = "sortByFreq"
+    case fixedOrder = "fixedOrder"
+}
+
 // If any of these settings is changed, we have to redeploy Rime.
 public struct RimeSettings: Codable, Equatable {
     public var enableCorrector: Bool
@@ -148,6 +153,8 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowBottomLeftSwitchLangButton: Bool = false
     private static let defaultCangjieVersion: CangjieVersion = .cangjie3
     private static let defaultCangjieKeyCapMode: CangjieKeyCapMode = .cangjieRoot
+    private static let defaultQuick3CandidateMode: Quick3CandidateMode = .fixedOrder
+    private static let defaultQuick3FixedOrderNumPopularCandidates: UInt8 = 3
 
     public var isMixedModeEnabled: Bool
     public var isAutoCapEnabled: Bool
@@ -177,6 +184,8 @@ public struct Settings: Codable, Equatable {
     public var showBottomLeftSwitchLangButton: Bool
     public var cangjieVersion: CangjieVersion
     public var cangjieKeyCapMode: CangjieKeyCapMode
+    public var quick3CandidateMode: Quick3CandidateMode
+    public var quick3FixedOrderNumPopularCandidates: UInt8
 
     public init() {
         isMixedModeEnabled = Self.defaultMixedModeEnabled
@@ -207,6 +216,8 @@ public struct Settings: Codable, Equatable {
         showBottomLeftSwitchLangButton = Self.defaultShowBottomLeftSwitchLangButton
         cangjieVersion = Self.defaultCangjieVersion
         cangjieKeyCapMode = Self.defaultCangjieKeyCapMode
+        quick3CandidateMode = Self.defaultQuick3CandidateMode
+        quick3FixedOrderNumPopularCandidates = Self.defaultQuick3FixedOrderNumPopularCandidates
     }
     
     public init(from decoder: Decoder) throws {
@@ -239,6 +250,8 @@ public struct Settings: Codable, Equatable {
         self.showBottomLeftSwitchLangButton = try container.decodeIfPresent(Bool.self, forKey: .showBottomLeftSwitchLangButton) ?? Settings.defaultShowBottomLeftSwitchLangButton
         self.cangjieVersion = try container.decodeIfPresent(CangjieVersion.self, forKey: .cangjieVersion) ?? Settings.defaultCangjieVersion
         self.cangjieKeyCapMode = try container.decodeIfPresent(CangjieKeyCapMode.self, forKey: .cangjieKeyCapMode) ?? Settings.defaultCangjieKeyCapMode
+        self.quick3CandidateMode = try container.decodeIfPresent(Quick3CandidateMode.self, forKey: .quick3CandidateMode) ?? Settings.defaultQuick3CandidateMode
+        self.quick3FixedOrderNumPopularCandidates = try container.decodeIfPresent(UInt8.self, forKey: .quick3FixedOrderNumPopularCandidates) ?? Settings.defaultQuick3FixedOrderNumPopularCandidates
     }
     
     private static var _cached: Settings?

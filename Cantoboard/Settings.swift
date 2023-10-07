@@ -130,6 +130,56 @@ private class Segment<T: Equatable>: Option {
     }
 }
 
+private class IntStepper<T: BinaryInteger>: Option {
+    var title: String
+    var description: String?
+    var videoUrl: String?
+    var key: WritableKeyPath<Settings, T>
+    var minimumValue, value, maximumValue, stepValue: T
+    
+    private var controller: MainViewController!
+    private var control: UIStepper!
+    private var valueLabel: UILabel!
+    
+    init(_ title: String, _ key: WritableKeyPath<Settings, T>, minimumValue: T, maximumValue: T, stepValue: T, _ description: String? = nil, _ videoUrl: String? = nil) {
+        self.title = title
+        self.key = key
+        self.minimumValue = minimumValue
+        self.value = Settings.cached[keyPath: key]
+        self.maximumValue = maximumValue
+        self.stepValue = stepValue
+        self.description = description
+        self.videoUrl = videoUrl
+    }
+    
+    func dequeueCell(with controller: MainViewController) -> UITableViewCell {
+        self.controller = controller
+        control = UIStepper()
+        control.minimumValue = Double(minimumValue)
+        control.value = Double(value)
+        control.maximumValue = Double(maximumValue)
+        control.stepValue = Double(stepValue)
+        control.addTarget(self, action: #selector(updateSettings), for: .valueChanged)
+        
+        valueLabel = UILabel()
+        valueLabel.text = String(value)
+        
+        let stackView = UIStackView(arrangedSubviews: [valueLabel, control])
+        stackView.spacing = 5
+        
+        return makeCell(with: stackView)
+    }
+    
+    @objc func updateSettings() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        valueLabel.text = String(T(control.value))
+        value = T(control.value)
+        controller.settings[keyPath: key] = value
+        controller.view.endEditing(true)
+        Settings.save(controller.settings)
+    }
+}
+
 extension Settings {
     private var enableCorrector: Bool {
         get { rimeSettings.enableCorrector }
@@ -245,6 +295,15 @@ extension Settings {
                             LocalizedStrings.cangjieKeyCapModeRoot: .cangjieRoot,
                         ]
                     ),
+                    Segment(LocalizedStrings.quick3CandidateMode, \.quick3CandidateMode, [
+                            LocalizedStrings.quick3CandidateModeSortByFreq: .sortByFreq,
+                            LocalizedStrings.quick3CandidateModeFixedOrder: .fixedOrder,
+                        ],
+                        LocalizedStrings.quick3CandidateMode_description
+                    ),
+                    IntStepper(LocalizedStrings.quick3FixedOrderNumPopularCandidates, \.quick3FixedOrderNumPopularCandidates,
+                               minimumValue: 0, maximumValue: 9, stepValue: 1,
+                               LocalizedStrings.quick3FixedOrderNumPopularCandidates_description)
                 ]
             ),
             Section(

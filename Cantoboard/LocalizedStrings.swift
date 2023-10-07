@@ -96,6 +96,12 @@ class LocalizedStrings {
     static let cangjieKeyCapMode = localizedString("chineseInputSettings.cangjieKeyCapMode")
     static let cangjieKeyCapModeLetter = localizedString("chineseInputSettings.cangjieKeyCapModeLetter")
     static let cangjieKeyCapModeRoot = localizedString("chineseInputSettings.cangjieKeyCapModeRoot")
+    static let quick3CandidateMode = localizedString("chineseInputSettings.quick3CandidateMode")
+    static let quick3CandidateModeSortByFreq = localizedString("chineseInputSettings.quick3CandidateModeSortByFreq")
+    static let quick3CandidateModeFixedOrder = localizedString("chineseInputSettings.quick3CandidateModeFixedOrder")
+    static let quick3CandidateMode_description = localizedString("chineseInputSettings.quick3CandidateMode.description")
+    static let quick3FixedOrderNumPopularCandidates = localizedString("chineseInputSettings.quick3FixedOrderNumPopularCandidates")
+    static let quick3FixedOrderNumPopularCandidates_description = localizedString("chineseInputSettings.quick3FixedOrderNumPopularCandidates.description")
     
     static let englishInputSettings = localizedString("englishInputSettings")
     static let autoCap = localizedString("englishInputSettings.autoCap")

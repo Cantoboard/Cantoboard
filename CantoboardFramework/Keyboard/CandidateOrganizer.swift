@@ -79,6 +79,85 @@ class InputEngineCandidateSource: CandidateSource {
         }
     }
     
+    // Reorder single char candidates in fixed order
+    private func applyWindowsQuick3FixedOrderToCandidates() {
+        guard let inputController = inputController,
+              let inputEngine = inputController.inputEngine,
+              let rimeRawInput = inputEngine.rimeRawInput else { return }
+        
+        guard !candidatePaths.isEmpty else { return }
+        
+        let popularCandidateCount = Settings.cached.quick3FixedOrderNumPopularCandidates
+        
+        DDLogInfo("UFO rimeRawInput \(rimeRawInput)")
+
+        // Collect all Rime single char candidates with their original index.
+        var singleCharCandidatesIndex: [String: Int] = [:]
+        var singleCharCandidates: [String] = []
+        for i in 0..<candidatePaths[0].count {
+            let candidatePath = candidatePaths[0][i]
+            guard candidatePath.source == .rime,
+                  i >= popularCandidateCount,
+                  let candidate = inputEngine.getRimeCandidate(candidatePath.index),
+                  candidate.count == 1 else { continue }
+            
+            singleCharCandidatesIndex[candidate] = candidatePath.index
+            singleCharCandidates.append(candidate)
+        }
+        
+        let currentQuickCodesStartIndex = rimeRawInput.text.index(rimeRawInput.text.startIndex, offsetBy: inputEngine.rimeUserSelectedTextLength)
+        let currentQuickCodesEndIndex = rimeRawInput.text.index(rimeRawInput.text.startIndex, offsetBy: max(inputEngine.rimeUserSelectedTextLength, rimeRawInput.caretIndex))
+        let currentQuickCodes: Substring
+        if rimeRawInput.caretIndex > 0 {
+            currentQuickCodes = rimeRawInput.text[currentQuickCodesStartIndex..<currentQuickCodesEndIndex]
+        } else {
+            // If caret is at the beginning of the input, process the whole string.
+            currentQuickCodes = rimeRawInput.text[rimeRawInput.text.startIndex..<rimeRawInput.text.endIndex]
+        }
+        
+        DDLogInfo("UFO currentQuickCodes \(currentQuickCodes)")
+        
+        // Extract quick code
+        var loadedQuickCandidatesCount = 0
+        var quickCandidatesOrderMap: [Character:Int] = [:]
+        for quickCodeLen in stride(from: min(currentQuickCodes.count, 2), to: 1, by: -1) {
+            let quickCode = currentQuickCodes.prefix(quickCodeLen)
+            guard let quickCandidates = Self.unihanDict.getQuick3Candidates(String(quickCode)) else { continue }
+            
+            DDLogInfo("UFO lookup \(quickCode) \(quickCandidates)")
+            for (i, quickCandidate) in quickCandidates.enumerated() {
+                quickCandidatesOrderMap[quickCandidate] = loadedQuickCandidatesCount + i
+            }
+            loadedQuickCandidatesCount += quickCandidates.count
+        }
+        
+        // Sort single char candidates by their Windows Quick 3 order.
+        DDLogInfo("UFO Before \(singleCharCandidates)")
+        singleCharCandidates.sort {
+            guard let aChar = $0.first else { return false }
+            guard let bChar = $1.first else { return true }
+            return quickCandidatesOrderMap[aChar] ?? Int.max < quickCandidatesOrderMap[bChar] ?? Int.max
+        }
+        DDLogInfo("UFO After \(singleCharCandidates)")
+        
+        // Merge the sorted single char candidates in place with the original cnadidate paths.
+        var sortedCandidatePaths: [CandidatePath] = []
+        for i in 0..<candidatePaths[0].count {
+            let candidatePath = candidatePaths[0][i]
+            if candidatePath.source == .rime,
+               i >= popularCandidateCount,
+               let candidate = inputEngine.getRimeCandidate(candidatePath.index),
+               candidate.count == 1,
+               let orgIndex = singleCharCandidatesIndex[singleCharCandidates.removeFirst()] {
+                sortedCandidatePaths.append(CandidatePath(source: .rime, index: orgIndex))
+            } else {
+                sortedCandidatePaths.append(candidatePath)
+            }
+        }
+        
+        candidatePaths[0] = sortedCandidatePaths
+    }
+    
     private func populateCandidatesByFreq() {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine else { return }
@@ -90,6 +169,20 @@ class InputEngineCandidateSource: CandidateSource {
         
         if candidatePaths.isEmpty {
             candidatePaths.append([])
+        }
+        
+        let shouldApplyFixedOrderToQuick3Candidates = inputEngine.rimeSchema == .quick3 && Settings.cached.quick3CandidateMode == .fixedOrder
+        
+        if shouldApplyFixedOrderToQuick3Candidates {
+            // Load all Rime candidates in one go so we can sort them.
+            while inputEngine.loadMoreRimeCandidates() {}
+        }
+        
+        defer {
+            if shouldApplyFixedOrderToQuick3Candidates {
+                // After populating all candidates, reorder candidates to match Windows Quick 3 order.
+                applyWindowsQuick3FixedOrderToCandidates()
+            }
         }
         
         let firstRimeCandidateLength = inputEngine.getRimeCandidate(0)?.count ?? 0

@@ -106,6 +106,12 @@ vxq: 撳一下 v/x/q 輸入 1/2/3 聲；
 "chineseInputSettings.cangjieKeyCapMode" = "倉頡速成鍵帽";
 "chineseInputSettings.cangjieKeyCapModeLetter" = "英文字母";
 "chineseInputSettings.cangjieKeyCapModeRoot" = "倉頡字根";
+"chineseInputSettings.quick3CandidateMode" = "速成三代單字排序";
+"chineseInputSettings.quick3CandidateModeSortByFreq" = "字頻";
+"chineseInputSettings.quick3CandidateModeFixedOrder" = "固定";
+"chineseInputSettings.quick3CandidateMode.description" = "字頻模式：輸入法會統計打過嘅字，然後根據字頻動態排序。\n固定模式：非常用單字會根據 Windows 舊速成嘅固定順序排序。\n詞組永遠都根據詞頻顯示。\n呢個設定只會影響速成三代。";
+"chineseInputSettings.quick3FixedOrderNumPopularCandidates" = "速成三代常用單字數目";
+"chineseInputSettings.quick3FixedOrderNumPopularCandidates.description" = "喺固定模式，輸入法會先根據呢個設定顯示幾個常用單字。之後再根據 Windows 舊速成嘅固定順序排列剩底嘅單字。\n常用單字係根據打過嘅字動態統計出嚟。\n呢個設定只會影響速成三代。";
 
 "englishInputSettings" = "英文輸入設定";
 "englishInputSettings.autoCap" = "自動大階";
