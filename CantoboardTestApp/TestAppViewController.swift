@@ -64,20 +64,19 @@ class TestAppViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        /*
-        // Uncomment to generate English Dictionaries.
-        DefaultDictionary.createDb(locale: "en_US")
-        DefaultDictionary.createDb(locale: "en_CA")
-        DefaultDictionary.createDb(locale: "en_GB")
-        DefaultDictionary.createDb(locale: "en_AU")
-        DDLogInfo("EnglishDictionary Created.")
-         */
+        if false {
+            DefaultDictionary.createDb(locale: "en_US")
+            DefaultDictionary.createDb(locale: "en_CA")
+            DefaultDictionary.createDb(locale: "en_GB")
+            DefaultDictionary.createDb(locale: "en_AU")
+        }
         
-        /*
-        let unihanCsvPath = "\(Bundle.main.resourcePath!)/UnihanSource/Unihan12.csv"
-        let path = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).path
-        LevelDbTable.createUnihanDictionary(unihanCsvPath, dictDbPath: "\(path)/Unihan")
-         */
+        if false {
+            let unihanCsvPath = "\(Bundle.main.resourcePath!)/UnihanSource/Unihan12.csv"
+            let quick3OrderCsvPath = "\(Bundle.main.resourcePath!)/UnihanSource/Quick3Order.csv"
+            let path = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).path
+            LevelDbTable.createUnihanDictionary(unihanCsvPath, quick3OrderCsvPath: quick3OrderCsvPath, dictDbPath: "\(path)/Unihan")
+        }
         
         textbox = UITextView()
         textbox.translatesAutoresizingMaskIntoConstraints = false

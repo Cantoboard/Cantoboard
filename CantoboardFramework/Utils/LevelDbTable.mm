@@ -63,6 +63,18 @@ using namespace std;
     return nil;
 }
 
+- (NSString*)getQuick3Candidates:(const char*) quick3Code {
+    leveldb::ReadOptions options;
+    options.fill_cache = false;
+    string val;
+    leveldb::Status status;
+    status = db->Get(options, leveldb::Slice(quick3Code, strlen(quick3Code)), &val);
+    if (status.ok()) {
+        return [NSString stringWithUTF8String:val.c_str()];
+    }
+    return nullptr;
+}
+
 - (UnihanEntry)getUnihanEntry:(uint32_t) charInUtf32 {
     leveldb::ReadOptions options;
     options.fill_cache = false;
@@ -154,8 +166,33 @@ using namespace std;
     delete db;
 }
 
-+ (void)createUnihanDictionary:(NSString*) csvPath dictDbPath:(NSString*) dbPath {
-    DDLogInfo(@"createUnihanDictionary %@ -> %@", csvPath, dbPath);
+static void loadAndStoreQuick3CsvFile(const char* quick3CsvPath, leveldb::WriteBatch& batch) {
+    string line;
+    bool hasSkippedHeader = false;
+    ifstream csvFile(quick3CsvPath);
+    
+    while (getline(csvFile, line)) {
+        if (!hasSkippedHeader) {
+            hasSkippedHeader = true;
+            continue;
+        }
+        
+        if (*line.rbegin() == '\r') line.pop_back();
+        if (line.empty()) continue;
+        
+        NSString *nsLine = [NSString stringWithUTF8String:line.c_str()];
+        NSArray *parsed = [nsLine componentsSeparatedByString:@","];
+        const char *quick3Code = [[parsed objectAtIndex:0] UTF8String];
+        const char *quick3Candidates = [[parsed objectAtIndex:1] UTF8String];
+        
+        leveldb::Slice key(quick3Code, strlen(quick3Code) /* key does not contain null terminator */);
+        leveldb::Slice value(quick3Candidates, strlen(quick3Candidates) + 1 /* store as null terminated string */);
+        batch.Put(key, value);
+    }
+}
+
++ (void)createUnihanDictionary:(NSString*) csvPath quick3OrderCsvPath:(NSString*) quick3CsvPath dictDbPath:(NSString*) dbPath {
+    DDLogInfo(@"createUnihanDictionary %@, %@ -> %@", csvPath, quick3CsvPath, dbPath);
     
     [[NSFileManager defaultManager] removeItemAtPath:dbPath error:nil];
     
@@ -209,6 +246,7 @@ using namespace std;
         unihanEntry.radicalStroke = radicalStroke;
         unihanEntry.totalStroke = totalStroke;
         unihanEntry.iiCore = 0;
+        
         if ([iiCore containsString:@"H"] || [iiCore containsString:@"T"]) {
              unihanEntry.iiCore |= IICoreT;
         }
@@ -226,6 +264,8 @@ using namespace std;
         leveldb::Slice value((char*)&unihanEntry, sizeof(unihanEntry));
         batch.Put(key, value);
     }
+    
+    loadAndStoreQuick3CsvFile([quick3CsvPath UTF8String], batch);
     
     leveldb::Status writeStatus = db->Write(leveldb::WriteOptions(), &batch);
     if (!writeStatus.ok()) {

@@ -25,11 +25,12 @@ typedef struct __attribute__((packed)) {
 @interface LevelDbTable: NSObject
 - (id)init:(NSString*) dbPath createDbIfMissing:(bool) createDbIfMissing;
 - (NSString*)get:(NSString*) word;
+- (NSString*)getQuick3Candidates:(const char*) quick3Code;
 - (UnihanEntry)getUnihanEntry:(uint32_t) charInUtf32;
 - (bool)put:(NSString*) key value:(NSString*) value;
 - (bool)delete:(NSString*) key;
 + (void)createEnglishDictionary:(NSArray*) textFilePaths dictDbPath:(NSString*) dbPath;
-+ (void)createUnihanDictionary:(NSString*) csvPath dictDbPath:(NSString*) dbPath;
++ (void)createUnihanDictionary:(NSString*) csvPath quick3OrderCsvPath:(NSString*) quick3OrderCsvPath dictDbPath:(NSString*) dbPath;
 @end
 
 @interface PredictiveTextEngine: NSObject
