@@ -232,6 +232,7 @@ extension Settings {
                     Switch(LocalizedStrings.showBottomLeftSwitchLangButton, \.showBottomLeftSwitchLangButton,
                            LocalizedStrings.showBottomLeftSwitchLangButton_description),
                     Switch(LocalizedStrings.enableCharPreview, \.enableCharPreview),
+                    Switch(LocalizedStrings.enableSystemLexicon, \.enableSystemLexicon),
                 ]
             ),
             UIDevice.current.userInterfaceIdiom == .pad ? padSection : nil,

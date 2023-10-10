@@ -179,6 +179,19 @@ class EnglishInputEngine: InputEngine {
         prefectCandidatesStartIndex = 0
         worstCandidatesStartIndex = 0
         
+        if Settings.cached.enableSystemLexicon,
+           let systemLexicon = SessionState.systemLexicon {
+            let lexiconCandidates = systemLexicon.entries.filter({
+                let input = text.lowercased()
+                let userInput = $0.userInput.lowercased()
+                return input.count >= 3 && userInput.hasPrefix(input) || input == userInput
+            }).map { $0.documentText }
+            for lexiconCandidate in lexiconCandidates {
+                candidates.append(lexiconCandidate)
+                candidateSets.insert(lexiconCandidate)
+            }
+        }
+        
         let spellCorrectionCandidates = textChecker.guesses(forWordRange: nsWordRange, in: combined, language: Self.language) ?? []
         
         var performCaseCorrection = false

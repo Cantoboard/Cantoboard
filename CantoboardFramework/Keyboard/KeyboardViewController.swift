@@ -247,6 +247,12 @@ open class KeyboardViewController: UIInputViewController {
         refreshLayoutConstants()
         createConstraints()
         
+        DispatchQueue.main.async {
+            self.requestSupplementaryLexicon(completion: {
+                SessionState.systemLexicon = $0
+            })
+        }
+        
         os_signpost(.end, log: log, name: "viewWillAppear", signpostID: signpostID, "%d", instanceId)
         
         DDLogInfo("KeyboardViewController Profiling \(instanceId) viewWillAppear end time: \(Date().timeIntervalSince(initStartTime) * 1000)")

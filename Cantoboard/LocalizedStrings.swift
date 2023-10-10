@@ -44,6 +44,7 @@ class LocalizedStrings {
     static let showBottomLeftSwitchLangButton = localizedString("inputMethodSettings.showBottomLeftSwitchLangButton")
     static let showBottomLeftSwitchLangButton_description = localizedString("inputMethodSettings.showBottomLeftSwitchLangButton.description")
     static let enableCharPreview = localizedString("inputMethodSettings.enableCharPreview")
+    static let enableSystemLexicon = localizedString("inputMethodSettings.enableSystemLexicon")
     
     static let padSettings = localizedString("padSettings")
     static let candidateBarStyle = localizedString("padSettings.candidateBarStyle")

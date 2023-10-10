@@ -47,6 +47,7 @@
 "inputMethodSettings.showBottomLeftSwitchLangButton" = "左下角中英切換掣";
 "inputMethodSettings.showBottomLeftSwitchLangButton.description" = "喺iPhone同某啲iPad型號，喺鍵盤左下角顯示中英切換掣。";
 "inputMethodSettings.enableCharPreview" = "文字預覽";
+"inputMethodSettings.enableSystemLexicon" = "iOS 文字替代";
 
 "mixedInputSettings" = "粵英混合輸入設定";
 "mixedInputSettings.smartSpace" = "智能英文空格";

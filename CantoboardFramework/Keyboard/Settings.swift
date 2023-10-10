@@ -143,6 +143,7 @@ public struct Settings: Codable, Equatable {
     private static let defaultShowEnglishExactMatch: Bool = true
     private static let defaultCompositionMode: CompositionMode = .multiStage
     private static let defaultEnableCharPreview: Bool = true
+    private static let defaultEnableSystemLexicon: Bool = false
     private static let defaultPressSymbolKeysEnabled: Bool = true
     private static let defaultEnableHKCorrection: Bool = true
     private static let defaultFullWidthSpaceMode: FullWidthSpaceMode = .off
@@ -174,6 +175,7 @@ public struct Settings: Codable, Equatable {
     public var shouldShowEnglishExactMatch: Bool
     public var compositionMode: CompositionMode
     public var enableCharPreview: Bool
+    public var enableSystemLexicon: Bool
     public var isLongPressSymbolKeysEnabled: Bool
     public var enableHKCorrection: Bool
     public var fullWidthSpaceMode: FullWidthSpaceMode
@@ -206,6 +208,7 @@ public struct Settings: Codable, Equatable {
         shouldShowEnglishExactMatch = Self.defaultShowEnglishExactMatch
         compositionMode = Self.defaultCompositionMode
         enableCharPreview = Self.defaultEnableCharPreview
+        enableSystemLexicon = Self.defaultEnableSystemLexicon
         isLongPressSymbolKeysEnabled = Self.defaultPressSymbolKeysEnabled
         enableHKCorrection = Self.defaultEnableHKCorrection
         fullWidthSpaceMode = Self.defaultFullWidthSpaceMode
@@ -240,6 +243,7 @@ public struct Settings: Codable, Equatable {
         self.shouldShowEnglishExactMatch = try container.decodeIfPresent(Bool.self, forKey: .shouldShowEnglishExactMatch) ?? Settings.defaultShowEnglishExactMatch
         self.compositionMode = try container.decodeIfPresent(CompositionMode.self, forKey: .compositionMode) ?? Settings.defaultCompositionMode
         self.enableCharPreview = try container.decodeIfPresent(Bool.self, forKey: .enableCharPreview) ?? Settings.defaultEnableCharPreview
+        self.enableSystemLexicon = try container.decodeIfPresent(Bool.self, forKey: .enableSystemLexicon) ?? Settings.defaultEnableSystemLexicon
         self.isLongPressSymbolKeysEnabled = try container.decodeIfPresent(Bool.self, forKey: .isLongPressSymbolKeysEnabled) ?? Settings.defaultPressSymbolKeysEnabled
         self.enableHKCorrection = try container.decodeIfPresent(Bool.self, forKey: .enableHKCorrection) ?? Settings.defaultEnableHKCorrection
         self.fullWidthSpaceMode = try container.decodeIfPresent(FullWidthSpaceMode.self, forKey: .fullWidthSpaceMode) ?? Settings.defaultFullWidthSpaceMode

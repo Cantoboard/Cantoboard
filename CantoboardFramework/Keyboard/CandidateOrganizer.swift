@@ -166,6 +166,8 @@ class InputEngineCandidateSource: CandidateSource {
         let isInRimeOnlyMode = inputEngine.isForcingRimeMode || !doesSchemaSupportMixedMode
         let isEnglishActive = inputMode == .english || inputMode == .mixed && !isInRimeOnlyMode
         let englishCandidates = inputEngine.englishCandidates
+        // English source might overlap with Rime source. Use this to dedup English candidates.
+        var candidatesSet: Set<String> = Set()
         
         if candidatePaths.isEmpty {
             candidatePaths.append([])
@@ -211,13 +213,14 @@ class InputEngineCandidateSource: CandidateSource {
                 continue
             }
             
+            candidatesSet.insert(candidate)
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
             // TODO, change N to change with candidate cell width. Show 1 English candidate at the end of the row.
             // For every N Rime candidates, mix an English candidate.
             if curRimeCandidateIndex % 4 == 0 && isEnglishActive {
                 while curEnglishCandidateIndex < inputEngine.englishPrefectCandidatesStartIndex {
-                    let hasAddedCandidate = appendEnglishCandidate(curEnglishCandidateIndex)
+                    let hasAddedCandidate = appendEnglishCandidate(curEnglishCandidateIndex, candidatesSet)
                     curEnglishCandidateIndex += 1
                     if hasAddedCandidate { break }
                 }
@@ -230,7 +233,7 @@ class InputEngineCandidateSource: CandidateSource {
         // If input is not an English word, insert best English candidates after populating Rime best candidates.
         if !hasPopulatedBestEnglishCandidates && isEnglishActive {
             for i in curEnglishCandidateIndex..<inputEngine.englishWorstCandidatesStartIndex {
-                _ = appendEnglishCandidate(i)
+                _ = appendEnglishCandidate(i, candidatesSet)
             }
             hasPopulatedBestEnglishCandidates = true
         }
@@ -243,6 +246,10 @@ class InputEngineCandidateSource: CandidateSource {
                 continue
             }
             
+            guard let candidate = inputEngine.getRimeCandidate(curRimeCandidateIndex) else {
+                continue
+            }
+            candidatesSet.insert(candidate)
             candidatePaths[0].append(CandidatePath(source: .rime, index: curRimeCandidateIndex))
             curRimeCandidateIndex += 1
         }
@@ -250,7 +257,7 @@ class InputEngineCandidateSource: CandidateSource {
         // Populate worst English candidates.
         if (inputMode == .english || inputEngine.hasRimeLoadedAllCandidates) && !hasPopulatedWorstEnglishCandidates && isEnglishActive {
             for i in inputEngine.englishWorstCandidatesStartIndex..<englishCandidates.count {
-                _ = appendEnglishCandidate(i)
+                _ = appendEnglishCandidate(i, candidatesSet)
             }
             hasPopulatedWorstEnglishCandidates = true
         }
@@ -279,10 +286,11 @@ class InputEngineCandidateSource: CandidateSource {
         return false
     }
     
-    private func appendEnglishCandidate(_ i: Int) -> Bool {
+    private func appendEnglishCandidate(_ i: Int, _ insertedCandidates: Set<String>) -> Bool {
         guard let inputController = inputController,
               let inputEngine = inputController.inputEngine,
               inputController.state.reverseLookupSchema == nil &&
+              !insertedCandidates.contains(inputEngine.englishCandidates[i]) &&
               inputController.state.inputMode != .chinese &&
               inputController.state.inputMode != .english && i < 7 || inputController.state.inputMode == .english
             else { return false }
@@ -290,6 +298,11 @@ class InputEngineCandidateSource: CandidateSource {
         if inputController.state.inputMode != .chinese && !Settings.cached.shouldShowEnglishExactMatch &&
             inputEngine.englishCandidates[i] == inputEngine.englishComposition?.text {
             // Skip exact match in mixed mode.
+            return false
+        }
+        
+        if inputController.state.inputMode == .english && inputEngine.englishCandidates[i].contains(where: { $0.isChineseChar }) {
+            // Do not return words with any CJK chars in English mode.
             return false
         }
         
