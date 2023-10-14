@@ -265,7 +265,10 @@ class InputController: NSObject {
                 insertText("　")
             }
         default:
-            if !insertComposingText() {
+            if state.inputMode == .english {
+                // Autocorrect
+                candidateSelected(choice: [0, 0], enableSmartSpace: true)
+            } else if !insertComposingText() {
                 if !handleAutoSpace() {
                     textDocumentProxy.insertText(" ")
                 }
