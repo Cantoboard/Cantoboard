@@ -703,6 +703,9 @@ class ButtonImage {
     static let paneExpandButtonImage = imageAssets("chevron.down")
     static let paneScrollRightButtonImage = imageAssets("arrow.right")
     static let paneScrollToBeginningButtonImage = imageAssets("return.left")
+    static let paneScrollUpButtonImage = imageAssets("triangle.up")
+    static let paneScrollDownButtonImage = imageAssets("triangle.down")
+    
     static let dismissKeyboard = imageAssets("keyboard.chevron.compact.down")
     static let clear = imageAssets("clear")
     static let clearFilled = imageAssets("clear.fill")

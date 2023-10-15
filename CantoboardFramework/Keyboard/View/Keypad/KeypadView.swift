@@ -239,7 +239,7 @@ class KeypadView: UIView, BaseKeyboardView {
     }
     
     func scrollCandidatePaneToNextPageInRowMode() {
-        candidatePaneView?.scrollToNextPageInRowMode()
+        candidatePaneView?.scrollRightToNextPageInRowMode()
     }
     
     func setPreserveCandidateOffset() {
