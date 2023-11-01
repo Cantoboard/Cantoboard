@@ -171,7 +171,7 @@ class CandidateCell: UICollectionViewCell {
         selectedRectLayer?.backgroundColor = ButtonColor.inputKeyBackgroundColor.resolvedColor(with: traitCollection).cgColor
     }
     
-    private static var unitFontWidthCache: [CGFloat:(halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
+    private static var unitFontWidthCache: [CGFloat: (halfWidths: [CGFloat], fullWidth: CGFloat)] = [:]
     
     static func computeCellSize(cellHeight: CGFloat, minWidth: CGFloat, candidateText: String, comment: String?) -> CGSize {
         let fontSizeScale = Settings.cached.candidateFontSize.scale
@@ -197,10 +197,8 @@ class CandidateCell: UICollectionViewCell {
     static func estimateStringWidth(_ s: String, ofSize fontSize: CGFloat) -> CGFloat {
         var unitWidth = unitFontWidthCache[fontSize]
         if unitWidth == nil {
-            var halfWidths = Array(repeating: CGFloat.zero, count: 256)
-            for b in UInt8.min...UInt8.max {
-                let c = Character(UnicodeScalar(b))
-                halfWidths[Int(b)] = String(c).size(withFont: UIFont.systemFont(ofSize: fontSize)).width
+            let halfWidths = (UInt8.min...UInt8.max).map {
+                String(UnicodeScalar($0)).size(withFont: UIFont.systemFont(ofSize: fontSize)).width
             }
             let fullWidth = "　".size(withFont: UIFont.systemFont(ofSize: fontSize)).width
             unitWidth = (halfWidths: halfWidths, fullWidth: fullWidth)

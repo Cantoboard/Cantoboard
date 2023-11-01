@@ -12,8 +12,12 @@ extension Character {
         isASCII && isLetter
     }
     
+    var isDigit: Bool {
+        isASCII && isNumber
+    }
+    
     var isEnglishLetterOrDigit: Bool {
-        isASCII && (isLetter || isNumber || isOpeningBracket)
+        isEnglishLetter || isDigit || isOpeningBracket
     }
     
     var isOpeningBracket: Bool {
@@ -56,7 +60,7 @@ extension Character {
     
     var isRimeSpecialChar: Bool {
         let isFixedRimeSpecialChar = self == "'" || self == "\"" || self == "/"
-        let isModeDependentRimeSpecialChar = Settings.cached.toneInputMode == .longPress ? isASCII && isNumber : false
+        let isModeDependentRimeSpecialChar = Settings.cached.toneInputMode == .longPress && isDigit
         return isFixedRimeSpecialChar || isModeDependentRimeSpecialChar
     }
     
